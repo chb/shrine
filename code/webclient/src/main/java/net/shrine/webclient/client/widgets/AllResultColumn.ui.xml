@@ -1,0 +1,10 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:HTMLPanel styleName="breakDownOuter">
+		<g:Button styleName="runQueryButton" text="Run Query" ui:field="runQueryButton"/>
+        <div class="breakDown">
+   	    	<div class="breakDownUpperTitle">Results</div>
+        	<g:FlowPanel styleName="breakDownUpper" ui:field="resultsPanel"/>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder> 

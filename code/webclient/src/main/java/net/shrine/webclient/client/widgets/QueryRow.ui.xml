@@ -1,0 +1,23 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
+			 xmlns:d="urn:import:com.google.gwt.user.datepicker.client"
+			 xmlns:s="urn:import:net.shrine.webclient.client.widgets">
+	
+	<g:HTMLPanel addStyleNames="queryRow">
+		<g:HorizontalPanel>
+			<g:Label addStyleNames="queryRowLabel label1" ui:field="nameLabel" />
+			<!-- id=terms1 -->
+	 		<g:HTMLPanel addStyleNames="queryRowTerms" ui:field="exprPanel" />
+	 		<g:SimplePanel addStyleNames="queryRowResults" ui:field="resultPanel" />
+ 		</g:HorizontalPanel>
+ 		<!-- <a href="#">break down</a> -->
+  		<div class="queryRowFilters">
+    		<div class="queryRowFiltersInner"> Date Range: <d:DateBox ui:field="startDate" width="80px"/> to <d:DateBox ui:field="endDate" width="80px"/></div>
+    		<!-- TODO: WhyTF does Min # Occurances appear vertically lower than the adjacent Spinner? -->
+    		<div class="queryRowFiltersInner"><span>Min # Occurances:</span><s:Spinner ui:field="minOccursSpinner" width="30px"/></div>
+    		<div class="queryRowFiltersInner"><g:CheckBox checked="false" ui:field="negationCheckbox"/> Exclude terms in this group</div> 
+  		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 
+

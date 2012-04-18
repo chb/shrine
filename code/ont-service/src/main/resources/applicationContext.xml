@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><!--suppress JdkProxiedBeanTypeInspection, InjectionValueTypeInspection -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jee="http://www.springframework.org/schema/jee" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd">
+
+    <context:component-scan base-package="net.shrine.ont"/>
+
+    <bean id="service" class="net.shrine.ont.OntService" scope="singleton">
+        <constructor-arg index="0" ref="cache"/>
+    </bean>
+
+    <bean id="cache" class="net.shrine.ont.index.LuceneOntologyIndex" scope="singleton">
+        <constructor-arg index="0" ref="dao"/>
+    </bean>
+
+    <bean id="dao" class="net.shrine.ont.data.I2B2OntologyDAO" scope="singleton">
+        <constructor-arg index="0" value="jdbc:mysql://localhost:3306/ont"/>
+        <constructor-arg index="1" value="root"/>
+        <constructor-arg index="2" value="bendah"/>
+        <constructor-arg index="3" value="ontology"/>
+    </bean>
+</beans>

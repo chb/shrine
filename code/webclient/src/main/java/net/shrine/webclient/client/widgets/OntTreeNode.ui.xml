@@ -1,0 +1,13 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<!-- STYLE IS TOTAL HACK -->
+	<ui:style>
+		.plain {
+			color: black;
+		}
+	</ui:style>
+	<g:HTMLPanel styleName="onttree">
+		<!-- TODO: TOTAL HACK: whyTF are nbsps needed? -->
+		<span ui:field="iconSpan">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><g:Anchor styleName="{style.plain}" ui:field="textAnchor"></g:Anchor>
+	</g:HTMLPanel>
+</ui:UiBinder> 

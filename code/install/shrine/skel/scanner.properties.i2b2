@@ -1,0 +1,21 @@
+#REQUIRED
+
+#TODO: Interpolate this file
+
+source=AdapterMappings
+file=SPIN_CONF/AdapterMappings.xml
+crc=http://I2B2_CRC_IP/i2b2/rest/QueryToolService/request
+
+username=I2B2_ORACLE_PM_USER
+password=I2B2_ORACLE_PM_PASSWORD
+domain=I2B2_DOMAIN_ID
+#TODO
+project=Demo
+
+## Optional
+queryTopicID=0
+translate=true
+random=false
+threads=1
+sleep=1000
+repeat=true

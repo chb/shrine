@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings>
+  <fragment_id>12</fragment_id>
+  <fragment_name>phs marital</fragment_name>
+  <concepts>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Common Law</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>T</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Divorced</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>D</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Married</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>M</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Other</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>Z</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Partner</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>T</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Separated</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>L</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Single</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>S</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Unknown</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>Z</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Marital Status\Widowed</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>9</fragment_id>
+          <local_key>W</local_key>
+        </concept>
+      </mappings>
+    </concept>
+  </concepts>
+</mappings>

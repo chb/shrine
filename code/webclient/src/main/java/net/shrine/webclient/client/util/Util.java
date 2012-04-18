@@ -1,0 +1,89 @@
+package net.shrine.webclient.client.util;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * 
+ * @author clint
+ * @date Mar 22, 2012
+ *
+ */
+public final class Util {
+  private Util() {
+	  super();
+  }
+  
+  public static int count(final Iterable<?> elems) {
+	  int result = 0;
+	  
+	  for(@SuppressWarnings("unused") final Object elem : elems) {
+		  ++result;
+	  }
+	  
+	  return result;
+  }
+  
+  public static <T> List<T> toList(final Iterable<T> elems) {
+	  if(elems instanceof List) {
+		  return (List<T>)elems;
+	  }
+	  
+	  final List<T> result = makeArrayList();
+	  
+	  for(final T elem : elems) {
+		  result.add(elem);
+	  }
+	  
+	  return result;
+  }
+  
+  public static <T> String join(final Iterable<T> things) {
+	  return join("", things);
+  }
+  
+  public static <T> String join(final String separator, final Iterable<T> things) {
+	  final Iterator<T> itr = things.iterator();
+	  
+	  final StringBuilder result = new StringBuilder();
+	  
+	  while(itr.hasNext()) {
+		  result.append(String.valueOf(itr.next()));
+		  
+		  if(itr.hasNext()) {
+			  result.append(separator);
+		  }
+	  }
+	  
+	  return result.toString();
+  }
+  
+  public static void requireNotNull(final Object o) {
+	  require(o != null);
+  }
+  
+  public static void require(final boolean expr) {
+	  require(expr, null);
+  }
+  
+  public static void require(final boolean expr, final String message) {
+	  if(!expr) {
+		  throw new IllegalArgumentException("Requirement not met: " + (message == null ? "" : message));
+	  }
+  }
+  
+  public static <T> ArrayList<T> makeArrayList() {
+	  return new ArrayList<T>();
+  }
+  
+  public static <T> ArrayList<T> makeArrayList(final Collection<T> collection) {
+	  return new ArrayList<T>(collection);
+  }
+  
+  public static <K,V> HashMap<K,V> makeHashMap() {
+	  return new HashMap<K,V>();
+  }
+}

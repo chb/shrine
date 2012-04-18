@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AdapterMappings>
+    <mappings>
+        <entry>
+            <key>\\i2b2\i2b2\Demographics\Gender\Female\</key>
+            <value>
+                <local_key>women</local_key>
+                <local_key>lady</local_key>
+            </value>
+        </entry>
+    </mappings>
+</AdapterMappings>

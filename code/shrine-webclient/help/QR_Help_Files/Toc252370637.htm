@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../shrinestyle.css" />
+
+
+<title>SHRINE Query Quick Reference</title>
+
+<style>
+
+#guide	{font-family:"Arial", Arial, sans-serif;
+	 font-size:120%;
+	 text-align:center;
+	 padding-top:15px;
+	 padding-bottom:15px;
+	 color:white;
+	} 
+
+#footer	{font-family:"Arial", Arial, sans-serif;
+	text-align:center;
+	padding-bottom:1px;
+	padding-top: 1px;
+	background-color:#DFECFF;
+} 
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div>
+    <div id="guide"> <a href="../index.htm">SHRINE Help Site</a> &#187; <strong>2.   Query Quick Reference</strong></div>
+
+
+<table border="0" bgcolor="white" cellpadding="3"width="100%">
+<tr>
+<td valign="top" width="25%" bgcolor="#DFECFF"><!-- Navigation -->
+
+<div id="navigation">    <p><a href="../UG_Help_Files/index.htm">1. SHRINE User Guide</a></p>
+    <p>
+      <strong>2. SHRINE Query Quick Reference</strong> </p>
+<blockquote>
+      <p>
+        <a href="Toc252370633.htm">2.1 Query Topics</a></p>
+      <ul>
+        <li><a href="Toc252370633.htm">2.1.1 Data Steward</a>
+        </li>
+        <li><a href="Toc252370634.htm">2.1.2 Guidelines for Query Topics</a>
+        </li>
+        <li><a href="Toc252370635.htm">2.1.3 Sample Query Topic</a>
+        </li>
+      </ul>
+      <p>
+        <strong><a href="Toc252370637.htm">2.2 Query Construction</a></strong></p>
+      <ul>
+        <li><a href="Toc252370637.htm"><strong>2.2.1 Tool Logic</strong></a>
+        </li>
+        <li><a href="Toc252370638.htm">2.2.2 Constraints</a>
+        </li>
+        <li><a href="Toc252370639.htm">2.2.3 Term Values</a>
+        </li>
+        <li><a href="Toc252370640.htm">2.2.4 Query Optimization</a>
+        </li>
+      </ul>
+      <p>
+        <a href="Toc252370641.htm">2.3 Results: Query Status View</a>
+      </p>
+    </blockquote>
+    <p><a href="../DR_Help_Files/index.htm">3. SHRINE Data Reference</a>
+    </p>
+            <p><a href="../terms.htm">4. Terms-of-Data-Access Agreement</a></p>
+</div>
+    
+</td>
+<td valign="top">
+
+
+<!-- Content -->
+
+
+    <h1>
+        <a name="_Toc252370637">2.2 Query Construction</a>
+    </h1>
+    <p>
+        Two icons at the top-right corner of the Query Tool view provide the following options:</p>
+    <ul>
+	<li style="list-style:none;">
+        <strong><img src="../images/show-options.png" width="13" height="14" /> Show Options icon</strong> &#8211; Click this icon at the top-right corner of the view to Select the Maximum Time to Wait for XML Response (in seconds). This value is the length of time that SHRINE will continue to process a query. 
+If a query does not process completely within <em>[period]</em>, only those results that completed processing within an institution are returned.
+	</li>
+	<li style="list-style:none;">
+        <strong><img src="../images/toggle-zoom.png" alt="" width="15" height="15" /> Toggle Zoom icon</strong> &#8211; Click the Toggle Zoom icon at the top-right corner of the view to toggle between expanded and compressed view sizes.
+	</li>
+    </ul>
+    <h2>
+        <a name="_Toc252370637">2.2.1 Tool Logic</a>
+    </h2>
+    <p>
+        You can add terms within a Group to apply OR logic, and use multiple Groups to define your selection by using AND logic. Tool options function as follows:
+    </p>
+    <ul>
+    <li>
+        <strong>Query Name</strong> &#8211; This field remains blank. You cannot edit this field.
+    </li>
+    <li>
+        <strong>Group</strong> columns &#8211; Query groups represent a set of patients defined by the terms within the group and any constraints applied to that group.
+        Drag terms into one or more Group fields to narrow the patient cohort for which you are querying.
+    </li>
+    <li>
+        <strong>Constrain group options</strong> &#8211; Define criteria by which you can limit all terms within a group:
+    <ul>
+	<li>
+        Dates &#8211; Set a date range within which the terms associated with patients must fall.
+	</li>
+	<li>
+        Occurs &gt; 0x &#8211; Set the number of occurrences for which patients within the query group must be associated with a term.
+	</li>
+	<li>
+        Exclude &#8211; Exclude all patients that meet the criteria of the query group.
+	</li>
+     </ul>
+        Click the constraint a second time to remove it.
+    <br />
+        <strong>Note</strong>: Not all terms accept all constraints.
+    </li>
+    <li>
+        <strong>Term right-click menu</strong> &#8211; Right-click a term to set a specific value by which to query a term, or to delete the term from the query group.
+    </li>
+    <li>
+        <strong>Select a Topic pull-down list</strong> &#8211; Select the query topic to which this query relates, as approved by the Data Steward.
+    </li>
+    <li><strong>
+        Info button</strong> &#8211; View the description of that topic as provided to the Data Steward.
+    </li>
+    <li>
+        <strong>Request New Topic button</strong> &#8211; Access the Data Steward in a new window.
+    </li>
+        <li>
+            <strong>Run Query button</strong> &#8211; Start the query process.
+        </li>
+    <li>
+        <strong>New Query button</strong> &#8211; Clear the Query Tool fields and settings and start a new query.
+    </li>
+    <li>
+        <strong>New Group button</strong> &#8211; Add additional terms and values to your query if needed.
+    </li>
+    <li>
+        <strong>Group page controls</strong> &#8211; Navigate to additional groups if you add new groups.
+    </li>
+   </ul>
+</td>
+</tr>
+</table>
+
+</div>
+
+
+    <div id="footer">
+
+<p>For assistance, pease email the SHRINE Help team at <a href="mailto:shrinehelp@catalyst.harvard.edu">shrinehelp [at] catalyst.harvard.edu</a></p>
+    </div>
+
+</body>
+
+</html>

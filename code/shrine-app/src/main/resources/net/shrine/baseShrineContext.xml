@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!--suppress JdkProxiedBeanTypeInspection, InjectionValueTypeInspection -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:jee="http://www.springframework.org/schema/jee" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+            http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
+            http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+
+    <context:component-scan base-package="net.shrine"/>
+
+    <!--define default properties and JNDI name that will override them-->
+    <jee:jndi-lookup id="pmEndpoint" jndi-name="java:comp/env/shrine/pmEndpoint"
+                     default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
+    <jee:jndi-lookup id="realCRCEndpoint" jndi-name="java:comp/env/shrine/realCRCEndpoint"
+                     default-value="http://services.i2b2.org/i2b2/rest/QueryToolService/"/>
+    <jee:jndi-lookup id="aggregatorEndpoint" jndi-name="java:comp/env/shrine/aggregatorEndpoint"
+                     default-value="http://localhost:8080/shrine-cell/QueryToolService/aggregate?wsdl"/>
+    <jee:jndi-lookup id="shrineEndpoint" jndi-name="java:comp/env/shrine/shrineEndpoint"
+                     default-value="http://localhost:8080/shrine-cell/QueryToolService/"/>
+    <jee:jndi-lookup id="sheriffEndpoint" jndi-name="java:comp/env/shrine/sheriffEndpoint"
+                     default-value="http://localhost:8080/sheriff/webservice?wsdl"/>
+    <jee:jndi-lookup id="sheriffUsername" jndi-name="java:comp/env/shrine/sheriffUsername" default-value="service"/>
+    <jee:jndi-lookup id="sheriffPassword" jndi-name="java:comp/env/shrine/sheriffPassword" default-value="service"/>
+    <jee:jndi-lookup id="broadcasterPeerGroupToQuery" jndi-name="java:comp/env/shrine/broadcasterPeerGroupToQuery"
+                     default-value="LOCAL"/>
+    <jee:jndi-lookup id="humanReadableNodeName" jndi-name="java:comp/env/shrine/humanReadableNodeName"
+                     default-value="SHRINE Cell"/>
+    <jee:jndi-lookup id="i2b2HiveDomain" jndi-name="java:comp/env/shrine/i2b2HiveDomain" default-value="HarvardDemo"/>
+    <jee:jndi-lookup id="i2b2HiveUsername" jndi-name="java:comp/env/shrine/i2b2HiveUsername" default-value="demo"/>
+    <jee:jndi-lookup id="i2b2HiveProject" jndi-name="java:comp/env/shrine/i2b2HiveProject" default-value="Demo"/>
+    <jee:jndi-lookup id="i2b2HivePassword" jndi-name="java:comp/env/shrine/i2b2HivePassword" default-value="demouser"/>
+    <jee:jndi-lookup id="setSizeObfuscation" jndi-name="java:comp/env/shrine/setSizeObfuscation" default-value="true"/>
+    <jee:jndi-lookup id="isAdapter" jndi-name="java:comp/env/shrine/isAdapter" default-value="true"/>
+    <jee:jndi-lookup id="isBroadcaster" jndi-name="java:comp/env/shrine/isBroadcaster" default-value="true"/>
+    <jee:jndi-lookup id="isIncludeAggregateResults" jndi-name="java:comp/env/shrine/isIncludeAggregateResults"
+                     default-value="false"/>
+    <jee:jndi-lookup id="adapterLockoutAttemptsThreshold"
+                     jndi-name="java:comp/env/shrine/adapterLockoutAttemptsThreshold" default-value="10"/>
+    <jee:jndi-lookup id="queryTTL" jndi-name="java:comp/env/shrine/queryTTL" default-value="270000"/>
+    <jee:jndi-lookup id="adapterStatusQuery" jndi-name="java:comp/env/shrine/adapterStatusQuery"
+                     default-value="\\SHRINE\SHRINE\Diagnoses\Mental Illness\Disorders usually diagnosed in infancy, childhood, or adolescence\Pervasive developmental disorders\Infantile autism, current or active state\"/>
+    <jee:jndi-lookup id="adapterMappingsFileName" jndi-name="java:comp/env/shrine/adapterMappingsFileName" default-value="AdapterMappings.xml"/>                     
+
+    <bean id="hiveCredentials" class="net.shrine.config.HiveCredentials">
+        <constructor-arg ref="i2b2HiveDomain"/>
+        <constructor-arg ref="i2b2HiveUsername"/>
+        <constructor-arg ref="i2b2HivePassword"/>
+        <constructor-arg ref="i2b2HiveProject"/>
+    </bean>
+
+    <bean id="shrineConfig" class="net.shrine.config.ShrineConfig">
+        <property name="adapter" ref="isAdapter"/>
+        <property name="adapterLockoutAttemptsThreshold" ref="adapterLockoutAttemptsThreshold"/>
+        <property name="adapterRequireExplicitMappings" value="false"/>
+        <property name="broadcasterAggregator" ref="isBroadcaster"/>
+        <property name="cacheTTL" value="3600000"/>
+        <property name="certificationTTL" value="3600000"/>
+        <property name="queryTTL" ref="queryTTL"/>
+        <property name="databasePropertiesFile" value="jdbc-derby.properties"/>
+        <property name="broadcasterPeerGroupToQuery" ref="broadcasterPeerGroupToQuery"/>
+        <property name="humanReadableNodeName" ref="humanReadableNodeName"/>
+        <property name="pmEndpoint" ref="pmEndpoint"/>
+        <property name="realCRCEndpoint" ref="realCRCEndpoint"/>
+        <property name="aggregatorEndpoint" ref="aggregatorEndpoint"/>
+        <property name="shrineEndpoint" ref="shrineEndpoint"/>
+        <property name="ontEndpoint" value=""/>
+        <property name="sheriffEndpoint" ref="sheriffEndpoint"/>
+        <property name="queryActionMapClassName" value="net.shrine.adapter.query.ShrineQueryActionMap"/>
+        <property name="setSizeObfuscationEnabled" ref="setSizeObfuscation"/>
+        <property name="adapterStatusQuery" ref="adapterStatusQuery"/>
+        <property name="includeAggregateResult" ref="isIncludeAggregateResults"/>
+    </bean>
+
+    <bean id="agentConfig" factory-bean="shrineConfig" factory-method="generateAgentConfig"/>
+
+    <bean id="nodeConfig" factory-bean="shrineConfig" factory-method="generateNodeConfig"/>
+
+    <bean id="spinClient" class="org.spin.query.message.agent.Agent">
+        <constructor-arg index="0" ref="agentConfig"/>
+    </bean>
+
+    <bean id="spinNode" class="org.spin.node.SpinNodeImpl">
+        <constructor-arg ref="shrineQueryActionMap"/>
+        <constructor-arg ref="nodeConfig"/>
+    </bean>
+
+    <jaxws:endpoint id="spinNodeEndpoint" implementor="#spinNode" address="/aggregate">
+    </jaxws:endpoint>
+
+    <!-- DAO management-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan">
+            <list>
+                <value>net.shrine.adapter.dao.hibernate.entity</value>
+                <value>net.shrine.broadcaster.dao.hibernate</value>
+            </list>
+        </property>
+        <property name="hibernateProperties">
+            <util:map>
+                <entry key="hibernate.dialect">
+                    <jee:jndi-lookup jndi-name="java:comp/env/shrine/hibernateDialect"
+                                     default-value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+                </entry>
+            </util:map>
+        </property>
+    </bean>
+
+
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/jdbc/shrineDB"/>
+    </bean>
+
+	<bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
+	  <constructor-arg ref="adapterMappingsFileName"/>
+	</bean>
+	
+	<bean id="adapterMappings" factory-bean="adapterMappingsSource" factory-method="load"/>
+
+    <bean id="expressionTranslator" class="net.shrine.adapter.translators.ExpressionTranslator" factory-method="apply">
+      <constructor-arg ref="adapterMappings"/>
+    </bean>
+ 
+    <bean id="queryDefinitionTranslator" class="net.shrine.adapter.translators.QueryDefinitionTranslator">
+      <constructor-arg ref="expressionTranslator"/>
+    </bean>
+
+    <bean id="shrineQueryActionMap" class="net.shrine.adapter.query.ShrineQueryActionMap">
+        <constructor-arg>
+            <map>
+                <entry key="QueryDefinitionRequestType" value-ref="runQueryInstanceFromQueryDefinition"/>
+                <entry key="GetRequestXml" value-ref="getRequestXmlQuery"/>
+                <entry key="UserRequestType" value-ref="mastersByUserQuery"/>
+                <entry key="MasterRequestType" value-ref="mastersByIDQuery"/>
+                <entry key="InstanceRequestType" value-ref="instancesByIDQuery"/>
+                <entry key="MasterDeleteRequestType" value-ref="masterDeleteQuery"/>
+                <entry key="MasterRenameRequestType" value-ref="masterRenameQuery"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="runQueryInstanceFromQueryDefinition" class="net.shrine.adapter.RunQueryAdapter">
+        <constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="3" ref="queryDefinitionTranslator"/>
+        <constructor-arg index="4" ref="shrineConfig"/>
+        <constructor-arg index="5" value="true"/>
+    </bean>
+
+    <bean id="instancesByIDQuery" class="net.shrine.adapter.ReadInstanceResultsAdapter">
+        <constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="3" value="true"/>
+    </bean>
+
+    <bean id="mastersByUserQuery" class="net.shrine.adapter.ReadPreviousQueriesAdapter">
+        <constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+    </bean>
+
+    <bean id="mastersByIDQuery" class="net.shrine.adapter.ReadQueryInstancesAdapter">
+        <constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+    </bean>
+
+    <bean id="masterDeleteQuery" class="net.shrine.adapter.DeleteQueryAdapter">
+        <constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+    </bean>
+
+    <bean id="masterRenameQuery" class="net.shrine.adapter.RenameQueryAdapter">
+        <constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+    </bean>
+
+    <bean id="getRequestXmlQuery" class="net.shrine.adapter.ReadQueryDefinitionAdapter">
+        <constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+    </bean>
+</beans>

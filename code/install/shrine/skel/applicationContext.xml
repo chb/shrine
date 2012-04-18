@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- webapps/shrine/WEB-INF/classes/net/shrine/applicationContext.xml -->         
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="classpath:net/shrine/baseShrineContext.xml"/>
+
+    <bean id="identityService" class="org.spin.query.message.identity.AlwaysCertifiesIdentityService"/>
+
+    <bean id="authorizationService" class="net.shrine.authorization.AllowsAllAuthorizationService"/>
+
+    <bean id="shrineService" class="net.shrine.service.ShrineService">
+        <constructor-arg index="0" ref="hibernateAuditDAO"/>
+        <constructor-arg index="1" ref="authorizationService"/>
+        <constructor-arg index="2" ref="identityService"/>
+        <constructor-arg index="3" ref="shrineConfig"/>
+        <constructor-arg index="4" ref="spinClient"/>
+    </bean>
+</beans>

@@ -1,0 +1,12 @@
+@def
+@panel
+\\SHRINE\SHRINE\Demographics\Gender\Male\
+\\SHRINE\SHRINE\Demographics\Vital Status\Deceased\
+
+@def
+@panel
+\\SHRINE\SHRINE\Demographics\Gender\Male\
+@panel
+\\SHRINE\SHRINE\Demographics\Vital Status\Deceased\
+
+@end

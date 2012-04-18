@@ -1,0 +1,11 @@
+.onttree .leaf {
+	width: 15px;
+	height: 14px;
+	background: url("../images/file.gif") no-repeat scroll 3px bottom transparent;
+}
+
+.onttree .folder {
+	width: 16px;
+	height: 14px;
+	background: url("../images/folder.gif") no-repeat scroll left bottom transparent;
+}

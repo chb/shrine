@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module rename-to='Webclient'>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User' />
+
+  <!-- We need the JUnit module in the main module,               -->
+  <!-- otherwise eclipse complains (Google plugin bug?)           -->
+  <inherits name='com.google.gwt.junit.JUnit' />
+
+  <!-- Inherit the default GWT style sheet.  You can change       -->
+  <!-- the theme of your GWT application by uncommenting          -->
+  <!-- any one of the following lines.                            -->
+  <inherits name='com.google.gwt.user.theme.standard.Standard' />
+  <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+
+  <!-- Other module inherits                                      -->
+
+  <!-- Specify the app entry point class.                         -->
+  <entry-point class='net.shrine.webclient.client.Webclient' />
+
+  <!-- Specify the paths for translatable code                    -->
+  <source path='client' />
+
+  <!-- Stylesheets -->
+
+  <stylesheet src="/css/shrine.css" />
+  <stylesheet src="/css/jquery.tooltip.css" />
+  <stylesheet src="/css/suggestbox.css" />
+  <stylesheet src="/css/browse.css" />
+  
+  <!-- 
+  <stylesheet src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"/>
+   -->
+  
+  <!-- Begin logging config -->
+  
+  <!-- 
+     Default to `ERROR`, but allow selection of a specific log level,
+     say `INFO` and `DEBUG`, via the `log_level` URL parameter:
+     http[s]://hostame:port/yourmodule/Yourmodule.html?log_level=INFO
+     or via a `gwt:property` meta tag in your HTML page:
+       <head>
+         <title>....</title>
+         <meta name="gwt:property" content="log_level=DEBUG">
+       </head>
+  -->
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-ERROR" />
+  
+  <extend-property name="log_level" values="DEBUG,INFO"/>
+  
+  <!-- only enable the Firebug logger -->
+  <set-property name="log_FirebugLogger" value="ENABLED" />
+  
+  <set-property name="log_ConsoleLogger" value="DISABLED" />
+  <set-property name="log_DivLogger" value="DISABLED" />
+  <set-property name="log_GWTLogger" value="DISABLED" />
+  <set-property name="log_SystemLogger" value="DISABLED" />
+  <set-property name="log_WindowLogger" value="DISABLED" />
+
+  <!-- End logging config -->  
+  
+</module>

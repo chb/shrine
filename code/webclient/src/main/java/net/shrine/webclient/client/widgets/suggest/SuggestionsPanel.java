@@ -1,0 +1,49 @@
+package net.shrine.webclient.client.widgets.suggest;
+
+import net.shrine.webclient.client.util.Observable;
+import net.shrine.webclient.client.util.Observer;
+import net.shrine.webclient.client.util.Util;
+
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+/**
+ * 
+ * @author clint
+ * @date Apr 17, 2012
+ */
+public final class SuggestionsPanel extends VerticalPanel implements Observer {
+	private final Observable<Integer> highlightedRow;
+
+	SuggestionsPanel(final Observable<Integer> highlightedRow) {
+		super();
+		
+		Util.requireNotNull(highlightedRow);
+		
+		this.highlightedRow = highlightedRow;
+		
+		this.highlightedRow.observedBy(this);
+		
+		this.inform();
+	}
+
+	@Override
+	public void inform() {
+		for(final Widget w : this) {
+			((RichSuggestionRow)w).unHighlight();
+		}
+		
+		if(highlightedRow.isDefined()) {
+			final int index = highlightedRow.get();
+			
+			if(index >= 0 && index < Util.count(this)) {
+				((RichSuggestionRow)this.getWidget(index)).highlight();
+			}
+		}
+	}
+
+	@Override
+	public void stopObserving() {
+		this.highlightedRow.noLongerObservedBy(this);
+	}
+}

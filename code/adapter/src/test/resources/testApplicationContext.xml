@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <context:annotation-config/>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--define default properties and JNDI name that will override them-->
+    <bean id="pmEndpoint" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/shrine/pmEndpoint"/>
+        <property name="defaultObject" value="http://webservices.i2b2.org/i2b2/rest/PMService/getServices"/>
+    </bean>
+
+    <bean id="realCRCEndpoint" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/shrine/realCRCEndpoint"/>
+        <property name="defaultObject" value="http://localhost:8080/i2b2/rest/QueryToolService/"/>
+    </bean>
+
+    <bean id="aggregatorEndpoint" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/shrine/aggregatorEndpoint"/>
+        <property name="defaultObject" value="https://localhost:8081/shrine-cell/QueryToolService/aggregate?wsdl"/>
+    </bean>
+
+    <bean id="shrineEndpoint" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/shrine/shrineEndpoint"/>
+        <property name="defaultObject" value="https://localhost:8081/shrine-cell/QueryToolService/"/>
+    </bean>
+
+    <bean id="broadcasterPeerGroupToQuery" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/shrine/broadcasterPeerGroupToQuery"/>
+        <property name="defaultObject" value="LOCAL"/>
+    </bean>
+
+    <bean id="humanReadableNodeName" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/shrine/humanReadableNodeName"/>
+        <property name="defaultObject" value="Children's Hospital Boston"/>
+    </bean>
+
+    <bean id="queryActionMapClassName" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/shrine/queryActionMapClassName"/>
+        <property name="defaultObject" value="net.shrine.adapter.query.ShrineQueryActionMap"/>
+    </bean>
+
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url" value="jdbc:h2:mem:testHibernate"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+        <property name="suppressClose" value="true"/>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory">
+            <ref bean="sessionFactory"/>
+        </property>
+    </bean>
+
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="net.shrine.adapter.dao.hibernate.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="adapterDao" class="net.shrine.adapter.dao.hibernate.HibernateAdapterDAO"/>
+
+    <bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
+	  <constructor-arg index="0" value="AdapterMappings.xml"/>
+	</bean>
+	
+	<bean id="adapterMappings" factory-bean="adapterMappingsSource" factory-method="load"/>
+
+    <bean id="expressionTranslator" class="net.shrine.adapter.translators.ExpressionTranslator" factory-method="apply">
+      <constructor-arg ref="adapterMappings"/>
+    </bean>
+ 
+    <bean id="queryDefinitionTranslator" class="net.shrine.adapter.translators.QueryDefinitionTranslator">
+      <constructor-arg ref="expressionTranslator"/>
+    </bean>
+
+    <bean id="shrineConfig" class="net.shrine.config.ShrineConfig">
+        <property name="adapter" value="true"/>
+        <property name="adapterLockoutAttemptsThreshold" value="10"/>
+        <property name="adapterRequireExplicitMappings" value="false"/>
+        <property name="broadcasterAggregator" value="true"/>
+        <property name="cacheTTL" value="3600000"/>
+        <property name="certificationTTL" value="3600000"/>
+        <property name="queryTTL" value="3600000"/>
+        <property name="databasePropertiesFile" value="jdbc-derby.properties"/>
+        <property name="broadcasterPeerGroupToQuery" ref="broadcasterPeerGroupToQuery"/>
+        <property name="humanReadableNodeName" ref="humanReadableNodeName"/>
+        <property name="pmEndpoint" ref="pmEndpoint"/>
+        <property name="realCRCEndpoint" ref="realCRCEndpoint"/>
+        <property name="aggregatorEndpoint" ref="aggregatorEndpoint"/>
+        <property name="shrineEndpoint" ref="shrineEndpoint"/>
+        <property name="ontEndpoint" value=""/>
+        <property name="sheriffEndpoint" value=""/>
+        <property name="queryActionMapClassName" ref="queryActionMapClassName"/>
+    </bean>
+
+    <bean id="i2b2HiveCredentials" class="net.shrine.config.HiveCredentials">
+        <constructor-arg value="LegionOfEvil"/>
+        <constructor-arg value="DrHorrible"/>
+        <constructor-arg value="Penny"/>
+        <constructor-arg value="FreezeRay" />
+    </bean>
+</beans>

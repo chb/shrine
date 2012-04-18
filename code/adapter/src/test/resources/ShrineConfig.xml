@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ShrineConfig>
+    <adapter>true</adapter>
+    <adapterLockoutAttemptsThreshold>7</adapterLockoutAttemptsThreshold>
+    <adapterRequireExplicitMappings>true</adapterRequireExplicitMappings>
+    <broadcasterAggregator>true</broadcasterAggregator>
+    <broadcasterPeerGroupToQuery>LOCAL</broadcasterPeerGroupToQuery>
+    <cacheTTL>3600000</cacheTTL>
+    <certificationTTL>3600000</certificationTTL>
+    <queryTTL>180000</queryTTL>
+    <databasePropertiesFile>jdbc-derby.properties</databasePropertiesFile>
+</ShrineConfig>

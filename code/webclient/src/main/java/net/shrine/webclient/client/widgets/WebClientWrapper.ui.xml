@@ -1,0 +1,10 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
+			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
+			 
+	<g:HTMLPanel addStyleNames="wrapper">
+  	  <g:HTMLPanel addStyleNames="header"><shrine:ShrineLogo/></g:HTMLPanel>
+      <shrine:WebClientContent addStyleNames="mainContent" ui:field="content" />
+    </g:HTMLPanel>
+</ui:UiBinder> 
