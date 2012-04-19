@@ -12,12 +12,49 @@ import net.shrine.webclient.client.AbstractWebclientTest;
 
 import org.junit.Test;
 
+
 /**
  * 
  * @author clint
  * @date Apr 18, 2012
  */
 public class UtilTestGwt extends AbstractWebclientTest {
+	@Test
+	public void testTake() {
+		try {
+			Util.take(-1, new ArrayList<String>());
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		try {
+			Util.take(1, null);
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		try {
+			Util.take(-99, null);
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		{
+			final List<String> list = Util.take(0, asList("foo"));
+			
+			assertTrue(list.isEmpty());
+		}
+		
+		{
+			final List<String> list = Util.take(5, asList("foo"));
+			
+			assertEquals(asList("foo"), list);
+		}
+		
+		{
+			final List<Integer> list = Util.take(3, asList(1,2,3,4,5,6,7,8,9,10));
+			
+			assertEquals(asList(1,2,3), list);
+		}
+	}
+	
 	@Test
 	public void testCount() {
 		assertEquals(0, Util.count(Collections.emptyList()));

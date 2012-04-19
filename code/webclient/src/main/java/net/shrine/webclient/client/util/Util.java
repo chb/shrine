@@ -2,6 +2,7 @@ package net.shrine.webclient.client.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,25 @@ import java.util.List;
 public final class Util {
   private Util() {
 	  super();
+  }
+  
+  public static <T> List<T> take(final int howMany, final Iterable<T> stuff) {
+	  require(howMany >= 0);
+	  requireNotNull(stuff);
+	  
+	  if(howMany == 0) {
+		  return Collections.emptyList();
+	  }
+	  
+	  final List<T> result = makeArrayList();
+	  
+	  final Iterator<T> iterator = stuff.iterator();
+	  
+	  for(int i = 0; i < howMany && iterator.hasNext(); ++i) {
+		  result.add(iterator.next());
+	  }
+	  
+	  return result;
   }
   
   public static int count(final Iterable<?> elems) {
