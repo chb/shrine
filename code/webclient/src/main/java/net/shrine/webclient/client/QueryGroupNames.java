@@ -23,31 +23,35 @@ public final class QueryGroupNames {
 
 	//For tests
 	public static Iterator<String> getNamesIterator() {
-		return names;
-	}
-	
-	private static final Iterator<String> names = new Iterator<String>() {
-		public boolean hasNext() {
-			return true;
-		}
+		return new Iterator<String>() {
+			public boolean hasNext() {
+				return true;
+			}
 
-		public String next() {
-			try {
-				final String suffix = (i == 0 ? "" : String.valueOf(i));
+			public String next() {
+				try {
+					final String suffix = (i == 0 ? "" : String.valueOf(i));
 
-				return String.valueOf(current) + suffix;
-			} finally {
-				if (current == 'Z') {
-					current = 'A';
-					++i;
-				} else {
-					++current;
+					return String.valueOf(current) + suffix;
+				} finally {
+					if (current == 'Z') {
+						current = 'A';
+						++i;
+					} else {
+						++current;
+					}
 				}
 			}
-		}
 
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	};
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+		};
+	}
+	
+	private static Iterator<String> names = getNamesIterator();
+	
+	public static void reset() { 
+		names = getNamesIterator();
+	}
 }
