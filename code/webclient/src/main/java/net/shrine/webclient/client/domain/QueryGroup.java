@@ -110,7 +110,7 @@ public final class QueryGroup implements XmlAble, ReadOnlyQueryGroup {
 	}
 	
 	public void setEnd(final Date newEnd) {
-		this.start = newEnd;
+		this.end = newEnd;
 	}
 
 	@Override
