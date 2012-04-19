@@ -19,6 +19,12 @@ public final class Util {
   }
   
   public static <T> List<T> take(final int howMany, final Iterable<T> stuff) {
+	  requireNotNull(stuff);
+	  
+	  return take(howMany, stuff.iterator());
+  }
+  
+  public static <T> List<T> take(final int howMany, final Iterator<T> stuff) {
 	  require(howMany >= 0);
 	  requireNotNull(stuff);
 	  
@@ -28,10 +34,8 @@ public final class Util {
 	  
 	  final List<T> result = makeArrayList();
 	  
-	  final Iterator<T> iterator = stuff.iterator();
-	  
-	  for(int i = 0; i < howMany && iterator.hasNext(); ++i) {
-		  result.add(iterator.next());
+	  for(int i = 0; i < howMany && stuff.hasNext(); ++i) {
+		  result.add(stuff.next());
 	  }
 	  
 	  return result;

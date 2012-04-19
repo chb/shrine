@@ -21,9 +21,14 @@ public final class QueryGroupNames {
 	private static int i = 0;
 	private static char current = 'A';
 
+	//For tests
+	public static Iterator<String> getNamesIterator() {
+		return names;
+	}
+	
 	private static final Iterator<String> names = new Iterator<String>() {
 		public boolean hasNext() {
-			return false;
+			return true;
 		}
 
 		public String next() {

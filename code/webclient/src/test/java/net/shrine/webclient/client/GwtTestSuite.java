@@ -47,6 +47,7 @@ public final class GwtTestSuite extends GWTTestSuite {
 		suite.addTestSuite(StateTestGwt.class);
 		suite.addTestSuite(QueryBuildingControllerTestGwt.class);
 		suite.addTestSuite(QueryConstraintControllerTestGwt.class);
+		suite.addTestSuite(QueryGroupNamesTestGwt.class);
 
 		return suite;
 	}

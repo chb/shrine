@@ -27,12 +27,12 @@ public class UtilTestGwt extends AbstractWebclientTest {
 		} catch(IllegalArgumentException expected) { }
 		
 		try {
-			Util.take(1, null);
+			Util.take(1, (Iterable<?>)null);
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
 		try {
-			Util.take(-99, null);
+			Util.take(-99, (Iterable<?>)null);
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
