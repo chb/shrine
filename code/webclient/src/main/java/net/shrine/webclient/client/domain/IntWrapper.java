@@ -7,7 +7,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author clint
  * @date Apr 4, 2012
  * 
- *       Work around GWT-RPC's need for a default constructor :( :(
+ * Work around GWT-RPC's need for a default constructor :( :(
  */
 public final class IntWrapper implements IsSerializable {
 	private int value;

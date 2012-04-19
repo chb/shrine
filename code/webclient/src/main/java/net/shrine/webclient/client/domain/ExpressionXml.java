@@ -19,13 +19,13 @@ public final class ExpressionXml {
 	}
 	
 	public static String fromQueryGroups(final Collection<QueryGroup> queryGroups) {
+		Util.require(queryGroups.size() > 0);
+		
 		final List<String> exprs = Util.makeArrayList();
 		
 		for(final QueryGroup group : queryGroups) {
 			exprs.add(group.toXmlString());
 		}
-		
-		Util.require(exprs.size() > 0);
 		
 		if(exprs.size() == 1) {
 			return exprs.get(0);

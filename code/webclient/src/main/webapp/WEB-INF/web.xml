@@ -6,10 +6,6 @@
 <web-app>
 
   <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>net.shrine.webclient.server.GreetingServiceImpl</servlet-class>
-  </servlet>
   
   <servlet>
     <servlet-name>ontSearchServlet</servlet-name>
@@ -20,11 +16,6 @@
     <servlet-name>queryServlet</servlet-name>
     <servlet-class>net.shrine.webclient.server.QueryServiceImpl</servlet-class>
   </servlet>
-
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/Webclient/greet</url-pattern>
-  </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>ontSearchServlet</servlet-name>

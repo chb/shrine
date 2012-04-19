@@ -74,6 +74,12 @@ public final class And implements Expression {
 	
 	@Override
 	public String toXmlString() {
-		return "<and>" + Util.join("", components) + "</and>";
+		final List<String> componentXmls = Util.makeArrayList();
+		
+		for(final Expression comp : components) {
+			componentXmls.add(comp.toXmlString());
+		}
+		
+		return "<and>" + Util.join(componentXmls) + "</and>";
 	}
 }

@@ -1,5 +1,8 @@
 package net.shrine.webclient.client.util;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 /**
  * 
  * @author clint
@@ -7,7 +10,7 @@ package net.shrine.webclient.client.util;
  * 
  * @param <T>
  */
-public final class Observable<T> extends AbstractObservable implements ReadOnlyObservable<T> {
+public final class Observable<T> extends AbstractObservable implements ReadOnlyObservable<T>, Iterable<T> {
 	private T value;
 
 	public Observable(final T value) {
@@ -66,6 +69,15 @@ public final class Observable<T> extends AbstractObservable implements ReadOnlyO
 		} else {
 			return defaultValue;
 		}
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		if(isEmpty()) {
+			return Collections.<T>emptyList().iterator();
+		}
+		
+		return Collections.singleton(value).iterator();
 	}
 
 	@Override

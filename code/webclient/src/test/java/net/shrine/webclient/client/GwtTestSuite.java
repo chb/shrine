@@ -43,6 +43,8 @@ public final class GwtTestSuite extends GWTTestSuite {
 		
 		suite.addTestSuite(UtilTestGwt.class);
 		suite.addTestSuite(ObservableTestGwt.class);
+		
+		suite.addTestSuite(StateTestGwt.class);
 
 		return suite;
 	}
