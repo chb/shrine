@@ -2,6 +2,7 @@ package net.shrine.webclient.client.widgets.suggest;
 
 import net.shrine.webclient.client.util.Observable;
 import net.shrine.webclient.client.util.Observer;
+import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -13,7 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @date Apr 17, 2012
  */
 public final class SuggestionsPanel extends VerticalPanel implements Observer {
-	private final Observable<Integer> highlightedRow;
+	private Observable<Integer> highlightedRow;
 
 	SuggestionsPanel(final Observable<Integer> highlightedRow) {
 		super();
@@ -42,8 +43,14 @@ public final class SuggestionsPanel extends VerticalPanel implements Observer {
 		}
 	}
 
+	ReadOnlyObservable<Integer> getHighlightedRow() {
+		return highlightedRow;
+	}
+
 	@Override
 	public void stopObserving() {
 		this.highlightedRow.noLongerObservedBy(this);
+		
+		this.highlightedRow = null;
 	}
 }

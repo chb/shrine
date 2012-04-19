@@ -1,6 +1,7 @@
 package net.shrine.webclient.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 
@@ -29,5 +30,23 @@ public final class Events {
 
 	public static MouseOverEvent mouseOver() {
 		return new MouseOverEvent() { };
+	}
+	
+	public static KeyUpEvent keyUp(final int keyCode) {
+		return new KeyUpEvent() {
+			@Override
+			public int getNativeKeyCode() {
+			    return keyCode;
+			}
+		};
+	}
+	
+	public static KeyUpEvent keyUp(final char keyCode) {
+		return new KeyUpEvent() {
+			@Override
+			public int getNativeKeyCode() {
+			    return Character.toUpperCase(keyCode);
+			}
+		};
 	}
 }

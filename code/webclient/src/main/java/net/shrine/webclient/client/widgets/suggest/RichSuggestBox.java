@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -68,8 +67,8 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		if (highlightedPopupRow.isDefined()) {
 			if (highlightedPopupRow.get() < 0) {
 				highlightedPopupRow.set(0);
-			} else if (highlightedPopupRow.get() >= maxSuggestions) {
-				highlightedPopupRow.set(maxSuggestions - 1);
+			} else if (highlightedPopupRow.get() >= suggestionsPanel.getWidgetCount()) {
+				highlightedPopupRow.set(suggestionsPanel.getWidgetCount() - 1);
 			}
 		}
 	}
@@ -111,7 +110,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 					if (highlightedPopupRow.isDefined()) {
 						selectHighlightedRow();
 					}
-				} else {
+				} else if(isLetterOrDigitOrSpace(event)) {
 					oracle.requestSuggestions(new RichSuggestRequest(maxSuggestions, textBox.getText()), new RichSuggestCallback<S>() {
 						@Override
 						public void onSuggestionsReady(final RichSuggestRequest request, final RichSuggestResponse<S> response) {
@@ -127,6 +126,12 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 				}
 			}
 
+			boolean isLetterOrDigitOrSpace(final KeyUpEvent event) {
+				final int keyCode = event.getNativeKeyCode();
+				
+				return keyCode == ' ' || (keyCode >= 'A' && keyCode <= 'Z') || (keyCode >= '0' && keyCode <= '9');
+			}
+			
 			boolean isEnter(final KeyUpEvent event) {
 				return event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
 			}
@@ -198,9 +203,12 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 	int getMaxSuggestions() {
 		return maxSuggestions;
 	}
+	
+	TextBox getTextBox() {
+		return textBox;
+	}
 
-	// NB: Exposed for testing
-	void initPopup() {
+	private void initPopup() {
 		suggestionPopup.setAnimationEnabled(false);
 	}
 
@@ -242,7 +250,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		suggestionPopup.setWidget(suggestionsPanel);
 	}
 
-	private RichSuggestionRow rowFromWidget(final int index, final S suggestion, final Widget widget) {
+	RichSuggestionRow rowFromWidget(final int index, final S suggestion, final Widget widget) {
 		final RichSuggestionRow richSuggestionRow = new RichSuggestionRow(this, widget, new Runnable() {
 			@Override
 			public void run() {
@@ -288,7 +296,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 	}
 
 	// NB: For testing
-	VerticalPanel getSuggestionsPanel() {
+	SuggestionsPanel getSuggestionsPanel() {
 		return suggestionsPanel;
 	}
 
