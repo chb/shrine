@@ -320,7 +320,17 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 	}
 	
 	public void testSetHighlightedRow() {
-		/*final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+		
+		suggestBox.refreshSuggestionPanel();
+		
+		final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
+		final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
+		final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
+		
+		suggestBox.getSuggestionsPanel().add(row0);
+		suggestBox.getSuggestionsPanel().add(row1);
+		suggestBox.getSuggestionsPanel().add(row2);
 		
 		assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
 		
@@ -330,13 +340,7 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 		
 		suggestBox.setHighlightedRow(99);
 		
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());*/
-		
-		/*suggestBox.refreshSuggestionPanel();
-		
-		suggestBox.getSuggestionsPanel().add(new Label(""));
-		suggestBox.getSuggestionsPanel().add(new Label(""));
-		suggestBox.getSuggestionsPanel().add(new Label(""));
+		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 		
 		suggestBox.setHighlightedRow(0);
 		
@@ -352,7 +356,7 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 		
 		suggestBox.setHighlightedRow(3);
 		
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());*/
+		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 	}
 
 	public void testZeroHighlightedRow() {
