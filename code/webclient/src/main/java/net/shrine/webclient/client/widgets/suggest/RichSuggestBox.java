@@ -138,7 +138,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		});
 	}
 
-	private void setHighlightedRow(final int r) {
+	void setHighlightedRow(final int r) {
 		highlightedPopupRow.set(r);
 
 		clampHighlightedPopupRow();
