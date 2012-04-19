@@ -1,5 +1,7 @@
 package net.shrine.webclient.client.util;
 
+import java.util.Iterator;
+
 import net.shrine.webclient.client.AbstractWebclientTest;
 
 import org.junit.Test;
@@ -154,5 +156,17 @@ public class ObservableTestGwt extends AbstractWebclientTest {
 		assertFalse(b.equals(new Object()));
 		
 		assertFalse(b.equals("hello!"));
+	}
+	
+	public void testIteration() {
+		assertFalse(Observable.<String>empty().iterator().hasNext());
+		
+		final Observable<String> o = Observable.from("nuh");
+		
+		final Iterator<String> iterator = o.iterator();
+		
+		assertTrue(iterator.hasNext());
+		assertEquals("nuh", iterator.next());
+		assertFalse(iterator.hasNext());
 	}
 }
