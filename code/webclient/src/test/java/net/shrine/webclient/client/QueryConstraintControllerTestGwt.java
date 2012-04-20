@@ -1,7 +1,5 @@
 package net.shrine.webclient.client;
 
-import static org.junit.Assert.fail;
-
 import java.util.Date;
 
 import net.shrine.webclient.client.domain.Term;
@@ -21,6 +19,8 @@ public class QueryConstraintControllerTestGwt extends AbstractWebclientTest {
 	
 	@Override
 	protected void gwtSetUp() throws Exception {
+		super.gwtSetUp();
+		
 		state = new State();
 		
 		controller = new QueryConstraintController(state);
@@ -28,6 +28,8 @@ public class QueryConstraintControllerTestGwt extends AbstractWebclientTest {
 
 	@Override
 	protected void gwtTearDown() throws Exception {
+		super.gwtTearDown();
+		
 		state = null;
 		controller = null;
 	}

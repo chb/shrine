@@ -2,12 +2,11 @@ package net.shrine.webclient.client;
 
 import java.util.HashMap;
 
-import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.IntWrapper;
+import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -18,10 +17,14 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public final class QueryController extends StatefulController {
 
-	private final QueryServiceAsync queryService = GWT.create(QueryService.class);
+	private final QueryServiceAsync queryService;
 
-	public QueryController(final State state) {
+	public QueryController(final State state, final QueryServiceAsync queryService) {
 		super(state);
+		
+		Util.requireNotNull(queryService);
+		
+		this.queryService = queryService;
 	}
 	
 	public void runEveryQuery() {
@@ -35,62 +38,25 @@ public final class QueryController extends StatefulController {
 		
 		doAllQuery();
 	}
-	
-	private class AllQueryStrategy {
-		final void completeQuery(final String queryName, final HashMap<String, IntWrapper> result) {
-			state.completeQuery(queryName, result);
 
-			completeAllQuery(result);
-		}
-
-		void completeAllQuery(final HashMap<String, IntWrapper> result) {
-			// NOOP by default
-		}
-	}
-
-	private final AllQueryStrategy CompleteAllQuery = new AllQueryStrategy() {
-		@Override
-		void completeAllQuery(final HashMap<String, IntWrapper> result) {
-			state.completeAllQuery(result);
-		}
-	};
-
-	private final AllQueryStrategy DoNotCompleteAllQuery = new AllQueryStrategy();
-
-	private AllQueryStrategy determineAllQueryStrategyFromState() {
-		return state.numQueryGroups() == 1 ? CompleteAllQuery : DoNotCompleteAllQuery;
-	}
-
-	public void runQuery(final String queryName, final Expression expression) {
-		Util.require(state.getQueries().containsKey(queryName));
-
-		runQuery(queryName, expression.toXmlString());
-	}
-
-	public void runQuery(final String queryName) {
+	void runQuery(final String queryName) {
 		Util.require(state.getQueries().containsKey(queryName));
 
 		final String queryXml = state.getQueries().get(queryName).toXmlString();
 
-		runQuery(queryName, queryXml);
-	}
-
-	void runQuery(final String queryName, final String queryXml) {
 		Log.info("Performing query '" + queryName + "'");
 
 		Log.debug("Query XML for '" + queryName + "': " + queryXml);
 
-		final AllQueryStrategy allQueryStrategy = determineAllQueryStrategyFromState();
-
-		doQuery(queryName, queryXml, allQueryStrategy);
+		doQuery(queryName, queryXml);
 	}
 
-	private void doQuery(final String queryName, final String queryXml, final AllQueryStrategy allQueryStrategy) {
+	private void doQuery(final String queryName, final String queryXml) {
 		queryService.queryForBreakdown(queryXml, new AsyncCallback<HashMap<String, IntWrapper>>() {
 			@Override
 			public void onSuccess(final HashMap<String, IntWrapper> result) {
 				// TODO: can result be null?
-				allQueryStrategy.completeQuery(queryName, result);
+				state.completeQuery(queryName, result);
 			}
 
 			@Override
@@ -98,15 +64,31 @@ public final class QueryController extends StatefulController {
 				Log.error("Error making query '" + queryName + "': " + caught.getMessage(), caught);
 
 				// TODO: Is empty breakdown map appropriate?
-				allQueryStrategy.completeQuery(queryName, noResults());
+				state.completeQuery(queryName, noResults());
 			}
 		});
 	}
 
-	private void doAllQuery() {
+	private QueryGroup findOnlyQueryGroup() {
+		Util.require(state.numQueryGroups() == 1);
+		
+		return state.getQueries().entrySet().iterator().next().getValue();
+	}
+	
+	void doAllQuery() {
 		state.updateAllExpression();
 		
 		Log.debug("Query XML for 'All': " + state.getAllExpression());
+		
+		if(state.numQueryGroups() == 1) {
+			final QueryGroup onlyGroup = findOnlyQueryGroup();
+			
+			if(onlyGroup.getResult().isDefined()) {
+				state.completeAllQuery(onlyGroup.getResult().get());
+			}
+			
+			return;
+		}
 		
 		queryService.queryForBreakdown(state.getAllExpression(), new AsyncCallback<HashMap<String, IntWrapper>>() {
 			@Override
