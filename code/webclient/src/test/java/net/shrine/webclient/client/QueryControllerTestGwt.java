@@ -100,7 +100,7 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
 		assertEquals(t1.toXmlString(), state.getAllExpression());
 		assertEquals(t1.toXmlString(), state.getQueries().get("A").getExpression().toXmlString());
 		
-		assertTrue(queryService.multiNodeResultsToReturn, state.getAllResult().isEmpty());
+		assertTrue(state.getAllResult().isEmpty());
 		assertEquals(queryService.multiNodeResultsToReturn, state.getQueries().get("A").getResult().get());
 		
 		final Term t2 = new Term("zuh");
