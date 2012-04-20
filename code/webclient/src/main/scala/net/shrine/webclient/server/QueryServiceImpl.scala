@@ -45,7 +45,7 @@ final class QueryServiceImpl extends RemoteServiceServlet with QueryService {
 
   import Expression.fromXml
   
-  private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr)).toXmlString)
+  private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr)))
   
   override def query(expr: String): Int = {
     val response: RunQueryResponse = doQuery(expr) 
