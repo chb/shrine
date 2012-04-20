@@ -6,7 +6,7 @@
 	</ui:style>
 	
 	<g:HorizontalPanel addStyleNames="{style.forcedInline}">
-		<g:TextBox ui:field="textBox" />
+		<g:IntegerBox ui:field="textBox" />
 		<g:FlowPanel>
 			<g:Image ui:field="upArrow" url="/images/arrowUp.png"/>
 			<g:Image ui:field="downArrow" url="/images/arrowDown.png" addStyleNames="{style.forcedBlock}"/>

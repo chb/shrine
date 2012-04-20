@@ -4,10 +4,7 @@ import java.util.List;
 
 import net.shrine.webclient.client.util.Util;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -22,7 +19,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.IntegerBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -37,7 +34,7 @@ public final class Spinner extends Composite {
 	interface SpinnerUiBinder extends UiBinder<Widget, Spinner> { }
 
 	@UiField
-	TextBox textBox;
+	IntegerBox textBox;
 
 	@UiField
 	Image upArrow;
@@ -97,7 +94,7 @@ public final class Spinner extends Composite {
 		this.textBox.setWidth(width);
 	}
 
-	private final boolean isAllowedChar(final char ch) {
+	/*private final boolean isAllowedChar(final char ch) {
 		Log.debug("Char: " + ch + " (" + ((int)ch) + ")");
 		
 		final boolean result = !Character.isLetter(ch);//Character.isDigit(ch) || ch == KeyCodes.KEY_ALT || ch == KeyCodes.KEY_CTRL || ch == KeyCodes.KEY_SHIFT || ch == KeyCodes.KEY_BACKSPACE || ch == KeyCodes.KEY_DELETE || ch == KeyCodes.KEY_UP || ch == KeyCodes.KEY_DOWN || ch == KeyCodes.KEY_LEFT || ch == KeyCodes.KEY_RIGHT;
@@ -105,20 +102,20 @@ public final class Spinner extends Composite {
 		Log.debug("Allowed? " + result);
 		
 		return result;
-	}
+	}*/
 
 	private void initTextBox() {
 		this.textBox.setText(String.valueOf(value));
 
 		// Only allow digits (from GWT javadoc:
 		// https://google-web-toolkit.googlecode.com/svn/javadoc/2.4/com/google/gwt/user/client/ui/TextBox.html)
-		this.textBox.addKeyPressHandler(new KeyPressHandler() {
+		/*this.textBox.addKeyPressHandler(new KeyPressHandler() {
 			public void onKeyPress(final KeyPressEvent event) {
 				if (!isAllowedChar(event.getCharCode())) {
 					((TextBox) event.getSource()).cancelKey();
 				}
 			}
-		});
+		});*/
 
 		// Make sure we run our handlers when a new value is typed in
 		// Using a KeyUpHandler is necessary because value chage handlers are
