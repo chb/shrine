@@ -50,6 +50,8 @@ public final class GwtTestSuite extends GWTTestSuite {
 		suite.addTestSuite(QueryGroupNamesTestGwt.class);
 		suite.addTestSuite(QueryControllerTestGwt.class);
 
+		suite.addTestSuite(TermTestGwt.class);
+		
 		return suite;
 	}
 }
