@@ -14,7 +14,7 @@ public final class QueryBuildingController extends StatefulController {
 	}
 
 	public String addNewTerm(final Term term) {
-		final String name = QueryGroupNames.next();
+		final String name = state.getQueryGroupNames().next();
 
 		state.registerNewQuery(name, term);
 

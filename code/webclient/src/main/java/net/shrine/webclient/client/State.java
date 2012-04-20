@@ -25,6 +25,8 @@ public final class State {
 	
 	// Query group name => QueryGroup (Expression, integer result (patient set size), negated (t/f), start date, end date, min occurrances )
 	private final ObservableMap<String, QueryGroup> queries = ObservableMap.empty();
+	
+	private final QueryGroupNames queryGroupNames = new QueryGroupNames();
 
 	public void guardQueryNameIsPresent(final String queryName) {
 		Util.require(queries.containsKey(queryName));
@@ -36,7 +38,7 @@ public final class State {
 	
 	public void completeAllQuery(final HashMap<String, IntWrapper> resultsByInstitution) {
 		if(Log.isInfoEnabled()) {
-			Log.info("Completing query '" + QueryGroupNames.All + "' with: '" + resultsByInstitution + "'");
+			Log.info("Completing query 'All' with: '" + resultsByInstitution + "'");
 			
 			for(final String instName : resultsByInstitution.keySet()) {
 				Log.info(instName + ": " + resultsByInstitution.get(instName));
@@ -80,5 +82,9 @@ public final class State {
 
 	public Observable<HashMap<String, IntWrapper>> getAllResult() {
 		return allResult;
+	}
+	
+	QueryGroupNames getQueryGroupNames() {
+		return queryGroupNames;
 	}
 }

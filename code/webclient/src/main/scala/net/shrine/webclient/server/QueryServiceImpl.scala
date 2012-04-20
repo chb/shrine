@@ -45,7 +45,7 @@ final class QueryServiceImpl extends RemoteServiceServlet with QueryService {
 
   import Expression.fromXml
   
-  private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr)))
+  private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr)).toXmlString)
   
   override def query(expr: String): Int = {
     val response: RunQueryResponse = doQuery(expr) 
@@ -60,12 +60,6 @@ final class QueryServiceImpl extends RemoteServiceServlet with QueryService {
     
     val breakDown = Map.empty ++ response.results.map(result => (result.description.getOrElse("Unknown Institution"), toJInt(result.setSize)))
     
-    println(breakDown)
-    
-    val javaBreakDown = Helpers.toJava(breakDown)
-    
-    println(javaBreakDown)
-    
-    javaBreakDown
+    Helpers.toJava(breakDown)
   }
 }

@@ -106,7 +106,7 @@ public final class QueryController extends StatefulController {
 	private void doAllQuery() {
 		state.updateAllExpression();
 		
-		Log.debug("Query XML for '" + QueryGroupNames.All + "': " + state.getAllExpression());
+		Log.debug("Query XML for 'All': " + state.getAllExpression());
 		
 		queryService.queryForBreakdown(state.getAllExpression(), new AsyncCallback<HashMap<String, IntWrapper>>() {
 			@Override
@@ -116,7 +116,7 @@ public final class QueryController extends StatefulController {
 
 			@Override
 			public void onFailure(final Throwable caught) {
-				Log.error("Error making query '" + QueryGroupNames.All + "': " + caught.getMessage(), caught);
+				Log.error("Error making query 'All': " + caught.getMessage(), caught);
 
 				//TODO: Is empty map appropriate here?
 				state.completeAllQuery(noResults());
