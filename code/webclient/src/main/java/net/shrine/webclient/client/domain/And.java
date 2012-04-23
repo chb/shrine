@@ -82,4 +82,9 @@ public final class And implements Expression {
 		
 		return "<and>" + Util.join(componentXmls) + "</and>";
 	}
+
+	@Override
+	public String toString() {
+		return "And [components=" + components + "]";
+	}
 }
