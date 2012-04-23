@@ -1,6 +1,5 @@
 package net.shrine.webclient.client;
 
-import com.google.gwt.core.client.GWT;
 
 /**
  * 
@@ -14,10 +13,10 @@ public final class Controllers {
     
     public final QueryController query;
     
-    public Controllers(final State state) {
+    public Controllers(final State state, final QueryServiceAsync queryService) {
     	super();
     	
-    	this.query = new QueryController(state, GWT.<QueryServiceAsync>create(QueryService.class));
+    	this.query = new QueryController(state, queryService);
     	
     	this.constraints = new QueryConstraintController(state);
     	

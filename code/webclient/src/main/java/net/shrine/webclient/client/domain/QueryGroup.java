@@ -10,6 +10,8 @@ import net.shrine.webclient.client.util.Util;
  * 
  * @author clint
  * @date Mar 26, 2012
+ * 
+ * TODO: Should this be observable?
  */
 public final class QueryGroup implements XmlAble, ReadOnlyQueryGroup {
 	private Expression expression;

@@ -1,14 +1,10 @@
 package net.shrine.webclient.client;
 
-import java.util.HashMap;
-
 import net.shrine.webclient.client.domain.And;
-import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.Term;
 
 import org.junit.Test;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
@@ -118,29 +114,5 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
 		assertTrue(state.getQueries().get("A").getResult().isEmpty());
 		assertTrue(state.getAllResult().isEmpty());
 		assertEquals(queryService.multiNodeResultsToReturn, state.getQueries().get("B").getResult().get());
-	}
-
-	private static final Integer total = 99;
-	
-	@SuppressWarnings("serial")
-	private static final HashMap<String, IntWrapper> multiNodeResults = new HashMap<String, IntWrapper>() {{
-		this.put("foo", new IntWrapper(99));
-		this.put("bar", new IntWrapper(42));
-	}};
-	
-	private static final class MockQueryServiceAsync implements QueryServiceAsync {
-		public Integer totalToReturn = total;
-		
-		public HashMap<String, IntWrapper> multiNodeResultsToReturn = multiNodeResults;
-		
-		@Override
-		public void query(final String expr, final AsyncCallback<Integer> callback) {
-			callback.onSuccess(totalToReturn);
-		}
-
-		@Override
-		public void queryForBreakdown(final String expr, final AsyncCallback<HashMap<String, IntWrapper>> callback) {
-			callback.onSuccess(multiNodeResultsToReturn);
-		}
 	}
 }

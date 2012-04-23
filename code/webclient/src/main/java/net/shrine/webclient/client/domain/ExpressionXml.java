@@ -2,7 +2,6 @@ package net.shrine.webclient.client.domain;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 
 import net.shrine.webclient.client.util.Util;
 

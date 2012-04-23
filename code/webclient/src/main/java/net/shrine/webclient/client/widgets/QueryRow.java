@@ -38,7 +38,8 @@ public final class QueryRow extends Composite implements Observer {
 
 	private static final QueryRowUiBinder uiBinder = GWT.create(QueryRowUiBinder.class);
 
-	interface QueryRowUiBinder extends UiBinder<Widget, QueryRow> { }
+	interface QueryRowUiBinder extends UiBinder<Widget, QueryRow> {
+	}
 
 	private final String queryName;
 
@@ -47,9 +48,9 @@ public final class QueryRow extends Composite implements Observer {
 	private final ReadOnlyObservable<HashMap<String, IntWrapper>> result;
 
 	private final Controllers controllers;
-	
+
 	private final ReadOnlyQueryGroup query;
-	
+
 	@UiField
 	Label nameLabel;
 
@@ -58,19 +59,19 @@ public final class QueryRow extends Composite implements Observer {
 
 	@UiField
 	SimplePanel resultPanel;
-	
+
 	@UiField
 	DateBox startDate;
-	
+
 	@UiField
 	DateBox endDate;
-	
+
 	@UiField
 	Spinner minOccursSpinner;
-	
+
 	@UiField
 	CheckBox negationCheckbox;
-	
+
 	QueryRow(final Controllers controllers, final String queryName, final ReadOnlyQueryGroup query) {
 		super();
 
@@ -87,25 +88,25 @@ public final class QueryRow extends Composite implements Observer {
 		this.result = query.getResult();
 
 		initWidget(uiBinder.createAndBindUi(this));
-		
+
 		this.result.observedBy(this);
-		
+
 		initNegationCheckbox();
-		
+
 		initStartDateBox();
-		
+
 		initEndDateBox();
-		
+
 		initMinOccursSpinner();
-		
+
 		inform();
-		
+
 		resultPanel.clear();
 	}
 
 	private void initMinOccursSpinner() {
 		this.minOccursSpinner.setMin(1);
-		this.minOccursSpinner.setValue(1);
+		this.minOccursSpinner.setValue(query.getMinOccurances());
 		this.minOccursSpinner.addSpinnerHandler(new Spinner.SpinnerHandler() {
 			@Override
 			public void onValueChange(final int value) {
@@ -115,10 +116,12 @@ public final class QueryRow extends Composite implements Observer {
 	}
 
 	public static final DateBox.Format dateFormat = new DateBox.DefaultFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT));
-	
+
 	private void initStartDateBox() {
 		this.startDate.setFormat(dateFormat);
-		
+
+		startDate.setValue(query.getStart());
+
 		this.startDate.addValueChangeHandler(new ValueChangeHandler<Date>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Date> event) {
@@ -129,7 +132,9 @@ public final class QueryRow extends Composite implements Observer {
 
 	private void initEndDateBox() {
 		this.endDate.setFormat(dateFormat);
-		
+
+		endDate.setValue(query.getEnd());
+
 		this.endDate.addValueChangeHandler(new ValueChangeHandler<Date>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Date> event) {
@@ -139,6 +144,8 @@ public final class QueryRow extends Composite implements Observer {
 	}
 
 	private void initNegationCheckbox() {
+		negationCheckbox.setValue(query.isNegated());
+
 		negationCheckbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(final ValueChangeEvent<Boolean> event) {
@@ -146,40 +153,40 @@ public final class QueryRow extends Composite implements Observer {
 			}
 		});
 	}
-	
+
 	@Override
 	public void inform() {
 		nameLabel.setText(queryName);
-		
+
 		refreshExpressionPanel();
-		
+
 		refreshResultPanel();
-		
+
 		negationCheckbox.setValue(query.isNegated(), false);
-		
+
 		startDate.setValue(query.getStart(), false);
-		
+
 		endDate.setValue(query.getEnd(), false);
-		
+
 		minOccursSpinner.setValue(query.getMinOccurances(), false);
 	}
 
 	private void refreshResultPanel() {
 		final Widget resultWidget;
-		
-		if(result.isDefined()) {
+
+		if (result.isDefined()) {
 			resultWidget = new HoverableResultLink(result.get());
 		} else {
 			resultWidget = new LoadingSpinner();
 		}
-		
+
 		resultPanel.setWidget(resultWidget);
 	}
 
 	private void refreshExpressionPanel() {
 		exprPanel.clear();
-		
-		for(final QueryTerm queryTerm : makeQueryTermsFrom(expr)) {
+
+		for (final QueryTerm queryTerm : makeQueryTermsFrom(expr)) {
 			exprPanel.add(queryTerm);
 		}
 	}
@@ -188,19 +195,17 @@ public final class QueryRow extends Composite implements Observer {
 	public void stopObserving() {
 		result.noLongerObservedBy(this);
 	}
-	
-	//NB: exposed For tests
+
+	// NB: exposed For tests
 	static Collection<QueryTerm> makeQueryTermsFrom(final Expression expr) {
-		if(expr instanceof Term || expr instanceof Or) {
-			final Collection<QueryTerm> result = Util.makeArrayList();
-			
-			for(final Term term : expr.getTerms()) {
-				result.add(new QueryTerm(term));
-			}
-			
-			return result;
-		} else {
-			throw new IllegalArgumentException("Only Or-expressions and single terms can be turned into lists of QueryTerms");
+		Util.require(expr instanceof Term || expr instanceof Or, "Only Or-expressions and single terms can be turned into lists of QueryTerms");
+
+		final Collection<QueryTerm> result = Util.makeArrayList();
+
+		for (final Term term : expr.getTerms()) {
+			result.add(new QueryTerm(term));
 		}
+
+		return result;
 	}
 }

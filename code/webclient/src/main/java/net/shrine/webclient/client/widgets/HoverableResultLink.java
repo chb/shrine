@@ -34,10 +34,15 @@ public final class HoverableResultLink extends Composite {
 	
 	private PopupPanel resultTooltip;
 	
+	//NB: For testing
+	final HashMap<String, IntWrapper> results;
+	
 	public HoverableResultLink(final HashMap<String, IntWrapper> results) {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		Util.requireNotNull(results);
+		
+		this.results = results;
 		
 		//TODO: TOTAL HACK: use popup panel to make tooltip look passable for demo
 		//delegate.setTitle((new ResultTooltip(results)).toString());
@@ -46,15 +51,7 @@ public final class HoverableResultLink extends Composite {
 		delegate.addMouseOverHandler(new MouseOverHandler() {
 			@Override
 			public void onMouseOver(MouseOverEvent event) {
-				resultTooltip = new DecoratedPopupPanel(false, false);
-				
-				resultTooltip.setStyleName("");
-				
-				resultTooltip.setWidget(new ResultTooltip(results));
-				
-				resultTooltip.setPopupPosition(event.getClientX(), event.getClientY());
-				
-				resultTooltip.show();
+				showPopup(event.getClientX(), event.getClientY());
 			}
 		});
 		
@@ -62,11 +59,31 @@ public final class HoverableResultLink extends Composite {
 			@Override
 			public void onMouseOut(MouseOutEvent event) {
 				if(resultTooltip != null) {
-					resultTooltip.hide();
-					
-					resultTooltip.clear();
+					hidePopup();
 				}
 			}
 		});
+	}
+
+	PopupPanel getResultTooltip() {
+		return resultTooltip;
+	}
+
+	void showPopup(final int left, final int bottom) {
+		resultTooltip = new DecoratedPopupPanel(false, false);
+		
+		resultTooltip.setStyleName("");
+		
+		resultTooltip.setWidget(new ResultTooltip(results));
+		
+		resultTooltip.setPopupPosition(left, bottom);
+		
+		resultTooltip.show();
+	}
+
+	private void hidePopup() {
+		resultTooltip.hide();
+		
+		resultTooltip.clear();
 	}
 }

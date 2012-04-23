@@ -6,6 +6,7 @@ import net.shrine.webclient.client.domain.ExpressionXmlTestGwt;
 import net.shrine.webclient.client.domain.TermTestGwt;
 import net.shrine.webclient.client.util.ObservableTestGwt;
 import net.shrine.webclient.client.util.UtilTestGwt;
+import net.shrine.webclient.client.widgets.QueryRowTestGwt;
 import net.shrine.webclient.client.widgets.suggest.ForwardSuggestionEventsTestGwt;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestBoxTestGwt;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestResponseTestGwt;
@@ -56,6 +57,8 @@ public final class GwtTestSuite extends GWTTestSuite {
 		suite.addTestSuite(TermTestGwt.class);
 		suite.addTestSuite(AndTestGwt.class);
 		suite.addTestSuite(ExpressionXmlTestGwt.class);
+		
+		suite.addTestSuite(QueryRowTestGwt.class);
 		
 		return suite;
 	}

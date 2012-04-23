@@ -31,7 +31,7 @@ public final class Webclient implements EntryPoint {
 	private void doOnModuleLoad() {
 		final State state = new State();
 
-		final Controllers controllers = new Controllers(state);
+		final Controllers controllers = new Controllers(state, GWT.<QueryServiceAsync>create(QueryService.class));
 		
 		final WebClientWrapper wrapper = new WebClientWrapper();
 

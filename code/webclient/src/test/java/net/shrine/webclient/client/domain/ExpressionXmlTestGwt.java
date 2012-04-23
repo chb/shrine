@@ -22,6 +22,8 @@ public class ExpressionXmlTestGwt extends AbstractWebclientTest {
 		 
 		try {
 			ExpressionXml.fromQueryGroups(Collections.<QueryGroup>emptyList());
+			
+			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
 		final Term t1 = new Term("foo");

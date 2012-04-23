@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.util.Observable;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
+import net.shrine.webclient.client.util.Util;
 
 /**
  * 
@@ -19,8 +20,15 @@ public final class ResultTooltip extends Composite {
 
 	private final FlowPanel delegate = new FlowPanel();
 	
+	//NB: Exposed for testing
+	final HashMap<String, IntWrapper> breakDown;
+	
 	public ResultTooltip(final HashMap<String, IntWrapper> breakDown) {
 		super();
+		
+		Util.requireNotNull(breakDown);
+		
+		this.breakDown = breakDown;
 		
 		initWidget(delegate);
 		
