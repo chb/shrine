@@ -15,9 +15,9 @@ public final class And implements Expression {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private final List<Expression> components = Util.makeArrayList();
+	private final List<Andable> components = Util.makeArrayList();
 
-	public And(final Collection<? extends Expression> components) {
+	public And(final Collection<? extends Andable> components) {
 		super();
 
 		Util.requireNotNull(components);
@@ -25,11 +25,11 @@ public final class And implements Expression {
 		this.components.addAll(components);
 	}
 
-	public And(final Expression ... components) {
+	public And(final Andable ... components) {
 		this(Arrays.asList(components));
 	}
 
-	public List<Expression> getComponents() {
+	public List<Andable> getComponents() {
 		return Util.makeArrayList(components);
 	}
 	
@@ -51,7 +51,7 @@ public final class And implements Expression {
 			return this;
 		}
 		
-		final List<Expression> newComponents = Util.makeArrayList(components);
+		final List<Andable> newComponents = Util.makeArrayList(components);
 		
 		newComponents.add(component);
 		
@@ -65,7 +65,7 @@ public final class And implements Expression {
 			return this;
 		}
 		
-		final List<Expression> newComponents = Util.makeArrayList(components);
+		final List<Andable> newComponents = Util.makeArrayList(components);
 		
 		newComponents.remove(component);
 		

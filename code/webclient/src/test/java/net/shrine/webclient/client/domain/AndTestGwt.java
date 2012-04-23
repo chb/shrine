@@ -66,8 +66,8 @@ public class AndTestGwt extends AbstractWebclientTest {
 		
 		final List<Term> terms = asList(t1, t2);
 		
-		final Collection<Expression> comps1 = and.getComponents();
-		final Collection<Expression> comps2 = and.getComponents();
+		final Collection<Andable> comps1 = and.getComponents();
+		final Collection<Andable> comps2 = and.getComponents();
 		
 		assertEquals(terms, comps1);
 		assertEquals(terms, comps2);
@@ -91,7 +91,7 @@ public class AndTestGwt extends AbstractWebclientTest {
 		}
 
 		{
-			final And and = new And(new Or(t1, t2), new And(t3, t4));
+			final And and = new And(new Or(t1, t2), new Or(t3, t4));
 			
 			assertEquals(asList(t1, t2, t3, t4), and.getTerms());
 		}
