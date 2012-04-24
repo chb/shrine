@@ -1,7 +1,7 @@
 /* CSS Document */
 
 body {
-	font: 14px Verdana, Geneva, sans-serif;
+	font: 12px Verdana, Geneva, sans-serif;
 	background: #fff;
 }
 
@@ -16,22 +16,23 @@ body {
 }
 
 .header {
-	padding: 0;
+	padding: 0 0 15px 0;
 }
 
 .headerLinks {
 	float: right;
-	padding: 15px 15px 0 0;
+	padding: 15px 0 0 0;
 }
 
 .mainContent {
-	padding: 10px;
+	padding: 10px 0 0 0;
 }
 
 .searchBox {
 	width: 100%;
 	height: 35px;
 	position: relative !important;
+	margin: 0 0 20px 0;
 }
 
 .footer {
@@ -83,18 +84,16 @@ body {
 }
 
 .searchInput {
-	width: 739px;
+	width: 936px;
 	font-size: 16px;
-	padding: 1px 10px;
+	padding: 3px 10px;
 	height: 26px;
 	display:inline-block;
 	float: left;
-	border-radius: 5px 0px 0px 5px; 
-	-moz-border-radius: 5px 0px 0px 5px; 
-	-webkit-border-radius: 5px 0px 0px 5px; 
-	border: solid #666666;
-	border: solid #666666;
-	border-width: 1px 0 1px 1px ;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: solid 2px #666666;
 }
 
 .searchButton {
@@ -105,6 +104,7 @@ body {
 	float: left;
 	border: solid #666666;
 	border-width: 1px 1px 1px 0 ;
+	display: none;
 }
 
 .searchButton:hover {
@@ -132,7 +132,7 @@ body {
 
 .searchBoxPopup {
 	position:absolute;
-	top: 30px;
+	top: 36px;
 	left: -1px;
     background: none repeat scroll 0 0 #ffffff;
     border: solid #FFFFFF;
@@ -144,7 +144,7 @@ body {
     margin-left: 1px;
     min-height: 250px;
     max-height: 500px;
-	width: 730px;
+	width: 736px;
     overflow-y: auto !important;
     padding: 0 15px 5px 5px;
     z-index: 1101;
@@ -158,20 +158,37 @@ body {
 /* Query Builder */
 
 .breakDownOuter {
-	float:right;
-	margin: 10px 0 0 0;
+	margin: 0;
 }
 
 .breakDown {
-	width: 155px;
-	height: 306px;
-	min-height: 200px;
+	width: 936px;
+	min-height: 90px;
 	background: #FFFFFF;
-	padding: 5px;
+	padding: 5px 10px;
 	border: 2px solid #333;
-	border-radius: 0 10px 10px 0; 
-	-moz-border-radius: 0 10px 10px 0; 
-	-webkit-border-radius: 0 10px 10px 0; 
+	border-radius: 0 0 10px 10px; 
+	-moz-border-radius: 0 0 10px 10px; 
+	-webkit-border-radius: 0 0 10px 10px; 
+	clear: both;
+	font-size: 14px;
+}
+
+.querySentence {
+	font-size: 120%;
+	padding: 10px 0 0 0;
+}
+
+.querySentence .term {
+	font-weight: bold;
+}
+
+.querySentence .joiner {
+	font-style:italic;
+}
+
+.breakDownRow {
+	line-height: 25px;
 	clear: both;
 }
 /*
@@ -191,47 +208,164 @@ body {
 	font-weight: bold;
 }
 */
-.runQueryButton {
-	width: 170px;
-	height: 30px;
-	font-size: 16px;
-	display:inline-block;
-	float: left;
-	border-radius: 5px; 
-	-moz-border-radius: 5px; 
-	-webkit-border-radius: 5p; 
-	border: solid #666666;
-	border-width: 1px;
-	margin: 0 0 20px 0;
+
+.buttonPanel {
+	width: 100%;
+	padding: 15px 0 5px 0;
+	text-align: center;
 }
 
-.browseButton:hover {
+.largeButton {
+	width: 340px;
+	height: 30px;
+	clear: both;
+	font-size: 18px;
+	font-weight: bold;
+	display:inline-block;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: solid #666666;
+	border-width: 1px;
+	margin: 10px 10px 0 5px;
+	background: #8b3836;
+	color: #FFF;
+}
+.largeButton:hover {
+	background: #72201e;
+}
+.largeButton:disabled {
+	background: #c29695;
+}
+
+.smallButton {
+	width: 160px;
+	height: 30px;
+	font-size: 14px;
+	display:inline-block;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: solid #666666;
+	border-width: 1px;
+	margin: 0 10px 0 5px;
+}
+
+.runQueryButton {
+	width: 160px;
+	height: 30px;
+	font-size: 14px;
+	display:inline-block;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: solid #666666;
+	border-width: 1px;
+	margin: 0 10px 0 5px;
+}
+
+.runQueryButton:hover {
 	background: #CCC;
 	cursor: pointer;
 }
 
 .breakDownUpper {
-	height: 170px;
 	line-height: 24px;
 }
 
-.breakDownUpperTitle {
-	padding: 0 0 10px 0;
-	font-size: 28px;
+.breakDownTop {
+	position: relative;
+	overflow: hidden;
 }
 
-.queryBuilder {
-	width: 730px;
-	padding: 10px 10px 0 10px;
+.breakDownTopLeft {
+	padding: 0 0 10px 0;
+	text-align: left;
+    width: 100%;
+	margin: 0px 0 0 0;
+	font-weight: bold;
+}
+
+.breakDownTopLeft .title {
+	font-size: 24px;
+}
+
+.breakDownTopRight {
+	float: right;
+	width: 350px;
+	padding: 0 0 20px 20px;
+	border: 1px solid #111;
+}
+
+.dataDropdown {
+    margin: 10px 0 0 0;
+    width: 350px;
+	height: 20px;
+}
+
+.dataDictionary #expand {
+	display: block;
+	width: 16px;
+	float: right;
+}
+
+.dataDictionary #collapse {
+	display: none;
+	width: 16px;
+	float: right;
+}
+
+.dataDictionary {
+	width: 936px;
+	padding: 5px 10px 0 10px;
 	border: 2px solid #333;
-	border-radius: 10px 0 0 10px; 
-	-moz-border-radius: 10px 0 0 10px; 
-	-webkit-border-radius: 10px 0 0 10px; 
+	border-radius: 10px; 
+	-moz-border-radius: 10px; 
+	-webkit-border-radius: 10px; 
 	position: relative;
-	margin: 10px 0 0 0;
+	margin: 0 0 20px 0;
 	overflow: auto;
 	float:left;
 	background: #FFFFFF;
+}
+
+.dataDictionary .title {
+	font-weight: bold;
+	float:left; 
+	font-size: 140%;
+}
+
+#dataDictionaryData {
+	display:none;
+	overflow-y:scroll;
+	max-height: 400px;
+	border: 1px solid #CCC;
+	margin: 0 0 10px 0;
+}
+
+.queryBuilder {
+	width: 936px;
+	padding: 5px 10px 0 10px;
+	border: 2px solid #333;
+	border-radius: 10px 10px 0 0; 
+	-moz-border-radius: 10px 10px 0 0; 
+	-webkit-border-radius: 10px 10px 0 0; 
+	position: relative;
+	margin: 0 0 20px 0;
+	overflow: auto;
+	float:left;
+	background: #FFFFFF;
+}
+
+.queryClear {
+	text-align: right;
+	padding: 0 0px 8px 0;
+	overflow:hidden;
+}
+
+.queryClear img {
+	cursor:pointer;
+	margin: 3px 0 0 0;
 }
 
 .statBox {
@@ -265,20 +399,30 @@ body {
 	border-radius: 10px; 
 	-moz-border-radius: 10px; 
 	-webkit-border-radius: 10px; 
-	width: 98%;
+	width: 100%;
 	min-height: 30px;
 	
 /*	border-bottom: 2px solid #666;*/
 }
 
+.queryRowClose {
+    float: right;
+    margin: -5px 5px 0 0;
+    width: 16px;
+}
+
 .emptyRow {
 	margin: 10px 0;
-	height: 54px;
+	min-height: 24px;
 	border: dashed 2px #333333;
 	border-radius: 10px; 
 	-moz-border-radius: 10px; 
 	-webkit-border-radius: 10px; 
-	width: 98%;
+	width: 94%;
+	padding: 10px 3%;
+	color: #CCC;
+	font-size: 150%;
+	font-weight: bold;
 }
 
 .queryRowLabel {
@@ -302,22 +446,34 @@ body {
 }
 
 .queryRowTerms {
-	width: 510px;
+	width: 712px;
 	min-height: 20px;
 	float: left;
 	font-size: 16px;
 	position: relative;
+	text-align: left;
 }
 
 .queryTerm {
 	display:inline-block;
-	padding: 0 20px 2px 5px;
+	padding: 0 5px 2px 5px;
 	background: #b3c6d3;
 	min-width: 50px;
 	border-radius: 10px; 
 	border: 1px solid #0a507d;
 	font-weight: bold;
 	margin: 0 10px 10px 0;
+}
+
+.queryTermClose {
+	float: right; 
+	margin: 0 3px 0 10px; 
+	font-weight:bold;
+	cursor:pointer;
+}
+
+.queryTermClose img {
+	margin: 4px 0 0 0;
 }
 
 .leaf {
@@ -359,14 +515,16 @@ body {
 }
 
 .queryRowResults {
-	width: 150px;
+	width: 140px;
 	float: left;
 	text-align: left;
 	font-size: 12px;
 	font-weight: bold;
 	position: relative;
-	padding: 0 0 10px 3px;
+	padding: 0 10px 10px 3px;
 	text-align: right;
+	
+	display: none;
 }
 
 .queryRowResults img{
@@ -388,6 +546,24 @@ body {
 	margin: 10px 0 0 0;
 	position: relative;
 	overflow: auto;
+}
+
+.resultInstitutionsTitle {
+	font-weight: bold;
+	font-size: 24px;
+	padding: 25px 0 0 0;
+}
+
+.resultInstitutions {
+    overflow: hidden;
+    padding: 10px 0;
+    position: relative;
+}
+
+.resultInstitution {
+	width: 234px;
+	float: left;
+	font-size: 115%;
 }
 
 .queryRowFiltersInner {
@@ -465,18 +641,9 @@ body {
 }
 
 .autosuggest {
-	/* TODO: HACK */
-	width: 929px;
-	/* TODO: HACK */
-	font: 14px Verdana, Geneva, sans-serif;
 }
 
 .autosuggest ul {
-	padding: 0 0 0 10px;
-	margin: 5px 0 0 0;
-}
-
-.autosuggest div {
 	padding: 0 0 0 10px;
 	margin: 5px 0 0 0;
 }
@@ -500,21 +667,13 @@ body {
 }
 
 .autosuggest .synonym {
-	/*display:inline-block;*/
-	/* TODO: HACK */
-	display:inline;
-	white-space: normal;
-	
-	
+	display:inline-block;
 	font-weight: 90%;
 	color: #096;
 	font-style: italic;
 }
 
 .autosuggest .browse {
-	/* TODO: HACK */
-	font: 14px Verdana, Geneva, sans-serif;
-	
 	float: right;
 	padding: 0 5px 0 25px;
 	font-size: 80%;
@@ -524,12 +683,7 @@ body {
 }
 
 .autosuggest .terms {
-	/* TODO: HACK */
-	font: 14px Verdana, Geneva, sans-serif;
-	display:;
-	
-	
-	max-width: 929px;
+	max-width: 570px;
 	display: block;
 }
 
@@ -541,9 +695,77 @@ body {
 	background: url("../images/folder.png") no-repeat scroll left bottom transparent;
 }
 
+.autosuggest .icon {
+	width: 24px;
+	float: right;
+	cursor: pointer;
+}
+
+.disabled {
+	cursor: default !important;
+}
+
 .datepicker {
 	width: 75px;
 }
 
-	
-	
+.focus {
+	background-color: #99FFFF !important;
+}
+
+.file, .folder {
+	cursor: pointer;
+}
+
+.file a, .folder a, .autosuggest a {
+	text-decoration: none;
+	color: #000000;
+}
+
+.loadHeader {
+	background: #666; 
+	color: #FFF;
+}
+
+.loadHeader a {
+	color: #FFF;
+	text-decoration:none;
+}
+
+.sortDown {
+	background: url("../images/sort_arrow_down.png") no-repeat scroll right 5px transparent;
+}
+
+.sortUp {
+}
+
+.loadDelete {
+	float: right;
+	padding: 0 5px 0 0;
+	cursor: pointer;
+}
+
+.loader {
+	cursor: pointer;
+}
+
+.loadRow1 {
+	background: url("../images/queryicon.png") no-repeat scroll 2px 7px transparent;
+}
+
+.loadRow2 {
+	background: url("../images/queryicon.png") no-repeat scroll 2px 7px #eeeeee;
+}
+
+.filetree span.query {
+	background: url("../images/queryicon.png") no-repeat scroll 2px 7px transparent;
+	padding: 3px 0 3px 24px;
+	cursor: pointer;
+}
+
+.autosuggest .folder {
+}
+
+.filetree li {
+    padding: 3px 0 3px 3px !important;
+}
