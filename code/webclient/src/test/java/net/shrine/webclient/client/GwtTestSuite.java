@@ -3,6 +3,7 @@ package net.shrine.webclient.client;
 import junit.framework.Test;
 import net.shrine.webclient.client.domain.AndTestGwt;
 import net.shrine.webclient.client.domain.ExpressionXmlTestGwt;
+import net.shrine.webclient.client.domain.QueryGroupTestGwt;
 import net.shrine.webclient.client.domain.TermTestGwt;
 import net.shrine.webclient.client.util.ObservableTestGwt;
 import net.shrine.webclient.client.util.UtilTestGwt;
@@ -57,6 +58,7 @@ public final class GwtTestSuite extends GWTTestSuite {
 		suite.addTestSuite(TermTestGwt.class);
 		suite.addTestSuite(AndTestGwt.class);
 		suite.addTestSuite(ExpressionXmlTestGwt.class);
+		suite.addTestSuite(QueryGroupTestGwt.class);
 		
 		suite.addTestSuite(QueryRowTestGwt.class);
 		

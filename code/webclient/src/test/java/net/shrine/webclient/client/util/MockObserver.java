@@ -10,7 +10,7 @@ public final class MockObserver implements Observer {
 
 	public boolean informed = false;
 	
-	MockObserver(final IObservable observed) {
+	public MockObserver(final IObservable observed) {
 		super();
 		
 		Util.requireNotNull(observed);

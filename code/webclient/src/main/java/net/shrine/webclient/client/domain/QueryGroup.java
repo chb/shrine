@@ -3,6 +3,10 @@ package net.shrine.webclient.client.domain;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+
+import net.shrine.webclient.client.util.AbstractObservable;
 import net.shrine.webclient.client.util.Observable;
 import net.shrine.webclient.client.util.Util;
 
@@ -11,55 +15,56 @@ import net.shrine.webclient.client.util.Util;
  * @author clint
  * @date Mar 26, 2012
  * 
- * TODO: Should this be observable?
  */
-public final class QueryGroup implements XmlAble, ReadOnlyQueryGroup {
+public final class QueryGroup extends AbstractObservable implements XmlAble, ReadOnlyQueryGroup {
 	private Expression expression;
 
 	private final Observable<HashMap<String, IntWrapper>> result;
 
 	private boolean negated = false;
 
-	// TODO: what datatype?
 	private Date start = null;
 
-	// TODO: what datatype?
 	private Date end = null;
-	
+
 	private int minOccurances = 1;
 
 	public QueryGroup(final Expression expression, final Observable<HashMap<String, IntWrapper>> result) {
 		super();
 		
+		Util.requireNotNull(expression);
+		Util.requireNotNull(result);
+
 		this.expression = expression;
 		this.result = result;
 	}
+
+	private static final DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.ISO_8601);
 	
-	private String dateToXml(final String tagName, final Date date) {
-		return date == null ? "" : ("<" + tagName + ">" + date.toString() + "</" + tagName + ">"); 
+	static String dateToXml(final String tagName, final Date date) {
+		return date == null ? "" : ("<" + tagName + ">" + dateFormat.format(date) + "</" + tagName + ">");
 	}
-	
-	//TODO: desperately needs test
+
 	@Override
 	public String toXmlString() {
 		final String exprString = expression.toXmlString();
-		
+
 		String result;
-		
-		if(negated) {
+
+		if (negated) {
 			result = "<not>" + exprString + "</not>";
 		} else {
 			result = exprString;
 		}
-		
-		if(start != null || end != null) {
+
+		if (start != null || end != null) {
 			result = "<dateBounded>" + dateToXml("start", start) + dateToXml("end", end) + result + "</dateBounded>";
 		}
-		
-		if(minOccurances != 1) {
+
+		if (minOccurances != 1) {
 			result = "<occurs><min>" + minOccurances + "</min>" + result + "</occurs>";
 		}
-		
+
 		return result;
 	}
 
@@ -67,34 +72,48 @@ public final class QueryGroup implements XmlAble, ReadOnlyQueryGroup {
 	public Expression getExpression() {
 		return expression;
 	}
-	
+
 	public void setExpression(final Expression expression) {
 		Util.requireNotNull(expression);
-		
-		this.expression = expression;
+
+		try {
+			this.expression = expression;
+		} finally {
+			notifyObservers();
+		}
 	}
 
 	@Override
 	public Observable<HashMap<String, IntWrapper>> getResult() {
 		return result;
 	}
-	
+
 	@Override
 	public int getMinOccurances() {
 		return minOccurances;
 	}
 
-	public void setMinOccurances(int minOccurances) {
-		this.minOccurances = minOccurances;
+	public void setMinOccurances(final int minOccurances) {
+		Util.require(minOccurances > 0);
+
+		try {
+			this.minOccurances = minOccurances;
+		} finally {
+			notifyObservers();
+		}
 	}
 
 	@Override
 	public boolean isNegated() {
 		return negated;
 	}
-	
+
 	public void setNegated(final boolean negated) {
-		this.negated = negated;
+		try {
+			this.negated = negated;
+		} finally {
+			notifyObservers();
+		}
 	}
 
 	@Override
@@ -103,16 +122,24 @@ public final class QueryGroup implements XmlAble, ReadOnlyQueryGroup {
 	}
 
 	public void setStart(final Date newStart) {
-		this.start = newStart;
+		try {
+			this.start = newStart;
+		} finally {
+			notifyObservers();
+		}
 	}
-	
+
 	@Override
 	public Date getEnd() {
 		return end;
 	}
-	
+
 	public void setEnd(final Date newEnd) {
-		this.end = newEnd;
+		try {
+			this.end = newEnd;
+		} finally {
+			notifyObservers();
+		}
 	}
 
 	@Override
