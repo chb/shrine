@@ -3,9 +3,5 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
 			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
 			 
-	<g:HTMLPanel addStyleNames="searchBox">
-		<g:SimplePanel ui:field="ontSearchBoxHolder" />
-		<input type="submit" name="searchButton" id="searchButton" class="searchButton" value="Search" />
-		<g:Button styleName="browseButton" text="Browse" ui:field="browseButton"/>
-	</g:HTMLPanel>
+	<g:SimplePanel ui:field="ontSearchBoxHolder" addStyleNames="searchBox"/>
 </ui:UiBinder> 

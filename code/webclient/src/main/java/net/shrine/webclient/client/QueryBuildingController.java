@@ -1,6 +1,11 @@
 package net.shrine.webclient.client;
 
+import net.shrine.webclient.client.domain.Expression;
+import net.shrine.webclient.client.domain.Or;
+import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.domain.Term;
+
+import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * 
@@ -19,5 +24,37 @@ public final class QueryBuildingController extends StatefulController {
 		state.registerNewQuery(name, term);
 
 		return name;
+	}
+	
+	public void removeQueryGroup(final String queryName) {
+		state.guardQueryNameIsPresent(queryName);
+		
+		state.getQueries().remove(queryName);
+	}
+	
+	public void removeTerm(final String queryName, final Term term) {
+		state.guardQueryNameIsPresent(queryName);
+		
+		final QueryGroup queryGroup = state.getQueries().get(queryName);
+		
+		final Expression expr = queryGroup.getExpression();
+		
+		if(expr instanceof Term) {
+			if(!expr.equals(term)) {
+				Log.warn("Attempted to remove nonexistent term from query '" + queryName + "': " + term);
+			} else {
+				removeQueryGroup(queryName);
+			}
+		} else if(expr instanceof Or) {
+			final Or removed = ((Or)expr).without(term);
+			
+			if(expr.equals(removed)) {
+				Log.warn("Removing term from query '" + queryName + "' has no effect: " + term);
+			} else {
+				queryGroup.setExpression(removed);
+			}
+		} else {
+			throw new IllegalStateException("Query group '" + queryName + "' has illegal expression: " + expr);
+		}
 	}
 }

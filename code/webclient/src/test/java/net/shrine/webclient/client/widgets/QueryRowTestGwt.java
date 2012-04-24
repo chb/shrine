@@ -186,14 +186,20 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testMakeQueryTermsFrom() {
+		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
+
+		final Observable<HashMap<String, IntWrapper>> result = Observable.<HashMap<String, IntWrapper>> empty();
+
+		final QueryRow queryRow = new QueryRow(controllers, "foo", new QueryGroup(new Term("foo"), result));
+		
 		try {
-			QueryRow.makeQueryTermsFrom(null);
+			queryRow.makeQueryTermsFrom(null);
 			
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
 		try {
-			QueryRow.makeQueryTermsFrom(new And());
+			queryRow.makeQueryTermsFrom(new And());
 			
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
@@ -203,22 +209,29 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 		final Term t3 = new Term("foo");
 		
 		{
-			final Collection<QueryTerm> terms = QueryRow.makeQueryTermsFrom(t1);
+			final Collection<QueryTerm> terms = queryRow.makeQueryTermsFrom(t1);
 			
 			assertEquals(1, terms.size());
 			
-			assertEquals(t1.value, terms.iterator().next().termLabel.getText());
+			assertEquals(t1.simpleName, terms.iterator().next().termSpan.getInnerText());
+			assertEquals(t1.value, terms.iterator().next().getTitle());
 		}
 		
 		{
-			final Collection<QueryTerm> terms = QueryRow.makeQueryTermsFrom(new Or(t2, t3));
+			final Collection<QueryTerm> terms = queryRow.makeQueryTermsFrom(new Or(t2, t3));
 			
 			assertEquals(2, terms.size());
 			
 			final Iterator<QueryTerm> iterator = terms.iterator();
 			
-			assertEquals(t2.value, iterator.next().termLabel.getText());
-			assertEquals(t3.value, iterator.next().termLabel.getText());
+			final QueryTerm queryTerm1 = iterator.next();
+			final QueryTerm queryTerm2 = iterator.next();
+			
+			assertEquals(t2.simpleName, queryTerm1.termSpan.getInnerText());
+			assertEquals(t2.value, queryTerm1.getTitle());
+			
+			assertEquals(t3.simpleName, queryTerm2.termSpan.getInnerText());
+			assertEquals(t3.value, queryTerm2.getTitle());
 		}
 	}
 }

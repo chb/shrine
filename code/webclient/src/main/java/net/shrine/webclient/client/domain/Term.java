@@ -14,13 +14,21 @@ public final class Term implements Andable {
 	private static final long serialVersionUID = 1L;
 	
 	public final String value;
+	
+	public final String simpleName;
 
 	public Term(final String value) {
+		this(value, "");
+	}
+	
+	public Term(final String value, final String simpleName) {
 		super();
 
 		Util.requireNotNull(value);
+		Util.requireNotNull(simpleName);
 
 		this.value = value;
+		this.simpleName = simpleName;
 	}
 	
 	@Override

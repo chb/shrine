@@ -38,8 +38,7 @@ public final class QueryRow extends Composite implements Observer {
 
 	private static final QueryRowUiBinder uiBinder = GWT.create(QueryRowUiBinder.class);
 
-	interface QueryRowUiBinder extends UiBinder<Widget, QueryRow> {
-	}
+	interface QueryRowUiBinder extends UiBinder<Widget, QueryRow> { }
 
 	private final String queryName;
 
@@ -197,13 +196,13 @@ public final class QueryRow extends Composite implements Observer {
 	}
 
 	// NB: exposed For tests
-	static Collection<QueryTerm> makeQueryTermsFrom(final Expression expr) {
+	Collection<QueryTerm> makeQueryTermsFrom(final Expression expr) {
 		Util.require(expr instanceof Term || expr instanceof Or, "Only Or-expressions and single terms can be turned into lists of QueryTerms");
 
 		final Collection<QueryTerm> result = Util.makeArrayList();
 
 		for (final Term term : expr.getTerms()) {
-			result.add(new QueryTerm(term));
+			result.add(new QueryTerm(queryName, controllers.queryBuilding, term));
 		}
 
 		return result;

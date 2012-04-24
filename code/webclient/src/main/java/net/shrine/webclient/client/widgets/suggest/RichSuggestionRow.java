@@ -2,7 +2,6 @@ package net.shrine.webclient.client.widgets.suggest;
 
 import net.shrine.webclient.client.util.Util;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -50,15 +49,6 @@ public final class RichSuggestionRow extends SimplePanel implements HasMouseOutH
 		this.onSelect = onSelect;
 		
 		unHighlight();
-		
-		this.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				Log.debug("RichSuggestionRow clicked: " + getWidget());
-				
-				container.hidePopup();
-			}
-		});
 	}
 	
 	@Override

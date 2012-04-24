@@ -86,6 +86,8 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 	@Override
 	public void fireSuggestionEvent(final RichSuggestionEvent<S> event) {
 		fireEvent(event);
+		
+		hidePopup();
 	}
 
 	public HandlerRegistration addSelectionHandler(final RichSuggestionEventHandler<S> handler) {

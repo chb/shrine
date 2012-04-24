@@ -105,11 +105,6 @@ public class RichSuggestionRowTestGwt extends AbstractWebclientTest {
 		assertFalse(container.hidden);
 		assertFalse(onSelect.invoked);
 
-		row.fireEvent(Events.click());
-
-		assertTrue(container.hidden);
-		assertFalse(onSelect.invoked);
-		
 		container.hidden = false;
 		onSelect.invoked = false;
 		

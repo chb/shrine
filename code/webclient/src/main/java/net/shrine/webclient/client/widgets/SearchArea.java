@@ -14,6 +14,8 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * @author clint
  * @date Mar 26, 2012
+ * 
+ * TODO: Can this go away?
  */
 public final class SearchArea extends Composite {
 
@@ -24,9 +26,6 @@ public final class SearchArea extends Composite {
 	@UiField
 	SimplePanel ontSearchBoxHolder;
 
-	@UiField
-	Button browseButton;
-	
 	public SearchArea() {
 		super();
 		
@@ -35,9 +34,6 @@ public final class SearchArea extends Composite {
 	
 	void wireUp(final OntologySearchBox ontSearchBox) {
 		Util.requireNotNull(ontSearchBox);
-		
-		//TODO: feels very hackish
-		ontSearchBox.getElement().setId("ontSearchInput");
 		
 		this.ontSearchBoxHolder.setWidget(ontSearchBox);
 	}

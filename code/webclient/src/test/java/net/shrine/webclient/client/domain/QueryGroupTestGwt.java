@@ -115,7 +115,9 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetExpression() {
-		final QueryGroup queryGroup = new QueryGroup(new Term("foo"), Observable.<HashMap<String, IntWrapper>>empty());
+		final Term t1 = new Term("foo");
+		
+		final QueryGroup queryGroup = new QueryGroup(t1, Observable.<HashMap<String, IntWrapper>>empty());
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -133,6 +135,17 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 			queryGroup.setExpression(null);
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
+		
+		try {
+			queryGroup.setExpression(new And());
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		final Or or = new Or(t1, t2);
+		
+		queryGroup.setExpression(or);
+		
+		assertEquals(or, queryGroup.getExpression());
 	}
 
 	@Test

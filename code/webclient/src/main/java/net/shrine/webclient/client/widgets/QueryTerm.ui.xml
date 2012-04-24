@@ -1,6 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<g:HTMLPanel>
-		<g:Label addStyleNames="queryTerm" ui:field="termLabel" />
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
+			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
+	<g:HTMLPanel styleName="queryTerm">
+		<span ui:field="termSpan"></span><shrine:CloseButton ui:field="closeButton"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

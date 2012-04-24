@@ -31,7 +31,9 @@ public final class OntologySearchBox extends RichSuggestBox<TermSuggestion> {
 		this.addSelectionHandler(new RichSuggestionEventHandler<TermSuggestion>() {
 			@Override
 			public void onSelectionMade(final RichSuggestionEvent<TermSuggestion> event) {
-				final Term term = new Term(event.getSuggestion().getPath());
+				final TermSuggestion suggestion = event.getSuggestion();
+				
+				final Term term = new Term(suggestion.getPath(), suggestion.getSimpleName());
 				
 				controllers.queryBuilding.addNewTerm(term);
 				

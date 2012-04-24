@@ -75,6 +75,7 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 
 	public void setExpression(final Expression expression) {
 		Util.requireNotNull(expression);
+		Util.require(expression instanceof Term || expression instanceof Or, "Only terms or disjunctions can be represented as a QueryGroup");
 
 		try {
 			this.expression = expression;
