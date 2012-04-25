@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.IntWrapper;
-import net.shrine.webclient.client.util.Observable;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.Util;
@@ -18,6 +17,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -32,11 +32,15 @@ public final class AllResultsRow extends Composite implements Observer {
 	interface AllResultsRowUiBinder extends UiBinder<Widget, AllResultsRow> { }
 
 	private ReadOnlyObservable<HashMap<String, IntWrapper>> allResults;
-
-	private Controllers controllers;
 	
-	/*@UiField
-	FlowPanel resultsPanel;*/
+	@UiField
+	HTMLPanel querySentencePanel;
+	
+	@UiField
+	Button runQueryButton;
+	
+	@UiField
+	FlowPanel resultsPanel;
 	
 	public AllResultsRow() {
 		super();
@@ -48,27 +52,33 @@ public final class AllResultsRow extends Composite implements Observer {
 		Util.requireNotNull(controllers);
 		Util.requireNotNull(allResults);
 		
-		this.controllers = controllers;
 		this.allResults = allResults;
 		
 		this.allResults.observedBy(this);
 		
-		//resultsPanel.clear();
+		resultsPanel.clear();
+		
+		runQueryButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				controllers.query.runAllQuery();
+			}
+		});
 	}
 
 	@Override
 	public void inform() {
-		//resultsPanel.clear();
+		resultsPanel.clear();
 		
 		if(allResults.isDefined()) {
 			for(final Entry<String, IntWrapper> entry : allResults.get().entrySet()) {
 				final String instName = entry.getKey();
 				final int count = entry.getValue().getValue();
 				
-				//resultsPanel.add(new ResultRow(instName, Observable.from(count)));
+				resultsPanel.add(new InstitutionResult(instName, count));
 			}
 		} else {
-			//resultsPanel.add(new LoadingSpinner());
+			resultsPanel.add(new LoadingSpinner());
 		}
 	}
 

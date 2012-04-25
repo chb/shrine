@@ -36,7 +36,15 @@ public final class QueryController extends StatefulController {
 		
 		state.getAllResult().clear();
 		
-		doAllQuery();
+		if(state.numQueryGroups() == 1) {
+			final QueryGroup onlyGroup = findOnlyQueryGroup();
+			
+			if(onlyGroup.getResult().isDefined()) {
+				state.completeAllQuery(onlyGroup.getResult().get());
+			}
+		} else {
+			runAllQuery();
+		}
 	}
 
 	void runQuery(final String queryName) {
@@ -75,20 +83,12 @@ public final class QueryController extends StatefulController {
 		return state.getQueries().entrySet().iterator().next().getValue();
 	}
 	
-	void doAllQuery() {
+	public void runAllQuery() {
 		state.updateAllExpression();
 		
-		Log.debug("Query XML for 'All': " + state.getAllExpression());
+		state.getAllResult().clear();
 		
-		if(state.numQueryGroups() == 1) {
-			final QueryGroup onlyGroup = findOnlyQueryGroup();
-			
-			if(onlyGroup.getResult().isDefined()) {
-				state.completeAllQuery(onlyGroup.getResult().get());
-			}
-			
-			return;
-		}
+		Log.debug("Query XML for 'All': " + state.getAllExpression());
 		
 		queryService.queryForBreakdown(state.getAllExpression(), new AsyncCallback<HashMap<String, IntWrapper>>() {
 			@Override
