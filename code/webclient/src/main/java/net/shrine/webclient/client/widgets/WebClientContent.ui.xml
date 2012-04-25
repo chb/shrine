@@ -6,14 +6,11 @@
 	<g:HTMLPanel>
 		<!--Search Box -->
 		<shrine:SearchArea ui:field="searchArea" />
-		<!-- Breakdown (RHS) -->
-		<shrine:AllResultColumn ui:field="allResultColumn" />
+		<!-- Data Dictionary -->
+		<shrine:DataDictionaryRow ui:field="dataDictionaryRow"/>
 		<!-- Query groups -->
 		<shrine:QueryColumn ui:field="queryColumn" />
-		<div id="queryMenu" class="queryTermMenu">
-			<a href="#">View in Browser</a>
-			<a href="#">Set/View individual filters</a>
-		</div>
-		<div class="footer"></div>
+		<!-- Breakdown Row -->
+		<shrine:AllResultsRow ui:field="allResultColumn" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -24,10 +24,13 @@ public final class WebClientContent extends Composite {
 	SearchArea searchArea;
 	
 	@UiField
-	AllResultColumn allResultColumn;
+	DataDictionaryRow dataDictionaryRow;
 	
 	@UiField
 	QueryColumn queryColumn;
+	
+	@UiField
+	AllResultsRow allResultColumn;
 	
 	public WebClientContent() {
 		initWidget(uiBinder.createAndBindUi(this));

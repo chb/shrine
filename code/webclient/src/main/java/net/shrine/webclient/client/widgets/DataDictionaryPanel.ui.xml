@@ -1,0 +1,151 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:HTMLPanel styleName="dataDictionaryData">
+		<div id="browser" class="filetree">
+		<!-- <div class="filetree"> -->
+			<ul>
+				<li>
+					<span class="folder">SHRINE Ontology</span>
+					<ul>
+						<li>
+							<span class="folder">Demographics</span>
+						</li>
+						<li>
+							<span class="folder">Diagnoses</span>
+						</li>
+						<li>
+							<span class="folder">Lab Tests (demo)</span>
+						</li>
+						<li>
+							<span class="folder">Medications</span>
+							<ul>
+								<li>
+									<span class="file">Patient Instructions</span>
+								</li>
+								<li>
+									<span class="file">Route</span>
+								</li>
+								<li>
+									<span class="file">Rx Sig</span>
+								</li>
+								<li>
+									<span class="folder">Alternative medicines</span>
+								</li>
+								<li>
+									<span class="folder">Anti-infectives</span>
+								</li>
+								<li>
+									<span class="folder">
+										Antihyperlipidemic agents
+										<ul>
+											<li>
+												<span class="file">Patient Instructions</span>
+											</li>
+											<li>
+												<span class="file">Route</span>
+											</li>
+											<li>
+												<span class="file">Rx Sig</span>
+											</li>
+											<li>
+												<span class="folder">Bile acid sequestrants</span>
+											</li>
+											<li>
+												<span class="folder">Fibric acid derivatives</span>
+											</li>
+											<li>
+												<span class="folder">
+													HMG-CoA reductase inhibitors
+													<ul>
+														<li>
+															<span class="file">Patient Instructions</span>
+														</li>
+														<li>
+															<span class="file">Route</span>
+														</li>
+														<li>
+															<span class="file">Rx Sig</span>
+														</li>
+														<li>
+															<span class="folder">Atorvastatin</span>
+														</li>
+														<li>
+															<span class="folder" id="focus">Cerivastatin</span>
+														</li>
+														<li>
+															<span class="folder">Fluvastatin</span>
+														</li>
+														<li>
+															<span class="folder">Lovastatin</span>
+														</li>
+														<li>
+															<span class="folder">Lovastatin-niacin</span>
+														</li>
+														<li>
+															<span class="folder focus">
+																<a href="query0c.php">Pravastatin</a>
+															</span>
+														</li>
+														<li>
+															<span class="folder">Rosuvastatin</span>
+														</li>
+														<li>
+															<span class="folder">Simvastatin</span>
+														</li>
+
+													</ul>
+												</span>
+											</li>
+											<li>
+												<span class="folder">Miscellaneous antihyperlipidemic agents</span>
+											</li>
+										</ul>
+									</span>
+								</li>
+								<li>
+									<span class="folder">Antineoplastics</span>
+								</li>
+								<li>
+									<span class="folder">Biologicals</span>
+								</li>
+								<li>
+									<span class="folder">Cardiovascular agents</span>
+								</li>
+								<li>
+									<span class="folder">Central nervous system agents</span>
+								</li>
+								<li>
+									<span class="folder">Coagulation modifiers</span>
+								</li>
+								<li>
+									<span class="folder">Gastrointestinal agents</span>
+								</li>
+								<li>
+									<span class="folder">Hormones</span>
+								</li>
+								<li>
+									<span class="folder">Immunologic agents</span>
+								</li>
+								<li>
+									<span class="folder">Miscellaneous agents</span>
+								</li>
+								<li>
+									<span class="folder">Nutritional products</span>
+								</li>
+								<li>
+									<span class="folder">Psychotherapeutic agents</span>
+								</li>
+								<li>
+									<span class="folder">Respiratory agents</span>
+								</li>
+								<li>
+									<span class="folder">Topical agents</span>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

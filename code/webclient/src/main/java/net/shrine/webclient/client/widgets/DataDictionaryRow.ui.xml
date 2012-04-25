@@ -1,0 +1,12 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
+			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
+	<g:HTMLPanel styleName="dataDictionary">
+      <div class="queryClear">
+      	<span class="title">Data Dictionary</span>
+        <g:SimplePanel ui:field="expandCollapseButtonHolder"/>
+      </div>
+      <g:SimplePanel ui:field="dataDictionaryDataHolder"/>
+	</g:HTMLPanel>
+</ui:UiBinder> 
