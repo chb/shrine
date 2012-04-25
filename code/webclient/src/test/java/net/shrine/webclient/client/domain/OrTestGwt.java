@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
+import net.shrine.webclient.client.util.Util;
 
 import org.junit.Test;
 
@@ -97,6 +98,10 @@ public class OrTestGwt extends AbstractWebclientTest {
 			empty.without(null);
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
+		
+		final Or foo = or2.without(t3);
+		
+		assertEquals(foo, or2);
 	}
 
 	@Test
@@ -106,5 +111,25 @@ public class OrTestGwt extends AbstractWebclientTest {
 		assertEquals(t1.toXmlString(), new Or(t1).toXmlString());
 		
 		assertEquals("<or>" + t3.toXmlString() + t4.toXmlString() + "</or>", new Or(t3, t4).toXmlString());
+	}
+	
+	@Test
+	public void testSize() {
+		assertEquals(2, new Or(t1, t2).size());
+		assertEquals(0, new Or().size());
+	}
+	
+	@Test
+	public void testIsEmpty() {
+		assertFalse(new Or(t1, t2).isEmpty());
+		assertFalse(new Or(t3).isEmpty());
+		assertTrue(new Or().isEmpty());
+	}
+	
+	@Test
+	public void testIterator() {
+		assertFalse(new Or().iterator().hasNext());
+		
+		assertEquals(asList(t1, t2), Util.toList(new Or(t1, t2)));
 	}
 }

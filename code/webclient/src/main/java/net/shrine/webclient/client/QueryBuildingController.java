@@ -46,12 +46,14 @@ public final class QueryBuildingController extends StatefulController {
 				removeQueryGroup(queryName);
 			}
 		} else if(expr instanceof Or) {
-			final Or removed = ((Or)expr).without(term);
+			final Or withoutTerm = ((Or)expr).without(term);
 			
-			if(expr.equals(removed)) {
+			if(expr.equals(withoutTerm)) {
 				Log.warn("Removing term from query '" + queryName + "' has no effect: " + term);
+			} else if(withoutTerm.isEmpty()) {
+				removeQueryGroup(queryName);
 			} else {
-				queryGroup.setExpression(removed);
+				queryGroup.setExpression(withoutTerm);
 			}
 		} else {
 			throw new IllegalStateException("Query group '" + queryName + "' has illegal expression: " + expr);
