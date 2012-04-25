@@ -35,8 +35,8 @@ public final class AllResultsRow extends Composite implements Observer {
 
 	private Controllers controllers;
 	
-	@UiField
-	FlowPanel resultsPanel;
+	/*@UiField
+	FlowPanel resultsPanel;*/
 	
 	public AllResultsRow() {
 		super();
@@ -53,22 +53,22 @@ public final class AllResultsRow extends Composite implements Observer {
 		
 		this.allResults.observedBy(this);
 		
-		resultsPanel.clear();
+		//resultsPanel.clear();
 	}
 
 	@Override
 	public void inform() {
-		resultsPanel.clear();
+		//resultsPanel.clear();
 		
 		if(allResults.isDefined()) {
 			for(final Entry<String, IntWrapper> entry : allResults.get().entrySet()) {
 				final String instName = entry.getKey();
 				final int count = entry.getValue().getValue();
 				
-				resultsPanel.add(new ResultRow(instName, Observable.from(count)));
+				//resultsPanel.add(new ResultRow(instName, Observable.from(count)));
 			}
 		} else {
-			resultsPanel.add(new LoadingSpinner());
+			//resultsPanel.add(new LoadingSpinner());
 		}
 	}
 

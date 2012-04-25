@@ -1,9 +1,35 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:HTMLPanel styleName="breakDownOuter">
-        <div class="breakDown">
-   	    	<div class="breakDownUpperTitle">Results</div>
-        	<g:FlowPanel styleName="breakDownUpper" ui:field="resultsPanel"/>
-        </div>
+	  <div class="breakDown">
+		<div class="breakDownTop">
+           	  <div class="breakDownTopLeft">
+                
+                
+                <div class="breakDownTopRight">
+                      Approved Query Topic: <a href="#">Request New Query Topic</a><br/>
+                      <select name="datastewart" class="dataDropdown">
+                      <option value="1">Option 1</option>
+                      <option value="2">Option 2</option>
+                    </select>
+                  <g:Button text="Run Query" addStyleNames="largeButton" />
+                </div>
+        <div class="title">Query Summary</div> <div class="querySentence">
+                
+                <span class="term" style="color: rgb(0, 102, 51);">Neonatal diabetes mallitus</span> <span class="joiner">AND</span> <span class="term" style="color: rgb(0, 102, 153);">Pravastatin</span>  
+                </div></div>
+            </div>
+            <div class="breakDownUpper">
+                
+                <div class="resultInstitutionsTitle"> Institution Results</div>
+                <div class="resultInstitutions">
+                    <div class="resultInstitution">Institution 1: <strong>1,562</strong></div>
+                    <div class="resultInstitution">Institution 2: <strong>2,120</strong></div>
+                    <div class="resultInstitution">Inistitution 3: <strong>3,253</strong></div>
+                    <div class="resultInstitution">Institution 4: <strong>1,145</strong></div>
+                </div>
+                <div class="queryResultsTotals" style="display: none;"> 25,870 </div>
+            </div>
+            </div>
     </g:HTMLPanel>
 </ui:UiBinder> 
