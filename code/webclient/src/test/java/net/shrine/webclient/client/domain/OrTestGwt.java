@@ -53,6 +53,11 @@ public class OrTestGwt extends AbstractWebclientTest {
 		
 		assertTrue(empty.getTerms().isEmpty());
 		
+		try {
+			empty.with(null);
+			fail("Should have thrown");
+		} catch (IllegalArgumentException expected) { }
+		
 		final Or or1 = empty.with(t1);
 		
 		assertNotSame(empty, or1);
@@ -87,6 +92,11 @@ public class OrTestGwt extends AbstractWebclientTest {
 		assertEquals(asList(t2), or1.getTerms());
 		assertEquals(asList(t1, t2), or2.getTerms());
 		assertTrue(empty.getTerms().isEmpty());
+		
+		try {
+			empty.without(null);
+			fail("Should have thrown");
+		} catch (IllegalArgumentException expected) { }
 	}
 
 	@Test
