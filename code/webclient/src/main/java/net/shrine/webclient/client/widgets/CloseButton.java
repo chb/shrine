@@ -2,6 +2,7 @@ package net.shrine.webclient.client.widgets;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -32,5 +33,10 @@ public final class CloseButton extends Composite {
 
 	public HandlerRegistration addClickHandler(final ClickHandler handler) {
 		return delegate.addClickHandler(handler);
+	}
+
+	@Override
+	public void fireEvent(final GwtEvent<?> event) {
+		delegate.fireEvent(event);
 	}
 }
