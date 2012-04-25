@@ -56,8 +56,6 @@ public final class QueryColumn extends Composite implements Observer {
 	public void inform() {
 		clear();
 		
-		//delegate.setVisible(!queries.isEmpty());
-		
 		for(final String queryName : queries.keySet()) {
 			final QueryGroup query = queries.get(queryName);
 			
