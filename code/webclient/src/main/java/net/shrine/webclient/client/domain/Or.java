@@ -65,6 +65,16 @@ public final class Or implements Andable {
 
 	@Override
 	public String toXmlString() {
-		return "<or>" + Util.join("", terms) + "</or>";
+		if(terms.size() == 1) {
+			return terms.get(0).toXmlString();
+		}
+		
+		final List<String> xmls = Util.makeArrayList();
+		
+		for(final Term t : terms) {
+			xmls.add(t.toXmlString());
+		}
+		
+		return "<or>" + Util.join("", xmls) + "</or>";
 	}
 }
