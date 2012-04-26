@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 
@@ -57,9 +56,6 @@ public final class QueryRow extends Composite implements Observer {
 
 	@UiField
 	HTMLPanel exprPanel;
-
-	/*@UiField
-	SimplePanel resultPanel;*/
 
 	@UiField
 	CloseButton clearButton;
@@ -106,8 +102,6 @@ public final class QueryRow extends Composite implements Observer {
 		initMinOccursSpinner();
 
 		inform();
-
-		//resultPanel.clear();
 	}
 
 	private void initClearButton() {
@@ -175,8 +169,6 @@ public final class QueryRow extends Composite implements Observer {
 
 		refreshExpressionPanel();
 
-		//refreshResultPanel();
-
 		negationCheckbox.setValue(query.isNegated(), false);
 
 		startDate.setValue(query.getStart(), false);
@@ -185,18 +177,6 @@ public final class QueryRow extends Composite implements Observer {
 
 		minOccursSpinner.setValue(query.getMinOccurances(), false);
 	}
-
-	/*private void refreshResultPanel() {
-		final Widget resultWidget;
-
-		if (result.isDefined()) {
-			resultWidget = new HoverableResultLink(result.get());
-		} else {
-			resultWidget = new LoadingSpinner();
-		}
-
-		resultPanel.setWidget(resultWidget);
-	}*/
 
 	private void refreshExpressionPanel() {
 		exprPanel.clear();
