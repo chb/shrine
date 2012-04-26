@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.spin.query.message.headers.{ResultSet, QueryInfo}
 import org.spin.query.message.agent.{SpinAgent, TimeoutException, AgentException}
 import net.shrine.aggregation._
+import org.apache.log4j.Logger
+import org.spin.query.message.headers.Result
 
 /**
  * @author Bill Simons
@@ -36,6 +38,8 @@ class ShrineService(
     private val shrineConfig: ShrineConfig,
     private val spinClient: SpinAgent) extends ShrineRequestHandler {
 
+  import ShrineService._
+  
   private lazy val endpointConfig = new EndpointConfig(EndpointType.SOAP, shrineConfig.getAggregatorEndpoint);
 
   protected def generateIdentity(authn: AuthenticationInfo): Identity = identityService.certify(authn.domain, authn.username, authn.credential.value)
@@ -68,14 +72,23 @@ class ShrineService(
     }
   }
 
-  private def aggregate(queryId: String, identity: Identity, aggregator: Aggregator) = {
+  private[service] def aggregate(queryId: String, identity: Identity, aggregator: Aggregator) = {
     val spinResults = getSpinResults(queryId, identity)
-    val spinResultEntries = spinResults map {x =>
-      new SpinResultEntry(new PKCryptor().decrypt(x.getPayload()), x)
+    
+    val (notNullResults, nullResults) = spinResults.toSeq.partition(_ != null)
+    
+    if(!nullResults.isEmpty) {
+      log.error("Received " + nullResults.size + " null results.  Got non-null results from " + notNullResults.size + " nodes: " + notNullResults.map(r => Option(r.getDescription).getOrElse("Unknown")))
     }
+    
+    val cryptor = new PKCryptor
+    
+    //TODO: calling cryptor.decrypt fails on unencrypted results; perhaps these should be allowed, by choosing
+    //to pass unencrypted results through unchanged
+    
+    val spinResultEntries = notNullResults.map(result => new SpinResultEntry(cryptor.decrypt(result.getPayload), result))
 
-    val responseMessageType = aggregator.aggregate(spinResultEntries.toSeq)
-    responseMessageType
+    aggregator.aggregate(spinResultEntries)
   }
 
   protected def executeRequest(identity: Identity, message: BroadcastMessage, aggregator: Aggregator): ShrineResponse = {
@@ -126,4 +139,8 @@ class ShrineService(
   def deleteQuery(request: DeleteQueryRequest) = executeRequest(request, new DeleteQueryAggregator())
 
   def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest) = authorizationService.readApprovedEntries(request)
+}
+
+object ShrineService {
+  private val log = Logger.getLogger(classOf[ShrineService])
 }
