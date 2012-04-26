@@ -82,9 +82,13 @@ class ShrineService(
       log.error("Received " + nullResults.size + " null results.  Got non-null results from " + notNullResults.size + " nodes: " + notNullResults.map(r => Option(r.getDescription).getOrElse("Unknown")))
     }
     
-    val cryptor = new PKCryptor
-    
-    def decrypt(envelope: Envelope) = if(envelope.isEncrypted) cryptor.decrypt(envelope) else envelope.getData
+    def decrypt(envelope: Envelope) = {
+      if(envelope.isEncrypted) {
+        (new PKCryptor).decrypt(envelope) 
+      } else {
+        envelope.getData
+      }
+    }
     
     val spinResultEntries = notNullResults.map(result => new SpinResultEntry(decrypt(result.getPayload), result))
 
