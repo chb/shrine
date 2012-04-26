@@ -39,8 +39,8 @@ public final class WebClientContent extends Composite {
 	public void wireUp(final State state, final Controllers controllers, final OntologySearchBox ontSearchBox) {
 		searchArea.wireUp(ontSearchBox);
 		
-		allResultColumn.wireUp(controllers, state.getAllResult());
-		
 		queryColumn.wireUp(controllers, state.getQueries());
+		
+		allResultColumn.wireUp(controllers, state.getQueries(), state.getAllResult());
 	}
 }

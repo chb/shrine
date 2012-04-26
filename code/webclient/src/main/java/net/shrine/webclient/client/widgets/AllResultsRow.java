@@ -5,8 +5,11 @@ import java.util.Map.Entry;
 
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.IntWrapper;
+import net.shrine.webclient.client.domain.QueryGroup;
+import net.shrine.webclient.client.util.ObservableMap;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
+import net.shrine.webclient.client.util.ReadOnlyObservableMap;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -42,19 +45,26 @@ public final class AllResultsRow extends Composite implements Observer {
 	@UiField
 	FlowPanel resultsPanel;
 	
+	private ReadOnlyObservableMap<String, QueryGroup> queryGroups;
+	
 	public AllResultsRow() {
 		super();
 		
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	void wireUp(final Controllers controllers, final ReadOnlyObservable<HashMap<String, IntWrapper>> allResults) {
+	void wireUp(final Controllers controllers, final ObservableMap<String, QueryGroup> queryGroups, final ReadOnlyObservable<HashMap<String, IntWrapper>> allResults) {
 		Util.requireNotNull(controllers);
+		Util.requireNotNull(queryGroups);
 		Util.requireNotNull(allResults);
 		
 		this.allResults = allResults;
 		
 		this.allResults.observedBy(this);
+		
+		this.queryGroups = queryGroups;
+		
+		this.queryGroups.observedBy(this);
 		
 		resultsPanel.clear();
 		
@@ -64,10 +74,16 @@ public final class AllResultsRow extends Composite implements Observer {
 				controllers.query.runAllQuery();
 			}
 		});
+		
+		inform();
+		
+		resultsPanel.clear();
 	}
 
 	@Override
 	public void inform() {
+		runQueryButton.setEnabled(queryGroups.size() > 0);
+		
 		resultsPanel.clear();
 		
 		if(allResults.isDefined()) {
@@ -85,5 +101,6 @@ public final class AllResultsRow extends Composite implements Observer {
 	@Override
 	public void stopObserving() {
 		allResults.noLongerObservedBy(this);
+		queryGroups.noLongerObservedBy(this);
 	}
 }

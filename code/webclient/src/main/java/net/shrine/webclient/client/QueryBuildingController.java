@@ -19,6 +19,10 @@ public final class QueryBuildingController extends StatefulController {
 		super(state);
 	}
 
+	public int getNumQueryGroups() {
+		return state.numQueryGroups();
+	}
+	
 	public String addNewTerm(final Term term) {
 		final String name = state.getQueryGroupNames().next();
 
