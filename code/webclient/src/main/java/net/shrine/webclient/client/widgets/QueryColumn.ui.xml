@@ -1,8 +1,11 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style>
-		.queryColumn { min-height:345px; }
-	</ui:style>
-	<!-- Query groups -->
-	<g:FlowPanel addStyleNames="queryBuilder {style.queryColumn}" ui:field="delegate"/>
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
+			 
+	<g:HTMLPanel styleName="queryBuilder">
+		<shrine:CloseButton ui:field="clearButton" styleName="queryClear" />
+		<!-- Query groups -->
+		<g:FlowPanel ui:field="delegate" />
+	</g:HTMLPanel>
 </ui:UiBinder> 

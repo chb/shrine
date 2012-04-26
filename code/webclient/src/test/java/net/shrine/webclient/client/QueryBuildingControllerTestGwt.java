@@ -40,6 +40,27 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 		assertEquals(term2, state.getQueries().get("B").getExpression());
 	}
 	
+	public void testRemoveAllQueryGroups() {
+		final State state = new State();
+		
+		final QueryBuildingController controller = new QueryBuildingController(state);
+		
+		assertEquals(0, state.numQueryGroups());
+		
+		controller.removeAllQueryGroups();
+		
+		assertEquals(0, state.numQueryGroups());
+		
+		state.registerNewQuery("foo", new Term("foo"));
+		state.registerNewQuery("bar", new Term("blah"));
+		
+		assertEquals(2, state.numQueryGroups());
+		
+		controller.removeAllQueryGroups();
+		
+		assertEquals(0, state.numQueryGroups());
+	}
+	
 	public void testRemoveQueryGroup() {
 		final State state = new State();
 		

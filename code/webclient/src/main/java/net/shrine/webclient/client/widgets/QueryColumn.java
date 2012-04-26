@@ -7,6 +7,8 @@ import net.shrine.webclient.client.util.ReadOnlyObservableMap;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -24,6 +26,9 @@ public final class QueryColumn extends Composite implements Observer {
 
 	interface QueryColumnUiBinder extends UiBinder<Widget, QueryColumn> { }
 
+	@UiField
+	CloseButton clearButton;
+	
 	@UiField
 	FlowPanel delegate;
 
@@ -49,6 +54,13 @@ public final class QueryColumn extends Composite implements Observer {
 		this.queries = queries;
 		
 		this.queries.observedBy(this);
+		
+		clearButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				controllers.queryBuilding.removeAllQueryGroups();
+			}
+		});
 		
 		this.inform();
 	}

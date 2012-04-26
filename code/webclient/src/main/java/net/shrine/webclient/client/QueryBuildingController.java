@@ -4,6 +4,7 @@ import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.Or;
 import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -24,6 +25,13 @@ public final class QueryBuildingController extends StatefulController {
 		state.registerNewQuery(name, term);
 
 		return name;
+	}
+	
+	public void removeAllQueryGroups() {
+		//NB: Defensively copy state.getQueries().keySet() to avoid ConcurrentModificationException
+		for(final String groupName : Util.toList(state.getQueries().keySet())) {
+			removeQueryGroup(groupName);
+		}
 	}
 	
 	public void removeQueryGroup(final String queryName) {
