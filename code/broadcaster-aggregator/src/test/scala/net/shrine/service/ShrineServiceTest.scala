@@ -71,7 +71,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
   def testAggregateHandlesNullResults {
     import scala.collection.JavaConverters._
     
-    val envelope = (new PKCryptor).encrypt("jksahdjksahdjksadh", PKITool.getInstance.getMyCertID)
+    val envelope = Envelope.unencrypted("jksahdjksahdjksadh")
     
     def result(description: Char) = new Result(new CertID("123456"), description.toString, envelope, Interval.milliseconds(500))
   

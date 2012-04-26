@@ -20,6 +20,7 @@ import org.spin.query.message.agent.{SpinAgent, TimeoutException, AgentException
 import net.shrine.aggregation._
 import org.apache.log4j.Logger
 import org.spin.query.message.headers.Result
+import org.spin.tools.crypto.Envelope
 
 /**
  * @author Bill Simons
@@ -83,10 +84,9 @@ class ShrineService(
     
     val cryptor = new PKCryptor
     
-    //TODO: calling cryptor.decrypt fails on unencrypted results; perhaps these should be allowed, by choosing
-    //to pass unencrypted results through unchanged
+    def decrypt(envelope: Envelope) = if(envelope.isEncrypted) cryptor.decrypt(envelope) else envelope.getData
     
-    val spinResultEntries = notNullResults.map(result => new SpinResultEntry(cryptor.decrypt(result.getPayload), result))
+    val spinResultEntries = notNullResults.map(result => new SpinResultEntry(decrypt(result.getPayload), result))
 
     aggregator.aggregate(spinResultEntries)
   }
