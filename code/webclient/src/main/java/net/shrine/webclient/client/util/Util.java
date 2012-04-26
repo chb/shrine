@@ -18,6 +18,14 @@ public final class Util {
 	  super();
   }
   
+  public static <T extends Comparable<T>> List<T> sorted(final Iterable<T> stuff) {
+	  final List<T> result = toList(stuff);
+	  
+	  Collections.sort(result);
+	  
+	  return result;
+  }
+  
   public static <T> List<T> take(final int howMany, final Iterable<T> stuff) {
 	  requireNotNull(stuff);
 	  

@@ -20,6 +20,17 @@ import org.junit.Test;
  */
 public class UtilTestGwt extends AbstractWebclientTest {
 	@Test
+	public void testSorted() {
+		final Iterable<String> stuff = asList("z", "asd", "x", "foo");
+		
+		final List<String> sorted = Util.sorted(stuff);
+		
+		assertNotSame(stuff, sorted);
+		assertNotNull(sorted);
+		assertEquals(asList("asd", "foo", "x", "z"), sorted);
+	}
+	
+	@Test
 	public void testTake() {
 		try {
 			Util.take(-1, new ArrayList<String>());
