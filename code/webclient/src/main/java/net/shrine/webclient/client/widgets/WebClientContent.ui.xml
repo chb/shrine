@@ -3,7 +3,7 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui" 
 			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
 			 
-	<g:HTMLPanel>
+	<g:HTMLPanel styleName="mainContent">
 		<!--Search Box -->
 		<shrine:SearchArea ui:field="searchArea" />
 		<!-- Data Dictionary -->

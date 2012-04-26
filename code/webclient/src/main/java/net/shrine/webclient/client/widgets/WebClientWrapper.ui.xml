@@ -4,7 +4,7 @@
 			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
 			 
 	<g:HTMLPanel addStyleNames="wrapper">
-  	  <g:HTMLPanel addStyleNames="header"><shrine:ShrineLogo/></g:HTMLPanel>
+  	  <shrine:Header/>
       <shrine:WebClientContent addStyleNames="mainContent" ui:field="content" />
     </g:HTMLPanel>
 </ui:UiBinder> 
