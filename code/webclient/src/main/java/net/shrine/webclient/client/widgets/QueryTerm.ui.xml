@@ -3,6 +3,6 @@
 			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
 			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
 	<g:HTMLPanel styleName="queryTerm">
-		<span ui:field="termSpan"></span><shrine:CloseButton ui:field="closeButton"/>
+		<span ui:field="termSpan"></span><shrine:CloseButton styleName="queryTermClose" ui:field="closeButton"/>
 	</g:HTMLPanel>
 </ui:UiBinder> 

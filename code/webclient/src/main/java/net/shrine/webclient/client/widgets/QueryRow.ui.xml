@@ -5,13 +5,12 @@
 			 xmlns:s="urn:import:net.shrine.webclient.client.widgets">
 	
 	<g:HTMLPanel addStyleNames="queryRow">
-		<g:HorizontalPanel>
+			<s:CloseButton styleName="queryRowClose" ui:field="clearButton"/>
 			<g:Label addStyleNames="queryRowLabel label1" ui:field="nameLabel" />
 			<!-- id=terms1 -->
 	 		<g:HTMLPanel addStyleNames="queryRowTerms" ui:field="exprPanel" />
-	 		<g:SimplePanel addStyleNames="queryRowResults" ui:field="resultPanel" />
- 		</g:HorizontalPanel>
- 		<!-- <a href="#">break down</a> -->
+	 		
+	 		<!-- <g:SimplePanel addStyleNames="queryRowResults" ui:field="resultPanel" /> -->
   		<div class="queryRowFilters">
     		<div class="queryRowFiltersInner"> Date Range: <d:DateBox ui:field="startDate" width="80px"/> to <d:DateBox ui:field="endDate" width="80px"/></div>
     		<!-- TODO: WhyTF does Min # Occurances appear vertically lower than the adjacent Spinner? -->

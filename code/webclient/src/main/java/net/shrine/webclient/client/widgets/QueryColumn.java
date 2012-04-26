@@ -56,7 +56,7 @@ public final class QueryColumn extends Composite implements Observer {
 	public void inform() {
 		clear();
 		
-		for(final String queryName : queries.keySet()) {
+		for(final String queryName : Util.sorted(queries.keySet())) {
 			final QueryGroup query = queries.get(queryName);
 			
 			delegate.add(new QueryRow(controllers, queryName, query));
