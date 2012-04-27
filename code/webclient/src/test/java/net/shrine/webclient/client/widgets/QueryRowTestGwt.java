@@ -82,26 +82,6 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 
 		final QueryRow queryRow = new QueryRow(controllers, "foo", new QueryGroup(new Term("foo"), result));
 
-		// Test observation of results
-		{
-			assertNull(queryRow.resultPanel.getWidget());
-
-			@SuppressWarnings("serial")
-			final HashMap<String, IntWrapper> resultsByInst = new HashMap<String, IntWrapper>() {{
-				this.put("blah", new IntWrapper(99));
-			}};
-
-			result.set(resultsByInst);
-
-			assertNotNull(queryRow.resultPanel.getWidget());
-			assertTrue(queryRow.resultPanel.getWidget() instanceof HoverableResultLink);
-
-			result.clear();
-
-			assertNotNull(queryRow.resultPanel.getWidget());
-			assertTrue(queryRow.resultPanel.getWidget() instanceof LoadingSpinner);
-		}
-
 		//Test negate box init
 		{
 			assertFalse(queryRow.negationCheckbox.getValue());
@@ -162,26 +142,10 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 
 		final QueryRow queryRow = new QueryRow(controllers, "foo", new QueryGroup(new Term("foo"), result));
 		
-		assertNull(queryRow.resultPanel.getWidget());
 		assertFalse(queryRow.negationCheckbox.getValue());
 		assertNull(queryRow.startDate.getValue());
 		assertNull(queryRow.endDate.getValue());
 		assertEquals(1, queryRow.minOccursSpinner.getValue());
-		
-		@SuppressWarnings("serial")
-		final HashMap<String, IntWrapper> resultsByInst = new HashMap<String, IntWrapper>() {{
-			this.put("blah", new IntWrapper(42));
-		}};
-		
-		result.set(resultsByInst);
-		
-		assertNotNull(queryRow.resultPanel.getWidget());
-		
-		final HoverableResultLink link = (HoverableResultLink)queryRow.resultPanel.getWidget();
-		
-		link.showPopup(0, 0);
-		
-		assertEquals(resultsByInst, ((ResultTooltip)link.getResultTooltip().getWidget()).breakDown);
 	}
 
 	@Test

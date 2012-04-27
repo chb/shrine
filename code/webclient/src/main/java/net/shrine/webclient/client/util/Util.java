@@ -19,7 +19,7 @@ public final class Util {
   }
   
   public static <T extends Comparable<T>> List<T> sorted(final Iterable<T> stuff) {
-	  final List<T> result = toList(stuff);
+	  final List<T> result = makeArrayList(stuff);
 	  
 	  Collections.sort(result);
 	  
@@ -111,8 +111,14 @@ public final class Util {
 	  return new ArrayList<T>();
   }
   
-  public static <T> ArrayList<T> makeArrayList(final Collection<T> collection) {
-	  return new ArrayList<T>(collection);
+  public static <T> ArrayList<T> makeArrayList(final Iterable<T> collection) {
+	  final ArrayList<T> result = makeArrayList();
+	  
+	  for(final T t : collection) {
+		  result.add(t);
+	  }
+	  
+	  return result;
   }
   
   public static <K,V> HashMap<K,V> makeHashMap() {
