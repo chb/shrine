@@ -1,0 +1,9 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:HTMLPanel>
+		<div class="loadHeader">
+    	  <span class=" sortDown" width="61%"><a href="#">Query Name</a></span><span width="32%"><a href="#">Date</a></span>
+		</div>
+		<g:HTMLPanel ui:field="rows"/>
+	</g:HTMLPanel>
+</ui:UiBinder> 
