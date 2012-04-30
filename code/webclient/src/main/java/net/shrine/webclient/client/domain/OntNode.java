@@ -38,6 +38,10 @@ public final class OntNode implements IsSerializable {
 		this.children = children;
 		this.isLeaf = isLeaf;
 	}
+	
+	public Term toTerm() {
+		return new Term(value, simpleName);
+	}
 
 	public String getValue() {
 		return value;

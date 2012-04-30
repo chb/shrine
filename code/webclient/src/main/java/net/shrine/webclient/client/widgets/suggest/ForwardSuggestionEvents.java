@@ -13,7 +13,7 @@ public final class ForwardSuggestionEvents {
 		super();
 	}
 	
-	public static final <S extends IsSerializable> RichSuggestionEventHandler<S> to(final SinksRichSuggestionEvents<S> eventSink) {
+	public static final <S extends IsSerializable> RichSuggestionEventHandler<S> to(final SuggestRowContainer<S> eventSink) {
 		return new RichSuggestionEventHandler<S>() {
 			@Override
 			public void onSelectionMade(final RichSuggestionEvent<S> event) {

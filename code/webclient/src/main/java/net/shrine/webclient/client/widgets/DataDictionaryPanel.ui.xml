@@ -1,8 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:HTMLPanel styleName="dataDictionaryData" ui:field="wrapper">
-		<div id="browser" class="filetree">
-			<ul>
+		<g:HTMLPanel styleName="filetree" ui:field="browser">
+			<!-- <ul>
 				<li>
 					<span class="folder">SHRINE Ontology</span>
 					<ul>
@@ -144,7 +144,7 @@
 						</li>
 					</ul>
 				</li>
-			</ul>
-		</div>
+			</ul> -->
+		</g:HTMLPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

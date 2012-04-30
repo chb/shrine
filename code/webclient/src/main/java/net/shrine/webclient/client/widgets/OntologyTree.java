@@ -11,6 +11,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
@@ -28,12 +29,15 @@ public final class OntologyTree extends Composite {
 	
 	private final Controllers controllers;
 	
-	public OntologyTree(final Controllers controllers, final OntNode node) {
+	private final EventBus eventBus;
+	
+	public OntologyTree(final EventBus eventBus, final Controllers controllers, final OntNode node) {
 		super();
 		
 		delegate = makeTree(node);
 		
 		this.controllers = controllers;
+		this.eventBus = eventBus;
 		
 		initWidget(delegate);
 	}
@@ -43,7 +47,7 @@ public final class OntologyTree extends Composite {
 		final OntNode ontNode;
 		
 		OntTreeItem(final OntNode ontNode) {
-			super(new OntTreeNode(controllers, ontNode));
+			super(new OntTreeNode(eventBus, controllers, ontNode));
 			
 			this.ontNode = ontNode;
 		}

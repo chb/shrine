@@ -3,10 +3,10 @@ package net.shrine.webclient.client.widgets;
 import static java.util.Arrays.asList;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.domain.TermSuggestion;
-import net.shrine.webclient.client.events.ShowBrowsePopupEvent;
+import net.shrine.webclient.client.events.ShowDataDictionaryPanelEvent;
 import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestionEvent;
-import net.shrine.webclient.client.widgets.suggest.SinksRichSuggestionEvents;
+import net.shrine.webclient.client.widgets.suggest.SuggestRowContainer;
 import net.shrine.webclient.client.widgets.suggest.WidgetMaker;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -49,10 +49,10 @@ public final class AutoSuggestRow extends Composite {
 	@UiField
 	Label synonym;
 
-	public AutoSuggestRow(final EventBus eventBus, final SinksRichSuggestionEvents<TermSuggestion> suggestionEventSink, final TermSuggestion termSuggestion) {
+	public AutoSuggestRow(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> container, final TermSuggestion termSuggestion) {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		Util.requireNotNull(suggestionEventSink);
+		Util.requireNotNull(container);
 		Util.requireNotNull(termSuggestion);
 
 		initBrowseLinkStyleNames(termSuggestion);
@@ -68,17 +68,19 @@ public final class AutoSuggestRow extends Composite {
 		// Make full path appear when mouse hovers
 		this.setTitle(termSuggestion.getPath());
 
-		initClickHandlers(suggestionEventSink, termSuggestion);
+		initClickHandlers(container, termSuggestion);
 
 		browseLink.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				eventBus.fireEvent(new ShowBrowsePopupEvent(new Term(termSuggestion.getPath())));
+				container.hidePopup();
+				
+				eventBus.fireEvent(new ShowDataDictionaryPanelEvent(new Term(termSuggestion.getPath())));
 			}
 		});
 	}
 
-	public static final WidgetMaker<TermSuggestion> autoSuggestRowWidgetMaker(final EventBus eventBus, final SinksRichSuggestionEvents<TermSuggestion> suggestionEventSink) {
+	public static final WidgetMaker<TermSuggestion> autoSuggestRowWidgetMaker(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> suggestionEventSink) {
 		return new WidgetMaker<TermSuggestion>() {
 			@Override
 			public Widget makeWidget(final TermSuggestion termSuggestion) {
@@ -92,7 +94,7 @@ public final class AutoSuggestRow extends Composite {
 		browseLink.addStyleName(termSuggestion.isLeaf() ? "leaf" : "folder");
 	}
 
-	void initClickHandlers(final SinksRichSuggestionEvents<TermSuggestion> suggestionEventSink, final TermSuggestion termSuggestion) {
+	void initClickHandlers(final SuggestRowContainer<TermSuggestion> suggestionEventSink, final TermSuggestion termSuggestion) {
 		final ClickHandler clickHandler = makeHandlerThatFiresSuggestionEvent(suggestionEventSink, termSuggestion);
 
 		for (final Label clickable : asList(simpleName, synonym)) {
@@ -100,7 +102,7 @@ public final class AutoSuggestRow extends Composite {
 		}
 	}
 
-	ClickHandler makeHandlerThatFiresSuggestionEvent(final SinksRichSuggestionEvents<TermSuggestion> eventSink, final TermSuggestion termSuggestion) {
+	ClickHandler makeHandlerThatFiresSuggestionEvent(final SuggestRowContainer<TermSuggestion> eventSink, final TermSuggestion termSuggestion) {
 		return new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -133,7 +135,7 @@ public final class AutoSuggestRow extends Composite {
 		return highlightRegex.replace(original, "<strong>$1</strong>");
 	}
 
-	void fireSuggestionEvent(final SinksRichSuggestionEvents<TermSuggestion> eventSink, final RichSuggestionEvent<TermSuggestion> suggestionEvent) {
+	void fireSuggestionEvent(final SuggestRowContainer<TermSuggestion> eventSink, final RichSuggestionEvent<TermSuggestion> suggestionEvent) {
 		Log.debug("Firing suggestion event: " + suggestionEvent);
 
 		eventSink.fireSuggestionEvent(suggestionEvent);

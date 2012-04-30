@@ -4,6 +4,7 @@ import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.State;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -29,7 +30,7 @@ public final class WebClientWrapper extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
-	public void wireUp(final State state, final Controllers controllers, final OntologySearchBox ontSearchBox) {
-		this.content.wireUp(state, controllers, ontSearchBox);
+	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox) {
+		this.content.wireUp(eventBus, state, controllers, ontSearchBox);
 	}
 }

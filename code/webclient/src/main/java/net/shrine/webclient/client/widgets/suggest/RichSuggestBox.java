@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author clint
  * @date Apr 5, 2012
  */
-public class RichSuggestBox<S extends IsSerializable> extends Composite implements HasHideablePopup, SinksRichSuggestionEvents<S>, HasText {
+public class RichSuggestBox<S extends IsSerializable> extends Composite implements SuggestRowContainer<S>, HasText {
 	private final TextBox textBox = new TextBox();
 
 	private RichSuggestOracle<S> oracle;
@@ -72,7 +72,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 			}
 		}
 	}
-
+	
 	@Override
 	public String getText() {
 		return textBox.getText();

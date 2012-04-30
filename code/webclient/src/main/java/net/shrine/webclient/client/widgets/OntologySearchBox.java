@@ -47,12 +47,10 @@ public final class OntologySearchBox extends RichSuggestBox<TermSuggestion> {
 			this.addStyleName(styleName);
 		}
 		
+		this.setWidgetMaker(AutoSuggestRow.autoSuggestRowWidgetMaker(eventBus, this));
+		
 		//TODO: Very hackish; means there can only be one OntologySearchBox. :(
 		this.getElement().setId(ID);
-	}
-	
-	public void wireUp(final EventBus eventBus) {
-		this.setWidgetMaker(AutoSuggestRow.autoSuggestRowWidgetMaker(eventBus, this));
 	}
 	
 	private static final WidgetMaker<TermSuggestion> NullWidgetMaker = new WidgetMaker<TermSuggestion>() {

@@ -1,11 +1,9 @@
 package net.shrine.webclient.client.widgets;
 
-import static java.util.Arrays.asList;
 import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.Webclient;
 import net.shrine.webclient.client.domain.OntNode;
 import net.shrine.webclient.client.domain.Term;
-import net.shrine.webclient.client.events.CloseBrowsePopupEvent;
+import net.shrine.webclient.client.events.CollapseDataDictionaryPanelEvent;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -36,7 +34,7 @@ public final class OntTreeNode extends Composite {
 	@UiField
 	Anchor textAnchor;
 	
-	public OntTreeNode(final Controllers controllers, final OntNode node ) {
+	public OntTreeNode(final EventBus eventBus, final Controllers controllers, final OntNode node ) {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		Util.requireNotNull(node);
@@ -50,9 +48,9 @@ public final class OntTreeNode extends Composite {
 		textAnchor.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				controllers.queryBuilding.addNewTerm(new Term(node.getValue()));
+				controllers.queryBuilding.addNewTerm(node.toTerm());
 				
-				Webclient.EventBus.fireEvent(CloseBrowsePopupEvent.Instance);
+				eventBus.fireEvent(CollapseDataDictionaryPanelEvent.Instance);
 			}
 		});
 	}

@@ -67,7 +67,7 @@ public class ForwardSuggestionEventsTestGwt extends AbstractWebclientTest {
 		}
 	}
 
-	private static final class FooEventSink implements SinksRichSuggestionEvents<Foo> {
+	private static final class FooEventSink implements SuggestRowContainer<Foo> {
 		public Foo lastReceived = null;
 
 		@Override
