@@ -2,7 +2,9 @@ package net.shrine.webclient.client.widgets;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -18,7 +20,13 @@ public final class DataDictionaryPanel extends Composite  {
 
 	interface DataDictionaryDataHolderUiBinder extends UiBinder<Widget, DataDictionaryPanel> { }
 
+	@UiField
+	HTMLPanel wrapper;
+	
 	public DataDictionaryPanel() {
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		//TODO: hacky
+		wrapper.getElement().setId("dataDictionaryData");
 	}
 }

@@ -336,7 +336,6 @@ body {
 }
 
 #dataDictionaryData {
-	display:none;
 	overflow-y:scroll;
 	max-height: 400px;
 	border: 1px solid #CCC;
