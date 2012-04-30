@@ -8,8 +8,11 @@ import com.google.gwt.user.client.ui.Image;
  * @date Apr 24, 2012
  */
 public final class DeleteButton extends Image {
+	
+	public static final String Url = "/images/delete.png";
+
 	public DeleteButton() {
-		super("/images/delete.png");
+		super(Url);
 		
 		this.setAltText("Delete");
 		
