@@ -26,6 +26,7 @@
 
   <stylesheet src="/css/shrine.css" />
   <stylesheet src="/css/jquery.tooltip.css" />
+  <stylesheet src="/css/jquery.treeview.css" />
   <stylesheet src="/css/suggestbox.css" />
   <stylesheet src="/css/browse.css" />
   
