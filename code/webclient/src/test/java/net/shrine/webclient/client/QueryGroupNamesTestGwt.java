@@ -44,21 +44,16 @@ public class QueryGroupNamesTestGwt extends AbstractWebclientTest {
 		final List<QueryGroupId> expected = Util.makeArrayList();
 
 		{
-			int count = 0;
-
 			for (final String letter : alphabet) {
-				expected.add(new QueryGroupId(letter, QueryGroupIdsIterator.cssClasses.get(count % QueryGroupIdsIterator.numCssClasses)));
-				++count;
+				expected.add(new QueryGroupId(letter));
 			}
 
 			for (final String glyph : alphabet1) {
-				expected.add(new QueryGroupId(glyph, QueryGroupIdsIterator.cssClasses.get(count % QueryGroupIdsIterator.numCssClasses)));
-				++count;
+				expected.add(new QueryGroupId(glyph));
 			}
 
 			for (final String glyph : alphabet2) {
-				expected.add(new QueryGroupId(glyph, QueryGroupIdsIterator.cssClasses.get(count % QueryGroupIdsIterator.numCssClasses)));
-				++count;
+				expected.add(new QueryGroupId(glyph));
 			}
 		}
 
@@ -67,12 +62,5 @@ public class QueryGroupNamesTestGwt extends AbstractWebclientTest {
 		final List<QueryGroupId> ids = Util.take(howMany, new QueryGroupIdsIterator());
 
 		assertEquals(expected, ids);
-
-		assertEquals(expected.size(), ids.size());
-
-		for (int i = 0; i < ids.size(); ++i) {
-			assertEquals(expected.get(i).name, ids.get(i).name);
-			assertEquals(expected.get(i).cssClass, ids.get(i).cssClass);
-		}
 	}
 }

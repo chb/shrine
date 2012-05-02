@@ -148,7 +148,11 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 	public void setId(final QueryGroupId id) {
 		Util.requireNotNull(id);
 
-		this.id = id;
+		try {
+			this.id = id;
+		} finally {
+			notifyObservers();
+		}
 	}
 
 	@Override

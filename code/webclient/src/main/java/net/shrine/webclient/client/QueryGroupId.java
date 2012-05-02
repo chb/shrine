@@ -7,17 +7,14 @@ package net.shrine.webclient.client;
  */
 public final class QueryGroupId {
 
-	public static final QueryGroupId Null = new QueryGroupId("Null", "");
+	public static final QueryGroupId Null = new QueryGroupId("Null");
 
 	public final String name;
 
-	public final String cssClass;
-
-	public QueryGroupId(final String name, final String cssClass) {
+	public QueryGroupId(final String name) {
 		super();
 
 		this.name = name;
-		this.cssClass = cssClass;
 	}
 
 	@Override
@@ -52,6 +49,6 @@ public final class QueryGroupId {
 
 	@Override
 	public String toString() {
-		return "QueryGroupId [name=" + name + ", cssClass=" + cssClass + "]";
+		return "QueryGroupId [name=" + name + "]";
 	}
 }

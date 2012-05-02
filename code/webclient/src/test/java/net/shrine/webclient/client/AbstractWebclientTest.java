@@ -14,6 +14,6 @@ public abstract class AbstractWebclientTest extends GWTTestCase {
 	}
 	
 	protected QueryGroupId id(final String name) {
-		return new QueryGroupId(name, "");
+		return new QueryGroupId(name);
 	}
 }

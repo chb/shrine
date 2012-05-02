@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Date;
 
 import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.QueryGroupId;
 import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.Or;
 import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
@@ -38,10 +37,6 @@ public final class QueryRow extends Composite implements Observer {
 	private static final QueryRowUiBinder uiBinder = GWT.create(QueryRowUiBinder.class);
 
 	interface QueryRowUiBinder extends UiBinder<Widget, QueryRow> { }
-
-	private final QueryGroupId queryId;
-
-	private final Expression expr;
 
 	private final Controllers controllers;
 
@@ -77,9 +72,7 @@ public final class QueryRow extends Composite implements Observer {
 		Util.requireNotNull(query.getExpression());
 
 		this.controllers = controllers;
-		this.queryId = query.getId();
 		this.query = query;
-		this.expr = query.getExpression();
 
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -102,7 +95,7 @@ public final class QueryRow extends Composite implements Observer {
 		clearButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				controllers.queryBuilding.removeQueryGroup(queryId);
+				controllers.queryBuilding.removeQueryGroup(query.getId());
 			}
 		});
 	}
@@ -113,7 +106,7 @@ public final class QueryRow extends Composite implements Observer {
 		this.minOccursSpinner.addSpinnerHandler(new Spinner.SpinnerHandler() {
 			@Override
 			public void onValueChange(final int value) {
-				controllers.constraints.setMinOccurs(queryId, value);
+				controllers.constraints.setMinOccurs(query.getId(), value);
 			}
 		});
 	}
@@ -128,7 +121,7 @@ public final class QueryRow extends Composite implements Observer {
 		this.startDate.addValueChangeHandler(new ValueChangeHandler<Date>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Date> event) {
-				controllers.constraints.setStartDate(queryId, event.getValue());
+				controllers.constraints.setStartDate(query.getId(), event.getValue());
 			}
 		});
 	}
@@ -141,7 +134,7 @@ public final class QueryRow extends Composite implements Observer {
 		this.endDate.addValueChangeHandler(new ValueChangeHandler<Date>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Date> event) {
-				controllers.constraints.setEndDate(queryId, event.getValue());
+				controllers.constraints.setEndDate(query.getId(), event.getValue());
 			}
 		});
 	}
@@ -152,14 +145,14 @@ public final class QueryRow extends Composite implements Observer {
 		negationCheckbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(final ValueChangeEvent<Boolean> event) {
-				controllers.constraints.setNegated(queryId, event.getValue());
+				controllers.constraints.setNegated(query.getId(), event.getValue());
 			}
 		});
 	}
 
 	@Override
 	public void inform() {
-		nameLabel.setText(queryId.name);
+		nameLabel.setText(query.getId().name);
 
 		refreshExpressionPanel();
 
@@ -175,7 +168,7 @@ public final class QueryRow extends Composite implements Observer {
 	private void refreshExpressionPanel() {
 		exprPanel.clear();
 
-		for (final QueryTerm queryTerm : makeQueryTermsFrom(expr)) {
+		for (final QueryTerm queryTerm : makeQueryTermsFrom(query.getExpression())) {
 			exprPanel.add(queryTerm);
 		}
 	}
@@ -187,7 +180,7 @@ public final class QueryRow extends Composite implements Observer {
 		final Collection<QueryTerm> result = Util.makeArrayList();
 
 		for (final Term term : expr.getTerms()) {
-			result.add(new QueryTerm(queryId, controllers.queryBuilding, term));
+			result.add(new QueryTerm(query.getId(), controllers.queryBuilding, term));
 		}
 
 		return result;
