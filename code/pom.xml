@@ -77,7 +77,7 @@
         <module>install</module>
         <module>hms</module>
         <module>ont-service</module>
-	<module>webclient</module>
+	<!--<module>webclient</module>-->
     </modules>
     <scm>
         <connection>scm:svn:https://open.med.harvard.edu/svn/shrine/trunk/code</connection>
