@@ -21,13 +21,13 @@ public class StateTestGwt extends AbstractWebclientTest {
 		final State state = new State();
 		
 		try {
-			state.guardQueryNameIsPresent("asdf");
+			state.guardQueryIsPresent(id("asdf"));
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
-		state.registerNewQuery("foo", new Term("foo"));
+		state.registerNewQuery(id("foo"), new Term("foo"));
 		
-		state.guardQueryNameIsPresent("foo");
+		state.guardQueryIsPresent(id("foo"));
 	}
 
 	@Test
@@ -36,11 +36,11 @@ public class StateTestGwt extends AbstractWebclientTest {
 		
 		assertEquals(0, state.numQueryGroups());
 		
-		state.registerNewQuery("foo", new Term("foo"));
+		state.registerNewQuery(id("foo"), new Term("foo"));
 		
 		assertEquals(1, state.numQueryGroups());
 		
-		state.registerNewQuery("bar", new Term("foo"));
+		state.registerNewQuery(id("bar"), new Term("foo"));
 		
 		assertEquals(2, state.numQueryGroups());
 	}
@@ -65,44 +65,20 @@ public class StateTestGwt extends AbstractWebclientTest {
 	}
 
 	@Test
-	public void testCompleteQuery() {
-		final State state = new State();
-		
-		state.registerNewQuery("bar", new Term("foo"));
-		
-		@SuppressWarnings("serial")
-		final HashMap<String, IntWrapper> results = new HashMap<String, IntWrapper>() {{
-			this.put("foo", new IntWrapper(5));
-			this.put("bar", new IntWrapper(99));
-		}};
-		
-		state.completeQuery("bar", results);
-		
-		assertEquals(results, state.getQueries().get("bar").getResult().get());
-		
-		try {
-			state.completeQuery("foo", results);
-			
-			fail("Should have thrown");
-		} catch(IllegalArgumentException expected) { }
-	}
-
-	@Test
 	public void testRegisterNewQuery() {
 		final State state = new State();
 		
 		final Term expr = new Term("foo");
 		
-		state.registerNewQuery("foo", expr);
+		state.registerNewQuery(id("foo"), expr);
 		
-		assertTrue(state.getQueries().containsKey("foo"));
+		assertTrue(state.isQueryIdPresent(id("foo")));
 		
-		final QueryGroup group = state.getQueries().get("foo");
+		final QueryGroup group = state.getQuery(id("foo"));
 		
 		assertNotNull(group);
 		
 		assertEquals(expr, group.getExpression());
-		assertTrue(group.getResult().isEmpty());
 		assertNull(group.getStart());
 		assertNull(group.getEnd());
 		assertEquals(1, group.getMinOccurances());
@@ -122,13 +98,13 @@ public class StateTestGwt extends AbstractWebclientTest {
 			fail("Should have thrown with no query groups");
 		} catch(IllegalArgumentException expected) { }
 		
-		state.registerNewQuery("foo", t1);
+		state.registerNewQuery(id("foo"), t1);
 		
 		state.updateAllExpression();
 		
 		assertEquals(t1.toXmlString(), state.getAllExpression());
 		
-		state.registerNewQuery("bar", t2);
+		state.registerNewQuery(id("bar"), t2);
 		
 		state.updateAllExpression();
 		

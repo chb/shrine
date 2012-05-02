@@ -36,20 +36,20 @@ public class QueryConstraintControllerTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetNegated() {
-		state.registerNewQuery("foo", new Term("foo"));
+		state.registerNewQuery(id("foo"), new Term("foo"));
 		
-		assertFalse(state.getQueries().get("foo").isNegated());
+		assertFalse(state.getQuery(id("foo")).isNegated());
 		
-		controller.setNegated("foo", true);
+		controller.setNegated(id("foo"), true);
 		
-		assertTrue(state.getQueries().get("foo").isNegated());
+		assertTrue(state.getQuery(id("foo")).isNegated());
 		
-		controller.setNegated("foo", false);
+		controller.setNegated(id("foo"), false);
 		
-		assertFalse(state.getQueries().get("foo").isNegated());
+		assertFalse(state.getQuery(id("foo")).isNegated());
 		
 		try {
-			controller.setNegated("blah", true);
+			controller.setNegated(id("blah"), true);
 			
 			fail("Should have thrown when trying to mutate nonexistent query group");
 		} catch(IllegalArgumentException expected) { }
@@ -57,18 +57,18 @@ public class QueryConstraintControllerTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetStartDate() {
-		state.registerNewQuery("foo", new Term("foo"));
+		state.registerNewQuery(id("foo"), new Term("foo"));
 		
-		assertNull(state.getQueries().get("foo").getStart());
+		assertNull(state.getQuery(id("foo")).getStart());
 		
 		final Date date = new Date();
 		
-		controller.setStartDate("foo", date);
+		controller.setStartDate(id("foo"), date);
 		
-		assertEquals(date, state.getQueries().get("foo").getStart());
+		assertEquals(date, state.getQuery(id("foo")).getStart());
 		
 		try {
-			controller.setStartDate("blah", null);
+			controller.setStartDate(id("blah"), null);
 			
 			fail("Should have thrown when trying to mutate nonexistent query group");
 		} catch(IllegalArgumentException expected) { }
@@ -76,18 +76,18 @@ public class QueryConstraintControllerTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetEndDate() {
-		state.registerNewQuery("foo", new Term("foo"));
+		state.registerNewQuery(id("foo"), new Term("foo"));
 		
-		assertNull(state.getQueries().get("foo").getEnd());
+		assertNull(state.getQuery(id("foo")).getEnd());
 		
 		final Date date = new Date();
 		
-		controller.setEndDate("foo", date);
+		controller.setEndDate(id("foo"), date);
 		
-		assertEquals(date, state.getQueries().get("foo").getEnd());
+		assertEquals(date, state.getQuery(id("foo")).getEnd());
 		
 		try {
-			controller.setEndDate("blah", null);
+			controller.setEndDate(id("blah"), null);
 			
 			fail("Should have thrown when trying to mutate nonexistent query group");
 		} catch(IllegalArgumentException expected) { }
@@ -95,18 +95,18 @@ public class QueryConstraintControllerTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetMinOccurs() {
-		state.registerNewQuery("foo", new Term("foo"));
+		state.registerNewQuery(id("foo"), new Term("foo"));
 		
-		assertNull(state.getQueries().get("foo").getEnd());
+		assertNull(state.getQuery(id("foo")).getEnd());
 		
 		final Date date = new Date();
 		
-		controller.setEndDate("foo", date);
+		controller.setEndDate(id("foo"), date);
 		
-		assertEquals(date, state.getQueries().get("foo").getEnd());
+		assertEquals(date, state.getQuery(id("foo")).getEnd());
 		
 		try {
-			controller.setEndDate("blah", null);
+			controller.setEndDate(id("blah"), null);
 			
 			fail("Should have thrown when trying to mutate nonexistent query group");
 		} catch(IllegalArgumentException expected) { }

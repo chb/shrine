@@ -2,16 +2,14 @@ package net.shrine.webclient.client.widgets;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 
 import net.shrine.webclient.client.Controllers;
+import net.shrine.webclient.client.QueryGroupId;
 import net.shrine.webclient.client.domain.Expression;
-import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.Or;
 import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Observer;
-import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -41,11 +39,9 @@ public final class QueryRow extends Composite implements Observer {
 
 	interface QueryRowUiBinder extends UiBinder<Widget, QueryRow> { }
 
-	private final String queryGroupName;
+	private final QueryGroupId queryId;
 
 	private final Expression expr;
-
-	private final ReadOnlyObservable<HashMap<String, IntWrapper>> result;
 
 	private final Controllers controllers;
 
@@ -72,25 +68,23 @@ public final class QueryRow extends Composite implements Observer {
 	@UiField
 	CheckBox negationCheckbox;
 
-	QueryRow(final Controllers controllers, final String queryGroupName, final ReadOnlyQueryGroup query) {
+	QueryRow(final Controllers controllers, final ReadOnlyQueryGroup query) {
 		super();
 
 		Util.requireNotNull(controllers);
-		Util.requireNotNull(queryGroupName);
 		Util.requireNotNull(query);
+		Util.requireNotNull(query.getId());
 		Util.requireNotNull(query.getExpression());
-		Util.requireNotNull(query.getResult());
 
 		this.controllers = controllers;
-		this.queryGroupName = queryGroupName;
+		this.queryId = query.getId();
 		this.query = query;
 		this.expr = query.getExpression();
-		this.result = query.getResult();
 
 		initWidget(uiBinder.createAndBindUi(this));
 
-		this.result.observedBy(this);
-
+		this.query.observedBy(this);
+		
 		initClearButton();
 		
 		initNegationCheckbox();
@@ -108,7 +102,7 @@ public final class QueryRow extends Composite implements Observer {
 		clearButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				controllers.queryBuilding.removeQueryGroup(queryGroupName);
+				controllers.queryBuilding.removeQueryGroup(queryId);
 			}
 		});
 	}
@@ -119,7 +113,7 @@ public final class QueryRow extends Composite implements Observer {
 		this.minOccursSpinner.addSpinnerHandler(new Spinner.SpinnerHandler() {
 			@Override
 			public void onValueChange(final int value) {
-				controllers.constraints.setMinOccurs(queryGroupName, value);
+				controllers.constraints.setMinOccurs(queryId, value);
 			}
 		});
 	}
@@ -134,7 +128,7 @@ public final class QueryRow extends Composite implements Observer {
 		this.startDate.addValueChangeHandler(new ValueChangeHandler<Date>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Date> event) {
-				controllers.constraints.setStartDate(queryGroupName, event.getValue());
+				controllers.constraints.setStartDate(queryId, event.getValue());
 			}
 		});
 	}
@@ -147,7 +141,7 @@ public final class QueryRow extends Composite implements Observer {
 		this.endDate.addValueChangeHandler(new ValueChangeHandler<Date>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Date> event) {
-				controllers.constraints.setEndDate(queryGroupName, event.getValue());
+				controllers.constraints.setEndDate(queryId, event.getValue());
 			}
 		});
 	}
@@ -158,14 +152,14 @@ public final class QueryRow extends Composite implements Observer {
 		negationCheckbox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(final ValueChangeEvent<Boolean> event) {
-				controllers.constraints.setNegated(queryGroupName, event.getValue());
+				controllers.constraints.setNegated(queryId, event.getValue());
 			}
 		});
 	}
 
 	@Override
 	public void inform() {
-		nameLabel.setText(queryGroupName);
+		nameLabel.setText(queryId.name);
 
 		refreshExpressionPanel();
 
@@ -186,11 +180,6 @@ public final class QueryRow extends Composite implements Observer {
 		}
 	}
 
-	@Override
-	public void stopObserving() {
-		result.noLongerObservedBy(this);
-	}
-
 	// NB: exposed For tests
 	Collection<QueryTerm> makeQueryTermsFrom(final Expression expr) {
 		Util.require(expr instanceof Term || expr instanceof Or, "Only Or-expressions and single terms can be turned into lists of QueryTerms");
@@ -198,9 +187,14 @@ public final class QueryRow extends Composite implements Observer {
 		final Collection<QueryTerm> result = Util.makeArrayList();
 
 		for (final Term term : expr.getTerms()) {
-			result.add(new QueryTerm(queryGroupName, controllers.queryBuilding, term));
+			result.add(new QueryTerm(queryId, controllers.queryBuilding, term));
 		}
 
 		return result;
+	}
+
+	@Override
+	public void stopObserving() {
+		this.query.noLongerObservedBy(this);
 	}
 }

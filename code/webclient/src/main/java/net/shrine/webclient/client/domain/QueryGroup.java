@@ -1,13 +1,10 @@
 package net.shrine.webclient.client.domain;
 
 import java.util.Date;
-import java.util.HashMap;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
-
+import net.shrine.webclient.client.QueryGroupId;
 import net.shrine.webclient.client.util.AbstractObservable;
-import net.shrine.webclient.client.util.Observable;
+import net.shrine.webclient.client.util.Formats;
 import net.shrine.webclient.client.util.Util;
 
 /**
@@ -16,10 +13,8 @@ import net.shrine.webclient.client.util.Util;
  * @date Mar 26, 2012
  * 
  */
-public final class QueryGroup extends AbstractObservable implements XmlAble, ReadOnlyQueryGroup {
+public final class QueryGroup extends AbstractObservable implements XmlAble, ReadOnlyQueryGroup, Comparable<QueryGroup> {
 	private Expression expression;
-
-	private final Observable<HashMap<String, IntWrapper>> result;
 
 	private boolean negated = false;
 
@@ -29,20 +24,27 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 
 	private int minOccurances = 1;
 
-	public QueryGroup(final Expression expression, final Observable<HashMap<String, IntWrapper>> result) {
+	private QueryGroupId id;
+
+	private final Date createdOn = new Date();
+
+	public QueryGroup(final QueryGroupId id, final Expression expression) {
 		super();
-		
+
 		Util.requireNotNull(expression);
-		Util.requireNotNull(result);
+		Util.requireNotNull(id);
 
 		this.expression = expression;
-		this.result = result;
+		this.id = id;
 	}
 
-	private static final DateTimeFormat dateFormat = DateTimeFormat.getFormat(PredefinedFormat.ISO_8601);
-	
+	@Override
+	public int compareTo(final QueryGroup other) {
+		return createdOn.compareTo(other.createdOn);
+	}
+
 	static String dateToXml(final String tagName, final Date date) {
-		return date == null ? "" : ("<" + tagName + ">" + dateFormat.format(date) + "</" + tagName + ">");
+		return date == null ? "" : "<" + tagName + ">" + Formats.Date.iso8601.format(date) + "</" + tagName + ">";
 	}
 
 	@Override
@@ -85,11 +87,6 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 	}
 
 	@Override
-	public Observable<HashMap<String, IntWrapper>> getResult() {
-		return result;
-	}
-
-	@Override
 	public int getMinOccurances() {
 		return minOccurances;
 	}
@@ -124,7 +121,7 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 
 	public void setStart(final Date newStart) {
 		try {
-			this.start = newStart;
+			start = newStart;
 		} finally {
 			notifyObservers();
 		}
@@ -137,21 +134,38 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 
 	public void setEnd(final Date newEnd) {
 		try {
-			this.end = newEnd;
+			end = newEnd;
 		} finally {
 			notifyObservers();
 		}
 	}
 
 	@Override
+	public QueryGroupId getId() {
+		return id;
+	}
+
+	public void setId(final QueryGroupId id) {
+		Util.requireNotNull(id);
+
+		this.id = id;
+	}
+
+	@Override
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+
+	@Override
+	public String toString() {
+		return "QueryGroup [id=" + id + "]";
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (end == null ? 0 : end.hashCode());
-		result = prime * result + (expression == null ? 0 : expression.hashCode());
-		result = prime * result + (negated ? 1231 : 1237);
-		result = prime * result + (this.result == null ? 0 : this.result.hashCode());
-		result = prime * result + (start == null ? 0 : start.hashCode());
+		result = prime * result + (id == null ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -167,35 +181,11 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 			return false;
 		}
 		final QueryGroup other = (QueryGroup) obj;
-		if (end == null) {
-			if (other.end != null) {
+		if (id == null) {
+			if (other.id != null) {
 				return false;
 			}
-		} else if (!end.equals(other.end)) {
-			return false;
-		}
-		if (expression == null) {
-			if (other.expression != null) {
-				return false;
-			}
-		} else if (!expression.equals(other.expression)) {
-			return false;
-		}
-		if (negated != other.negated) {
-			return false;
-		}
-		if (result == null) {
-			if (other.result != null) {
-				return false;
-			}
-		} else if (!result.equals(other.result)) {
-			return false;
-		}
-		if (start == null) {
-			if (other.start != null) {
-				return false;
-			}
-		} else if (!start.equals(other.start)) {
+		} else if (!id.equals(other.id)) {
 			return false;
 		}
 		return true;

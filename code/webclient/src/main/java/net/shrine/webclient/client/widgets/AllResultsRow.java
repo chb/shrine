@@ -6,10 +6,9 @@ import java.util.Map.Entry;
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.QueryGroup;
-import net.shrine.webclient.client.util.ObservableMap;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
-import net.shrine.webclient.client.util.ReadOnlyObservableMap;
+import net.shrine.webclient.client.util.ReadOnlyObservableList;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -45,7 +44,7 @@ public final class AllResultsRow extends Composite implements Observer {
 	@UiField
 	FlowPanel resultsPanel;
 	
-	private ReadOnlyObservableMap<String, QueryGroup> queryGroups;
+	private ReadOnlyObservableList<QueryGroup> queryGroups;
 	
 	public AllResultsRow() {
 		super();
@@ -53,7 +52,7 @@ public final class AllResultsRow extends Composite implements Observer {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	void wireUp(final Controllers controllers, final ObservableMap<String, QueryGroup> queryGroups, final ReadOnlyObservable<HashMap<String, IntWrapper>> allResults) {
+	void wireUp(final Controllers controllers, final ReadOnlyObservableList<QueryGroup> queryGroups, final ReadOnlyObservable<HashMap<String, IntWrapper>> allResults) {
 		Util.requireNotNull(controllers);
 		Util.requireNotNull(queryGroups);
 		Util.requireNotNull(allResults);
@@ -71,30 +70,30 @@ public final class AllResultsRow extends Composite implements Observer {
 		runQueryButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				resultsPanel.clear();
+				
+				resultsPanel.add(new LoadingSpinner());
+				
 				controllers.query.runAllQuery();
 			}
 		});
 		
-		inform();
-		
-		resultsPanel.clear();
+		controllers.query.completeAllQueryWithNoResults();
 	}
 
 	@Override
 	public void inform() {
 		runQueryButton.setEnabled(queryGroups.size() > 0);
 		
-		resultsPanel.clear();
-		
 		if(allResults.isDefined()) {
+			resultsPanel.clear();
+			
 			for(final Entry<String, IntWrapper> entry : allResults.get().entrySet()) {
 				final String instName = entry.getKey();
 				final int count = entry.getValue().getValue();
 				
 				resultsPanel.add(new InstitutionResult(instName, count));
 			}
-		} else {
-			resultsPanel.add(new LoadingSpinner());
 		}
 	}
 

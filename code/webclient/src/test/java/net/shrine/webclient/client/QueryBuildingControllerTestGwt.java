@@ -28,7 +28,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 		
 		assertEquals(1, state.numQueryGroups());
 		
-		final QueryGroup group = state.getQueries().get("A");
+		final QueryGroup group = state.getQuery(id("A"));
 		
 		assertEquals(term1, group.getExpression());
 		
@@ -36,8 +36,8 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 		
 		assertEquals(2, state.numQueryGroups());
 		
-		assertEquals(term1, state.getQueries().get("A").getExpression());
-		assertEquals(term2, state.getQueries().get("B").getExpression());
+		assertEquals(term1, state.getQuery(id("A")).getExpression());
+		assertEquals(term2, state.getQuery(id("B")).getExpression());
 	}
 	
 	public void testRemoveAllQueryGroups() {
@@ -51,8 +51,8 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 		
 		assertEquals(0, state.numQueryGroups());
 		
-		state.registerNewQuery("foo", new Term("foo"));
-		state.registerNewQuery("bar", new Term("blah"));
+		state.registerNewQuery(id("foo"), new Term("foo"));
+		state.registerNewQuery(id("bar"), new Term("blah"));
 		
 		assertEquals(2, state.numQueryGroups());
 		
@@ -66,24 +66,24 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 		
 		final QueryBuildingController controller = new QueryBuildingController(state);
 		
-		state.registerNewQuery("foo", new Term("foo"));
-		state.registerNewQuery("bar", new Term("blah"));
+		state.registerNewQuery(id("foo"), new Term("foo"));
+		state.registerNewQuery(id("bar"), new Term("blah"));
 		
 		assertEquals(2, state.numQueryGroups());
 		
 		try {
-			controller.removeQueryGroup("aksljdklsadj");
+			controller.removeQueryGroup(id("aksljdklsadj"));
 			
 			fail("should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
-		controller.removeQueryGroup("foo");
+		controller.removeQueryGroup(id("foo"));
 		
 		assertEquals(1, state.numQueryGroups());
 		
-		state.guardQueryNameIsPresent("bar");
+		state.guardQueryIsPresent(id("bar"));
 		
-		controller.removeQueryGroup("bar");
+		controller.removeQueryGroup(id("bar"));
 		
 		assertEquals(0, state.numQueryGroups());
 	}
@@ -99,48 +99,48 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 		final Term t4 = new Term("zuh");
 		final Or or = new Or(t2, t3, t4);
 		
-		state.registerNewQuery("foo", t1);
+		state.registerNewQuery(id("foo"), t1);
 		
-		state.registerNewQuery("bar", or);
+		state.registerNewQuery(id("bar"), or);
 		
 		assertEquals(2, state.numQueryGroups());
 		
 		try {
-			controller.removeTerm("aksljdklsadj", t1);
+			controller.removeTerm(id("aksljdklsadj"), t1);
 			
 			fail("should have thrown on unknown query group");
 		} catch(IllegalArgumentException expected) { }
 		
 		//Try to remove term that's not part of this query group - shouldn't do anything
-		controller.removeTerm("foo", t2);
+		controller.removeTerm(id("foo"), t2);
 		
 		assertEquals(2, state.numQueryGroups());
 		
-		assertEquals(t1, state.getQueries().get("foo").getExpression());
-		assertEquals(or, state.getQueries().get("bar").getExpression());
+		assertEquals(t1, state.getQuery(id("foo")).getExpression());
+		assertEquals(or, state.getQuery(id("bar")).getExpression());
 		
 		//Remove term that's actually present
 		
 		//Single-term expressions should be removed
-		controller.removeTerm("foo", t1);
+		controller.removeTerm(id("foo"), t1);
 		
 		assertEquals(1, state.numQueryGroups());
-		assertFalse(state.getQueries().containsKey("foo"));
-		assertEquals(or, state.getQueries().get("bar").getExpression());
+		assertFalse(state.isQueryIdPresent(id("foo")));
+		assertEquals(or, state.getQuery(id("bar")).getExpression());
 		
 		//remove single terms from multi-term expressions
 		
-		controller.removeTerm("bar", t3);
+		controller.removeTerm(id("bar"), t3);
 		
 		assertEquals(1, state.numQueryGroups());
-		assertEquals(new Or(t2, t4), state.getQueries().get("bar").getExpression());
+		assertEquals(new Or(t2, t4), state.getQuery(id("bar")).getExpression());
 		
-		controller.removeTerm("bar", t4);
+		controller.removeTerm(id("bar"), t4);
 		
 		assertEquals(1, state.numQueryGroups());
-		assertEquals(new Or(t2), state.getQueries().get("bar").getExpression());
+		assertEquals(new Or(t2), state.getQuery(id("bar")).getExpression());
 		
-		controller.removeTerm("bar", t2);
+		controller.removeTerm(id("bar"), t2);
 		
 		assertEquals(0, state.numQueryGroups());
 	}

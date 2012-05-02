@@ -14,35 +14,35 @@ public final class QueryConstraintController extends StatefulController {
 		super(state);
 	}
 
-	public void setNegated(final String queryName, final boolean negated) {
-		state.guardQueryNameIsPresent(queryName);
+	public void setNegated(final QueryGroupId queryId, final boolean negated) {
+		state.guardQueryIsPresent(queryId);
 
-		state.getQueries().get(queryName).setNegated(negated);
+		state.getQuery(queryId).setNegated(negated);
 
-		Log.info("Query '" + queryName + "' " + (negated ? "is " : "is not ") + "negated");
+		Log.info("Query '" + queryId.name + "' " + (negated ? "is " : "is not ") + "negated");
 	}
 
-	public void setStartDate(final String queryName, final Date start) {
-		state.guardQueryNameIsPresent(queryName);
+	public void setStartDate(final QueryGroupId queryId, final Date start) {
+		state.guardQueryIsPresent(queryId);
 
-		state.getQueries().get(queryName).setStart(start);
+		state.getQuery(queryId).setStart(start);
 
-		Log.info("Query '" + queryName + "': start date: " + start);
+		Log.info("Query '" + queryId.name + "': start date: " + start);
 	}
 
-	public void setEndDate(final String queryName, final Date end) {
-		state.guardQueryNameIsPresent(queryName);
+	public void setEndDate(final QueryGroupId queryId, final Date end) {
+		state.guardQueryIsPresent(queryId);
 
-		state.getQueries().get(queryName).setEnd(end);
+		state.getQuery(queryId).setEnd(end);
 
-		Log.info("Query '" + queryName + "': end date: " + end);
+		Log.info("Query '" + queryId.name + "': end date: " + end);
 	}
 
-	public void setMinOccurs(final String queryName, final int minOccurs) {
-		state.guardQueryNameIsPresent(queryName);
+	public void setMinOccurs(final QueryGroupId queryId, final int minOccurs) {
+		state.guardQueryIsPresent(queryId);
 
-		state.getQueries().get(queryName).setMinOccurances(minOccurs);
+		state.getQuery(queryId).setMinOccurances(minOccurs);
 
-		Log.info("Query '" + queryName + "': min occurs: " + minOccurs);
+		Log.info("Query '" + queryId.name + "': min occurs: " + minOccurs);
 	}
 }

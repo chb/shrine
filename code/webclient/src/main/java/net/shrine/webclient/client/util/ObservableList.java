@@ -11,7 +11,7 @@ import java.util.ListIterator;
  * @author clint
  * @date Mar 23, 2012
  */
-public final class ObservableList<T> extends AbstractObservable implements List<T> {
+public final class ObservableList<T> extends AbstractObservable implements List<T>, ReadOnlyObservableList<T> {
 	private final List<T> delegate;
 
 	public ObservableList(final List<T> delegate) {
@@ -26,26 +26,50 @@ public final class ObservableList<T> extends AbstractObservable implements List<
 		return new ObservableList<T>(new ArrayList<T>());
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#size()
+	 */
+	@Override
 	public int size() {
 		return delegate.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#isEmpty()
+	 */
+	@Override
 	public boolean isEmpty() {
 		return delegate.isEmpty();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#contains(java.lang.Object)
+	 */
+	@Override
 	public boolean contains(final Object o) {
 		return delegate.contains(o);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#iterator()
+	 */
+	@Override
 	public Iterator<T> iterator() {
 		return delegate.iterator();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#toArray()
+	 */
+	@Override
 	public Object[] toArray() {
 		return delegate.toArray();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#toArray(A[])
+	 */
+	@Override
 	public <A> A[] toArray(final A[] a) {
 		return delegate.toArray(a);
 	}
@@ -66,6 +90,10 @@ public final class ObservableList<T> extends AbstractObservable implements List<
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#containsAll(java.util.Collection)
+	 */
+	@Override
 	public boolean containsAll(final Collection<?> c) {
 		return delegate.containsAll(c);
 	}
@@ -120,6 +148,10 @@ public final class ObservableList<T> extends AbstractObservable implements List<
 		return delegate.hashCode();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#get(int)
+	 */
+	@Override
 	public T get(final int index) {
 		return delegate.get(index);
 	}
@@ -148,23 +180,48 @@ public final class ObservableList<T> extends AbstractObservable implements List<
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#indexOf(java.lang.Object)
+	 */
+	@Override
 	public int indexOf(final Object o) {
 		return delegate.indexOf(o);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#lastIndexOf(java.lang.Object)
+	 */
+	@Override
 	public int lastIndexOf(final Object o) {
 		return delegate.lastIndexOf(o);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#listIterator()
+	 */
+	@Override
 	public ListIterator<T> listIterator() {
 		return delegate.listIterator();
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#listIterator(int)
+	 */
+	@Override
 	public ListIterator<T> listIterator(final int index) {
 		return delegate.listIterator(index);
 	}
 
+	/* (non-Javadoc)
+	 * @see net.shrine.webclient.client.util.ReadOnlyObservableList#subList(int, int)
+	 */
+	@Override
 	public List<T> subList(final int fromIndex, final int toIndex) {
 		return delegate.subList(fromIndex, toIndex);
+	}
+
+	@Override
+	public String toString() {
+		return delegate.toString();
 	}
 }

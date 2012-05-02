@@ -74,5 +74,10 @@ public class ForwardSuggestionEventsTestGwt extends AbstractWebclientTest {
 		public void fireSuggestionEvent(final RichSuggestionEvent<Foo> event) {
 			lastReceived = event.getSuggestion();
 		}
+
+		@Override
+		public void hidePopup() {
+			// NOOP
+		}
 	}
 }

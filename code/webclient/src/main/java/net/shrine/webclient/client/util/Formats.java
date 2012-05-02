@@ -1,6 +1,7 @@
 package net.shrine.webclient.client.util;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
 /**
  * 
@@ -18,5 +19,7 @@ public final class Formats {
 		}
 		
 		public static final DateTimeFormat yearMonthDay = DateTimeFormat.getFormat("yyyy-MM-dd");
+		
+		public static final DateTimeFormat iso8601 = DateTimeFormat.getFormat(PredefinedFormat.ISO_8601);
 	}
 }

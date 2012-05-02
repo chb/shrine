@@ -12,4 +12,8 @@ public abstract class AbstractWebclientTest extends GWTTestCase {
 	public String getModuleName() {
 		return "net.shrine.webclient.WebclientJUnit";
 	}
+	
+	protected QueryGroupId id(final String name) {
+		return new QueryGroupId(name, "");
+	}
 }

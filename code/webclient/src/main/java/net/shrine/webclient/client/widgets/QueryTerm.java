@@ -1,6 +1,7 @@
 package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.QueryBuildingController;
+import net.shrine.webclient.client.QueryGroupId;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Util;
 
@@ -30,8 +31,8 @@ public final class QueryTerm extends Composite {
 	@UiField
 	CloseButton closeButton;
 	
-	public QueryTerm(final String queryName, final QueryBuildingController controller, final Term term) {
-		Util.requireNotNull(queryName);
+	public QueryTerm(final QueryGroupId queryId, final QueryBuildingController controller, final Term term) {
+		Util.requireNotNull(queryId);
 		Util.requireNotNull(controller);
 		Util.requireNotNull(term);
 		
@@ -44,7 +45,7 @@ public final class QueryTerm extends Composite {
 		closeButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				controller.removeTerm(queryName, term);
+				controller.removeTerm(queryId, term);
 			}
 		});
 	}

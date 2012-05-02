@@ -2,7 +2,6 @@ package net.shrine.webclient.client.widgets;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
@@ -10,11 +9,9 @@ import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.MockQueryServiceAsync;
 import net.shrine.webclient.client.State;
 import net.shrine.webclient.client.domain.And;
-import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.Or;
 import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.domain.Term;
-import net.shrine.webclient.client.util.Observable;
 
 import org.junit.Test;
 
@@ -32,43 +29,19 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 		final MockQueryServiceAsync mockQueryService = new MockQueryServiceAsync(); 
 		
 		try {
-			new QueryRow(null, "", new QueryGroup(new Term("foo"), Observable.<HashMap<String, IntWrapper>> empty()));
+			new QueryRow(null, new QueryGroup(id("foo"), new Term("foo")));
 
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 
 		try {
-			new QueryRow(new Controllers(new State(), mockQueryService), null, new QueryGroup(new Term("foo"), Observable.<HashMap<String, IntWrapper>> empty()));
+			new QueryRow(new Controllers(new State(), mockQueryService), null);
 
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 
 		try {
-			new QueryRow(new Controllers(new State(), mockQueryService), "", null);
-
-			fail("Should have thrown");
-		} catch (IllegalArgumentException expected) { }
-
-		try {
-			new QueryRow(null, null, null);
-
-			fail("Should have thrown");
-		} catch (IllegalArgumentException expected) { }
-
-		try {
-			new QueryRow(new Controllers(new State(), mockQueryService), "", new QueryGroup(null, Observable.<HashMap<String, IntWrapper>> empty()));
-
-			fail("Should have thrown");
-		} catch (IllegalArgumentException expected) { }
-
-		try {
-			new QueryRow(new Controllers(new State(), mockQueryService), "", new QueryGroup(new Term("foo"), null));
-
-			fail("Should have thrown");
-		} catch (IllegalArgumentException expected) { }
-
-		try {
-			new QueryRow(new Controllers(new State(), mockQueryService), "", new QueryGroup(null, null));
+			new QueryRow(null, null);
 
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
@@ -78,19 +51,17 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 	public void testQueryRow() throws Exception {
 		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
 
-		final Observable<HashMap<String, IntWrapper>> result = Observable.<HashMap<String, IntWrapper>> empty();
-
-		final QueryRow queryRow = new QueryRow(controllers, "foo", new QueryGroup(new Term("foo"), result));
+		final QueryRow queryRow = new QueryRow(controllers, new QueryGroup(id("blah"), new Term("foo")));
 
 		//Test negate box init
 		{
 			assertFalse(queryRow.negationCheckbox.getValue());
 
-			final QueryGroup group2 = new QueryGroup(new Term("foo"), result);
+			final QueryGroup group2 = new QueryGroup(id("nuh"), new Term("foo"));
 			
 			group2.setNegated(true);
 			
-			final QueryRow row2 = new QueryRow(controllers, "foo", group2);
+			final QueryRow row2 = new QueryRow(controllers, group2);
 			
 			assertTrue(row2.negationCheckbox.getValue());
 		}
@@ -100,7 +71,7 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 			assertNull(queryRow.startDate.getValue());
 			assertNull(queryRow.endDate.getValue());
 
-			final QueryGroup group2 = new QueryGroup(new Term("foo"), result);
+			final QueryGroup group2 = new QueryGroup(id("bar"), new Term("foo"));
 
 			final Date start = new Date();
 			final Date end = new Date();
@@ -108,7 +79,7 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 			group2.setStart(start);
 			group2.setEnd(end);
 			
-			final QueryRow row2 = new QueryRow(controllers, "foo", group2);
+			final QueryRow row2 = new QueryRow(controllers, group2);
 			
 			assertEquals(trim(start), row2.startDate.getValue());
 			assertEquals(trim(end), row2.endDate.getValue());
@@ -118,11 +89,11 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 		{
 			assertEquals(1, queryRow.minOccursSpinner.getValue());
 
-			final QueryGroup group2 = new QueryGroup(new Term("foo"), result);
+			final QueryGroup group2 = new QueryGroup(id("zuh"), new Term("foo"));
 			
 			group2.setMinOccurances(99);
 			
-			final QueryRow row2 = new QueryRow(controllers, "foo", group2);
+			final QueryRow row2 = new QueryRow(controllers, group2);
 			
 			assertEquals(99, row2.minOccursSpinner.getValue());
 		}
@@ -138,9 +109,7 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 	public void testInform() {
 		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
 
-		final Observable<HashMap<String, IntWrapper>> result = Observable.<HashMap<String, IntWrapper>> empty();
-
-		final QueryRow queryRow = new QueryRow(controllers, "foo", new QueryGroup(new Term("foo"), result));
+		final QueryRow queryRow = new QueryRow(controllers, new QueryGroup(id("blah"), new Term("foo")));
 		
 		assertFalse(queryRow.negationCheckbox.getValue());
 		assertNull(queryRow.startDate.getValue());
@@ -152,9 +121,7 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 	public void testMakeQueryTermsFrom() {
 		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
 
-		final Observable<HashMap<String, IntWrapper>> result = Observable.<HashMap<String, IntWrapper>> empty();
-
-		final QueryRow queryRow = new QueryRow(controllers, "foo", new QueryGroup(new Term("foo"), result));
+		final QueryRow queryRow = new QueryRow(controllers, new QueryGroup(id("nuh"), new Term("foo")));
 		
 		try {
 			queryRow.makeQueryTermsFrom(null);

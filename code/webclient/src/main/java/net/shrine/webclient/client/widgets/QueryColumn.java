@@ -3,7 +3,7 @@ package net.shrine.webclient.client.widgets;
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.util.Observer;
-import net.shrine.webclient.client.util.ReadOnlyObservableMap;
+import net.shrine.webclient.client.util.ReadOnlyObservableList;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -32,7 +32,7 @@ public final class QueryColumn extends Composite implements Observer {
 	@UiField
 	FlowPanel delegate;
 
-	private ReadOnlyObservableMap<String, QueryGroup> queries;
+	private ReadOnlyObservableList<QueryGroup> queries;
 	
 	private Controllers controllers;
 	
@@ -45,7 +45,7 @@ public final class QueryColumn extends Composite implements Observer {
 		this.delegate.getElement().setId("queryBuilder");
 	}
 	
-	void wireUp(final Controllers controllers, final ReadOnlyObservableMap<String, QueryGroup> queries) {
+	void wireUp(final Controllers controllers, final ReadOnlyObservableList<QueryGroup> queries) {
 		
 		Util.requireNotNull(controllers);
 		Util.requireNotNull(queries);
@@ -68,10 +68,11 @@ public final class QueryColumn extends Composite implements Observer {
 	public void inform() {
 		clear();
 		
-		for(final String queryName : Util.sorted(queries.keySet())) {
-			final QueryGroup query = queries.get(queryName);
-			
-			delegate.add(new QueryRow(controllers, queryName, query));
+		//Make sure queries are named A,B,C,... Z, in that order, with no gaps, always starting from 'A'
+		controllers.queryBuilding.reNameQueries();
+		
+		for(final QueryGroup query : Util.sorted(queries)) {
+			delegate.add(new QueryRow(controllers, query));
 		}
 		
 		delegate.add(new EmptyRow());

@@ -1,8 +1,12 @@
 package net.shrine.webclient.client;
 
+import java.util.Iterator;
+import java.util.List;
+
 import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.Or;
 import net.shrine.webclient.client.domain.QueryGroup;
+import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Util;
 
@@ -23,52 +27,74 @@ public final class QueryBuildingController extends StatefulController {
 		return state.numQueryGroups();
 	}
 	
-	public String addNewTerm(final Term term) {
-		final String name = state.getQueryGroupNames().next();
-
-		state.registerNewQuery(name, term);
-
-		return name;
-	}
-	
-	public void removeAllQueryGroups() {
-		//NB: Defensively copy state.getQueries().keySet() to avoid ConcurrentModificationException
-		for(final String groupName : Util.toList(state.getQueries().keySet())) {
-			removeQueryGroup(groupName);
+	public void reNameQueries() {
+		final List<QueryGroup> queries = Util.makeArrayList(state.getQueries());
+		
+		final Iterator<QueryGroup> queryIter = queries.iterator();
+		
+		final Iterator<QueryGroupId> newIdIter = Util.take(queries.size(), new QueryGroupIdsIterator()).iterator();
+		
+		while(queryIter.hasNext() && newIdIter.hasNext()) {
+			final QueryGroupId id = newIdIter.next();
+			
+			final QueryGroup group = queryIter.next();
+			
+			group.setId(id);
 		}
 	}
 	
-	public void removeQueryGroup(final String queryName) {
-		state.guardQueryNameIsPresent(queryName);
+	public ReadOnlyQueryGroup addNewTerm(final Term term) {
+		final QueryGroup newQuery = state.registerNewQuery(QueryGroupId.Null, term);
 		
-		state.getQueries().remove(queryName);
+		reNameQueries();
+		
+		return newQuery;
 	}
 	
-	public void removeTerm(final String queryName, final Term term) {
-		state.guardQueryNameIsPresent(queryName);
+	public void removeAllQueryGroups() {
+		//NB: Defensively copy state.getQueries() to avoid ConcurrentModificationException
+		for(final QueryGroup group : Util.makeArrayList(state.getQueries())) {
+			state.getQueries().remove(group);
+		}
+	}
+	
+	public void removeQueryGroup(final QueryGroupId id) {
+		state.guardQueryIsPresent(id);
 		
-		final QueryGroup queryGroup = state.getQueries().get(queryName);
+		final QueryGroup query = state.getQuery(id);
+		
+		state.getQueries().remove(query);
+		
+		state.guardQueryIsNotPresent(id);
+	}
+	
+	public void removeTerm(final QueryGroupId queryId, final Term term) {
+		state.guardQueryIsPresent(queryId);
+		
+		Log.debug("Removing term from query " + queryId + " known queries are: " + state.getQueries());
+		
+		final QueryGroup queryGroup = state.getQuery(queryId);
 		
 		final Expression expr = queryGroup.getExpression();
 		
 		if(expr instanceof Term) {
 			if(!expr.equals(term)) {
-				Log.warn("Attempted to remove nonexistent term from query '" + queryName + "': " + term);
+				Log.warn("Attempted to remove nonexistent term from query '" + queryId.name + "': " + term);
 			} else {
-				removeQueryGroup(queryName);
+				removeQueryGroup(queryId);
 			}
 		} else if(expr instanceof Or) {
 			final Or withoutTerm = ((Or)expr).without(term);
 			
 			if(expr.equals(withoutTerm)) {
-				Log.warn("Removing term from query '" + queryName + "' has no effect: " + term);
+				Log.warn("Removing term from query '" + queryId.name + "' has no effect: " + term);
 			} else if(withoutTerm.isEmpty()) {
-				removeQueryGroup(queryName);
+				removeQueryGroup(queryId);
 			} else {
 				queryGroup.setExpression(withoutTerm);
 			}
 		} else {
-			throw new IllegalStateException("Query group '" + queryName + "' has illegal expression: " + expr);
+			throw new IllegalStateException("Query group '" + queryId.name + "' has illegal expression: " + expr);
 		}
 	}
 }

@@ -23,12 +23,12 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 		} catch (IllegalArgumentException expected) { }
 		
 		try {
-			new QueryTerm("asdasdasasdgfa", null, new Term("foo"));
+			new QueryTerm(id("asdasdasasdgfa"), null, new Term("foo"));
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
 		try {
-			new QueryTerm("asdjksdlksl", new QueryBuildingController(new State()), null);
+			new QueryTerm(id("asdjksdlksl"), new QueryBuildingController(new State()), null);
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
@@ -40,7 +40,7 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 		final String simpleName = "simple name";
 		final String path = "/fully/qualified/path";
 		
-		final QueryTerm qt = new QueryTerm("asdjksdlksl", new QueryBuildingController(new State()), new Term(path, simpleName));
+		final QueryTerm qt = new QueryTerm(id("asdjksdlksl"), new QueryBuildingController(new State()), new Term(path, simpleName));
 		
 		assertEquals(simpleName, qt.termSpan.getInnerText());
 		assertEquals(path, qt.getTitle());
@@ -57,17 +57,21 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 		final String queryName = "asdjksdlksl";
 		final Term term = new Term(path, simpleName);
 		
-		state.registerNewQuery("blah", new Term("nuh"));
-		state.registerNewQuery(queryName, term);
+		state.registerNewQuery(id("blah"), new Term("nuh"));
+		state.registerNewQuery(id(queryName), term);
 		
 		assertEquals(2, state.numQueryGroups());
-		assertTrue(state.getQueries().containsKey(queryName));
+		state.getQuery(id(queryName));
 		
-		final QueryTerm qt = new QueryTerm(queryName, controller, term);
+		final QueryTerm qt = new QueryTerm(id(queryName), controller, term);
 		
 		qt.closeButton.fireEvent(Events.click());
 		
 		assertEquals(1, state.numQueryGroups());
-		assertFalse(state.getQueries().containsKey(queryName));
+		
+		try {
+			state.getQuery(id(queryName));
+			fail("should have thrown");
+		} catch(IllegalArgumentException expected) { }
 	}
 }

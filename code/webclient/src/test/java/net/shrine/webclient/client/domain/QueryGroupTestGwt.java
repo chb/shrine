@@ -1,11 +1,9 @@
 package net.shrine.webclient.client.domain;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
 import net.shrine.webclient.client.util.MockObserver;
-import net.shrine.webclient.client.util.Observable;
 
 import org.junit.Test;
 
@@ -38,12 +36,12 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 	@Test
 	public void testQueryGroup() {
 		try {
-			new QueryGroup(null, Observable.<HashMap<String, IntWrapper>>empty());
+			new QueryGroup(null, new Term("foo"));
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
 		try {
-			new QueryGroup(new Term("foo"), null);
+			new QueryGroup(id("foo"), null);
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
@@ -67,7 +65,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 		final Term t1 = new Term("foo");
 		final Term t2 = new Term("bar");
 		
-		final QueryGroup queryGroup = new QueryGroup(t1, Observable.<HashMap<String, IntWrapper>>empty());
+		final QueryGroup queryGroup = new QueryGroup(id("nuh"), t1);
 		
 		assertEquals(t1.toXmlString(), queryGroup.toXmlString());
 		
@@ -117,7 +115,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 	public void testSetExpression() {
 		final Term t1 = new Term("foo");
 		
-		final QueryGroup queryGroup = new QueryGroup(t1, Observable.<HashMap<String, IntWrapper>>empty());
+		final QueryGroup queryGroup = new QueryGroup(id("salkdj"), t1);
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -150,7 +148,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetMinOccurances() {
-		final QueryGroup queryGroup = new QueryGroup(new Term("foo"), Observable.<HashMap<String, IntWrapper>>empty());
+		final QueryGroup queryGroup = new QueryGroup(id("ksaljdksaljd"), new Term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -175,7 +173,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetStart() {
-		final QueryGroup queryGroup = new QueryGroup(new Term("foo"), Observable.<HashMap<String, IntWrapper>>empty());
+		final QueryGroup queryGroup = new QueryGroup(id("sakjsadasd"), new Term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -198,7 +196,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetEnd() {
-		final QueryGroup queryGroup = new QueryGroup(new Term("foo"), Observable.<HashMap<String, IntWrapper>>empty());
+		final QueryGroup queryGroup = new QueryGroup(id("asljkdla"), new Term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		

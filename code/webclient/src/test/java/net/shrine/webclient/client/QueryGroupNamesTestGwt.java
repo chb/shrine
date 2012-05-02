@@ -12,7 +12,7 @@ import org.junit.Test;
  * @author clint
  * @date Apr 19, 2012
  * 
- * TODO: Remove static-ness
+ *       TODO: Remove static-ness
  */
 public class QueryGroupNamesTestGwt extends AbstractWebclientTest {
 	@Test
@@ -41,14 +41,38 @@ public class QueryGroupNamesTestGwt extends AbstractWebclientTest {
 			alphabet2.add(letter + "2");
 		}
 
-		final List<String> expected = Util.makeArrayList();
+		final List<QueryGroupId> expected = Util.makeArrayList();
 
-		expected.addAll(alphabet);
-		expected.addAll(alphabet1);
-		expected.addAll(alphabet2);
+		{
+			int count = 0;
+
+			for (final String letter : alphabet) {
+				expected.add(new QueryGroupId(letter, QueryGroupIdsIterator.cssClasses.get(count % QueryGroupIdsIterator.numCssClasses)));
+				++count;
+			}
+
+			for (final String glyph : alphabet1) {
+				expected.add(new QueryGroupId(glyph, QueryGroupIdsIterator.cssClasses.get(count % QueryGroupIdsIterator.numCssClasses)));
+				++count;
+			}
+
+			for (final String glyph : alphabet2) {
+				expected.add(new QueryGroupId(glyph, QueryGroupIdsIterator.cssClasses.get(count % QueryGroupIdsIterator.numCssClasses)));
+				++count;
+			}
+		}
 
 		final int howMany = 26 * 3;
 
-		assertEquals(expected, Util.take(howMany, (new QueryGroupNames()).getNamesIterator()));
+		final List<QueryGroupId> ids = Util.take(howMany, new QueryGroupIdsIterator());
+
+		assertEquals(expected, ids);
+
+		assertEquals(expected.size(), ids.size());
+
+		for (int i = 0; i < ids.size(); ++i) {
+			assertEquals(expected.get(i).name, ids.get(i).name);
+			assertEquals(expected.get(i).cssClass, ids.get(i).cssClass);
+		}
 	}
 }

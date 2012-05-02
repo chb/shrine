@@ -3,11 +3,9 @@ package net.shrine.webclient.client.domain;
 import static java.util.Arrays.asList;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
-import net.shrine.webclient.client.util.Observable;
 
 import org.junit.Test;
 
@@ -28,7 +26,7 @@ public class ExpressionXmlTestGwt extends AbstractWebclientTest {
 		
 		final Term t1 = new Term("foo");
 		
-		final QueryGroup queryGroup1 = new QueryGroup(t1, Observable.<HashMap<String, IntWrapper>>empty());
+		final QueryGroup queryGroup1 = new QueryGroup(id("foo"), t1);
 		
 		{
 			final List<QueryGroup> queryGroups = asList(queryGroup1);
@@ -41,7 +39,7 @@ public class ExpressionXmlTestGwt extends AbstractWebclientTest {
 		{
 			final Term t2 = new Term("bar");
 			
-			final QueryGroup queryGroup2 = new QueryGroup(t2, Observable.<HashMap<String, IntWrapper>>empty());
+			final QueryGroup queryGroup2 = new QueryGroup(id("bar"), t2);
 			
 			final String xml = ExpressionXml.fromQueryGroups(asList(queryGroup1, queryGroup2));
 			

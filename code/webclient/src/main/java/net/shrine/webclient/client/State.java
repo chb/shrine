@@ -7,7 +7,7 @@ import net.shrine.webclient.client.domain.ExpressionXml;
 import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.util.Observable;
-import net.shrine.webclient.client.util.ObservableMap;
+import net.shrine.webclient.client.util.ObservableList;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -24,12 +24,24 @@ public final class State {
 	private final Observable<HashMap<String, IntWrapper>> allResult = Observable.empty();
 	
 	// Query group name => QueryGroup (Expression, integer result (patient set size), negated (t/f), start date, end date, min occurrances )
-	private final ObservableMap<String, QueryGroup> queries = ObservableMap.empty();
+	private final ObservableList<QueryGroup> queries = ObservableList.empty();
 	
-	private final QueryGroupNames queryGroupNames = new QueryGroupNames();
+	public void guardQueryIsPresent(final QueryGroupId id) {
+		Util.require(isQueryIdPresent(id));
+	}
+	
+	public void guardQueryIsNotPresent(final QueryGroupId id) {
+		Util.require(!isQueryIdPresent(id));
+	}
 
-	public void guardQueryNameIsPresent(final String queryName) {
-		Util.require(queries.containsKey(queryName));
+	boolean isQueryIdPresent(final QueryGroupId id) {
+		for(final QueryGroup group : queries) {
+			if(id.equals(group.getId())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public int numQueryGroups() {
@@ -48,31 +60,39 @@ public final class State {
 		allResult.set(resultsByInstitution);
 	}
 	
-	public void completeQuery(final String queryName, final HashMap<String, IntWrapper> result) {
-		Util.require(queries.containsKey(queryName), "Couldn't complete uninitialized query '" + queryName + "'; result would have been '" + result + "'");
-			
-		Log.info("Completing query '" + queryName + "' with '" + result + "'");
+	public QueryGroup getQuery(final QueryGroupId id) {
+		for(final QueryGroup query : queries) {
+			if(id.equals(query.getId())) {
+				return query;
+			}
+		}
 		
-		queries.get(queryName).getResult().set(result);
+		throw new IllegalArgumentException("No query named '" + id.name + "' exists");
 	}
 	
-	private void addNewQuery(final String name, final Expression expr) {
-		queries.put(name, new QueryGroup(expr, Observable.<HashMap<String, IntWrapper>>empty()));
+	private QueryGroup addNewQuery(final QueryGroupId id, final Expression expr) {
+		final QueryGroup newQuery = new QueryGroup(id, expr);
+		
+		queries.add(newQuery);
+		
+		return newQuery;
 	}
 	
-	public void registerNewQuery(final String name, final Expression expr) {
-		Log.info("Adding query group '" + name + "': " + expr);
+	public QueryGroup registerNewQuery(final QueryGroupId id, final Expression expr) {
+		Log.info("Adding query group '" + id.name + "': " + expr);
 		
-		addNewQuery(name, expr);
+		final QueryGroup newQuery = addNewQuery(id, expr);
 
 		updateAllExpression();
+		
+		return newQuery;
 	}
 
 	void updateAllExpression() {
-		allExpressionXml = ExpressionXml.fromQueryGroups(queries.values());
+		allExpressionXml = ExpressionXml.fromQueryGroups(queries);
 	}
 
-	public ObservableMap<String, QueryGroup> getQueries() {
+	public ObservableList<QueryGroup> getQueries() {
 		return queries;
 	}
 
@@ -82,9 +102,5 @@ public final class State {
 
 	public Observable<HashMap<String, IntWrapper>> getAllResult() {
 		return allResult;
-	}
-	
-	QueryGroupNames getQueryGroupNames() {
-		return queryGroupNames;
 	}
 }
