@@ -131,6 +131,7 @@
 					<!-- Include Shrine ontology file -->
 					<webResources>
 						<resource>
+							<targetPath>WEB-INF/classes/</targetPath>
 							<directory>../../ontology/core</directory>
 							<includes>
 								<include>ShrineWithSyns.sql</include>

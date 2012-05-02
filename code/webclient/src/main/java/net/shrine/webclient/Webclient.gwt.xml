@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='Webclient'>
+<!-- <module rename-to='Webclient'> -->
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User' />
 
@@ -11,8 +12,6 @@
   <!-- the theme of your GWT application by uncommenting          -->
   <!-- any one of the following lines.                            -->
   <inherits name='com.google.gwt.user.theme.standard.Standard' />
-  <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
-  <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
 
   <!-- Other module inherits                                      -->
 
@@ -29,10 +28,6 @@
   <stylesheet src="/css/jquery.treeview.css" />
   <stylesheet src="/css/suggestbox.css" />
   <stylesheet src="/css/browse.css" />
-  
-  <!-- 
-  <stylesheet src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css"/>
-   -->
   
   <!-- Begin logging config -->
   
