@@ -13,14 +13,4 @@
         <constructor-arg index="0" ref="cache"/>
     </bean>
 
-    <bean id="cache" class="net.shrine.ont.index.LuceneOntologyIndex" scope="singleton">
-        <constructor-arg index="0" ref="dao"/>
-    </bean>
-
-    <bean id="dao" class="net.shrine.ont.data.I2B2OntologyDAO" scope="singleton">
-        <constructor-arg index="0" value="jdbc:mysql://localhost:3306/ont"/>
-        <constructor-arg index="1" value="root"/>
-        <constructor-arg index="2" value="bendah"/>
-        <constructor-arg index="3" value="ontology"/>
-    </bean>
 </beans>
