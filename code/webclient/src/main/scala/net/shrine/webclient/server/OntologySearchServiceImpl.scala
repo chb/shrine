@@ -20,8 +20,7 @@ import net.shrine.ont.messaging.Concept
  * @date Mar 23, 2012
  */
 final class OntologySearchServiceImpl extends RemoteServiceServlet with OntologySearchService {
-  // TODO: un-hard-code
-  private def dao: OntologyDAO = new ShrineSqlOntologyDAO(new FileInputStream("/home/clint/workspace-3.6.2/shrine-gwt-webclient/ontology/core/ShrineWithSyns.sql"))
+  private def dao: OntologyDAO = new ShrineSqlOntologyDAO(getOntFileStream)
   
   private val index: OntologyIndex = LuceneOntologyIndex(dao)
 
@@ -70,11 +69,7 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
     
     val node = new OntNode(rootTerm, OntologyTrie.split(rootTerm).last, isLeaf(subTrie))
     
-    import scala.collection.JavaConverters._
-    
-    /*val childNodes = subTrie.children.flatMap(getTreeRootedAt(_).asScala)
-    
-    node.setChildren(Helpers.toJava(childNodes))*/
+    //import scala.collection.JavaConverters._
     
     JCollections.singletonList(node)
   }
@@ -93,5 +88,15 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
       
       getTreeRootedAt(parentTerm)
     }
+  }
+  
+  private[this] def getOntFileStream: java.io.InputStream = {
+    val ontFileName = "ShrineWithSyns.sql"
+    
+    val stream = getClass.getClassLoader.getResourceAsStream(ontFileName)
+    
+    require(stream != null, "Couldn't find ontology file '" + ontFileName + "' on the classpath")
+    
+    stream
   }
 }
