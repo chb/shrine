@@ -313,8 +313,8 @@ public final class Spinner extends Composite {
 	}
 
 	private static final class Urls {
-		public static final ImageUrls UpArrow = new ImageUrls("/images/arrowUp.png", "/images/arrowUpPressed.png", "/images/arrowUpHover.png", "/images/arrowUpDisabled.png");
+		public static final ImageUrls UpArrow = new ImageUrls("images/arrowUp.png", "images/arrowUpPressed.png", "images/arrowUpHover.png", "images/arrowUpDisabled.png");
 
-		public static final ImageUrls DownArrow = new ImageUrls("/images/arrowDown.png", "/images/arrowDownPressed.png", "/images/arrowDownHover.png", "/images/arrowDownDisabled.png");
+		public static final ImageUrls DownArrow = new ImageUrls("images/arrowDown.png", "images/arrowDownPressed.png", "images/arrowDownHover.png", "images/arrowDownDisabled.png");
 	}
 }

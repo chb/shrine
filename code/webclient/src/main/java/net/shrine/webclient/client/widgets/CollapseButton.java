@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Image;
 public final class CollapseButton extends Image {
 
 	public CollapseButton() {
-		super("/images/collapse.png");
+		super("images/collapse.png");
 		
 		this.setAltText("collapse");
 		this.setHeight("16px");

@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Image;
  */
 public final class LoadingSpinner extends Image {
 	public LoadingSpinner() {
-		super("/images/spinner3-greenie.gif");
+		super("images/spinner3-greenie.gif");
 		
 		this.setAltText("loading");
 		this.setWidth("20px");

@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.Image;
 public final class ExpandButton extends Image {
 
 	public ExpandButton() {
-		super("/images/expand.png");
+		super("images/expand.png");
 		
 		this.setAltText("expand");
 		this.setHeight("16px");

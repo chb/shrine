@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Image;
  */
 public final class DeleteButton extends Image {
 	
-	public static final String Url = "/images/delete.png";
+	public static final String Url = "images/delete.png";
 
 	public DeleteButton() {
 		super(Url);

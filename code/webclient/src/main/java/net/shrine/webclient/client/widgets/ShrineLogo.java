@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Image;
  */
 public final class ShrineLogo extends Image {
 	public ShrineLogo() {
-		super("/images/logo.png");
+		super("images/logo.png");
 		
 		this.setAltText("Shrine");
 		this.setWidth("187px");
