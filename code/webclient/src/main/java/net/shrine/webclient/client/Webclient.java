@@ -32,6 +32,8 @@ public final class Webclient implements EntryPoint {
 		RootPanel.get().add(wrapper);
 		
 		Log.info("Shrine Webclient loaded");
+		
+		Log.debug("Base URL: " + GWT.getModuleBaseURL());
 	}
 	
 	public void onModuleLoad() {
