@@ -112,7 +112,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 					if (highlightedPopupRow.isDefined()) {
 						selectHighlightedRow();
 					}
-				} else if(isLetterOrDigitOrSpace(event)) {
+				} else if(isKeyThatTriggersSuggestRequest(event)) {
 					oracle.requestSuggestions(new RichSuggestRequest(maxSuggestions, textBox.getText()), new RichSuggestCallback<S>() {
 						@Override
 						public void onSuggestionsReady(final RichSuggestRequest request, final RichSuggestResponse<S> response) {
@@ -128,10 +128,10 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 				}
 			}
 
-			boolean isLetterOrDigitOrSpace(final KeyUpEvent event) {
+			boolean isKeyThatTriggersSuggestRequest(final KeyUpEvent event) {
 				final int keyCode = event.getNativeKeyCode();
 				
-				return keyCode == ' ' || (keyCode >= 'A' && keyCode <= 'Z') || (keyCode >= '0' && keyCode <= '9');
+				return keyCode == ' ' || (keyCode >= 'A' && keyCode <= 'Z') || (keyCode >= '0' && keyCode <= '9') || keyCode == KeyCodes.KEY_BACKSPACE || keyCode == KeyCodes.KEY_DELETE;
 			}
 			
 			boolean isEnter(final KeyUpEvent event) {
