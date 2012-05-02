@@ -128,6 +128,15 @@
 				</executions>
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
+					<!-- Include Shrine ontology file -->
+					<webResources>
+						<resource>
+							<directory>../../ontology/core</directory>
+							<includes>
+								<include>ShrineWithSyns.sql</include>
+							</includes>
+						</resource>
+					</webResources>
 				</configuration>
 			</plugin>
 			<plugin>
