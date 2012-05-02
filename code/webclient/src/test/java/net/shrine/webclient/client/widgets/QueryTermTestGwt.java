@@ -54,13 +54,13 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 		
 		final String simpleName = "simple name";
 		final String path = "/fully/qualified/path";
-		final String queryName = "asdjksdlksl";
 		final Term term = new Term(path, simpleName);
 		
-		state.registerNewQuery(id("blah"), new Term("nuh"));
-		state.registerNewQuery(id(queryName), term);
+		state.registerNewQuery(new Term("nuh"));
+		state.registerNewQuery(term);
 		
 		assertEquals(2, state.numQueryGroups());
+		final String queryName = "B";
 		state.getQuery(id(queryName));
 		
 		final QueryTerm qt = new QueryTerm(id(queryName), controller, term);

@@ -61,6 +61,7 @@ public final class State {
 	// TODO: HACK
 	// Make sure queries are named A,B,C,... Z, in that order, with no gaps,
 	// always starting from 'A'
+	@Deprecated
 	void reNameQueries() {
 		final Iterator<QueryGroupId> newIdIter = new QueryGroupIdsIterator();
 
