@@ -148,7 +148,6 @@ body {
     overflow-y: auto !important;
     padding: 0 15px 5px 5px;
     z-index: 1101;
-	display: none;
 }
 
 .searchTermHighlight {

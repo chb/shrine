@@ -5,7 +5,7 @@ import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.Util;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author clint
  * @date Apr 17, 2012
  */
-public final class SuggestionsPanel extends VerticalPanel implements Observer {
+public final class SuggestionsPanel extends FlowPanel implements Observer {
 	private Observable<Integer> highlightedRow;
 
 	SuggestionsPanel(final Observable<Integer> highlightedRow) {
@@ -24,6 +24,9 @@ public final class SuggestionsPanel extends VerticalPanel implements Observer {
 		this.highlightedRow = highlightedRow;
 		
 		this.highlightedRow.observedBy(this);
+		
+		//TODO: HACK ALERT
+		this.addStyleName("searchBoxPopup");
 		
 		this.inform();
 	}

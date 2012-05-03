@@ -11,7 +11,6 @@ import net.shrine.webclient.client.widgets.suggest.WidgetMaker;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -34,14 +33,10 @@ public final class AutoSuggestRow extends Composite {
 
 	private static AutoSuggestRowUiBinder uiBinder = GWT.create(AutoSuggestRowUiBinder.class);
 
-	interface AutoSuggestRowUiBinder extends UiBinder<Widget, AutoSuggestRow> {
-	}
+	interface AutoSuggestRowUiBinder extends UiBinder<Widget, AutoSuggestRow> { }
 
 	@UiField
 	Anchor browseLink;
-
-	@UiField
-	SpanElement categorySpan;
 
 	@UiField
 	Label simpleName;
@@ -57,7 +52,7 @@ public final class AutoSuggestRow extends Composite {
 
 		initBrowseLinkStyleNames(termSuggestion);
 
-		categorySpan.setInnerText(termSuggestion.getCategory());
+		browseLink.addStyleName(termSuggestion.isLeaf() ? "leaf" : "tree");
 
 		final RegExp replaceHighlightRegex = RegExp.compile("(" + termSuggestion.getHighlight() + ")", "ig");
 

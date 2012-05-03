@@ -55,7 +55,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		this.oracle = oracle;
 		this.widgetMaker = widgetMaker;
 		this.maxSuggestions = maxSuggestions;
-
+		
 		initTextBox();
 
 		initPopup();
@@ -217,11 +217,13 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 	private void positionPopup() {
 		final Element textBoxElement = textBox.getElement();
 
-		// TODO: HACK ALERT: 7 is totally arbitrary. Needed to make suggest
-		// popup line up horizontally
-		final int left = textBoxElement.getAbsoluteLeft() - 7;
+		//TODO: HACK ALERT: 2 is completely arbitrary; used to make sure suggest popup
+		//lines up properly horizontally
+		final int left = textBoxElement.getAbsoluteLeft() - 2;
 
-		final int bottom = textBoxElement.getAbsoluteBottom();
+		// TODO: HACK ALERT: "- textBoxElement.getClientHeight() - 7" is totally arbitrary. 
+		//Needed to place suggest popup right under text box. :( :(
+		final int bottom = textBoxElement.getAbsoluteBottom() - textBoxElement.getClientHeight() - 7;
 
 		suggestionPopup.setPopupPosition(left, bottom);
 	}
@@ -246,7 +248,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 			suggestionsPanel.stopObserving();
 			suggestionsPanel.clear();
 		}
-
+		
 		suggestionsPanel = new SuggestionsPanel(highlightedPopupRow);
 
 		suggestionPopup.setWidget(suggestionsPanel);

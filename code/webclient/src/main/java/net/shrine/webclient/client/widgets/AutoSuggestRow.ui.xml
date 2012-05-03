@@ -2,8 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:HTMLPanel styleName="autosuggest">
-		<span ui:field="categorySpan" class="taxonomy"></span>
-		<g:Anchor ui:field="browseLink">Show in Browser</g:Anchor>
+		<g:Anchor ui:field="browseLink" styleName="browse">Show in Browser</g:Anchor>
 		<span class="terms">
 			<g:Label ui:field="simpleName"/>
 			<g:Label ui:field="synonym" styleName="synonym"/>
