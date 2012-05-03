@@ -7,6 +7,7 @@ import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.util.Observer;
+import net.shrine.webclient.client.util.QuerySummarizer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.ReadOnlyObservableList;
 import net.shrine.webclient.client.util.Util;
@@ -19,7 +20,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -36,7 +37,7 @@ public final class AllResultsRow extends Composite implements Observer {
 	private ReadOnlyObservable<HashMap<String, IntWrapper>> allResults;
 	
 	@UiField
-	HTMLPanel querySentencePanel;
+	SimplePanel querySummaryHolder;
 	
 	@UiField
 	Button runQueryButton;
@@ -84,6 +85,12 @@ public final class AllResultsRow extends Composite implements Observer {
 	@Override
 	public void inform() {
 		runQueryButton.setEnabled(queryGroups.size() > 0);
+		
+		if(queryGroups.size() > 0) {
+			querySummaryHolder.setWidget(new QuerySummary(QuerySummarizer.summarize(queryGroups)));
+		} else {
+			querySummaryHolder.clear();
+		}
 		
 		if(allResults.isDefined()) {
 			resultsPanel.clear();

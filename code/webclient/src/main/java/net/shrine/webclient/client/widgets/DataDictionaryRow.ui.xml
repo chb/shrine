@@ -5,7 +5,7 @@
 	<g:HTMLPanel styleName="dataDictionary">
       <div class="queryClear">
       	<span class="title">Data Dictionary</span>
-        <g:SimplePanel ui:field="expandCollapseButtonHolder"/>
+        <shrine:CloseButton ui:field="closeButton"/>
       </div>
       <g:SimplePanel ui:field="dataDictionaryDataHolder"/>
 	</g:HTMLPanel>

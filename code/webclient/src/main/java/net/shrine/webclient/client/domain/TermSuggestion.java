@@ -37,6 +37,10 @@ public final class TermSuggestion implements IsSerializable {
 		this.isLeaf = isLeaf;
 	}
 
+	public Term toTerm() {
+		return new Term(path, category, simpleName);
+	}
+	
 	public String getPath() {
 		return path;
 	}

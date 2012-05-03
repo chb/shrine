@@ -1,7 +1,6 @@
 package net.shrine.webclient.client.widgets;
 
 import static java.util.Arrays.asList;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.domain.TermSuggestion;
 import net.shrine.webclient.client.events.ShowDataDictionaryPanelEvent;
 import net.shrine.webclient.client.util.Util;
@@ -70,7 +69,7 @@ public final class AutoSuggestRow extends Composite {
 			public void onClick(final ClickEvent event) {
 				container.hidePopup();
 				
-				eventBus.fireEvent(new ShowDataDictionaryPanelEvent(new Term(termSuggestion.getPath())));
+				eventBus.fireEvent(new ShowDataDictionaryPanelEvent(termSuggestion.toTerm()));
 			}
 		});
 	}

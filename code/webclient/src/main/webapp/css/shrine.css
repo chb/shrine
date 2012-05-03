@@ -439,6 +439,10 @@ body {
 	color: #063;
 }
 
+.querySummaryLabel0 {
+	color: #063;
+}
+
 .row0 .queryTerm {
 	background: #063;
 	border-color: #063;
@@ -446,6 +450,10 @@ body {
 }
 
 .row1 .queryRowLabel {
+	color: #069;
+}
+
+.querySummaryLabel1 {
 	color: #069;
 }
 
@@ -459,6 +467,10 @@ body {
 	color: #B58800;
 }
 
+.querySummaryLabel2 {
+	color: #B58800;
+}
+
 .row2 .queryTerm {
 	background: #B58800;
 	border-color: #B58800;
@@ -466,6 +478,10 @@ body {
 }
 
 .row3 .queryRowLabel {
+	color: #D24500;
+}
+
+.querySummaryLabel3 {
 	color: #D24500;
 }
 
@@ -479,6 +495,10 @@ body {
 	color: #AE00D2;
 }
 
+.querySummaryLabel4 {
+	color: #AE00D2;
+}
+
 .row4 .queryTerm {
 	background: #AE00D2;
 	border-color: #AE00D2;
@@ -486,6 +506,10 @@ body {
 }
 
 .row5 .queryRowLabel {
+	color: #0014A4;
+}
+
+.querySummaryLabel5 {
 	color: #0014A4;
 }
 
@@ -499,6 +523,10 @@ body {
 	color: #8A0000;
 }
 
+.querySummaryLabel6 {
+	color: #8A0000;
+}
+
 .row6 .queryTerm {
 	background: #8A0000;
 	border-color: #8A0000;
@@ -506,6 +534,10 @@ body {
 }
 
 .row7 .queryRowLabel {
+	color: #5A008A;
+}
+
+.querySummaryLabel7 {
 	color: #5A008A;
 }
 
@@ -519,6 +551,10 @@ body {
 	color: #00A89A;
 }
 
+.querySummaryLabel8 {
+	color: #00A89A;
+}
+
 .row8 .queryTerm {
 	background: #00A89A;
 	border-color: #00A89A;
@@ -526,6 +562,10 @@ body {
 }
 
 .row9 .queryRowLabel {
+	color: #8DB000;
+}
+
+.querySummaryLabel9 {
 	color: #8DB000;
 }
 

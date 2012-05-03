@@ -2,7 +2,6 @@ package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.OntNode;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.events.CollapseDataDictionaryPanelEvent;
 import net.shrine.webclient.client.util.Util;
 

@@ -5,8 +5,6 @@
 		<div class="breakDown">
 			<div class="breakDownTop">
 				<div class="breakDownTopLeft">
-
-
 					<div class="breakDownTopRight">
 						Approved Query Topic:
 						<a href="#">Request New Query Topic</a>
@@ -17,10 +15,7 @@
 						</select>
 						<g:Button text="Run Query" addStyleNames="largeButton" ui:field="runQueryButton"/>
 					</div>
-					<div class="title">Query Summary</div>
-					<g:HTMLPanel styleName="querySentence" ui:field="querySentencePanel">
-						<span class="term" style="color: rgb(0, 102, 51);">Neonatal diabetes mallitus</span> <span class="joiner">AND</span> <span class="term" style="color: rgb(0, 102, 153);">Pravastatin</span>
-					</g:HTMLPanel>
+					<g:SimplePanel ui:field="querySummaryHolder"/>
 				</div>
 			</div>
 			<div class="breakDownUpper">

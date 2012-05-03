@@ -21,7 +21,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -38,14 +37,10 @@ public final class DataDictionaryRow extends Composite {
 	}
 
 	@UiField
-	SimplePanel expandCollapseButtonHolder;
+	CloseButton closeButton;
 
 	@UiField
 	SimplePanel dataDictionaryDataHolder;
-
-	private final Image expandButton = new ExpandButton();
-
-	private final Image collapseButton = new CollapseButton();
 
 	private EventBus eventBus;
 
@@ -58,17 +53,12 @@ public final class DataDictionaryRow extends Composite {
 	public DataDictionaryRow() {
 		initWidget(uiBinder.createAndBindUi(this));
 
-		final ClickHandler toggleHandler = new ClickHandler() {
+		closeButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				toggleDataDictionaryDisplay();
+				hide();
 			}
-		};
-
-		expandButton.addClickHandler(toggleHandler);
-		collapseButton.addClickHandler(toggleHandler);
-
-		hideDataDictionaryTree();
+		});
 		
 		hide();
 	}
@@ -97,8 +87,6 @@ public final class DataDictionaryRow extends Composite {
 		eventBus.addHandler(CollapseDataDictionaryPanelEvent.getType(), new CollapseDataDictionaryPanelEventHandler() {
 			@Override
 			public void handle(final CollapseDataDictionaryPanelEvent event) {
-				hideDataDictionaryTree();
-				
 				hide();
 			}
 		});
@@ -128,12 +116,10 @@ public final class DataDictionaryRow extends Composite {
 
 	void showDataDictionaryTree(final Controllers controllers, final OntNode ontTree) {
 		dataDictionaryDataHolder.setWidget(new DataDictionaryPanel(makeTree(ontTree)));
-		expandCollapseButtonHolder.setWidget(collapseButton);
 	}
 
 	void hideDataDictionaryTree() {
 		dataDictionaryDataHolder.clear();
-		expandCollapseButtonHolder.setWidget(expandButton);
 	}
 
 	void loadOntTree(final Controllers controllers, final Term startingTerm) {
@@ -159,6 +145,8 @@ public final class DataDictionaryRow extends Composite {
 	}
 
 	void hide() {
+		hideDataDictionaryTree();
+		
 		setVisible(false);
 	}
 	

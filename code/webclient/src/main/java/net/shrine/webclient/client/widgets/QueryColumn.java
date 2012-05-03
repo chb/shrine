@@ -1,7 +1,5 @@
 package net.shrine.webclient.client.widgets;
 
-import java.util.List;
-
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.util.Observer;
@@ -75,7 +73,7 @@ public final class QueryColumn extends Composite implements Observer {
 		for(final QueryGroup query : Util.sorted(queries)) {
 			final QueryRow row = new QueryRow(controllers, query);
 			
-			final String cssClass = cssClasses.get(i % cssClasses.size());
+			final String cssClass = Util.rowCssClasses.get(i % Util.rowCssClasses.size());
 			
 			row.addStyleName(cssClass);
 			
@@ -87,20 +85,6 @@ public final class QueryColumn extends Composite implements Observer {
 		delegate.add(new EmptyRow());
 	}
 
-	static final List<String> cssClasses = makeCssClassNameList();
-
-	static final int numCssClasses = 10;
-
-	static List<String> makeCssClassNameList() {
-		final List<String> result = Util.makeArrayList();
-
-		for (int i = 1; i <= numCssClasses; ++i) {
-			result.add("row" + i);
-		}
-
-		return result;
-	}
-	
 	private void clear() {
 		for(final Widget w : delegate) {
 			if(w instanceof QueryRow) {

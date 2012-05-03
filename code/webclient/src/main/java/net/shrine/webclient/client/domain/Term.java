@@ -15,19 +15,23 @@ public final class Term implements Andable {
 	
 	public final String value;
 	
+	public final String category;
+	
 	public final String simpleName;
 
-	public Term(final String value) {
-		this(value, "");
+	public Term(final String value, final String category) {
+		this(value, category, "");
 	}
 	
-	public Term(final String value, final String simpleName) {
+	public Term(final String value, final String category, final String simpleName) {
 		super();
 
 		Util.requireNotNull(value);
+		Util.requireNotNull(category);
 		Util.requireNotNull(simpleName);
 
 		this.value = value;
+		this.category = category;
 		this.simpleName = simpleName;
 	}
 	
@@ -38,7 +42,7 @@ public final class Term implements Andable {
 	
 	@Override
 	public String toString() {
-		return "Term(" + value + ")";
+		return "Term(" + category + ":'" + value + "')";
 	}
 	
 	@Override
