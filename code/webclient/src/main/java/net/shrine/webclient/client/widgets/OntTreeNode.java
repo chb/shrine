@@ -40,7 +40,7 @@ public final class OntTreeNode extends Composite {
 		Util.requireNotNull(node);
 		
 		textAnchor.setText(node.getSimpleName());
-		iconSpan.setClassName("browse " + (node.isLeaf() ? "leaf" : "folder"));
+		iconSpan.setClassName(node.isLeaf() ? "leaf" : "folder");
 		
 		iconSpan.setTitle(node.getValue());
 		textAnchor.setTitle(node.getValue());

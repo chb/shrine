@@ -8,6 +8,6 @@
 	</ui:style>
 	<g:HTMLPanel styleName="onttree">
 		<!-- TODO: TOTAL HACK: whyTF are nbsps needed? -->
-		<span ui:field="iconSpan">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><g:Anchor styleName="{style.plain}" ui:field="textAnchor"></g:Anchor>
+		<span ui:field="iconSpan"><g:Anchor styleName="{style.plain}" ui:field="textAnchor"></g:Anchor></span>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -52,7 +52,7 @@ public final class AutoSuggestRow extends Composite {
 
 		initBrowseLinkStyleNames(termSuggestion);
 
-		browseLink.addStyleName(termSuggestion.isLeaf() ? "leaf" : "tree");
+		browseLink.addStyleName(termSuggestion.isLeaf() ? "leaf" : "folder");
 
 		final RegExp replaceHighlightRegex = RegExp.compile("(" + termSuggestion.getHighlight() + ")", "ig");
 

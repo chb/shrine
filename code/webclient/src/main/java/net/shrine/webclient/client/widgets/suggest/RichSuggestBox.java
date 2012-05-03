@@ -231,7 +231,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		// TODO: HACK ALERT: 2 is completely arbitrary; used to make sure
 		// suggest popup
 		// lines up properly horizontally
-		final int left = textBoxElement.getAbsoluteLeft() - 2;
+		final int left = textBoxElement.getAbsoluteLeft();
 
 		// TODO: HACK ALERT: "- textBoxElement.getClientHeight() - 7" is totally
 		// arbitrary.
