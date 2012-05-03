@@ -244,6 +244,8 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 	}
 
 	void refreshSuggestionPanel() {
+		highlightedPopupRow.clear();
+
 		if (suggestionsPanel != null) {
 			suggestionsPanel.stopObserving();
 			suggestionsPanel.clear();
