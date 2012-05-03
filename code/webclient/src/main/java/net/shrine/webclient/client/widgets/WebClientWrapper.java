@@ -24,6 +24,9 @@ public final class WebClientWrapper extends Composite {
 	@UiField
 	WebClientContent content;
 	
+	@UiField
+	Header header;
+	
 	public WebClientWrapper() {
 		super();
 		
@@ -32,5 +35,7 @@ public final class WebClientWrapper extends Composite {
 	
 	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox) {
 		this.content.wireUp(eventBus, state, controllers, ontSearchBox);
+		
+		this.header.wireUp(eventBus);
 	}
 }

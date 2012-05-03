@@ -1,7 +1,6 @@
 package net.shrine.webclient.client.events;
 
 import net.shrine.webclient.client.domain.Term;
-import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.client.widgets.WidgetUtil;
 
 import com.google.gwt.event.shared.GwtEvent;
@@ -19,8 +18,6 @@ public final class ShowDataDictionaryPanelEvent extends GwtEvent<ShowDataDiction
 
 	public ShowDataDictionaryPanelEvent(final Term startingTerm) {
 		super();
-
-		Util.requireNotNull(startingTerm);
 
 		this.startingTerm = startingTerm;
 	}

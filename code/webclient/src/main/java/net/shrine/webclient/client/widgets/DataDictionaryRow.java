@@ -51,8 +51,8 @@ public final class DataDictionaryRow extends Composite {
 
 	private Controllers controllers;
 
-	private OntNode rootOntNode;
-	
+	private static final Term shrineRoot = new Term("\\\\SHRINE\\SHRINE\\", "SHRINE Ontology");
+
 	private Term rootTerm = new Term("\\\\SHRINE\\SHRINE\\", "SHRINE Ontology");
 
 	public DataDictionaryRow() {
@@ -69,6 +69,8 @@ public final class DataDictionaryRow extends Composite {
 		collapseButton.addClickHandler(toggleHandler);
 
 		hideDataDictionaryTree();
+		
+		hide();
 	}
 
 	public void wireUp(final EventBus eventBus, final Controllers controllers) {
@@ -78,16 +80,26 @@ public final class DataDictionaryRow extends Composite {
 		eventBus.addHandler(ShowDataDictionaryPanelEvent.getType(), new ShowDataDictionaryPanelEventHandler() {
 			@Override
 			public void handle(final ShowDataDictionaryPanelEvent event) {
-				rootTerm = event.getStartingTerm();
-				
-				loadOntTree(controllers, rootTerm);
+				if (dataDictionaryIsShowing()) {
+					hideDataDictionaryTree();
+
+					hide();
+				} else {
+					rootTerm = event.getStartingTerm() == null ? shrineRoot : event.getStartingTerm();
+
+					loadOntTree(controllers, rootTerm);
+					
+					show();
+				}
 			}
 		});
-		
+
 		eventBus.addHandler(CollapseDataDictionaryPanelEvent.getType(), new CollapseDataDictionaryPanelEventHandler() {
 			@Override
 			public void handle(final CollapseDataDictionaryPanelEvent event) {
 				hideDataDictionaryTree();
+				
+				hide();
 			}
 		});
 	}
@@ -140,9 +152,17 @@ public final class DataDictionaryRow extends Composite {
 			@Override
 			public void onFailure(final Throwable caught) {
 				Log.error("Failed to browse ontology: " + caught.getMessage(), caught);
-				
+
 				hideDataDictionaryTree();
 			}
 		});
+	}
+
+	void hide() {
+		setVisible(false);
+	}
+	
+	void show() {
+		setVisible(true);
 	}
 }

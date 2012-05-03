@@ -43,8 +43,6 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 	// TODO: make this a param
 	private final int maxSuggestions;
 
-	private boolean keysHaveBeenPressed = false;
-
 	public RichSuggestBox(final RichSuggestOracle<S> oracle, final WidgetMaker<S> widgetMaker) {
 		this(oracle, widgetMaker, 20);
 	}
