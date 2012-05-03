@@ -6,8 +6,8 @@
 	background-color: white;
 }
 
-/* TODO: workaround to remove GWT popup panel border */
 .gwt-PopupPanel {
+	/* TODO: workaround to remove GWT popup panel border */
 	border: none;
 	/* TODO: HACK make vestigal popup panel invisible*/
 	background-color: transparent;
