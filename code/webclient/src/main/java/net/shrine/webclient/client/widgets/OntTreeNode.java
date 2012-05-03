@@ -31,6 +31,9 @@ public final class OntTreeNode extends Composite {
 	SpanElement iconSpan;
 	
 	@UiField
+	SpanElement spacer;
+	
+	@UiField
 	Anchor textAnchor;
 	
 	public OntTreeNode(final EventBus eventBus, final Controllers controllers, final OntNode node ) {
@@ -43,6 +46,12 @@ public final class OntTreeNode extends Composite {
 		
 		iconSpan.setTitle(node.getValue());
 		textAnchor.setTitle(node.getValue());
+		
+		//TODO: HACK ALERT
+		if(node.isLeaf()) {
+			spacer.setInnerHTML("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+		}
+		//END HACK ALERT
 		
 		textAnchor.addClickHandler(new ClickHandler() {
 			@Override

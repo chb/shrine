@@ -7,6 +7,6 @@
 		}
 	</ui:style>
 	<g:HTMLPanel styleName="onttree">
-		<span ui:field="iconSpan"><g:Anchor styleName="{style.plain}" ui:field="textAnchor"></g:Anchor></span>
+		<span ui:field="iconSpan"><span ui:field="spacer"/><g:Anchor styleName="{style.plain}" ui:field="textAnchor"></g:Anchor></span>
 	</g:HTMLPanel>
 </ui:UiBinder> 
