@@ -30,6 +30,9 @@ public final class Header extends Composite {
 	@UiField
 	Button queryHistoryButton;
 	
+	@UiField
+	Button dataDictionaryButton;
+	
 	private final PopupPanel queryHistoryPopup = new PopupPanel(true, false);
 	
 	public Header() {

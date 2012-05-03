@@ -5,7 +5,10 @@
 
 	<g:HTMLPanel styleName="header">
 		<div class="headerLinks">
-			<span class="buttonPanel"><g:Button ui:field="queryHistoryButton" styleName="smallButton" text="Query History" /></span>
+			<span class="buttonPanel">
+				<g:Button ui:field="queryHistoryButton" styleName="smallButton" text="Query History" />
+				<g:Button ui:field="dataDictionaryButton" styleName="smallButton" text="Data Dictionary" />
+			</span>
 		</div>
 		<shrine:ShrineLogo />
 	</g:HTMLPanel>
