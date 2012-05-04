@@ -34,7 +34,7 @@ public final class InstitutionResult extends Composite {
 	}
 
 	String asString(final int resultSetSize) {
-		if(resultSetSize < 0) {
+		if(resultSetSize < 10) {
 			return "< 10";
 		}
 		
