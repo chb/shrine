@@ -30,6 +30,14 @@ public final class InstitutionResult extends Composite {
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		
-		delegate.setHTML(instName + ": <strong>" + resultSetSize + "</strong>");
+		delegate.setHTML(instName + ": <strong>" + asString(resultSetSize) + "</strong>");
+	}
+
+	String asString(final int resultSetSize) {
+		if(resultSetSize < 0) {
+			return "< 10";
+		}
+		
+		return String.valueOf(resultSetSize);
 	}
 }
