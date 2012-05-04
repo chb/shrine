@@ -40,8 +40,7 @@ public final class OntologySearchBox extends RichSuggestBox<TermSuggestion> {
 		});
 		
 		//TODO: Very hackish
-		//TODO: Are all these classes needed?
-		for(final String styleName : Arrays.asList("searchInput", "ui-state-default", "autocomplete")) {
+		for(final String styleName : Arrays.asList("searchInput")) {
 			this.addStyleName(styleName);
 		}
 		
