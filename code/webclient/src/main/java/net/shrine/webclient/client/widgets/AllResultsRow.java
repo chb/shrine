@@ -1,5 +1,7 @@
 package net.shrine.webclient.client.widgets;
 
+import static net.shrine.webclient.client.util.QuerySummarizer.summarize;
+
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -8,7 +10,6 @@ import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.util.Observer;
-import net.shrine.webclient.client.util.QuerySummarizer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.ReadOnlyObservableList;
 import net.shrine.webclient.client.util.Util;
@@ -67,9 +68,7 @@ public final class AllResultsRow extends Composite implements Observer {
 		
 		this.queryGroups.observedBy(this);
 		
-		for(final ReadOnlyQueryGroup group : this.queryGroups) {
-			group.observedBy(this);
-		}
+		startObservingQueryGroups();
 		
 		resultsPanel.clear();
 		
@@ -87,14 +86,26 @@ public final class AllResultsRow extends Composite implements Observer {
 		controllers.query.completeAllQueryWithNoResults();
 	}
 
+	void startObservingQueryGroups() {
+		for(final ReadOnlyQueryGroup group : this.queryGroups) {
+			group.observedBy(this);
+		}
+	}
+
 	@Override
 	public void inform() {
 		runQueryButton.setEnabled(queryGroups.size() > 0);
 		
+		//TODO: Refreshing (and even observing) individual query groups feels bad :(
+		//Using the event bus to fire change events when query groups are changed would be better.
+		stopObservingQueryGroups();
+		//start observing any new query groups, so the query summary will update when they change 
+		startObservingQueryGroups();
+		
+		querySummaryHolder.clear();
+		
 		if(queryGroups.size() > 0) {
-			querySummaryHolder.setWidget(new QuerySummary(QuerySummarizer.summarize(queryGroups)));
-		} else {
-			querySummaryHolder.clear();
+			querySummaryHolder.setWidget(new QuerySummary(summarize(queryGroups)));
 		}
 		
 		if(allResults.isDefined()) {
@@ -115,8 +126,17 @@ public final class AllResultsRow extends Composite implements Observer {
 		
 		queryGroups.noLongerObservedBy(this);
 		
+		stopObservingQueryGroups();
+	}
+
+	void stopObservingQueryGroups() {
 		for(final ReadOnlyQueryGroup group : this.queryGroups) {
 			group.noLongerObservedBy(this);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "AllResultsRow []";
 	}
 }
