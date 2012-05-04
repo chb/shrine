@@ -1,10 +1,5 @@
 package net.shrine.webclient.client.widgets;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import net.shrine.webclient.client.domain.PreviousQuery;
 import net.shrine.webclient.client.events.ShowDataDictionaryPanelEvent;
 import net.shrine.webclient.client.util.Util;
 
@@ -38,6 +33,8 @@ public final class Header extends Composite {
 	
 	private final PopupPanel queryHistoryPopup = new PopupPanel(true, false);
 	
+	private final PreviousQueriesPanel previousQueriesPanel = new PreviousQueriesPanel();
+	
 	private EventBus eventBus;
 	
 	public Header() {
@@ -51,9 +48,7 @@ public final class Header extends Composite {
 				if(queryHistoryPopup.isShowing()) {
 					queryHistoryPopup.hide();
 				} else {
-					final List<PreviousQuery> queries = Arrays.asList(new PreviousQuery("7316cb3b-b7ee-45f5-90db-97054ad807cc", new Date()), new PreviousQuery("6349b2cc-24e7-4184-a914-b1646aefac08", new Date()), new PreviousQuery("8f4de438-85c7-436c-a3e8-6a4ea6a97284", new Date()));
-					
-					queryHistoryPopup.setWidget(new PreviousQueriesPanel(queries));
+					queryHistoryPopup.setWidget(previousQueriesPanel);
 					
 					queryHistoryPopup.show();
 				}
