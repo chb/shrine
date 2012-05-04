@@ -3,6 +3,7 @@ package net.shrine.webclient.client.widgets;
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.State;
 
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -33,8 +34,8 @@ public final class WebClientWrapper extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 	
-	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox) {
-		this.content.wireUp(eventBus, state, controllers, ontSearchBox);
+	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox, final PickupDragController dragController) {
+		this.content.wireUp(eventBus, state, controllers, ontSearchBox, dragController);
 		
 		this.header.wireUp(eventBus);
 	}

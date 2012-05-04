@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.QueryGroup;
+import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.QuerySummarizer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
@@ -66,6 +67,10 @@ public final class AllResultsRow extends Composite implements Observer {
 		
 		this.queryGroups.observedBy(this);
 		
+		for(final ReadOnlyQueryGroup group : this.queryGroups) {
+			group.observedBy(this);
+		}
+		
 		resultsPanel.clear();
 		
 		runQueryButton.addClickHandler(new ClickHandler() {
@@ -107,6 +112,11 @@ public final class AllResultsRow extends Composite implements Observer {
 	@Override
 	public void stopObserving() {
 		allResults.noLongerObservedBy(this);
+		
 		queryGroups.noLongerObservedBy(this);
+		
+		for(final ReadOnlyQueryGroup group : this.queryGroups) {
+			group.noLongerObservedBy(this);
+		}
 	}
 }

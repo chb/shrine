@@ -156,13 +156,13 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 
 		clampHighlightedPopupRow();
 
-		Log.debug("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
+		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
 	}
 
 	void zeroHighlightedRow() {
 		highlightedPopupRow.set(0);
 
-		Log.debug("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
+		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
 	}
 
 	void decrementHighlightedRow() {
@@ -174,7 +174,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 			zeroHighlightedRow();
 		}
 
-		Log.debug("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
+		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
 	}
 
 	void incrementHighlightedRow() {
@@ -186,7 +186,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 			zeroHighlightedRow();
 		}
 
-		Log.debug("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
+		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
 	}
 
 	public RichSuggestOracle<S> getOracle() {

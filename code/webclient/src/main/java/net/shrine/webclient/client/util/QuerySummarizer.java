@@ -72,17 +72,26 @@ public final class QuerySummarizer {
 			
 			final List<Term> terms = Util.toList(or.getTerms());
 			
-			requireAllSameCategory(terms);
+			//FIXME: Allow multi-category expressions; will make the summary less accurate,
+			//but multi-category expressions are rare (says Andy), and will be avoided at the 
+			// 8 May 2012 demo.
+			//requireAllSameCategory(terms);
 			
-			final String category = Labels.forCategory.get(terms.get(0).getCategory());
+			final String firstCategory = terms.get(0).getCategory();
 			
-			Util.requireNotNull(category);
+			final String categoryLabel = Labels.forCategory.get(firstCategory);
 			
-			final String categoryName = Labels.singularCategories.get(category);
+			Util.requireNotNull(categoryLabel);
+			
+			final String categoryName = Labels.singularCategories.get(firstCategory);
+			
+			if(categoryName == null) {
+				Log.warn("couldn't find singluar category for '" + firstCategory + "'");
+			}
 			
 			Util.requireNotNull(categoryName);
 			
-			result.append(category).append(" at least one of the " + categoryName + " concepts in group " + color(queryGroup.getId().name, queryGroupCssClass));
+			result.append(categoryLabel).append(" at least one of the " + categoryName + " concepts in group " + color(queryGroup.getId().name, queryGroupCssClass));
 		}
 
 		return result.toString();

@@ -2,6 +2,7 @@ package net.shrine.webclient.client.widgets;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.Expression;
@@ -11,6 +12,8 @@ import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.Util;
 
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.drop.SimpleDropController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -32,7 +35,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
  * @author clint
  * @date Mar 26, 2012
  */
-public final class QueryRow extends Composite implements Observer {
+public final class QueryRow extends Composite implements Observer, Iterable<Widget>, Disposable {
 
 	private static final QueryRowUiBinder uiBinder = GWT.create(QueryRowUiBinder.class);
 
@@ -41,7 +44,11 @@ public final class QueryRow extends Composite implements Observer {
 	private final Controllers controllers;
 
 	private final ReadOnlyQueryGroup query;
+	
+	private final PickupDragController dragController;
 
+	private final SimpleDropController dropController;
+	
 	@UiField
 	Label nameLabel;
 
@@ -63,19 +70,24 @@ public final class QueryRow extends Composite implements Observer {
 	@UiField
 	CheckBox negationCheckbox;
 
-	QueryRow(final Controllers controllers, final ReadOnlyQueryGroup query) {
+	QueryRow(final Controllers controllers, final ReadOnlyQueryGroup query, final PickupDragController dragController) {
 		super();
 
 		Util.requireNotNull(controllers);
 		Util.requireNotNull(query);
 		Util.requireNotNull(query.getId());
 		Util.requireNotNull(query.getExpression());
-
-		this.controllers = controllers;
-		this.query = query;
+		Util.requireNotNull(dragController);
 
 		initWidget(uiBinder.createAndBindUi(this));
-
+		
+		this.controllers = controllers;
+		this.query = query;
+		this.dragController = dragController;
+		this.dropController = new QueryRowDropController<QueryRow>(this, this, controllers, query);
+		
+		this.dragController.registerDropController(dropController);
+		
 		this.query.observedBy(this);
 		
 		initClearButton();
@@ -89,6 +101,11 @@ public final class QueryRow extends Composite implements Observer {
 		initMinOccursSpinner();
 
 		inform();
+	}
+	
+	@Override
+	public Iterator<Widget> iterator() {
+		return exprPanel.iterator();
 	}
 
 	private void initClearButton() {
@@ -170,6 +187,8 @@ public final class QueryRow extends Composite implements Observer {
 
 		for (final QueryTerm queryTerm : makeQueryTermsFrom(query.getExpression())) {
 			exprPanel.add(queryTerm);
+			
+			dragController.makeDraggable(queryTerm);
 		}
 	}
 
@@ -186,6 +205,13 @@ public final class QueryRow extends Composite implements Observer {
 		return result;
 	}
 
+	@Override
+	public void dispose() {
+		stopObserving();
+		
+		dragController.unregisterDropController(dropController);
+	}
+	
 	@Override
 	public void stopObserving() {
 		this.query.noLongerObservedBy(this);

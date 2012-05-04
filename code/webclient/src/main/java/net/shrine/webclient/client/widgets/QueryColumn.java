@@ -6,6 +6,7 @@ import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservableList;
 import net.shrine.webclient.client.util.Util;
 
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,6 +37,8 @@ public final class QueryColumn extends Composite implements Observer {
 	
 	private Controllers controllers;
 	
+	private PickupDragController dragController;
+	
 	public QueryColumn() {
 		super();
 
@@ -45,13 +48,15 @@ public final class QueryColumn extends Composite implements Observer {
 		this.delegate.getElement().setId("queryBuilder");
 	}
 	
-	void wireUp(final Controllers controllers, final ReadOnlyObservableList<QueryGroup> queries) {
+	void wireUp(final Controllers controllers, final ReadOnlyObservableList<QueryGroup> queries, final PickupDragController dragController) {
 		
 		Util.requireNotNull(controllers);
 		Util.requireNotNull(queries);
+		Util.requireNotNull(dragController);
 		
 		this.controllers = controllers;
 		this.queries = queries;
+		this.dragController = dragController;
 		
 		this.queries.observedBy(this);
 		
@@ -68,27 +73,31 @@ public final class QueryColumn extends Composite implements Observer {
 	public void inform() {
 		clear();
 		
-		int i = 0;
+		int rowNumber = 0;
 		
 		for(final QueryGroup query : Util.sorted(queries)) {
-			final QueryRow row = new QueryRow(controllers, query);
+			final QueryRow row = new QueryRow(controllers, query, dragController);
 			
-			final String cssClass = Util.rowCssClasses.get(i % Util.rowCssClasses.size());
-			
-			row.addStyleName(cssClass);
+			addRowStyle(row, rowNumber);
 			
 			delegate.add(row);
 			
-			++i;
+			++rowNumber;
 		}
 		
-		delegate.add(new EmptyRow());
+		delegate.add(new EmptyRow(controllers, dragController));
+	}
+
+	static void addRowStyle(final QueryRow row, final int rowNumber) {
+		final String cssClass = Util.rowCssClasses.get(rowNumber % Util.rowCssClasses.size());
+		
+		row.addStyleName(cssClass);
 	}
 
 	private void clear() {
 		for(final Widget w : delegate) {
-			if(w instanceof QueryRow) {
-				((QueryRow)w).stopObserving();
+			if(w instanceof Disposable) {
+				((Disposable)w).dispose();
 			}
 		}
 		

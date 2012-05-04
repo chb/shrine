@@ -27,6 +27,34 @@ public final class QueryBuildingController extends StatefulController {
 		return state.registerNewQuery(term);
 	}
 	
+	public ReadOnlyQueryGroup addNewTerm(final QueryGroupId id, final Term newTerm) {
+		final QueryGroup queryGroup = state.getQuery(id);
+		
+		final Expression expr = queryGroup.getExpression();
+		
+		if(expr instanceof Term) {
+			if(expr.equals(newTerm)) {
+				Log.warn("Attempted to add term to query that already contains that term. Query: '" + id.name + "' Term: " + newTerm);
+			} else {
+				final Term existing = (Term)expr;
+				
+				queryGroup.setExpression(new Or(existing, newTerm));
+			}
+		} else if(expr instanceof Or) {
+			final Or withNewTerm = ((Or)expr).with(newTerm);
+			
+			if(expr.equals(withNewTerm)) {
+				Log.warn("Adding term to query '" + id.name + "' has no effect.  Term: " + newTerm);
+			} else {
+				queryGroup.setExpression(withNewTerm);
+			}
+		} else {
+			throw new IllegalStateException("Query group '" + id.name + "' has illegal expression: " + expr);
+		}
+		
+		return queryGroup;
+	}
+	
 	public void removeAllQueryGroups() {
 		state.getQueries().clear();
 	}
@@ -57,6 +85,8 @@ public final class QueryBuildingController extends StatefulController {
 			
 			if(expr.equals(withoutTerm)) {
 				Log.warn("Removing term from query '" + queryId.name + "' has no effect: " + term);
+			} else if(withoutTerm.size() == 1) {
+				queryGroup.setExpression(withoutTerm.getTerms().iterator().next());
 			} else if(withoutTerm.isEmpty()) {
 				removeQueryGroup(queryId);
 			} else {

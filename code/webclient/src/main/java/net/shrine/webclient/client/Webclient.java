@@ -1,8 +1,10 @@
 package net.shrine.webclient.client;
 
 import net.shrine.webclient.client.widgets.OntologySearchBox;
+import net.shrine.webclient.client.widgets.QueryTermDragController;
 import net.shrine.webclient.client.widgets.WebClientWrapper;
 
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -27,13 +29,25 @@ public final class Webclient implements EntryPoint {
 
 		final OntologySearchBox ontSearchBox = new OntologySearchBox(eventBus, controllers);
 		
-		wrapper.wireUp(eventBus, state, controllers, ontSearchBox);
+		final PickupDragController dragController = new QueryTermDragController(RootPanel.get(), false);
+		
+		configureDragController(dragController);
+		
+		wrapper.wireUp(eventBus, state, controllers, ontSearchBox, dragController);
 
 		RootPanel.get().add(wrapper);
 		
 		Log.info("Shrine Webclient loaded");
 		
 		Log.debug("Base URL: " + GWT.getModuleBaseURL());
+	}
+
+	static void configureDragController(final PickupDragController dragController) {
+		dragController.setBehaviorConstrainedToBoundaryPanel(true);
+	    dragController.setBehaviorMultipleSelection(false);
+	    //NB: widgets must be "dragged" at least 5 pixels before dragging is considered to have begun.
+	    //This allows widgets to receive click events (for close buttons, etc) without triggering DnD.
+	    dragController.setBehaviorDragStartSensitivity(5);
 	}
 	
 	public void onModuleLoad() {
