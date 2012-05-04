@@ -89,7 +89,7 @@ public final class QuerySummarizer {
 	}
 	
 	static String color(final String text, final String queryGroupCssClass) {
-		return "<span class=\"" + queryGroupCssClass + " querySummaryLabel\">" + text + "</span>";
+		return "<span class=\"" + queryGroupCssClass + "\">" + text + "</span>";
 	}
 	
 	static void requireAllSameCategory(final Collection<Term> terms) {

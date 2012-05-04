@@ -24,7 +24,7 @@ public final class Util {
 	static List<String> makeRowCssClassNameList(final String prefix) {
 		final List<String> result = Util.makeArrayList();
 
-		for (int i = 1; i <= numRowColors; ++i) {
+		for (int i = 0; i < numRowColors; ++i) {
 			result.add(prefix + i);
 		}
 
