@@ -30,10 +30,25 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
   
   private def isLeaf(c: Concept): Boolean = isLeaf(ontTrie.subTrieForPrefix(c.path))
   
+  private [this] val allDigitRegex = """^\d+$""".r
+  
   override def getSuggestions(typedSoFar: String, limit: Int): JList[TermSuggestion] = {
     val concepts = index.search(typedSoFar).take(limit)
 
-    val suggestions = concepts.map(c => new TermSuggestion(c.path, c.simpleName, typedSoFar, c.synonym.orNull, c.category, isLeaf(c)))
+    def toTermSuggestion(c: Concept): TermSuggestion = {
+      val simpleName = c.simpleName
+      
+      def isAllDigits(s: String) = allDigitRegex.findFirstIn(simpleName).isDefined
+
+      //Return the synonym as the simple name if the simple name is all digits and a synonym is present; 
+      //otherwise, return the simple name unaltered.
+      //Useful for medications, which have all-digit simple names, but human-readable synonyms
+      val simpleNameToUse = if(isAllDigits(simpleName)) c.synonym.getOrElse(simpleName) else simpleName
+      
+      new TermSuggestion(c.path, simpleNameToUse, typedSoFar, c.synonym.orNull, c.category, isLeaf(c))
+    }
+    
+    val suggestions = concepts.map(toTermSuggestion)
 
     Helpers.toJava(suggestions)
   }
