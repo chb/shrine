@@ -23,6 +23,7 @@
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt-log-version>3.1.8</gwt-log-version>
+		<gwt-dnd-version>3.1.2</gwt-dnd-version>
 	</properties>
 
 	<dependencies>
@@ -72,7 +73,11 @@
 			<artifactId>gwt-log</artifactId>
 			<version>${gwt-log-version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.allen-sauer.gwt.dnd</groupId>
+			<artifactId>gwt-dnd</artifactId>
+			<version>${gwt-dnd-version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

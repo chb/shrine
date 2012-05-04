@@ -8,6 +8,9 @@
   <!-- otherwise eclipse complains (Google plugin bug?)           -->
   <inherits name='com.google.gwt.junit.JUnit' />
 
+  <!-- For drag-and-drop support -->
+  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+
   <!-- Specify the app entry point class.                         -->
   <entry-point class='net.shrine.webclient.client.Webclient' />
 
@@ -21,6 +24,7 @@
   <stylesheet src="/css/jquery.treeview.css" />
   <stylesheet src="/css/suggestbox.css" />
   <stylesheet src="/css/browse.css" />
+  <stylesheet src="/css/querysummary.css" />
   
   <!-- Begin logging config -->
   
