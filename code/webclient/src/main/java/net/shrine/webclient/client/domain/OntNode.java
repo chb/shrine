@@ -12,9 +12,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @date Apr 2, 2012
  */
 public final class OntNode implements IsSerializable {
-	private String value;
-
-	private String simpleName;
+	private Term term;
 
 	private boolean isLeaf;
 
@@ -23,36 +21,31 @@ public final class OntNode implements IsSerializable {
 	// For GWT
 	@SuppressWarnings("unused")
 	private OntNode() {
-		this(null, null, new ArrayList<OntNode>(), false);
+		this(null, new ArrayList<OntNode>(), false);
 	}
 
-	public OntNode(final String value, final String simpleName, final boolean isLeaf) {
-		this(value, simpleName, Collections.<OntNode> emptyList(), isLeaf);
+	public OntNode(final Term term, final boolean isLeaf) {
+		this(term, Collections.<OntNode>emptyList(), isLeaf);
 	}
-
-	public OntNode(final String value, final String simpleName, final List<OntNode> children, final boolean isLeaf) {
+	
+	public OntNode(final Term term, final List<OntNode> children, final boolean isLeaf) {
 		super();
 
-		this.value = value;
-		this.simpleName = simpleName;
+		this.term = term;
 		this.children = children;
 		this.isLeaf = isLeaf;
 	}
-	
+
 	public Term toTerm() {
-		return new Term(value, simpleName);
+		return term;
 	}
 
 	public String getValue() {
-		return value;
+		return term.getPath();
 	}
 
 	public List<OntNode> getChildren() {
 		return children;
-	}
-
-	public void setValue(final String value) {
-		this.value = value;
 	}
 
 	public void setChildren(final List<OntNode> children) {
@@ -60,11 +53,7 @@ public final class OntNode implements IsSerializable {
 	}
 
 	public String getSimpleName() {
-		return simpleName;
-	}
-
-	public void setSimpleName(final String simpleName) {
-		this.simpleName = simpleName;
+		return term.getSimpleName();
 	}
 
 	public boolean isLeaf() {
@@ -77,7 +66,7 @@ public final class OntNode implements IsSerializable {
 
 	@Override
 	public String toString() {
-		return "OntNode['" + value + "' leaf? " + isLeaf + " (" + simpleName + ") " + children + "]";
+		return "OntNode['" + term + "' leaf? " + isLeaf + " " + children + "]";
 	}
 
 	@Override
@@ -86,8 +75,7 @@ public final class OntNode implements IsSerializable {
 		int result = 1;
 		result = prime * result + (children == null ? 0 : children.hashCode());
 		result = prime * result + (isLeaf ? 1231 : 1237);
-		result = prime * result + (simpleName == null ? 0 : simpleName.hashCode());
-		result = prime * result + (value == null ? 0 : value.hashCode());
+		result = prime * result + (term == null ? 0 : term.hashCode());
 		return result;
 	}
 
@@ -113,18 +101,11 @@ public final class OntNode implements IsSerializable {
 		if (isLeaf != other.isLeaf) {
 			return false;
 		}
-		if (simpleName == null) {
-			if (other.simpleName != null) {
+		if (term == null) {
+			if (other.term != null) {
 				return false;
 			}
-		} else if (!simpleName.equals(other.simpleName)) {
-			return false;
-		}
-		if (value == null) {
-			if (other.value != null) {
-				return false;
-			}
-		} else if (!value.equals(other.value)) {
+		} else if (!term.equals(other.term)) {
 			return false;
 		}
 		return true;

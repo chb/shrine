@@ -46,9 +46,9 @@ public final class DataDictionaryRow extends Composite {
 
 	private Controllers controllers;
 
-	private static final Term shrineRoot = new Term("\\\\SHRINE\\SHRINE\\", "SHRINE Ontology");
+	private static final Term shrineRoot = new Term("\\\\SHRINE\\SHRINE\\", "SHRINE Ontology", "SHRINE Ontology");
 
-	private Term rootTerm = new Term("\\\\SHRINE\\SHRINE\\", "SHRINE Ontology");
+	private Term rootTerm = shrineRoot;
 
 	public DataDictionaryRow() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -59,7 +59,7 @@ public final class DataDictionaryRow extends Composite {
 				hide();
 			}
 		});
-		
+
 		hide();
 	}
 
@@ -70,17 +70,11 @@ public final class DataDictionaryRow extends Composite {
 		eventBus.addHandler(ShowDataDictionaryPanelEvent.getType(), new ShowDataDictionaryPanelEventHandler() {
 			@Override
 			public void handle(final ShowDataDictionaryPanelEvent event) {
-				if (dataDictionaryIsShowing()) {
-					hideDataDictionaryTree();
+				rootTerm = event.getStartingTerm() == null ? shrineRoot : event.getStartingTerm();
 
-					hide();
-				} else {
-					rootTerm = event.getStartingTerm() == null ? shrineRoot : event.getStartingTerm();
+				loadOntTree(controllers, rootTerm);
 
-					loadOntTree(controllers, rootTerm);
-					
-					show();
-				}
+				show();
 			}
 		});
 
@@ -125,13 +119,13 @@ public final class DataDictionaryRow extends Composite {
 	void loadOntTree(final Controllers controllers, final Term startingTerm) {
 		final OntologySearchServiceAsync ontologyService = GWT.create(OntologySearchService.class);
 
-		ontologyService.getTreeRootedAt(startingTerm.value, new AsyncCallback<List<OntNode>>() {
+		ontologyService.getTreeRootedAt(startingTerm.getPath(), new AsyncCallback<List<OntNode>>() {
 			@Override
 			public void onSuccess(final List<OntNode> result) {
 				if (!result.isEmpty()) {
 					showDataDictionaryTree(controllers, result.get(0));
 				} else {
-					Log.error("No results after attempting to load ontology tree rooted at term '" + startingTerm.value + "'");
+					Log.error("No results after attempting to load ontology tree rooted at term '" + startingTerm.getPath() + "'");
 				}
 			}
 
@@ -146,10 +140,10 @@ public final class DataDictionaryRow extends Composite {
 
 	void hide() {
 		hideDataDictionaryTree();
-		
+
 		setVisible(false);
 	}
-	
+
 	void show() {
 		setVisible(true);
 	}

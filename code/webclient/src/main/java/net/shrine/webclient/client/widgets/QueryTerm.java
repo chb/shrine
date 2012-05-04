@@ -38,9 +38,9 @@ public final class QueryTerm extends Composite {
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		
-		termSpan.setInnerText(term.simpleName);
+		termSpan.setInnerText(term.getSimpleName());
 		
-		this.setTitle(term.value);
+		this.setTitle(term.getPath());
 		
 		closeButton.addClickHandler(new ClickHandler() {
 			@Override

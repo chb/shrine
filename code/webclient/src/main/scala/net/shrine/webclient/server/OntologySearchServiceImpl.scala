@@ -66,12 +66,24 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
     val subTrie = ontTrie.subTrieForPrefix(term)
     
     val rootTerm = subTrie.head
-    
-    val node = new OntNode(rootTerm, OntologyTrie.split(rootTerm).last, isLeaf(subTrie))
-    
-    //import scala.collection.JavaConverters._
+  
+    val node = new OntNode(toTerm(rootTerm), isLeaf(subTrie))
     
     JCollections.singletonList(node)
+  }
+  
+  private def toTerm(path: String): Term = {
+    val (category, simpleName) = {
+      val parts = OntologyTrie.split(path)
+      
+      val withoutSHRINE = parts.dropWhile(_ == "SHRINE")
+      
+      val category = if(withoutSHRINE.isEmpty) "" else withoutSHRINE.head
+        
+      (category, parts.last)
+    }
+    
+    new Term(path, category, simpleName)
   }
   
   override def getParentOntTree(term: String): JList[OntNode] = {
@@ -79,12 +91,12 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
     
     val parts = split(term)
     
-    def toTerm(s: String) = addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(s))
+    def addSlashes(s: String) = addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(s))
     
     if(parts.size == 1) {
-      return JCollections.singletonList(new OntNode(term, parts.last, true))
+      return JCollections.singletonList(new OntNode(toTerm(addSlashes(term)), true))
     } else {
-      val parentTerm = toTerm(unSplit(parts.dropRight(1)))
+      val parentTerm = addSlashes(unSplit(parts.dropRight(1)))
       
       getTreeRootedAt(parentTerm)
     }

@@ -6,6 +6,7 @@ import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.OntologySearchService;
 import net.shrine.webclient.client.OntologySearchServiceAsync;
 import net.shrine.webclient.client.domain.OntNode;
+import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -34,10 +35,13 @@ public final class OntologyTree extends Composite {
 	public OntologyTree(final EventBus eventBus, final Controllers controllers, final OntNode node) {
 		super();
 		
-		delegate = makeTree(node);
+		Util.requireNotNull(eventBus);
+		Util.requireNotNull(controllers);
 		
 		this.controllers = controllers;
 		this.eventBus = eventBus;
+		
+		delegate = makeTree(node);
 		
 		initWidget(delegate);
 	}

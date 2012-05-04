@@ -3,6 +3,8 @@ package net.shrine.webclient.client.domain;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import net.shrine.webclient.client.util.Util;
 
 /**
@@ -10,15 +12,21 @@ import net.shrine.webclient.client.util.Util;
  * @author clint
  * @date Mar 23, 2012
  */
-public final class Term implements Andable {
+public final class Term implements Andable, IsSerializable {
 	private static final long serialVersionUID = 1L;
 	
-	public final String value;
+	private String path;
 	
-	public final String category;
+	private String category;
 	
-	public final String simpleName;
+	private String simpleName;
 
+	//NB: For GWT serialization
+	@SuppressWarnings("unused")
+	private Term() {
+		super();
+	}
+	
 	public Term(final String value, final String category) {
 		this(value, category, "");
 	}
@@ -30,7 +38,7 @@ public final class Term implements Andable {
 		Util.requireNotNull(category);
 		Util.requireNotNull(simpleName);
 
-		this.value = value;
+		this.path = value;
 		this.category = category;
 		this.simpleName = simpleName;
 	}
@@ -42,19 +50,31 @@ public final class Term implements Andable {
 	
 	@Override
 	public String toString() {
-		return "Term(" + category + ":'" + value + "')";
+		return "Term(" + category + ":'" + path + "')";
 	}
 	
 	@Override
 	public String toXmlString() {
-		return "<term>" + value + "</term>";
+		return "<term>" + path + "</term>";
+	}
+	
+	public String getPath() {
+		return path;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public String getSimpleName() {
+		return simpleName;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (value == null ? 0 : value.hashCode());
+		result = prime * result + (path == null ? 0 : path.hashCode());
 		return result;
 	}
 
@@ -70,11 +90,11 @@ public final class Term implements Andable {
 			return false;
 		}
 		final Term other = (Term) obj;
-		if (value == null) {
-			if (other.value != null) {
+		if (path == null) {
+			if (other.path != null) {
 				return false;
 			}
-		} else if (!value.equals(other.value)) {
+		} else if (!path.equals(other.path)) {
 			return false;
 		}
 		return true;

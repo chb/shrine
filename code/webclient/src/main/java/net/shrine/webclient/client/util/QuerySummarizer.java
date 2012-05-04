@@ -62,11 +62,11 @@ public final class QuerySummarizer {
 		if(expr instanceof Term) {
 			final Term term = (Term)expr;
 			
-			final String category = Labels.forCategory.get(term.category);
+			final String category = Labels.forCategory.get(term.getCategory());
 			
 			Util.requireNotNull(category);
 			
-			result.append(category).append(" ").append(color(term.simpleName, queryGroupCssClass));
+			result.append(category).append(" ").append(color(term.getSimpleName(), queryGroupCssClass));
 		} else if(expr instanceof Or) {
 			final Or or = (Or)expr;
 			
@@ -74,7 +74,7 @@ public final class QuerySummarizer {
 			
 			requireAllSameCategory(terms);
 			
-			final String category = Labels.forCategory.get(terms.get(0).category);
+			final String category = Labels.forCategory.get(terms.get(0).getCategory());
 			
 			Util.requireNotNull(category);
 			
@@ -101,10 +101,10 @@ public final class QuerySummarizer {
 			return;
 		}
 		
-		final String firstCategory = terms.iterator().next().category;
+		final String firstCategory = terms.iterator().next().getCategory();
 		
 		for(final Term term : terms) {
-			Util.require(firstCategory.equals(term.category));
+			Util.require(firstCategory.equals(term.getCategory()));
 		}
 	}
 	
