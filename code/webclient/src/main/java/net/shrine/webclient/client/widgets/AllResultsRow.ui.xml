@@ -7,11 +7,10 @@
 				<div class="breakDownTopLeft">
 					<div class="breakDownTopRight">
 						Approved Query Topic:
-						<a href="#">Request New Query Topic</a>
 						<br />
-						<select name="datastewart" class="dataDropdown">
-							<option value="1">Option 1</option>
-							<option value="2">Option 2</option>
+						<select name="datasteward" class="dataDropdown">
+							<option value="1">Diabetes and medications</option>
+                      		<option value="2">Request New Query Topic</option>
 						</select>
 						<g:Button text="Run Query" addStyleNames="largeButton" ui:field="runQueryButton"/>
 					</div>
