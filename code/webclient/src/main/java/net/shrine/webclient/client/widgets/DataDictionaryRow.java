@@ -70,13 +70,21 @@ public final class DataDictionaryRow extends Composite {
 		eventBus.addHandler(ShowDataDictionaryPanelEvent.getType(), new ShowDataDictionaryPanelEventHandler() {
 			@Override
 			public void handle(final ShowDataDictionaryPanelEvent event) {
-				if (!dataDictionaryIsShowing()) {
+				if (shouldRedraw(event)) {
 					rootTerm = event.getStartingTerm() == null ? shrineRoot : event.getStartingTerm();
 
 					loadOntTree(controllers, rootTerm);
 
 					show();
 				}
+			}
+
+			boolean shouldRedraw(final ShowDataDictionaryPanelEvent event) {
+				return !dataDictionaryIsShowing() || !isSameTerm(event);
+			}
+
+			boolean isSameTerm(final ShowDataDictionaryPanelEvent event) {
+				return rootTerm.equals(event.getStartingTerm());
 			}
 		});
 
