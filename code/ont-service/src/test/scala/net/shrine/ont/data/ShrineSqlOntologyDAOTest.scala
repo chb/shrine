@@ -21,7 +21,7 @@ final class ShrineSqlOntologyDAOTest extends ShouldMatchersForJUnit with Asserti
   
   @Test
   def testLoadAllEntries {
-    val shrineSqlStream = this.getClass.getClassLoader.getResourceAsStream("ShrineWithSyns.sql")
+    val shrineSqlStream = this.getClass.getClassLoader.getResourceAsStream("testShrineWithSyns.sql")
     
     val concepts = (new ShrineSqlOntologyDAO(shrineSqlStream)).ontologyEntries
     

@@ -20,8 +20,6 @@ final class ShrineSqlOntologyDAO(val file: InputStream) extends OntologyDAO {
     //where is_synonym is 'Y' or 'N'
     val pathAndSynonymRegex = """VALUES\s+\(\d+,\s+'(.+?)',\s+'(.+?)',\s+'(\w)'""".r
     
-    val categoryRegex = """'\\SHRINE\\(.+?)\\""".r
-    
     def toConcept(termMatch: Match): Concept = {
       val synonym = termMatch.group(3) match {
         case "Y" => Option(termMatch.group(2))

@@ -37,7 +37,7 @@ final class LuceneOntologyIndexTest extends TestCase with ShouldMatchersForJUnit
 
   override def setUp() {
     this.index = {
-      val shrineSqlStream = this.getClass.getClassLoader.getResourceAsStream("ShrineWithSyns.sql")
+      val shrineSqlStream = this.getClass.getClassLoader.getResourceAsStream("testShrineWithSyns.sql")
 
       try {
         LuceneOntologyIndex(new ShrineSqlOntologyDAO(shrineSqlStream))
