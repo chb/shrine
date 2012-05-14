@@ -29,6 +29,12 @@ public final class QueryRowDropController<T extends Widget & Iterable<Widget>> e
 		this.controllers = controllers;
 		this.query = query;
 	}
+	
+	//
+	//Type-inferring convenience method
+	static <T extends Widget & Iterable<Widget>> QueryRowDropController<T> from(final T enclosing, final Widget dropTarget, final Controllers controllers, final ReadOnlyQueryGroup query) {
+		return new QueryRowDropController<T>(enclosing, dropTarget, controllers, query);
+	}
 
 	@Override
 	public void onDrop(final DragContext context) {

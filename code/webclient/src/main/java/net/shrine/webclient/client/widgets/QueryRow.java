@@ -84,7 +84,7 @@ public final class QueryRow extends Composite implements Observer, Iterable<Widg
 		this.controllers = controllers;
 		this.query = query;
 		this.dragController = dragController;
-		this.dropController = new QueryRowDropController<QueryRow>(this, this, controllers, query);
+		this.dropController = QueryRowDropController.from(this, this, controllers, query);
 		
 		this.dragController.registerDropController(dropController);
 		
