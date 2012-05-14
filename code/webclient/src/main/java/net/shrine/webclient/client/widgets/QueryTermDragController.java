@@ -7,8 +7,10 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
  * 
  * @author clint
  * @date May 4, 2012
+ * 
+ * NB: non-final for mockability 
  */
-public final class QueryTermDragController extends PickupDragController {
+public class QueryTermDragController extends PickupDragController {
 	public QueryTermDragController(AbsolutePanel boundaryPanel, boolean allowDroppingOnBoundaryPanel) {
 		super(boundaryPanel, allowDroppingOnBoundaryPanel);
 	}
