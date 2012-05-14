@@ -17,10 +17,10 @@ import org.junit.Test;
  */
 public class OrTestGwt extends AbstractWebclientTest {
 
-	private final Term t1 = new Term("foo");
-	private final Term t2 = new Term("bar");
-	private final Term t3 = new Term("nuh");
-	private final Term t4 = new Term("zuh");
+	private final Term t1 = term("foo");
+	private final Term t2 = term("bar");
+	private final Term t3 = term("nuh");
+	private final Term t4 = term("zuh");
 	
 	@Test
 	public void testOrCollectionOfTerm() {

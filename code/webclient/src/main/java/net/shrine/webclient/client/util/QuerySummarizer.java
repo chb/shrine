@@ -1,6 +1,5 @@
 package net.shrine.webclient.client.util;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +71,7 @@ public final class QuerySummarizer {
 			
 			final List<Term> terms = Util.toList(or.getTerms());
 			
-			//FIXME: Allow multi-category expressions; will make the summary less accurate,
+			//FIXME (Perhaps REVISITME): Allow multi-category expressions; will make the summary less accurate,
 			//but multi-category expressions are rare (says Andy), and will be avoided at the 
 			// 8 May 2012 demo.
 			//requireAllSameCategory(terms);
@@ -91,7 +90,7 @@ public final class QuerySummarizer {
 			
 			Util.requireNotNull(categoryName);
 			
-			result.append(categoryLabel).append(" at least one of the " + categoryName + " concepts in group " + color(queryGroup.getId().name, queryGroupCssClass));
+			result.append(categoryLabel).append(" at least one of the " + categoryName + " concepts in group " + color(queryGroup.getName(), queryGroupCssClass));
 		}
 
 		return result.toString();
@@ -101,7 +100,7 @@ public final class QuerySummarizer {
 		return "<span class=\"" + queryGroupCssClass + "\">" + text + "</span>";
 	}
 	
-	static void requireAllSameCategory(final Collection<Term> terms) {
+	/*static void requireAllSameCategory(final Collection<Term> terms) {
 		if(terms.size() == 0) {
 			return;
 		}
@@ -115,7 +114,7 @@ public final class QuerySummarizer {
 		for(final Term term : terms) {
 			Util.require(firstCategory.equals(term.getCategory()));
 		}
-	}
+	}*/
 	
 	public static final class Labels {
 		private Labels() {

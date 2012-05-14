@@ -1,29 +1,26 @@
 package net.shrine.webclient.client;
 
 import java.util.Iterator;
-import java.util.List;
-
-import net.shrine.webclient.client.util.Util;
 
 /**
  * 
  * @author clint
  * @date Mar 23, 2012
  */
-public final class QueryGroupIdsIterator implements Iterator<QueryGroupId> {
+public final class QueryNameIterator implements Iterator<String> {
 
 	private int passNumber = 0;
 
 	private char currentLabel = 'A';
 
-	public QueryGroupIdsIterator() {
+	public QueryNameIterator() {
 		super();
 	}
 
 	@Override
-	public QueryGroupId next() {
+	public String next() {
 		try {
-			return new QueryGroupId(getName());
+			return getName();
 		} finally {
 			if (currentLabel == 'Z') {
 				currentLabel = 'A';

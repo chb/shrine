@@ -97,7 +97,7 @@ public final class AllResultsRow extends Composite implements Observer {
 		runQueryButton.setEnabled(queryGroups.size() > 0);
 		
 		//TODO: Refreshing (and even observing) individual query groups feels bad :(
-		//Using the event bus to fire change events when query groups are changed would be better.
+		//Using the event bus to fire change events when query groups are changed would be better
 		stopObservingQueryGroups();
 		//start observing any new query groups, so the query summary will update when they change 
 		startObservingQueryGroups();

@@ -1,7 +1,9 @@
 package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.Controllers;
+import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
+import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
@@ -38,33 +40,37 @@ public final class QueryRowDropController<T extends Widget & Iterable<Widget>> e
 
 	@Override
 	public void onDrop(final DragContext context) {
-		Log.debug("Dropped a " + context.draggable + " on row " + getQueryGroupName());
+		Log.debug("Dropped a " + context.draggable + " on row " + getQueryGroupId());
 
-		final QueryTerm draggedTerm = (QueryTerm) context.draggable;
+		final QueryTerm draggedQueryTerm = (QueryTerm) context.draggable;
 
-		controllers.queryBuilding.removeTerm(draggedTerm.getQueryId(), draggedTerm.getTerm());
-
-		if(query != null) {
-			controllers.queryBuilding.addNewTerm(query.getId(), draggedTerm.getTerm());
-		} else {
-			controllers.queryBuilding.addNewTerm(draggedTerm.getTerm());
-		}
+		final Term draggedTerm = draggedQueryTerm.getTerm();
+		
+		final int fromQueryId = draggedQueryTerm.getQueryId();
+		
+		final int toQueryId = shouldMoveTerm() ? query.getId() : QueryGroup.NullId;
+		
+		controllers.queryBuilding.moveTerm(draggedTerm, fromQueryId, toQueryId);
 	}
 
-	String getQueryGroupName() {
-		return query == null ? "EMPTY" : query.getId().name;
+	boolean shouldMoveTerm() {
+		return query != null;
+	}
+
+	int getQueryGroupId() {
+		return query == null ? QueryGroup.NullId : query.getId();
 	}
 
 	@Override
 	public void onEnter(final DragContext context) {
-		Log.debug("A " + context.draggable + " entered row " + getQueryGroupName());
+		Log.debug("A " + context.draggable + " entered row " + getQueryGroupId());
 
 		enclosing.addStyleName("queryRowDropTargetHighlighted");
 	}
 
 	@Override
 	public void onLeave(final DragContext context) {
-		Log.debug("A " + context.draggable + " left row " + getQueryGroupName());
+		Log.debug("A " + context.draggable + " left row " + getQueryGroupId());
 
 		enclosing.removeStyleName("queryRowDropTargetHighlighted");
 	}

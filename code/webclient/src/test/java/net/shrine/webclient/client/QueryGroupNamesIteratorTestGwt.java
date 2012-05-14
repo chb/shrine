@@ -14,7 +14,7 @@ import org.junit.Test;
  * 
  *       TODO: Remove static-ness
  */
-public class QueryGroupNamesTestGwt extends AbstractWebclientTest {
+public class QueryGroupNamesIteratorTestGwt extends AbstractWebclientTest {
 	@Test
 	public void testNext() {
 		final List<String> alphabetChars = Arrays.asList("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""));
@@ -41,25 +41,15 @@ public class QueryGroupNamesTestGwt extends AbstractWebclientTest {
 			alphabet2.add(letter + "2");
 		}
 
-		final List<QueryGroupId> expected = Util.makeArrayList();
+		final List<String> expected = Util.makeArrayList();
 
-		{
-			for (final String letter : alphabet) {
-				expected.add(new QueryGroupId(letter));
-			}
-
-			for (final String glyph : alphabet1) {
-				expected.add(new QueryGroupId(glyph));
-			}
-
-			for (final String glyph : alphabet2) {
-				expected.add(new QueryGroupId(glyph));
-			}
-		}
-
+		expected.addAll(alphabet);
+		expected.addAll(alphabet1);
+		expected.addAll(alphabet2);
+		
 		final int howMany = 26 * 3;
 
-		final List<QueryGroupId> ids = Util.take(howMany, new QueryGroupIdsIterator());
+		final List<String> ids = Util.take(howMany, new QueryNameIterator());
 
 		assertEquals(expected, ids);
 	}

@@ -24,9 +24,9 @@ public class ExpressionXmlTestGwt extends AbstractWebclientTest {
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
-		final Term t1 = new Term("foo");
+		final Term t1 = term("foo");
 		
-		final QueryGroup queryGroup1 = new QueryGroup(id("foo"), t1);
+		final QueryGroup queryGroup1 = new QueryGroup("foo", t1);
 		
 		{
 			final List<QueryGroup> queryGroups = asList(queryGroup1);
@@ -37,9 +37,9 @@ public class ExpressionXmlTestGwt extends AbstractWebclientTest {
 		}
 		
 		{
-			final Term t2 = new Term("bar");
+			final Term t2 = term("bar");
 			
-			final QueryGroup queryGroup2 = new QueryGroup(id("bar"), t2);
+			final QueryGroup queryGroup2 = new QueryGroup("bar", t2);
 			
 			final String xml = ExpressionXml.fromQueryGroups(asList(queryGroup1, queryGroup2));
 			

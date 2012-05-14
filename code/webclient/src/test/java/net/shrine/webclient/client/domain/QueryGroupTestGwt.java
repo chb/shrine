@@ -36,12 +36,12 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 	@Test
 	public void testQueryGroup() {
 		try {
-			new QueryGroup(null, new Term("foo"));
+			new QueryGroup(null, term("foo"));
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
 		try {
-			new QueryGroup(id("foo"), null);
+			new QueryGroup("foo", null);
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
@@ -62,10 +62,10 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 	
 	@Test
 	public void testToXmlString() {
-		final Term t1 = new Term("foo");
-		final Term t2 = new Term("bar");
+		final Term t1 = term("foo");
+		final Term t2 = term("bar");
 		
-		final QueryGroup queryGroup = new QueryGroup(id("nuh"), t1);
+		final QueryGroup queryGroup = new QueryGroup("nuh", t1);
 		
 		assertEquals(t1.toXmlString(), queryGroup.toXmlString());
 		
@@ -113,15 +113,15 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetExpression() {
-		final Term t1 = new Term("foo");
+		final Term t1 = term("foo");
 		
-		final QueryGroup queryGroup = new QueryGroup(id("salkdj"), t1);
+		final QueryGroup queryGroup = new QueryGroup("salkdj", t1);
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
 		assertFalse(observer.informed);
 		
-		final Term t2 = new Term("bar");
+		final Term t2 = term("bar");
 		
 		queryGroup.setExpression(t2);
 		
@@ -148,7 +148,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetMinOccurances() {
-		final QueryGroup queryGroup = new QueryGroup(id("ksaljdksaljd"), new Term("foo"));
+		final QueryGroup queryGroup = new QueryGroup("ksaljdksaljd", term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -173,7 +173,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetStart() {
-		final QueryGroup queryGroup = new QueryGroup(id("sakjsadasd"), new Term("foo"));
+		final QueryGroup queryGroup = new QueryGroup("sakjsadasd", term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -196,7 +196,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetEnd() {
-		final QueryGroup queryGroup = new QueryGroup(id("asljkdla"), new Term("foo"));
+		final QueryGroup queryGroup = new QueryGroup("asljkdla", term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		

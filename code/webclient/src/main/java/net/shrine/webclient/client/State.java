@@ -28,17 +28,17 @@ public final class State {
 	// size), negated (t/f), start date, end date, min occurrances )
 	private final ObservableList<QueryGroup> queries = ObservableList.empty();
 
-	public void guardQueryIsPresent(final QueryGroupId id) {
+	public void guardQueryIsPresent(final int id) {
 		Util.require(isQueryIdPresent(id));
 	}
 
-	public void guardQueryIsNotPresent(final QueryGroupId id) {
+	public void guardQueryIsNotPresent(final int id) {
 		Util.require(!isQueryIdPresent(id));
 	}
 
-	boolean isQueryIdPresent(final QueryGroupId id) {
+	boolean isQueryIdPresent(final int id) {
 		for (final QueryGroup group : queries) {
-			if (id.equals(group.getId())) {
+			if (id == group.getId()) {
 				return true;
 			}
 		}
@@ -46,28 +46,24 @@ public final class State {
 		return false;
 	}
 
-	void removeQuery(final QueryGroupId id) {
-		guardQueryIsPresent(id);
-
-		try {
-			final QueryGroup query = getQuery(id);
-
-			queries.remove(query);
-		} finally {
-			reNameQueries();
-		}
-	}
-
 	// TODO: HACK
 	// Make sure queries are named A,B,C,... Z, in that order, with no gaps,
 	// always starting from 'A'
 	@Deprecated
 	void reNameQueries() {
-		final Iterator<QueryGroupId> newIdIter = new QueryGroupIdsIterator();
+		final Iterator<String> newIdIter = new QueryNameIterator();
 
 		for(final QueryGroup group : queries) {
-			group.setId(newIdIter.next());
+			group.setName(newIdIter.next());
 		}
+	}
+	
+	void removeQuery(final int id) {
+		guardQueryIsPresent(id);
+
+		final QueryGroup query = getQuery(id);
+
+		queries.remove(query);
 	}
 
 	public int numQueryGroups() {
@@ -86,24 +82,24 @@ public final class State {
 		allResult.set(resultsByInstitution);
 	}
 
-	public QueryGroup getQuery(final QueryGroupId id) {
+	public QueryGroup getQuery(final int id) {
 		for (final QueryGroup query : queries) {
-			if (id.equals(query.getId())) {
+			if (id == query.getId()) {
 				return query;
 			}
 		}
 
-		throw new IllegalArgumentException("No query named '" + id.name + "' exists");
+		throw new IllegalArgumentException("No query with id '" + id + "' exists");
 	}
 
 	private QueryGroup addNewQuery(final Expression expr) {
-		final QueryGroup newQuery = new QueryGroup(QueryGroupId.Null, expr);
-
+		final QueryGroup newQuery = new QueryGroup("NULL", expr);
+	
 		queries.add(newQuery);
-
-		Log.info("Added query group '" + newQuery.getId().name + "': " + newQuery.getExpression());
-
+		
 		reNameQueries();
+
+		Log.info("Added query group '" + newQuery.getName() + "' (" + newQuery.getId() + "): " + newQuery.getExpression());
 
 		return newQuery;
 	}

@@ -15,7 +15,11 @@ import net.shrine.webclient.client.domain.Term;
 
 import org.junit.Test;
 
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * 
@@ -28,20 +32,32 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 	public void testConstructorGuards() {
 		final MockQueryServiceAsync mockQueryService = new MockQueryServiceAsync(); 
 		
+		final Controllers controllers = new Controllers(new State(), mockQueryService);
+		final QueryGroup queryGroup = new QueryGroup("foo", term("foo"));
+		final PickupDragController dragController = new PickupDragController(RootPanel.get(), false);
+		
 		try {
-			new QueryRow(null, new QueryGroup(id("foo"), new Term("foo")));
+			new QueryRow(null, controllers, dragController);
 
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 
 		try {
-			new QueryRow(new Controllers(new State(), mockQueryService), null);
+			
+			
+			new QueryRow(queryGroup, null, dragController);
 
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 
 		try {
-			new QueryRow(null, null);
+			new QueryRow(queryGroup, controllers, null);
+
+			fail("Should have thrown");
+		} catch (IllegalArgumentException expected) { }
+		
+		try {
+			new QueryRow(null, null, null);
 
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
@@ -50,18 +66,19 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 	@Test
 	public void testQueryRow() throws Exception {
 		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
+		final PickupDragController dragController = new PickupDragController(RootPanel.get(), false);
 
-		final QueryRow queryRow = new QueryRow(controllers, new QueryGroup(id("blah"), new Term("foo")));
+		final QueryRow queryRow = new QueryRow(new QueryGroup("blah", term("foo")), controllers, dragController);
 
 		//Test negate box init
 		{
 			assertFalse(queryRow.negationCheckbox.getValue());
 
-			final QueryGroup group2 = new QueryGroup(id("nuh"), new Term("foo"));
+			final QueryGroup group2 = new QueryGroup("nuh", term("foo"));
 			
 			group2.setNegated(true);
 			
-			final QueryRow row2 = new QueryRow(controllers, group2);
+			final QueryRow row2 = new QueryRow(group2, controllers, dragController);
 			
 			assertTrue(row2.negationCheckbox.getValue());
 		}
@@ -71,7 +88,7 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 			assertNull(queryRow.startDate.getValue());
 			assertNull(queryRow.endDate.getValue());
 
-			final QueryGroup group2 = new QueryGroup(id("bar"), new Term("foo"));
+			final QueryGroup group2 = new QueryGroup("bar", term("foo"));
 
 			final Date start = new Date();
 			final Date end = new Date();
@@ -79,7 +96,7 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 			group2.setStart(start);
 			group2.setEnd(end);
 			
-			final QueryRow row2 = new QueryRow(controllers, group2);
+			final QueryRow row2 = new QueryRow(group2, controllers, dragController);
 			
 			assertEquals(trim(start), row2.startDate.getValue());
 			assertEquals(trim(end), row2.endDate.getValue());
@@ -89,11 +106,11 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 		{
 			assertEquals(1, queryRow.minOccursSpinner.getValue());
 
-			final QueryGroup group2 = new QueryGroup(id("zuh"), new Term("foo"));
+			final QueryGroup group2 = new QueryGroup("zuh", term("foo"));
 			
 			group2.setMinOccurances(99);
 			
-			final QueryRow row2 = new QueryRow(controllers, group2);
+			final QueryRow row2 = new QueryRow(group2, controllers, dragController);
 			
 			assertEquals(99, row2.minOccursSpinner.getValue());
 		}
@@ -108,8 +125,9 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 	@Test
 	public void testInform() {
 		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
+		final PickupDragController dragController = new PickupDragController(RootPanel.get(), false);
 
-		final QueryRow queryRow = new QueryRow(controllers, new QueryGroup(id("blah"), new Term("foo")));
+		final QueryRow queryRow = new QueryRow(new QueryGroup("blah", term("foo")), controllers, dragController);
 		
 		assertFalse(queryRow.negationCheckbox.getValue());
 		assertNull(queryRow.startDate.getValue());
@@ -120,8 +138,9 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 	@Test
 	public void testMakeQueryTermsFrom() {
 		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
+		final PickupDragController dragController = new PickupDragController(RootPanel.get(), false);
 
-		final QueryRow queryRow = new QueryRow(controllers, new QueryGroup(id("nuh"), new Term("foo")));
+		final QueryRow queryRow = new QueryRow(new QueryGroup("nuh", term("foo")), controllers, dragController);
 		
 		try {
 			queryRow.makeQueryTermsFrom(null);
@@ -135,17 +154,17 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
-		final Term t1 = new Term("foo");
-		final Term t2 = new Term("foo");
-		final Term t3 = new Term("foo");
+		final Term t1 = term("foo");
+		final Term t2 = term("foo");
+		final Term t3 = term("foo");
 		
 		{
 			final Collection<QueryTerm> terms = queryRow.makeQueryTermsFrom(t1);
 			
 			assertEquals(1, terms.size());
 			
-			assertEquals(t1.simpleName, terms.iterator().next().termSpan.getInnerText());
-			assertEquals(t1.value, terms.iterator().next().getTitle());
+			assertEquals(t1.getSimpleName(), terms.iterator().next().termSpan.getInnerText());
+			assertEquals(t1.getPath(), terms.iterator().next().getTitle());
 		}
 		
 		{
@@ -158,11 +177,11 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 			final QueryTerm queryTerm1 = iterator.next();
 			final QueryTerm queryTerm2 = iterator.next();
 			
-			assertEquals(t2.simpleName, queryTerm1.termSpan.getInnerText());
-			assertEquals(t2.value, queryTerm1.getTitle());
+			assertEquals(t2.getSimpleName(), queryTerm1.termSpan.getInnerText());
+			assertEquals(t2.getPath(), queryTerm1.getTitle());
 			
-			assertEquals(t3.simpleName, queryTerm2.termSpan.getInnerText());
-			assertEquals(t3.value, queryTerm2.getTitle());
+			assertEquals(t3.getSimpleName(), queryTerm2.termSpan.getInnerText());
+			assertEquals(t3.getPath(), queryTerm2.getTitle());
 		}
 	}
 }

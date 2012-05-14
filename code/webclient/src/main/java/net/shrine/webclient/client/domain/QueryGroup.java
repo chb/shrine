@@ -2,7 +2,6 @@ package net.shrine.webclient.client.domain;
 
 import java.util.Date;
 
-import net.shrine.webclient.client.QueryGroupId;
 import net.shrine.webclient.client.util.AbstractObservable;
 import net.shrine.webclient.client.util.Formats;
 import net.shrine.webclient.client.util.Util;
@@ -24,18 +23,33 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 
 	private int minOccurances = 1;
 
-	private QueryGroupId id;
-
 	private final Date createdOn = new Date();
 
-	public QueryGroup(final QueryGroupId id, final Expression expression) {
+	private String name;
+
+	private final int id;
+
+	private static int nextId = 1;
+
+	public static final int NullId = 0;
+	
+	static int getNextId() {
+		return nextId;
+	}
+
+	public QueryGroup(final String name, final Expression expression) {
+		this(nextId++, name, expression);
+	}
+
+	public QueryGroup(final int id, final String name, final Expression expression) {
 		super();
 
 		Util.requireNotNull(expression);
-		Util.requireNotNull(id);
+		Util.requireNotNull(name);
 
 		this.expression = expression;
 		this.id = id;
+		this.name = name;
 	}
 
 	@Override
@@ -141,15 +155,20 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 	}
 
 	@Override
-	public QueryGroupId getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(final QueryGroupId id) {
-		Util.requireNotNull(id);
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	public void setName(final String name) {
+		Util.requireNotNull(name);
 
 		try {
-			this.id = id;
+			this.name = name;
 		} finally {
 			notifyObservers();
 		}
@@ -167,10 +186,7 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (id == null ? 0 : id.hashCode());
-		return result;
+		return 31 + id;
 	}
 
 	@Override
@@ -185,11 +201,7 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 			return false;
 		}
 		final QueryGroup other = (QueryGroup) obj;
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
+		if (id != other.id) {
 			return false;
 		}
 		return true;

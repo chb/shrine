@@ -70,7 +70,7 @@ public final class QueryRow extends Composite implements Observer, Iterable<Widg
 	@UiField
 	CheckBox negationCheckbox;
 
-	QueryRow(final Controllers controllers, final ReadOnlyQueryGroup query, final PickupDragController dragController) {
+	QueryRow(final ReadOnlyQueryGroup query, final Controllers controllers, final PickupDragController dragController) {
 		super();
 
 		Util.requireNotNull(controllers);
@@ -100,6 +100,8 @@ public final class QueryRow extends Composite implements Observer, Iterable<Widg
 
 		initMinOccursSpinner();
 
+		nameLabel.setText(query.getName());
+		
 		inform();
 	}
 	
@@ -169,8 +171,6 @@ public final class QueryRow extends Composite implements Observer, Iterable<Widg
 
 	@Override
 	public void inform() {
-		nameLabel.setText(query.getId().name);
-
 		refreshExpressionPanel();
 
 		negationCheckbox.setValue(query.isNegated(), false);

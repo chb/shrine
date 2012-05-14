@@ -1,7 +1,6 @@
 package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.QueryBuildingController;
-import net.shrine.webclient.client.QueryGroupId;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Util;
 
@@ -50,10 +49,9 @@ public final class QueryTerm extends Composite implements HasAllMouseHandlers {
 
 	private final Term term;
 	
-	private final QueryGroupId queryId;
+	private final int queryId;
 
-	public QueryTerm(final QueryGroupId queryId, final QueryBuildingController controller, final Term term) {
-		Util.requireNotNull(queryId);
+	public QueryTerm(final int queryId, final QueryBuildingController controller, final Term term) {
 		Util.requireNotNull(controller);
 		Util.requireNotNull(term);
 
@@ -78,7 +76,7 @@ public final class QueryTerm extends Composite implements HasAllMouseHandlers {
 		return term;
 	}
 
-	QueryGroupId getQueryId() {
+	int getQueryId() {
 		return queryId;
 	}
 

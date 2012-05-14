@@ -76,7 +76,7 @@ public final class QueryColumn extends Composite implements Observer {
 		int rowNumber = 0;
 		
 		for(final QueryGroup query : Util.sorted(queries)) {
-			final QueryRow row = new QueryRow(controllers, query, dragController);
+			final QueryRow row = new QueryRow(query, controllers, dragController);
 			
 			addRowStyle(row, rowNumber);
 			

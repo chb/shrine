@@ -21,13 +21,13 @@ public class StateTestGwt extends AbstractWebclientTest {
 		final State state = new State();
 		
 		try {
-			state.guardQueryIsPresent(id("asdf"));
+			state.guardQueryIsPresent(12344);
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
-		state.registerNewQuery(new Term("foo"));
+		final int id = state.registerNewQuery(term("foo")).getId();
 		
-		state.guardQueryIsPresent(id("A"));
+		state.guardQueryIsPresent(id);
 	}
 
 	@Test
@@ -36,11 +36,11 @@ public class StateTestGwt extends AbstractWebclientTest {
 		
 		assertEquals(0, state.numQueryGroups());
 		
-		state.registerNewQuery(new Term("foo"));
+		state.registerNewQuery(term("foo"));
 		
 		assertEquals(1, state.numQueryGroups());
 		
-		state.registerNewQuery(new Term("foo"));
+		state.registerNewQuery(term("foo"));
 		
 		assertEquals(2, state.numQueryGroups());
 	}
@@ -68,13 +68,13 @@ public class StateTestGwt extends AbstractWebclientTest {
 	public void testRegisterNewQuery() {
 		final State state = new State();
 		
-		final Term expr = new Term("foo");
+		final Term expr = term("foo");
 		
-		state.registerNewQuery(expr);
+		final int id = state.registerNewQuery(expr).getId();
 		
-		assertTrue(state.isQueryIdPresent(id("A")));
+		assertTrue(state.isQueryIdPresent(id));
 		
-		final QueryGroup group = state.getQuery(id("A"));
+		final QueryGroup group = state.getQuery(id);
 		
 		assertNotNull(group);
 		
@@ -89,8 +89,8 @@ public class StateTestGwt extends AbstractWebclientTest {
 	public void testUpdateAllExpression() {
 		final State state = new State();
 		
-		final Term t1 = new Term("foo");
-		final Term t2 = new Term("bar");
+		final Term t1 = term("foo");
+		final Term t2 = term("bar");
 		
 		try {
 			state.updateAllExpression();

@@ -2,6 +2,8 @@ package net.shrine.webclient.client;
 
 import java.util.Date;
 
+import net.shrine.webclient.client.domain.QueryGroup;
+
 import com.allen_sauer.gwt.log.client.Log;
 
 /**
@@ -14,35 +16,43 @@ public final class QueryConstraintController extends StatefulController {
 		super(state);
 	}
 
-	public void setNegated(final QueryGroupId queryId, final boolean negated) {
+	public void setNegated(final int queryId, final boolean negated) {
 		state.guardQueryIsPresent(queryId);
 
-		state.getQuery(queryId).setNegated(negated);
+		final QueryGroup queryGroup = state.getQuery(queryId);
+		
+		queryGroup.setNegated(negated);
 
-		Log.info("Query '" + queryId.name + "' " + (negated ? "is " : "is not ") + "negated");
+		Log.info("Query '" + queryGroup.getId() + "' " + (negated ? "is " : "is not ") + "negated");
 	}
 
-	public void setStartDate(final QueryGroupId queryId, final Date start) {
+	public void setStartDate(final int queryId, final Date start) {
 		state.guardQueryIsPresent(queryId);
 
-		state.getQuery(queryId).setStart(start);
+		final QueryGroup queryGroup = state.getQuery(queryId);
+		
+		queryGroup.setStart(start);
 
-		Log.info("Query '" + queryId.name + "': start date: " + start);
+		Log.info("Query '" + queryGroup.getId() + "': start date: " + start);
 	}
 
-	public void setEndDate(final QueryGroupId queryId, final Date end) {
+	public void setEndDate(final int queryId, final Date end) {
 		state.guardQueryIsPresent(queryId);
 
-		state.getQuery(queryId).setEnd(end);
+		final QueryGroup queryGroup = state.getQuery(queryId);
+		
+		queryGroup.setEnd(end);
 
-		Log.info("Query '" + queryId.name + "': end date: " + end);
+		Log.info("Query '" + queryGroup.getId() + "': end date: " + end);
 	}
 
-	public void setMinOccurs(final QueryGroupId queryId, final int minOccurs) {
+	public void setMinOccurs(final int queryId, final int minOccurs) {
 		state.guardQueryIsPresent(queryId);
 
-		state.getQuery(queryId).setMinOccurances(minOccurs);
+		final QueryGroup queryGroup = state.getQuery(queryId);
+		
+		queryGroup.setMinOccurances(minOccurs);
 
-		Log.info("Query '" + queryId.name + "': min occurs: " + minOccurs);
+		Log.info("Query '" + queryGroup.getId() + "': min occurs: " + minOccurs);
 	}
 }

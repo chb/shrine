@@ -18,29 +18,24 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 	@Test
 	public void testQueryTerm() {
 		try {
-			new QueryTerm(null, new QueryBuildingController(new State()), new Term("foo"));
+			new QueryTerm(42, null, term("foo"));
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
 		try {
-			new QueryTerm(id("asdasdasasdgfa"), null, new Term("foo"));
+			new QueryTerm(42, new QueryBuildingController(new State()), null);
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
 		try {
-			new QueryTerm(id("asdjksdlksl"), new QueryBuildingController(new State()), null);
-			fail("Should have thrown");
-		} catch (IllegalArgumentException expected) { }
-		
-		try {
-			new QueryTerm(null, null, null);
+			new QueryTerm(42, null, null);
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
 		final String simpleName = "simple name";
 		final String path = "/fully/qualified/path";
 		
-		final QueryTerm qt = new QueryTerm(id("asdjksdlksl"), new QueryBuildingController(new State()), new Term(path, simpleName));
+		final QueryTerm qt = new QueryTerm(99, new QueryBuildingController(new State()), new Term(path, "some-bogus-category", simpleName));
 		
 		assertEquals(simpleName, qt.termSpan.getInnerText());
 		assertEquals(path, qt.getTitle());
@@ -54,23 +49,27 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 		
 		final String simpleName = "simple name";
 		final String path = "/fully/qualified/path";
-		final Term term = new Term(path, simpleName);
+		final Term term = new Term(path, "some-bogus-category", simpleName);
 		
-		state.registerNewQuery(new Term("nuh"));
-		state.registerNewQuery(term);
+		final int id1 = state.registerNewQuery(term("nuh")).getId();
+		
+		final int id2 = state.registerNewQuery(term).getId();
 		
 		assertEquals(2, state.numQueryGroups());
-		final String queryName = "B";
-		state.getQuery(id(queryName));
 		
-		final QueryTerm qt = new QueryTerm(id(queryName), controller, term);
+		state.getQuery(id1);
+		state.getQuery(id2);
+		
+		final QueryTerm qt = new QueryTerm(id2, controller, term);
 		
 		qt.closeButton.fireEvent(Events.click());
 		
 		assertEquals(1, state.numQueryGroups());
 		
+		state.getQuery(id1);
+		
 		try {
-			state.getQuery(id(queryName));
+			state.getQuery(id2);
 			fail("should have thrown");
 		} catch(IllegalArgumentException expected) { }
 	}

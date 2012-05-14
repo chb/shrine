@@ -1,5 +1,7 @@
 package net.shrine.webclient.client;
 
+import net.shrine.webclient.client.domain.Term;
+
 import com.google.gwt.junit.client.GWTTestCase;
 
 /**
@@ -13,7 +15,7 @@ public abstract class AbstractWebclientTest extends GWTTestCase {
 		return "net.shrine.webclient.WebclientJUnit";
 	}
 	
-	protected QueryGroupId id(final String name) {
-		return new QueryGroupId(name);
+	protected Term term(final String path) {
+		return new Term(path, "some-bogus-category");
 	}
 }

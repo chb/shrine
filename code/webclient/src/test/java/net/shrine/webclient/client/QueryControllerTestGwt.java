@@ -49,28 +49,28 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
 			fail("Should have thrown when no queries to run");
 		} catch(IllegalArgumentException expected) { }
 		
-		final Term t1 = new Term("nuh");
+		final Term t1 = term("nuh");
 		
-		queryBuildingController.addNewTerm(t1);
+		final int t1Id = queryBuildingController.addNewTerm(t1).getId();
 		
 		controller.runEveryQuery();
 		
 		assertEquals(t1.toXmlString(), state.getAllExpression());
-		assertEquals(t1.toXmlString(), state.getQuery(id("A")).getExpression().toXmlString());
+		assertEquals(t1.toXmlString(), state.getQuery(t1Id).getExpression().toXmlString());
 		
 		assertEquals(queryService.multiNodeResultsToReturn, state.getAllResult().get());
 		
-		final Term t2 = new Term("zuh");
+		final Term t2 = term("zuh");
 		
-		queryBuildingController.addNewTerm(t2);
+		final int t2Id = queryBuildingController.addNewTerm(t2).getId();
 		
 		state.getAllResult().clear();
 		
 		controller.runEveryQuery();
 		
 		assertEquals(new And(t1, t2).toXmlString(), state.getAllExpression());
-		assertEquals(t1.toXmlString(), state.getQuery(id("A")).getExpression().toXmlString());
-		assertEquals(t2.toXmlString(), state.getQuery(id("B")).getExpression().toXmlString());
+		assertEquals(t1.toXmlString(), state.getQuery(t1Id).getExpression().toXmlString());
+		assertEquals(t2.toXmlString(), state.getQuery(t2Id).getExpression().toXmlString());
 		
 		assertEquals(queryService.multiNodeResultsToReturn, state.getAllResult().get());
 	}

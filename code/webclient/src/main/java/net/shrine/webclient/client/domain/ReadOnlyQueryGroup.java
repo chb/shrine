@@ -2,7 +2,6 @@ package net.shrine.webclient.client.domain;
 
 import java.util.Date;
 
-import net.shrine.webclient.client.QueryGroupId;
 import net.shrine.webclient.client.util.IObservable;
 
 /**
@@ -16,8 +15,10 @@ public interface ReadOnlyQueryGroup extends IObservable {
 
 	public abstract Expression getExpression();
 
-	public abstract QueryGroupId getId();
+	public abstract int getId();
 
+	public abstract String getName();
+	
 	public abstract int getMinOccurances();
 
 	public abstract boolean isNegated();

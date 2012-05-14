@@ -56,7 +56,7 @@ public final class GwtTestSuite extends GWTTestSuite {
 		suite.addTestSuite(StateTestGwt.class);
 		suite.addTestSuite(QueryBuildingControllerTestGwt.class);
 		suite.addTestSuite(QueryConstraintControllerTestGwt.class);
-		suite.addTestSuite(QueryGroupNamesTestGwt.class);
+		suite.addTestSuite(QueryGroupNamesIteratorTestGwt.class);
 		suite.addTestSuite(QueryControllerTestGwt.class);
 
 		suite.addTestSuite(TermTestGwt.class);

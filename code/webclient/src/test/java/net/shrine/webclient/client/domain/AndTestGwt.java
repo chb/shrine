@@ -24,7 +24,7 @@ public class AndTestGwt extends AbstractWebclientTest {
 		assertTrue(empty.getComponents().isEmpty());
 		
 		{
-			final List<Term> terms = asList(new Term("foo"), new Term("bar"));
+			final List<Term> terms = asList(term("foo"), term("bar"));
 			
 			final And and = new And(terms);
 			
@@ -46,8 +46,8 @@ public class AndTestGwt extends AbstractWebclientTest {
 		assertTrue(empty.getComponents().isEmpty());
 		
 		{
-			final Term t1 = new Term("foo");
-			final Term t2 = new Term("bar");
+			final Term t1 = term("foo");
+			final Term t2 = term("bar");
 			
 			final List<Term> terms = asList(t1, t2);
 			
@@ -59,8 +59,8 @@ public class AndTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testGetComponents() {
-		final Term t1 = new Term("foo");
-		final Term t2 = new Term("bar");
+		final Term t1 = term("foo");
+		final Term t2 = term("bar");
 		
 		final And and = new And(t1, t2);
 		
@@ -77,10 +77,10 @@ public class AndTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testGetTerms() {
-		final Term t1 = new Term("foo");
-		final Term t2 = new Term("bar");
-		final Term t3 = new Term("baz");
-		final Term t4 = new Term("nuh");
+		final Term t1 = term("foo");
+		final Term t2 = term("bar");
+		final Term t3 = term("baz");
+		final Term t4 = term("nuh");
 		
 		{
 			final And and = new And(t1, t2);
@@ -99,8 +99,8 @@ public class AndTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testWith() {
-		final Term t1 = new Term("foo");
-		final Term t2 = new Term("bar");
+		final Term t1 = term("foo");
+		final Term t2 = term("bar");
 		
 		final And and0 = new And();
 		
@@ -124,8 +124,8 @@ public class AndTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testWithout() {
-		final Term t1 = new Term("foo");
-		final Term t2 = new Term("bar");
+		final Term t1 = term("foo");
+		final Term t2 = term("bar");
 		
 		final And and2 = new And(t1, t2);
 		
@@ -149,8 +149,8 @@ public class AndTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testToXmlString() {
-		final Term t1 = new Term("foo");
-		final Term t2 = new Term("bar");
+		final Term t1 = term("foo");
+		final Term t2 = term("bar");
 		
 		final And and = new And(t1, t2);
 		
