@@ -18,15 +18,27 @@ final class LuceneOntologyIndexTest extends TestCase with ShouldMatchersForJUnit
 
   @Test
   def testBasicSearch {
-    val expected = Seq(Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease")),
-    				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\""", None),
-    				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Iowa Sac and Fox\""", None),
-    				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Missouri Sac and Fox\""", None),
-    				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Oklahoma Sac and Fox\""", None))
+    val expected = Seq(Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\""", Some("Sac and Fox")),
+    				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Iowa Sac and Fox\""", Some("Iowa Sac and Fox")),
+    				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Missouri Sac and Fox\""", Some("Missouri Sac and Fox")),
+    				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Oklahoma Sac and Fox\""", Some("Oklahoma Sac and Fox")),
+    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease")))
 
     //Search term that returns a smallish number of things, some of which are found through synonymy 
 
-    index.search("fox") should equal(expected)
+    val Seq(expected1, expected2, expected3, expected4, expected5) = expected     				   
+    				   
+    val actual = index.search("fox")
+    				   
+    val Seq(actual1, actual2, actual3, actual4, actual5) = actual
+    
+    actual1 should equal(expected1)
+    actual2 should equal(expected2)
+    actual3 should equal(expected3)
+    actual4 should equal(expected4)
+    actual5 should equal(expected5)
+    
+    actual should equal(expected)
 
     //Search on a synonym
 

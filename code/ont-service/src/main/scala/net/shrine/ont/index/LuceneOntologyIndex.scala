@@ -54,14 +54,19 @@ final class LuceneOntologyIndex(ontologyDao: OntologyDAO, dirBuilder: OntologyDA
     
     result.setDefaultOperator(QueryParser.Operator.AND)
     
+    //NB: Allow leading-wildcard queries: ie *FOO* would match 123asdasdFOOaklsdjksal
+    //This might cause performance problems, but seems ok for now
+    result.setAllowLeadingWildcard(true);
+    
     result
   }
 
-  //FIXME: Enforces prefix matching by appending '*' to all terms.  Probably shouldn't be hard-coded. 
+  //FIXME: Enforces wildcard matching by surrounding all terms with '*'s.
+  //Leading-wildcard queries might cause performance problems, but it seems ok for now. 
   private def munge(query: String): String = {
     query.split("""\s+""").map {
       case and @ "AND" => and
-      case t if t != "" => t + "*"
+      case t if t != "" => "*" + t + "*"
     }.mkString(" ")
   }
 

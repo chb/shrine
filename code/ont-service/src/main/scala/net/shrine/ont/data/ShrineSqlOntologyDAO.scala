@@ -21,10 +21,19 @@ final class ShrineSqlOntologyDAO(val file: InputStream) extends OntologyDAO {
     val pathAndSynonymRegex = """VALUES\s+\(\d+,\s+'(.+?)',\s+'(.+?)',\s+'(\w)'""".r
     
     def toConcept(termMatch: Match): Concept = {
-      val synonym = termMatch.group(3) match {
+      /*val synonym = termMatch.group(3) match {
         case "Y" => Option(termMatch.group(2))
         case "N" => None
-      }
+      }*/
+      
+      //Ignore synonym_cd (y/n) field.
+      //NB: Do this because medications are stored as coded names (..\CV000\CV350\203144\, etc)
+      //but with synonyms containing human-readable names for the drugs ('pravastatin sodium', etc).
+      //Crucially, synonym_cd is 'N' in this case (not sure why), and we don't want those synonyms to
+      //be ignored.  This has the effect of making medications' names available when searching an index
+      //of terms, and also makes the relevance ranking "better", in that simple terms "male", "female"
+      //are higher up the list.  Some terms now have a redundant synonym now, but this is an ok tradeoff. 
+      val synonym = Option(termMatch.group(2))
 
       val rawPath = termMatch.group(1)
       
