@@ -2,7 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:HTMLPanel styleName="autosuggest">
-		<g:Anchor ui:field="browseLink" styleName="browse">Show in data dictionary</g:Anchor>
+		<span class="icon"><g:Anchor ui:field="browseLink"><img ui:field="iconImage"/></g:Anchor></span>
+		<span class="browse"></span>
 		<span class="terms">
 			<g:Label ui:field="simpleName"/>
 			<g:Label ui:field="synonym" styleName="synonym"/>

@@ -10,6 +10,7 @@ import net.shrine.webclient.client.widgets.suggest.WidgetMaker;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -36,6 +37,9 @@ public final class AutoSuggestRow extends Composite {
 
 	@UiField
 	Anchor browseLink;
+	
+	@UiField
+	ImageElement iconImage;
 
 	@UiField
 	Label simpleName;
@@ -48,10 +52,8 @@ public final class AutoSuggestRow extends Composite {
 
 		Util.requireNotNull(container);
 		Util.requireNotNull(termSuggestion);
-
-		initBrowseLinkStyleNames(termSuggestion);
-
-		browseLink.addStyleName(termSuggestion.isLeaf() ? "leaf" : "folder");
+		
+		initIconImage(termSuggestion);
 
 		final RegExp replaceHighlightRegex = RegExp.compile("(" + termSuggestion.getHighlight() + ")", "ig");
 
@@ -74,6 +76,11 @@ public final class AutoSuggestRow extends Composite {
 		});
 	}
 
+	void initIconImage(final TermSuggestion termSuggestion) {
+		iconImage.setAlt("tree");
+		iconImage.setSrc("images/" + (termSuggestion.isLeaf() ? "document.png" : "folder.gif"));
+	}
+
 	public static final WidgetMaker<TermSuggestion> autoSuggestRowWidgetMaker(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> suggestionEventSink) {
 		return new WidgetMaker<TermSuggestion>() {
 			@Override
@@ -81,11 +88,6 @@ public final class AutoSuggestRow extends Composite {
 				return new AutoSuggestRow(eventBus, suggestionEventSink, termSuggestion);
 			}
 		};
-	}
-
-	void initBrowseLinkStyleNames(final TermSuggestion termSuggestion) {
-		browseLink.addStyleName("browse");
-		browseLink.addStyleName(termSuggestion.isLeaf() ? "leaf" : "folder");
 	}
 
 	void initClickHandlers(final SuggestRowContainer<TermSuggestion> suggestionEventSink, final TermSuggestion termSuggestion) {
