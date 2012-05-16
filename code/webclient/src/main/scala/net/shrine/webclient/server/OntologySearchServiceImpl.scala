@@ -14,6 +14,7 @@ import net.shrine.ont.data.OntologyDAO
 import net.shrine.ont.index.OntologyTrie
 import net.shrine.webclient.client.domain.OntNode
 import net.shrine.ont.messaging.Concept
+import scala.util.matching.Regex
 
 /**
  * @author clint
@@ -28,43 +29,66 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
 
   private def isLeaf(trie: OntologyTrie): Boolean = trie.children.isEmpty
   
-  private def isLeaf(c: Concept): Boolean = isLeaf(ontTrie.subTrieForPrefix(c.path))
+  private def isLeaf(concept: Concept): Boolean = isLeaf(ontTrie.subTrieForPrefix(concept))
   
   private [this] val allDigitRegex = """^\d+$""".r
+  
+  //Matches things like 'AD100'
+  private [this] val medicationCategoryRegex = """^\w\w\d\d\d$""".r
+  
+  private def determineSimpleNameFor(concept: Concept): String = {
+    val simpleName = concept.simpleName
+    
+    def simpleNameMatches(regex: Regex) = regex.findFirstIn(simpleName).isDefined
+    
+    def isAllDigits = simpleNameMatches(allDigitRegex)
+
+    def isMedicationCategory = simpleNameMatches(medicationCategoryRegex)
+    
+    def isLab = concept.category == "Labs"
+
+    val isCodedValue = isAllDigits || isMedicationCategory || isLab
+    
+    //Return the synonym as the simple name if the simple name is a coded value and a synonym is present; 
+    //otherwise, return the simple name unaltered.
+    //Useful for medications, which have all-digit simple names, but human-readable synonyms
+    if(isCodedValue) concept.synonym.getOrElse(simpleName) else simpleName
+  }
   
   override def getSuggestions(typedSoFar: String, limit: Int): JList[TermSuggestion] = {
     val concepts = index.search(typedSoFar).take(limit)
 
-    def toTermSuggestion(c: Concept): TermSuggestion = {
-      val simpleName = c.simpleName
-      
-      def isAllDigits(s: String) = allDigitRegex.findFirstIn(simpleName).isDefined
-
-      //Return the synonym as the simple name if the simple name is all digits and a synonym is present; 
-      //otherwise, return the simple name unaltered.
-      //Useful for medications, which have all-digit simple names, but human-readable synonyms
-      val simpleNameToUse = if(isAllDigits(simpleName)) c.synonym.getOrElse(simpleName) else simpleName
-      
-      new TermSuggestion(c.path, simpleNameToUse, typedSoFar, c.synonym.orNull, c.category, isLeaf(c))
-    }
+    def toTermSuggestion(c: Concept): TermSuggestion = new TermSuggestion(c.path, determineSimpleNameFor(c), typedSoFar, c.synonym.orNull, c.category, isLeaf(c))
     
     val suggestions = concepts.map(toTermSuggestion)
 
     Helpers.toJava(suggestions)
   }
   
+  private def toConcept(path: String) = Concept(path, None)
+  
   override def getChildrenFor(term: String): JList[OntNode] = {
-    if(!ontTrie.contains(term)) {
+    val concept = toConcept(term)
+    
+    if(!ontTrie.contains(concept)) {
       println("Couldn't find term '" + term + "'")
       
       return JCollections.emptyList[OntNode]
     }
     
-    val subTrie = ontTrie.subTrieForPrefix(term)
+    val subTrie = ontTrie.subTrieForPrefix(concept)
     
     import scala.collection.JavaConverters._
     
-    val childNodes = subTrie.children.flatMap(getTreeRootedAt(_).asScala)
+    val childNodes = subTrie.children.flatMap { c =>
+      //println("Child path: " + c.path)
+      
+      val children = getTreeRootedAt(c.path).asScala
+      
+      //println("Child: " + children.head)
+      
+      children
+    }
     
     val childNodesSorted = childNodes.toSeq.sortBy(_.getSimpleName)
     
@@ -72,44 +96,36 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
   }
   
   override def getTreeRootedAt(term: String): JList[OntNode] = {
-    if(!ontTrie.contains(term)) {
+    val concept = toConcept(term)
+    
+    if(!ontTrie.contains(concept)) {
       println("Couldn't find term '" + term + "'")
       
       return JCollections.emptyList[OntNode]
     }
     
-    val subTrie = ontTrie.subTrieForPrefix(term)
+    val subTrie = ontTrie.subTrieForPrefix(concept)
     
-    val rootTerm = subTrie.head
+    val rootConcept = subTrie.head
   
-    val node = new OntNode(toTerm(rootTerm), isLeaf(subTrie))
+    val node = new OntNode(toTerm(rootConcept), isLeaf(subTrie))
     
     JCollections.singletonList(node)
   }
   
-  private def toTerm(path: String): Term = {
-    val (category, simpleName) = {
-      val parts = OntologyTrie.split(path)
-      
-      val withoutSHRINE = parts.dropWhile(_ == "SHRINE")
-      
-      val category = if(withoutSHRINE.isEmpty) "" else withoutSHRINE.head
-        
-      (category, parts.last)
-    }
-    
-    new Term(path, category, simpleName)
-  }
+  private def toTerm(concept: Concept) = new Term(concept.path, concept.category, determineSimpleNameFor(concept))
   
-  override def getParentOntTree(term: String): JList[OntNode] = {
+  override def getParentOntTree(path: String): JList[OntNode] = {
     import OntologyTrie._
-    
-    val parts = split(term)
     
     def addSlashes(s: String) = addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(s))
     
+    val parts = split(path)
+    
+    val concept = toConcept(addSlashes(path))
+    
     if(parts.size == 1) {
-      return JCollections.singletonList(new OntNode(toTerm(addSlashes(term)), true))
+      return JCollections.singletonList(new OntNode(toTerm(concept), true))
     } else {
       val parentTerm = addSlashes(unSplit(parts.dropRight(1)))
       

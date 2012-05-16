@@ -8,16 +8,13 @@ import java.util.Map.Entry;
 
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.domain.IntWrapper;
-import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
 import net.shrine.webclient.client.events.QueryGroupsChangedEventHandler;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
-import net.shrine.webclient.client.util.ReadOnlyObservableList;
 import net.shrine.webclient.client.util.Util;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -52,17 +49,14 @@ public final class AllResultsRow extends Composite implements Observer {
 	@UiField
 	FlowPanel resultsPanel;
 	
-	private ReadOnlyObservableList<QueryGroup> queryGroups;
-	
 	public AllResultsRow() {
 		super();
 		
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	void wireUp(final EventBus eventBus, final Controllers controllers, final ReadOnlyObservableList<QueryGroup> queryGroups, final ReadOnlyObservable<HashMap<String, IntWrapper>> allResults) {
+	void wireUp(final EventBus eventBus, final Controllers controllers, final ReadOnlyObservable<HashMap<String, IntWrapper>> allResults) {
 		Util.requireNotNull(controllers);
-		Util.requireNotNull(queryGroups);
 		Util.requireNotNull(allResults);
 		Util.requireNotNull(eventBus);
 		
@@ -70,10 +64,18 @@ public final class AllResultsRow extends Composite implements Observer {
 		
 		this.allResults.observedBy(this);
 		
-		this.queryGroups = queryGroups;
-		
 		clearResults();
 		
+		initRunQueryButton(controllers);
+		
+		controllers.query.completeAllQueryWithNoResults();
+		
+		initQueryGroupsChangeHandler(eventBus);
+		
+		runQueryButton.setEnabled(false);
+	}
+
+	void initRunQueryButton(final Controllers controllers) {
 		runQueryButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -84,14 +86,16 @@ public final class AllResultsRow extends Composite implements Observer {
 				controllers.query.runAllQuery();
 			}
 		});
-		
-		controllers.query.completeAllQueryWithNoResults();
-		
+	}
+
+	void initQueryGroupsChangeHandler(final EventBus eventBus) {
 		eventBus.addHandler(QueryGroupsChangedEvent.getType(), new QueryGroupsChangedEventHandler() {
 			@Override
 			public void handle(final QueryGroupsChangedEvent event) {
-				if(event.getQueryGroups().size() > 0) {
-					updateQuerySummary(event.getQueryGroups());
+				final List<ReadOnlyQueryGroup> queryGroups = event.getQueryGroups();
+				
+				if(queryGroups.size() > 0) {
+					updateQuerySummary(queryGroups);
 				}
 				
 				//TODO, REVISITME: We shouldn't clear the result display if the new query group list
@@ -99,15 +103,13 @@ public final class AllResultsRow extends Composite implements Observer {
 				//query list made of mutable QueryGroups. :/
 				clearResults();
 				
-				setRunQueryButtonEnabledStatus(event);
+				setRunQueryButtonEnabledStatus(queryGroups);
 			}
 
-			void setRunQueryButtonEnabledStatus(final QueryGroupsChangedEvent event) {
-				runQueryButton.setEnabled(event.getQueryGroups().size() > 0);
+			void setRunQueryButtonEnabledStatus(final List<ReadOnlyQueryGroup> queryGroups) {
+				runQueryButton.setEnabled(queryGroups.size() > 0);
 			}
 		});
-		
-		runQueryButton.setEnabled(false);
 	}
 
 	@Override
@@ -129,8 +131,6 @@ public final class AllResultsRow extends Composite implements Observer {
 	@Override
 	public void stopObserving() {
 		allResults.noLongerObservedBy(this);
-		
-		queryGroups.noLongerObservedBy(this);
 	}
 
 	@Override

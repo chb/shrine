@@ -21,12 +21,14 @@ private[index] final class PrefixMap[T] extends MMap[Seq[String], T] with MMapLi
 
   def value = _value
 
-  def childKeys: Iterable[Seq[String]] = {
+  def childKeys: Iterable[Seq[String]] = childEntries.map { case (childTermParts, _) => childTermParts }
+  
+  def childEntries: Iterable[(Seq[String],T)] = {
     for {
       (suffix, childMap) <- suffixes
-      (childTermFragment, _) <- childMap.headOption
+      (childTermFragments, childValue) <- childMap.headOption
     } yield {
-      suffix +: childTermFragment
+      (suffix +: childTermFragments, childValue)
     }
   }
   

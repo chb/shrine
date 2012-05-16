@@ -2,6 +2,7 @@ package net.shrine.ont.index
 
 import net.shrine.ont.data.OntologyDAO
 import net.shrine.ont.data.ShrineSqlOntologyDAO
+import net.shrine.ont.messaging.Concept
 
 /**
  * @author Clint Gilbert
@@ -13,7 +14,7 @@ object OntologyTrie {
   def apply(dao: OntologyDAO): OntologyTrie = {
     val result = empty 
     
-    result ++= dao.ontologyEntries.map(_.path)
+    result ++= dao.ontologyEntries
     
     result
   }
@@ -39,11 +40,23 @@ object OntologyTrie {
   }
   
   def main(args: Array[String]) {
-    val dao: OntologyDAO = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace-3.6.2/shrine-gwt-webclient/ontology/core/ShrineWithSyns.sql"))
+    /*val dao: OntologyDAO = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace-3.6.2/shrine-gwt-webclient/ontology/core/ShrineWithSyns.sql"))
     
     val trie = OntologyTrie(dao)
     
-    val demoTerm = """\\SHRINE\SHRINE\Demographics\Gender\Male\"""
+    val demoTerm = Concept("""\\SHRINE\SHRINE\Demographics\""", None)
+    
+    val subTrie = trie.subTrieForPrefix(demoTerm)
+      
+    val children = subTrie.children*/
+    
+    val trie = OntologyTrie.empty
+    
+    val demoTerm = Concept("""\\SHRINE\SHRINE\Demographics\""", Some("DemographicsSyn"))
+    val genderTerm = Concept("""\\SHRINE\SHRINE\Demographics\Gender\""", Some("GenderSyn"))
+    val maleTerm = Concept("""\\SHRINE\SHRINE\Demographics\Gender\Male\""", Some("MaleSyn"))
+    
+    trie ++= Seq(demoTerm, genderTerm, maleTerm)
     
     val subTrie = trie.subTrieForPrefix(demoTerm)
       
@@ -56,10 +69,6 @@ object OntologyTrie {
     println("Children: " + children)
     
     println("isLeaf? " + children.isEmpty)
-    
-    /*children.foreach { term =>
-      println("Child " + term)
-    }*/
   }
 }
 
@@ -67,22 +76,22 @@ object OntologyTrie {
  * @author Clint Gilbert
  * @date Apr 2, 2012
  */
-sealed class OntologyTrie(entries: PrefixMap[java.lang.Boolean]) extends Iterable[String] {
+sealed class OntologyTrie(entries: PrefixMap[Option[String]]) extends Iterable[Concept] {
 
   import OntologyTrie._
 
-  protected def toTerm(term: String): String = {
+  protected def toPath(term: String): String = {
     addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(term))
   }
   
-  def ++=(terms: Iterable[String]): this.type = {
-    terms.foreach(this.+=)
+  def ++=(concepts: Iterable[Concept]): this.type = {
+    concepts.foreach(this.+=)
     
     this
   }
 
-  def +=(term: String): this.type = {
-    entries += (split(term) -> dummy)
+  def +=(concept: Concept): this.type = {
+    entries += (split(concept.path) -> concept.synonym)
   
     this
   }
@@ -91,29 +100,25 @@ sealed class OntologyTrie(entries: PrefixMap[java.lang.Boolean]) extends Iterabl
   
   override def size = entries.size
   
-  def contains(term: String) = entries.contains(split(term))
+  def contains(concept: Concept) = entries.contains(split(concept.path))
   
-  def rawChildren: Iterable[String] = entries.childKeys.map(parts => unSplit(parts))
+  def children: Iterable[Concept] = entries.childEntries.map { case (pathParts, synonymOption) => Concept(toPath(unSplit(pathParts)), synonymOption) }
   
-  def children: Iterable[String] = rawChildren.map(toTerm)
+  def subTrieForPrefix(concept: Concept): OntologySubTrie = new OntologySubTrie(concept.path, entries.withPrefix(split(concept.path)))
   
-  def subTrieForPrefix(term: String): OntologySubTrie = new OntologySubTrie(term, entries.withPrefix(split(term)))
-  
-  override def iterator: Iterator[String] = {
-    entries.iterator.map { case (parts, _) => toTerm(unSplit(parts)) }
+  override def iterator: Iterator[Concept] = {
+    entries.iterator.map { case (pathParts, synonymOption) => Concept(toPath(unSplit(pathParts)), synonymOption) }
   }
 }
 
-final case class OntologySubTrie(val prefix: String, entries: PrefixMap[java.lang.Boolean]) extends OntologyTrie(entries) {
+final case class OntologySubTrie(val prefix: String, entries: PrefixMap[Option[String]]) extends OntologyTrie(entries) {
   import OntologyTrie.addTrailingSlashIfNeeded
   
-  private def concat(prefix: String, fragment: String): String = addTrailingSlashIfNeeded(prefix) + fragment
+  private def addPrefixTo(fragment: String): String = addTrailingSlashIfNeeded(prefix) + fragment
   
-  override def toTerm(termFragment: String): String = {
-    super.toTerm(concat(prefix, termFragment))
+  protected override def toPath(termFragment: String): String = {
+    super.toPath(addPrefixTo(termFragment))
   }
   
-  override def subTrieForPrefix(term: String): OntologySubTrie = super.subTrieForPrefix(term).copy(prefix = concat(prefix, term))
-  
-  
+  override def subTrieForPrefix(concept: Concept): OntologySubTrie = super.subTrieForPrefix(concept).copy(prefix = addPrefixTo(concept.path))
 }
