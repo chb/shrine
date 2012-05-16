@@ -121,5 +121,10 @@ public class RichSuggestionRowTestGwt extends AbstractWebclientTest {
 		public void hidePopup() {
 			hidden = true;
 		}
+
+		@Override
+		public void clearTextBox() {
+			// NOOP
+		}
 	}
 }

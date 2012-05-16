@@ -7,4 +7,6 @@ package net.shrine.webclient.client.widgets.suggest;
  */
 public interface HasHideablePopup {
 	public void hidePopup();
+	
+	public void clearTextBox();
 }

@@ -79,5 +79,10 @@ public class ForwardSuggestionEventsTestGwt extends AbstractWebclientTest {
 		public void hidePopup() {
 			// NOOP
 		}
+
+		@Override
+		public void clearTextBox() {
+			// NOOP
+		}
 	}
 }

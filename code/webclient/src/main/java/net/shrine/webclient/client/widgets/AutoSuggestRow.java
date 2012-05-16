@@ -71,6 +71,8 @@ public final class AutoSuggestRow extends Composite {
 			public void onClick(final ClickEvent event) {
 				container.hidePopup();
 				
+				container.clearTextBox();
+				
 				eventBus.fireEvent(new ShowDataDictionaryPanelEvent(termSuggestion.toTerm()));
 			}
 		});

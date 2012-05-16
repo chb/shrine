@@ -21,22 +21,26 @@ import scala.util.matching.Regex
  * @date Mar 23, 2012
  */
 final class OntologySearchServiceImpl extends RemoteServiceServlet with OntologySearchService {
-  private def dao: OntologyDAO = new ShrineSqlOntologyDAO(getOntFileStream)
+  private[this] def dao: OntologyDAO = new ShrineSqlOntologyDAO(getOntFileStream)
   
-  private val index: OntologyIndex = LuceneOntologyIndex(dao)
+  private[this] val index: OntologyIndex = LuceneOntologyIndex(dao)
 
-  private val ontTrie = OntologyTrie(dao)
+  private[this] val ontTrie = OntologyTrie(dao)
 
-  private def isLeaf(trie: OntologyTrie): Boolean = trie.children.isEmpty
+  private[this] def isLeaf(trie: OntologyTrie): Boolean = trie.children.isEmpty
   
-  private def isLeaf(concept: Concept): Boolean = isLeaf(ontTrie.subTrieForPrefix(concept))
+  private[this] def isLeaf(concept: Concept): Boolean = isLeaf(ontTrie.subTrieForPrefix(concept))
   
-  private [this] val allDigitRegex = """^\d+$""".r
+  private[this] def toConcept(path: String) = Concept(path, None)
+  
+  private[this] def toTerm(concept: Concept) = new Term(concept.path, concept.category, determineSimpleNameFor(concept))
+  
+  private[this] val allDigitRegex = """^\d+$""".r
   
   //Matches things like 'AD100'
-  private [this] val medicationCategoryRegex = """^\w\w\d\d\d$""".r
+  private[this] val medicationCategoryRegex = """^\w\w\d\d\d$""".r
   
-  private def determineSimpleNameFor(concept: Concept): String = {
+  private[this] def determineSimpleNameFor(concept: Concept): String = {
     val simpleName = concept.simpleName
     
     def simpleNameMatches(regex: Regex) = regex.findFirstIn(simpleName).isDefined
@@ -64,8 +68,6 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
 
     Helpers.toJava(suggestions)
   }
-  
-  private def toConcept(path: String) = Concept(path, None)
   
   override def getChildrenFor(term: String): JList[OntNode] = {
     val concept = toConcept(term)
@@ -95,7 +97,9 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
     Helpers.toJava(childNodesSorted)
   }
   
-  override def getTreeRootedAt(term: String): JList[OntNode] = {
+  override def getTreeRootedAt(term: String, prependPathFromRoot: Boolean = false): JList[OntNode] = {
+    import OntologyTrie._
+    
     val concept = toConcept(term)
     
     if(!ontTrie.contains(concept)) {
@@ -110,10 +114,24 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
   
     val node = new OntNode(toTerm(rootConcept), isLeaf(subTrie))
     
-    JCollections.singletonList(node)
+    import scala.collection.JavaConverters._
+    
+    val nodes = if(prependPathFromRoot) {
+      pathsFromRoot(term).flatMap(getTreeRootedAt(_, false).asScala) :+ node
+    } else {
+      Seq(node)
+    }
+    
+    Helpers.toJava(nodes)
   }
   
-  private def toTerm(concept: Concept) = new Term(concept.path, concept.category, determineSimpleNameFor(concept))
+  private[this] def pathsFromRoot(termPath: String): Seq[String] = {
+    import OntologyTrie._
+    
+    val parts = split(termPath)
+    
+    (1 to parts.size).map(i => parts.take(i)).dropWhile(_.last == "SHRINE").map(unSplit)
+  }
   
   override def getParentOntTree(path: String): JList[OntNode] = {
     import OntologyTrie._

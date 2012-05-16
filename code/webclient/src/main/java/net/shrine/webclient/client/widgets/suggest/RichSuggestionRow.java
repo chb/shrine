@@ -78,5 +78,7 @@ public final class RichSuggestionRow extends SimplePanel implements HasMouseOutH
 		onSelect.run();
 		
 		container.hidePopup();
+		
+		container.clearTextBox();
 	}
 }

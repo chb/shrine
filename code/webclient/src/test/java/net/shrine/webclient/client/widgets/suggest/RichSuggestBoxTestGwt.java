@@ -21,7 +21,6 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 	private static final Integer Zero = Integer.valueOf(0);
 	private static final Integer One = Integer.valueOf(1);
 	private static final Integer Two = Integer.valueOf(2);
-	private static final Integer Three = Integer.valueOf(3);
 
 	public void testConstructor() {
 		try {
@@ -264,8 +263,12 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 
 		oracle.returnNoSuggestions = false;
 
+		suggestBox.setText("7");
+		
 		// Send a key event to get popup filled
 		suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
+		
+		assertTrue(suggestBox.getSuggestionPopup().isShowing());
 
 		// Enter shouldn't do anything if no row is highlighted
 
@@ -294,6 +297,8 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 		oracle.numToReturn = 3;
 
 		// Send a key event to get popup filled
+		suggestBox.setText("7");
+		
 		suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
 
 		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
@@ -309,7 +314,7 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
 
 		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
-
+		
 		assertEquals(One, suggestBox.getHighlightedPopupRow().get());
 
 		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
@@ -552,15 +557,39 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 	public void testHidePopup() {
 		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
+		final String text = "foo";
+		
+		suggestBox.setText(text);
+		
+		assertEquals(text, suggestBox.getText());
+		
 		suggestBox.getSuggestionPopup().show();
 
+		assertEquals(text, suggestBox.getText());
+		
 		assertTrue(suggestBox.getSuggestionPopup().isShowing());
 
 		suggestBox.hidePopup();
 
 		assertFalse(suggestBox.getSuggestionPopup().isShowing());
+		
+		assertEquals(text, suggestBox.getText());
 	}
 
+	public void testClearTextBox() {
+		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+
+		final String text = "foo";
+		
+		suggestBox.setText(text);
+		
+		assertEquals(text, suggestBox.getText());
+		
+		suggestBox.clearTextBox();
+		
+		assertEquals("", suggestBox.getText());
+	}
+	
 	private static RichSuggestBox<MockSuggestion> makeMockedOutRichSuggestBox() {
 		return new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), new MockWidgetMaker());
 	}

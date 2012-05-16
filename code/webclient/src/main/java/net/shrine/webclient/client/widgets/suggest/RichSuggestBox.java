@@ -325,9 +325,12 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		highlightedRow.select();
 
 		hidePopup();
+		
+		clearTextBox();
 	}
 
-	void clearTextBox() {
+	@Override
+	public void clearTextBox() {
 		textBox.setText("");
 	}
 }

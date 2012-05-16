@@ -32,7 +32,7 @@ public final class OntologyTree extends Composite {
 	
 	private final EventBus eventBus;
 	
-	public OntologyTree(final EventBus eventBus, final Controllers controllers, final OntNode node) {
+	public OntologyTree(final EventBus eventBus, final Controllers controllers, final OntNode shownNode, final List<OntNode> pathFromRoot) {
 		super();
 		
 		Util.requireNotNull(eventBus);
@@ -41,17 +41,25 @@ public final class OntologyTree extends Composite {
 		this.controllers = controllers;
 		this.eventBus = eventBus;
 		
-		delegate = makeTree(node);
+		delegate = makeTree(shownNode, pathFromRoot);
 		
 		initWidget(delegate);
 	}
 
 	private final class OntTreeItem extends TreeItem {
 
+		boolean shouldGetChildrenFromServer;
+		
 		final OntNode ontNode;
 		
 		OntTreeItem(final OntNode ontNode) {
+			this(ontNode, false);
+		}
+		
+		OntTreeItem(final OntNode ontNode, final boolean shouldGetChildrenFromServer) {
 			super(new OntTreeNode(eventBus, controllers, ontNode));
+			
+			this.shouldGetChildrenFromServer = shouldGetChildrenFromServer;
 			
 			this.ontNode = ontNode;
 		}
@@ -61,24 +69,66 @@ public final class OntologyTree extends Composite {
 		return new TreeItem("");
 	}
 	
-	private Tree makeTree(final OntNode node) {
-		final Tree root = new Tree();
+	private Tree makeTree(final OntNode shownNode, final List<OntNode> pathFromRoot) {
+		Log.debug("Making tree: shown node: " + shownNode);
+		Log.debug("Path from root: " + pathFromRoot);
 		
-		final OntTreeItem rootItem = new OntTreeItem(node);
+		final Tree tree = new Tree();
 		
-		rootItem.setState(false, false);
+		addOpenHandler(tree);
 		
-		root.addItem(rootItem);
+		final OntTreeItem rootItem;
 		
-		rootItem.addItem(dummyItem());
+		OntTreeItem cursor;
 		
-		root.addOpenHandler(new OpenHandler<TreeItem>() {
+		if(pathFromRoot.isEmpty()) {
+			cursor = rootItem = new OntTreeItem(shownNode);
+		} else {
+			cursor = rootItem = new OntTreeItem(pathFromRoot.get(0), true);
+			
+			for(final OntNode descendant : pathFromRoot.subList(1, pathFromRoot.size())) {
+				final OntTreeItem descendantItem = new OntTreeItem(descendant, true);
+				
+				cursor.addItem(descendantItem);
+				
+				cursor.setState(true, false);
+				
+				cursor = descendantItem;
+			}
+		}
+		
+		tree.addItem(rootItem);
+		
+		if(cursor != rootItem) {
+			makeOpenable(cursor, true, true);
+			
+		} else if(rootItem.getChildCount() < 1) {
+			final boolean shouldFetchRootItemsChildren = pathFromRoot.isEmpty();
+			
+			makeOpenable(rootItem, true, shouldFetchRootItemsChildren);
+		}
+		
+		return tree;
+	}
+	
+	void makeOpenable(final OntTreeItem item, final boolean open, final boolean fireEvents) {
+		item.setState(false, false);
+		
+		item.addItem(dummyItem());
+	
+		item.setState(open, fireEvents);
+	}
+
+	void addOpenHandler(final Tree tree) {
+		tree.addOpenHandler(new OpenHandler<TreeItem>() {
 			@Override
 			public void onOpen(final OpenEvent<TreeItem> event) {
 				final OntTreeItem item = (OntTreeItem)event.getTarget();
 				
 				//If we haven't been opened (only have the dummy item)
-				if(item.getChildCount() == 1 && item.getChild(0).getText().equals("")) {
+				if(shouldLoadChildren(item)) {
+					item.removeItems();
+					
 					ontologyService.getChildrenFor(item.ontNode.getValue(), new AsyncCallback<List<OntNode>>() {
 						@Override
 						public void onSuccess(final List<OntNode> childNodes) {
@@ -104,10 +154,22 @@ public final class OntologyTree extends Composite {
 					});
 				}
 			}
+
+			boolean shouldLoadChildren(final OntTreeItem item) {
+				return item.shouldGetChildrenFromServer || hasOnlyDummyChild(item);
+			}
+
+			boolean hasOnlyDummyChild(final OntTreeItem item) {
+				return hasOnlyOneChild(item) && hasDummyChild(item);
+			}
+
+			boolean hasOnlyOneChild(final OntTreeItem item) {
+				return item.getChildCount() == 1;
+			}
+
+			boolean hasDummyChild(final OntTreeItem item) {
+				return item.getChild(0).getText().equals("");
+			}
 		});
-		
-		rootItem.setState(true);
-		
-		return root;
 	}
 }
