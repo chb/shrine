@@ -9,6 +9,8 @@ import net.shrine.webclient.client.AbstractWebclientTest;
 
 import org.junit.Test;
 
+import com.google.gwt.event.shared.SimpleEventBus;
+
 /**
  * 
  * @author clint
@@ -26,7 +28,7 @@ public class ExpressionXmlTestGwt extends AbstractWebclientTest {
 		
 		final Term t1 = term("foo");
 		
-		final QueryGroup queryGroup1 = new QueryGroup("foo", t1);
+		final QueryGroup queryGroup1 = new QueryGroup(new SimpleEventBus(), "foo", t1);
 		
 		{
 			final List<QueryGroup> queryGroups = asList(queryGroup1);
@@ -39,7 +41,7 @@ public class ExpressionXmlTestGwt extends AbstractWebclientTest {
 		{
 			final Term t2 = term("bar");
 			
-			final QueryGroup queryGroup2 = new QueryGroup("bar", t2);
+			final QueryGroup queryGroup2 = new QueryGroup(new SimpleEventBus(), "bar", t2);
 			
 			final String xml = ExpressionXml.fromQueryGroups(asList(queryGroup1, queryGroup2));
 			

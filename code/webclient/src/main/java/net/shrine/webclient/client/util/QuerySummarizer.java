@@ -6,7 +6,7 @@ import java.util.Map;
 
 import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.Or;
-import net.shrine.webclient.client.domain.QueryGroup;
+import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.domain.Term;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -22,7 +22,7 @@ public final class QuerySummarizer {
 		super();
 	}
 
-	public static String summarize(final Iterable<QueryGroup> queryGroups) {
+	public static String summarize(final Iterable<? extends ReadOnlyQueryGroup> queryGroups) {
 		Log.info("Summarizing queries: " + queryGroups);
 		
 		Util.requireNotNull(queryGroups);
@@ -37,7 +37,7 @@ public final class QuerySummarizer {
 		{
 			int i = 0;
 		
-			for (final QueryGroup query : queryGroups) {
+			for (final ReadOnlyQueryGroup query : queryGroups) {
 				final String queryGroupCssClass = "querySummaryLabel" + (i % Util.numRowColors);
 				
 				querySummaries.add(summarize(query, queryGroupCssClass));
@@ -51,7 +51,7 @@ public final class QuerySummarizer {
 		return result.toString();
 	}
 
-	static final String summarize(final QueryGroup queryGroup, final String queryGroupCssClass) {
+	static final String summarize(final ReadOnlyQueryGroup queryGroup, final String queryGroupCssClass) {
 		final StringBuilder result = new StringBuilder();
 		
 		final Expression expr = queryGroup.getExpression();

@@ -7,11 +7,17 @@ import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.ExpressionXml;
 import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.QueryGroup;
+import net.shrine.webclient.client.events.SingleQueryGroupChangedEvent;
+import net.shrine.webclient.client.events.SingleQueryGroupChangedEventHandler;
+import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
 import net.shrine.webclient.client.util.Observable;
 import net.shrine.webclient.client.util.ObservableList;
+import net.shrine.webclient.client.util.Observer;
+import net.shrine.webclient.client.util.SimpleObserver;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * 
@@ -20,13 +26,39 @@ import com.allen_sauer.gwt.log.client.Log;
  */
 public final class State {
 
+	private final EventBus eventBus;
+	
 	private String allExpressionXml = null;
 
 	private final Observable<HashMap<String, IntWrapper>> allResult = Observable.empty();
-
+	
 	// Query group name => QueryGroup (Expression, integer result (patient set
 	// size), negated (t/f), start date, end date, min occurrances )
 	private final ObservableList<QueryGroup> queries = ObservableList.empty();
+
+	//React to changes in query list by renaming queries (to preserve A ... Z naming)
+	@SuppressWarnings("unused")
+	private final Observer queryRenamer = new SimpleObserver(queries) {
+		@Override
+		public void inform() {
+			reNameQueries();
+		}
+	};
+	
+	public State(final EventBus eventBus) {
+		super();
+		
+		Util.requireNotNull(eventBus);
+		
+		this.eventBus = eventBus;
+		
+		this.eventBus.addHandler(SingleQueryGroupChangedEvent.getType(), new SingleQueryGroupChangedEventHandler() {
+			@Override
+			public void handle(final SingleQueryGroupChangedEvent event) {
+				eventBus.fireEvent(new QueryGroupsChangedEvent(queries));
+			}
+		});
+	}
 
 	public void guardQueryIsPresent(final int id) {
 		Util.require(isQueryIdPresent(id));
@@ -46,10 +78,8 @@ public final class State {
 		return false;
 	}
 
-	// TODO: HACK
 	// Make sure queries are named A,B,C,... Z, in that order, with no gaps,
 	// always starting from 'A'
-	@Deprecated
 	void reNameQueries() {
 		final Iterator<String> newIdIter = new QueryNameIterator();
 
@@ -93,12 +123,10 @@ public final class State {
 	}
 
 	private QueryGroup addNewQuery(final Expression expr) {
-		final QueryGroup newQuery = new QueryGroup("NULL", expr);
+		final QueryGroup newQuery = new QueryGroup(eventBus, "NULL", expr);
 	
 		queries.add(newQuery);
 		
-		reNameQueries();
-
 		Log.info("Added query group '" + newQuery.getName() + "' (" + newQuery.getId() + "): " + newQuery.getExpression());
 
 		return newQuery;

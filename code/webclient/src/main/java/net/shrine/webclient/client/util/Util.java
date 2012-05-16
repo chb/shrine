@@ -125,7 +125,7 @@ public final class Util {
 		return new ArrayList<T>();
 	}
 
-	public static <T> ArrayList<T> makeArrayList(final Iterable<T> collection) {
+	public static <T> ArrayList<T> makeArrayList(final Iterable<? extends T> collection) {
 		final ArrayList<T> result = makeArrayList();
 
 		for (final T t : collection) {

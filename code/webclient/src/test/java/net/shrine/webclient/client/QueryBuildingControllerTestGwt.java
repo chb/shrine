@@ -21,7 +21,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 	public void testMoveTerm() {
 		// to new query, from query only contains 1 term
 		{
-			final State state = new State();
+			final State state = state();
 
 			final QueryBuildingController controller = new QueryBuildingController(state);
 
@@ -44,7 +44,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
 		// to new query, from query contains > 1 term
 		{
-			final State state = new State();
+			final State state = state();
 
 			final QueryBuildingController controller = new QueryBuildingController(state);
 
@@ -76,7 +76,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
 		// to existing query
 		{
-			final State state = new State();
+			final State state = state();
 
 			final QueryBuildingController controller = new QueryBuildingController(state);
 
@@ -122,7 +122,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
 		// to existing 1-term query
 		{
-			final State state = new State();
+			final State state = state();
 
 			final QueryBuildingController controller = new QueryBuildingController(state);
 
@@ -157,7 +157,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testAddNewTerm() {
-		final State state = new State();
+		final State state = state();
 
 		final QueryBuildingController controller = new QueryBuildingController(state);
 
@@ -183,7 +183,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 	}
 
 	public void testRemoveAllQueryGroups() {
-		final State state = new State();
+		final State state = state();
 
 		final QueryBuildingController controller = new QueryBuildingController(state);
 
@@ -204,7 +204,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 	}
 
 	public void testRemoveQueryGroup() {
-		final State state = new State();
+		final State state = state();
 
 		final QueryBuildingController controller = new QueryBuildingController(state);
 
@@ -239,7 +239,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 	}
 
 	public void testRemoveTerm() {
-		final State state = new State();
+		final State state = state();
 
 		final QueryBuildingController controller = new QueryBuildingController(state);
 

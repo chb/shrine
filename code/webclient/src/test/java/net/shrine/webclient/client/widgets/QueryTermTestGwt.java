@@ -23,7 +23,7 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 		} catch (IllegalArgumentException expected) { }
 		
 		try {
-			new QueryTerm(42, new QueryBuildingController(new State()), null);
+			new QueryTerm(42, new QueryBuildingController(state()), null);
 			fail("Should have thrown");
 		} catch (IllegalArgumentException expected) { }
 		
@@ -35,7 +35,7 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 		final String simpleName = "simple name";
 		final String path = "/fully/qualified/path";
 		
-		final QueryTerm qt = new QueryTerm(99, new QueryBuildingController(new State()), new Term(path, "some-bogus-category", simpleName));
+		final QueryTerm qt = new QueryTerm(99, new QueryBuildingController(state()), new Term(path, "some-bogus-category", simpleName));
 		
 		assertEquals(simpleName, qt.termSpan.getInnerText());
 		assertEquals(path, qt.getTitle());
@@ -43,7 +43,7 @@ public class QueryTermTestGwt extends AbstractWebclientTest {
 	
 	@Test
 	public void testClickCloseButton() {
-		final State state = new State();
+		final State state = state();
 		
 		final QueryBuildingController controller = new QueryBuildingController(state);
 		

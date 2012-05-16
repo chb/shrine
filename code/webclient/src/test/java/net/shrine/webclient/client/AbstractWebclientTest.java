@@ -2,6 +2,7 @@ package net.shrine.webclient.client;
 
 import net.shrine.webclient.client.domain.Term;
 
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.junit.client.GWTTestCase;
 
 /**
@@ -17,5 +18,9 @@ public abstract class AbstractWebclientTest extends GWTTestCase {
 	
 	protected Term term(final String path) {
 		return new Term(path, "some-bogus-category");
+	}
+	
+	protected State state() {
+		return new State(new SimpleEventBus());
 	}
 }

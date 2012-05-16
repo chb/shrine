@@ -2,9 +2,13 @@ package net.shrine.webclient.client.domain;
 
 import java.util.Date;
 
-import net.shrine.webclient.client.util.AbstractObservable;
+import net.shrine.webclient.client.events.SingleQueryGroupChangedEvent;
+import net.shrine.webclient.client.util.EventCreator;
+import net.shrine.webclient.client.util.FiresEventsObservable;
 import net.shrine.webclient.client.util.Formats;
 import net.shrine.webclient.client.util.Util;
+
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * 
@@ -12,7 +16,7 @@ import net.shrine.webclient.client.util.Util;
  * @date Mar 26, 2012
  * 
  */
-public final class QueryGroup extends AbstractObservable implements XmlAble, ReadOnlyQueryGroup, Comparable<QueryGroup> {
+public final class QueryGroup extends FiresEventsObservable<SingleQueryGroupChangedEvent> implements XmlAble, ReadOnlyQueryGroup, Comparable<QueryGroup> {
 	private Expression expression;
 
 	private boolean negated = false;
@@ -37,13 +41,20 @@ public final class QueryGroup extends AbstractObservable implements XmlAble, Rea
 		return nextId;
 	}
 
-	public QueryGroup(final String name, final Expression expression) {
-		this(nextId++, name, expression);
+	public QueryGroup(final EventBus eventBus, final String name, final Expression expression) {
+		this(eventBus, nextId++, name, expression);
 	}
-
-	public QueryGroup(final int id, final String name, final Expression expression) {
-		super();
-
+	
+	public QueryGroup(final EventBus eventBus, final int id, final String name, final Expression expression) {
+		super(eventBus);
+		
+		this.wireUp(new EventCreator<SingleQueryGroupChangedEvent>() {
+			@Override
+			public SingleQueryGroupChangedEvent create() {
+				return new SingleQueryGroupChangedEvent(QueryGroup.this);
+			}
+		});
+		
 		Util.requireNotNull(expression);
 		Util.requireNotNull(name);
 

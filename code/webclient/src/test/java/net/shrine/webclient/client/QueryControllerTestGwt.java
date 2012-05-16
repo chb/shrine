@@ -25,7 +25,7 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
 	protected void gwtSetUp() throws Exception {
 		super.gwtSetUp();
 		
-		state = new State();
+		state = state();
 		queryService = new MockQueryServiceAsync();
 		controller = new QueryController(state, queryService);
 		queryBuildingController = new QueryBuildingController(state);

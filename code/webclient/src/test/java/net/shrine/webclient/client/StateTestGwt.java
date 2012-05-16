@@ -18,7 +18,7 @@ public class StateTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testGuardQueryNameIsPresent() {
-		final State state = new State();
+		final State state = state();
 		
 		try {
 			state.guardQueryIsPresent(12344);
@@ -32,7 +32,7 @@ public class StateTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testNumQueryGroups() {
-		final State state = new State();
+		final State state = state();
 		
 		assertEquals(0, state.numQueryGroups());
 		
@@ -47,7 +47,7 @@ public class StateTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testCompleteAllQuery() {
-		final State state = new State();
+		final State state = state();
 		
 		@SuppressWarnings("serial")
 		final HashMap<String, IntWrapper> results = new HashMap<String, IntWrapper>() {{
@@ -66,7 +66,7 @@ public class StateTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testRegisterNewQuery() {
-		final State state = new State();
+		final State state = state();
 		
 		final Term expr = term("foo");
 		
@@ -87,7 +87,7 @@ public class StateTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testUpdateAllExpression() {
-		final State state = new State();
+		final State state = state();
 		
 		final Term t1 = term("foo");
 		final Term t2 = term("bar");

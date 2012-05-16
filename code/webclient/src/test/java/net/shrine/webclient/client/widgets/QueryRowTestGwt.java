@@ -7,7 +7,6 @@ import java.util.Iterator;
 import net.shrine.webclient.client.AbstractWebclientTest;
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.MockQueryServiceAsync;
-import net.shrine.webclient.client.State;
 import net.shrine.webclient.client.domain.And;
 import net.shrine.webclient.client.domain.Or;
 import net.shrine.webclient.client.domain.QueryGroup;
@@ -16,9 +15,8 @@ import net.shrine.webclient.client.domain.Term;
 import org.junit.Test;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
@@ -32,8 +30,8 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 	public void testConstructorGuards() {
 		final MockQueryServiceAsync mockQueryService = new MockQueryServiceAsync(); 
 		
-		final Controllers controllers = new Controllers(new State(), mockQueryService);
-		final QueryGroup queryGroup = new QueryGroup("foo", term("foo"));
+		final Controllers controllers = new Controllers(state(), mockQueryService);
+		final QueryGroup queryGroup = new QueryGroup(new SimpleEventBus(), "foo", term("foo"));
 		final PickupDragController dragController = new PickupDragController(RootPanel.get(), false);
 		
 		try {
@@ -65,16 +63,16 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testQueryRow() throws Exception {
-		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
+		final Controllers controllers = new Controllers(state(), new MockQueryServiceAsync());
 		final PickupDragController dragController = new PickupDragController(RootPanel.get(), false);
 
-		final QueryRow queryRow = new QueryRow(new QueryGroup("blah", term("foo")), controllers, dragController);
+		final QueryRow queryRow = new QueryRow(new QueryGroup(new SimpleEventBus(), "blah", term("foo")), controllers, dragController);
 
 		//Test negate box init
 		{
 			assertFalse(queryRow.negationCheckbox.getValue());
 
-			final QueryGroup group2 = new QueryGroup("nuh", term("foo"));
+			final QueryGroup group2 = new QueryGroup(new SimpleEventBus(), "nuh", term("foo"));
 			
 			group2.setNegated(true);
 			
@@ -88,7 +86,7 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 			assertNull(queryRow.startDate.getValue());
 			assertNull(queryRow.endDate.getValue());
 
-			final QueryGroup group2 = new QueryGroup("bar", term("foo"));
+			final QueryGroup group2 = new QueryGroup(new SimpleEventBus(), "bar", term("foo"));
 
 			final Date start = new Date();
 			final Date end = new Date();
@@ -106,7 +104,7 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 		{
 			assertEquals(1, queryRow.minOccursSpinner.getValue());
 
-			final QueryGroup group2 = new QueryGroup("zuh", term("foo"));
+			final QueryGroup group2 = new QueryGroup(new SimpleEventBus(), "zuh", term("foo"));
 			
 			group2.setMinOccurances(99);
 			
@@ -124,10 +122,10 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testInform() {
-		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
+		final Controllers controllers = new Controllers(state(), new MockQueryServiceAsync());
 		final PickupDragController dragController = new PickupDragController(RootPanel.get(), false);
 
-		final QueryRow queryRow = new QueryRow(new QueryGroup("blah", term("foo")), controllers, dragController);
+		final QueryRow queryRow = new QueryRow(new QueryGroup(new SimpleEventBus(), "blah", term("foo")), controllers, dragController);
 		
 		assertFalse(queryRow.negationCheckbox.getValue());
 		assertNull(queryRow.startDate.getValue());
@@ -137,10 +135,10 @@ public class QueryRowTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testMakeQueryTermsFrom() {
-		final Controllers controllers = new Controllers(new State(), new MockQueryServiceAsync());
+		final Controllers controllers = new Controllers(state(), new MockQueryServiceAsync());
 		final PickupDragController dragController = new PickupDragController(RootPanel.get(), false);
 
-		final QueryRow queryRow = new QueryRow(new QueryGroup("nuh", term("foo")), controllers, dragController);
+		final QueryRow queryRow = new QueryRow(new QueryGroup(new SimpleEventBus(), "nuh", term("foo")), controllers, dragController);
 		
 		try {
 			queryRow.makeQueryTermsFrom(null);

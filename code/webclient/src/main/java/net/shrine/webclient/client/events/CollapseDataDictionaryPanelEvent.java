@@ -9,7 +9,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author clint
  * @date Apr 4, 2012
  */
-public class CollapseDataDictionaryPanelEvent extends GwtEvent<CollapseDataDictionaryPanelEventHandler> {
+public final class CollapseDataDictionaryPanelEvent extends GwtEvent<CollapseDataDictionaryPanelEventHandler> {
 
 	private static final GwtEvent.Type<CollapseDataDictionaryPanelEventHandler> TYPE = WidgetUtil.eventType();
 	
@@ -29,7 +29,7 @@ public class CollapseDataDictionaryPanelEvent extends GwtEvent<CollapseDataDicti
 	}
 
 	@Override
-	protected void dispatch(CollapseDataDictionaryPanelEventHandler handler) {
+	protected void dispatch(final CollapseDataDictionaryPanelEventHandler handler) {
 		handler.handle(this);
 	}
 }

@@ -45,6 +45,6 @@ public final class WebClientContent extends Composite {
 		
 		queryColumn.wireUp(controllers, state.getQueries(), dragController);
 		
-		allResultColumn.wireUp(controllers, state.getQueries(), state.getAllResult());
+		allResultColumn.wireUp(eventBus, controllers, state.getQueries(), state.getAllResult());
 	}
 }

@@ -18,7 +18,7 @@ public abstract class AbstractObservable implements IObservable {
 		observers.remove(observer);
 	}
 
-	public final void notifyObservers() {
+	public void notifyObservers() {
 		for (final Observer observer : observers) {
 			observer.inform();
 		}

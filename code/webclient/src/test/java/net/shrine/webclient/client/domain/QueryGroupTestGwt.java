@@ -7,6 +7,8 @@ import net.shrine.webclient.client.util.MockObserver;
 
 import org.junit.Test;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
@@ -35,18 +37,25 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testQueryGroup() {
+		final EventBus eventBus = new SimpleEventBus();
+		
 		try {
-			new QueryGroup(null, term("foo"));
+			new QueryGroup(null, "foo", term("foo"));
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
 		try {
-			new QueryGroup("foo", null);
+			new QueryGroup(eventBus, null, term("foo"));
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 		
 		try {
-			new QueryGroup(null, null);
+			new QueryGroup(eventBus, "foo", null);
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		try {
+			new QueryGroup(null, null, null);
 			fail("Should have thrown");
 		} catch(IllegalArgumentException expected) { }
 	}
@@ -65,7 +74,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 		final Term t1 = term("foo");
 		final Term t2 = term("bar");
 		
-		final QueryGroup queryGroup = new QueryGroup("nuh", t1);
+		final QueryGroup queryGroup = new QueryGroup(new SimpleEventBus(), "nuh", t1);
 		
 		assertEquals(t1.toXmlString(), queryGroup.toXmlString());
 		
@@ -115,7 +124,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 	public void testSetExpression() {
 		final Term t1 = term("foo");
 		
-		final QueryGroup queryGroup = new QueryGroup("salkdj", t1);
+		final QueryGroup queryGroup = new QueryGroup(new SimpleEventBus(), "salkdj", t1);
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -148,7 +157,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetMinOccurances() {
-		final QueryGroup queryGroup = new QueryGroup("ksaljdksaljd", term("foo"));
+		final QueryGroup queryGroup = new QueryGroup(new SimpleEventBus(), "ksaljdksaljd", term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -173,7 +182,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetStart() {
-		final QueryGroup queryGroup = new QueryGroup("sakjsadasd", term("foo"));
+		final QueryGroup queryGroup = new QueryGroup(new SimpleEventBus(), "sakjsadasd", term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		
@@ -196,7 +205,7 @@ public class QueryGroupTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testSetEnd() {
-		final QueryGroup queryGroup = new QueryGroup("asljkdla", term("foo"));
+		final QueryGroup queryGroup = new QueryGroup(new SimpleEventBus(), "asljkdla", term("foo"));
 		
 		final MockObserver observer = new MockObserver(queryGroup);
 		

@@ -21,7 +21,7 @@ public final class Webclient implements EntryPoint {
 	private void doOnModuleLoad() {
 		final SimpleEventBus eventBus = new SimpleEventBus();
 		
-		final State state = new State();
+		final State state = new State(eventBus);
 
 		final Controllers controllers = new Controllers(state, GWT.<QueryServiceAsync>create(QueryService.class));
 		
