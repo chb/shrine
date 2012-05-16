@@ -45,6 +45,15 @@ public final class State {
 		}
 	};
 	
+	//React to changes in query list by firing events
+	@SuppressWarnings("unused")
+	private final Observer queryGroupListChangeEventForwarder = new SimpleObserver(queries) {
+		@Override
+		public void inform() {
+			fireQueryGroupsChangedEvent();
+		}
+	};
+	
 	public State(final EventBus eventBus) {
 		super();
 		
@@ -55,7 +64,7 @@ public final class State {
 		this.eventBus.addHandler(SingleQueryGroupChangedEvent.getType(), new SingleQueryGroupChangedEventHandler() {
 			@Override
 			public void handle(final SingleQueryGroupChangedEvent event) {
-				eventBus.fireEvent(new QueryGroupsChangedEvent(queries));
+				fireQueryGroupsChangedEvent();
 			}
 		});
 	}
@@ -155,5 +164,9 @@ public final class State {
 
 	public Observable<HashMap<String, IntWrapper>> getAllResult() {
 		return allResult;
+	}
+
+	void fireQueryGroupsChangedEvent() {
+		State.this.eventBus.fireEvent(new QueryGroupsChangedEvent(queries));
 	}
 }

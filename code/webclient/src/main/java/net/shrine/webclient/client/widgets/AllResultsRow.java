@@ -96,6 +96,8 @@ public final class AllResultsRow extends Composite implements Observer {
 				
 				if(queryGroups.size() > 0) {
 					updateQuerySummary(queryGroups);
+				} else {
+					clearQuerySummary();
 				}
 				
 				//TODO, REVISITME: We shouldn't clear the result display if the new query group list
@@ -140,6 +142,10 @@ public final class AllResultsRow extends Composite implements Observer {
 
 	void updateQuerySummary(final List<ReadOnlyQueryGroup> queryGroups) {
 		querySummaryHolder.setWidget(new QuerySummary(summarize(queryGroups)));
+	}
+	
+	private void clearQuerySummary() {
+		querySummaryHolder.clear();
 	}
 
 	void clearResults() {
