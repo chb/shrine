@@ -84,9 +84,9 @@ public final class OntologyTree extends Composite {
 		if(pathFromRoot.isEmpty()) {
 			cursor = rootItem = new OntTreeItem(shownNode);
 		} else {
-			cursor = rootItem = new OntTreeItem(pathFromRoot.get(0), true);
+			cursor = rootItem = new OntTreeItem(new OntNode(DataDictionaryRow.shrineRoot, false), true);
 			
-			for(final OntNode descendant : pathFromRoot.subList(1, pathFromRoot.size())) {
+			for(final OntNode descendant : pathFromRoot) {
 				final OntTreeItem descendantItem = new OntTreeItem(descendant, true);
 				
 				cursor.addItem(descendantItem);

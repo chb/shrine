@@ -46,7 +46,7 @@ public final class DataDictionaryRow extends Composite {
 
 	private Controllers controllers;
 
-	private static final Term shrineRoot = new Term("\\\\SHRINE\\SHRINE\\", "SHRINE Ontology", "SHRINE Ontology");
+	public static final Term shrineRoot = new Term("\\\\SHRINE\\SHRINE\\", "SHRINE Ontology", "SHRINE Ontology");
 
 	private Term shownTerm = shrineRoot;
 
