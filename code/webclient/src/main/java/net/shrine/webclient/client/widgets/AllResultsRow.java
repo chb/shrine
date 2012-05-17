@@ -120,12 +120,12 @@ public final class AllResultsRow extends Composite implements Observer {
 
 	@Override
 	public void inform() {
-		if(allResults.isDefined()) {
+		for(final HashMap<String, IntWrapper> resultsMap : allResults) {
 			clearResults();
 			
 			resultsWrapper.setVisible(true);
 			
-			for(final Entry<String, IntWrapper> entry : allResults.get().entrySet()) {
+			for(final Entry<String, IntWrapper> entry : resultsMap.entrySet()) {
 				final String instName = entry.getKey();
 				final int count = entry.getValue().getValue();
 				

@@ -10,7 +10,7 @@ import java.util.Iterator;
  * 
  * @param <T>
  */
-public final class Observable<T> extends AbstractObservable implements ReadOnlyObservable<T>, Iterable<T> {
+public final class Observable<T> extends AbstractObservable implements ReadOnlyObservable<T> {
 	private T value;
 
 	public Observable(final T value) {

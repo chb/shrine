@@ -19,6 +19,47 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
 	@Test
 	public void testMoveTerm() {
+		// moving to same group shouldn't delete term
+		{
+			final State state = state();
+
+			final QueryBuildingController controller = new QueryBuildingController(state);
+
+			final Term t1 = term("foo");
+			final Term t2 = term("bar");
+
+			final int id1 = state.registerNewQuery(t1).getId();
+			
+			assertEquals(t1, state.getQuery(id1).getExpression());
+			assertEquals(1, state.numQueryGroups());
+			
+			controller.moveTerm(t1, id1, id1);
+			
+			assertEquals(t1, state.getQuery(id1).getExpression());
+			assertEquals(1, state.numQueryGroups());
+			
+			controller.removeAllQueryGroups();
+			
+			assertEquals(0, state.numQueryGroups());
+			
+			final Or or = new Or(t1, t2);
+			
+			final int id2 = state.registerNewQuery(or).getId();
+			
+			assertEquals(or, state.getQuery(id2).getExpression());
+			assertEquals(1, state.numQueryGroups());
+			
+			controller.moveTerm(t1, id2, id2);
+			
+			assertEquals(or, state.getQuery(id2).getExpression());
+			assertEquals(1, state.numQueryGroups());
+			
+			controller.moveTerm(t2, id2, id2);
+			
+			assertEquals(or, state.getQuery(id2).getExpression());
+			assertEquals(1, state.numQueryGroups());
+		}
+		
 		// to new query, from query only contains 1 term
 		{
 			final State state = state();

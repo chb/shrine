@@ -30,6 +30,18 @@ public final class QueryBuildingController extends StatefulController {
 	public void moveTerm(final Term term, final int fromQueryId, final int toQueryId) {
 		state.guardQueryIsPresent(fromQueryId);
 		
+		//'moving' a term to the group it already belongs to should have no effect  
+		if(fromQueryId == toQueryId) {
+			Log.debug("'moving' a term to the group it already belongs to has no effect");
+			
+			//TODO: HACK, needed to redraw widget if it's dropped on the group it already belongs to;
+			//this would normally be done by gwt-dnd, but it's UI restoration mechanism doesn't kick in 
+			//when something is dropped on a legitimate drop target.
+			state.getQueries().notifyObservers();
+			
+			return;
+		}
+		
 		if(toQueryId != QueryGroup.NullId) {
 			state.guardQueryIsPresent(toQueryId);
 			
