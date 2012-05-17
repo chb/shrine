@@ -24,6 +24,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,6 +49,9 @@ public final class AllResultsRow extends Composite implements Observer {
 	
 	@UiField
 	FlowPanel resultsPanel;
+	
+	@UiField
+	HTMLPanel resultsWrapper;
 	
 	public AllResultsRow() {
 		super();
@@ -81,7 +85,7 @@ public final class AllResultsRow extends Composite implements Observer {
 			public void onClick(ClickEvent event) {
 				clearResults();
 				
-				resultsPanel.add(new LoadingSpinner());
+				showLoadingSpinner();
 				
 				controllers.query.runAllQuery();
 			}
@@ -116,10 +120,10 @@ public final class AllResultsRow extends Composite implements Observer {
 
 	@Override
 	public void inform() {
-		querySummaryHolder.clear();
-		
 		if(allResults.isDefined()) {
 			clearResults();
+			
+			resultsWrapper.setVisible(true);
 			
 			for(final Entry<String, IntWrapper> entry : allResults.get().entrySet()) {
 				final String instName = entry.getKey();
@@ -150,5 +154,13 @@ public final class AllResultsRow extends Composite implements Observer {
 
 	void clearResults() {
 		resultsPanel.clear();
+		
+		resultsWrapper.setVisible(false);
+	}
+	
+	void showLoadingSpinner() {
+		resultsWrapper.setVisible(true);
+		
+		resultsPanel.add(new LoadingSpinner());
 	}
 }

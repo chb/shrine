@@ -17,11 +17,10 @@
 					<g:SimplePanel ui:field="querySummaryHolder"/>
 				</div>
 			</div>
-			<div class="breakDownUpper">
-				<div class="resultInstitutionsTitle"> Institution Results</div>
+			<g:HTMLPanel styleName="breakDownUpper" ui:field="resultsWrapper">
+				<div class="resultInstitutionsTitle">Institution Results</div>
 				<g:FlowPanel styleName="resultInstitutions" ui:field="resultsPanel" />
-				<div class="queryResultsTotals" style="display: none;"> 25,870 </div>
-			</div>
+			</g:HTMLPanel>
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

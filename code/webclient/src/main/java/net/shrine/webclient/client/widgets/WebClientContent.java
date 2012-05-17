@@ -2,6 +2,8 @@ package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.State;
+import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
+import net.shrine.webclient.client.events.QueryGroupsChangedEventHandler;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.GWT;
@@ -36,6 +38,8 @@ public final class WebClientContent extends Composite {
 	
 	public WebClientContent() {
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		setQueryGroupsAndResultsPanelVisibility(false);
 	}
 
 	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox, final PickupDragController dragController) {
@@ -46,5 +50,20 @@ public final class WebClientContent extends Composite {
 		queryColumn.wireUp(controllers, state.getQueries(), dragController);
 		
 		allResultColumn.wireUp(eventBus, controllers, state.getAllResult());
+		
+		eventBus.addHandler(QueryGroupsChangedEvent.getType(), new QueryGroupsChangedEventHandler() {
+			@Override
+			public void handle(final QueryGroupsChangedEvent event) {
+				final boolean showQueryGroupsAndResultsPanels = !event.getQueryGroups().isEmpty();
+				
+				setQueryGroupsAndResultsPanelVisibility(showQueryGroupsAndResultsPanels);
+			}
+		});
+	}
+	
+	void setQueryGroupsAndResultsPanelVisibility(final boolean showQueryGroupsAndResultsPanels) {
+		queryColumn.setVisible(showQueryGroupsAndResultsPanels);
+		
+		allResultColumn.setVisible(showQueryGroupsAndResultsPanels);
 	}
 }
