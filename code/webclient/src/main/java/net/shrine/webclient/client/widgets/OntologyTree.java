@@ -12,6 +12,7 @@ import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.OntologySearchService;
 import net.shrine.webclient.client.OntologySearchServiceAsync;
 import net.shrine.webclient.client.domain.OntNode;
+import net.shrine.webclient.client.events.VerticalScrollRequestEvent;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -157,6 +158,14 @@ public final class OntologyTree extends Composite {
 		return parentsToChildren.containsKey(item.ontNode);
 	}
 	
+	void select(final OntTreeItem childItem) {
+		childItem.setSelected(true);
+
+		childItem.getOntTreeNode().select();
+		
+		eventBus.fireEvent(new VerticalScrollRequestEvent(childItem.getWidget()));
+	}
+	
 	void addOpenHandler(final Tree tree) {
 		tree.addOpenHandler(new OpenHandler<TreeItem>() {
 			@Override
@@ -191,15 +200,7 @@ public final class OntologyTree extends Composite {
 									}
 									
 									if(childNode.equals(ontNodeToBrowseTo)) {
-										childItem.setSelected(true);
-										
-										//tree.ensureSelectedItemVisible();
-										
-										tree.setFocus(true);
-										
-										childItem.getOntTreeNode().select();
-										
-										Log.debug("Selected " + childNode);
+										select(childItem);
 									}
 								}
 							}

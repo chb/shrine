@@ -66,18 +66,18 @@ public final class OntTreeNode extends Composite {
 	}
 	
 	public void select() {
-		this.addStyleName(selectedStyleName);
+		//this.addStyleName(selectedStyleName);
 		
-		iconSpan.addClassName(selectedStyleName);
-		spacer.addClassName(selectedStyleName);
+		//iconSpan.addClassName(selectedStyleName);
+		//spacer.addClassName(selectedStyleName);
 		textAnchor.addStyleName(selectedStyleName);
 	}
 	
 	public void deselect() {
-		this.removeStyleName(selectedStyleName);
+		//this.removeStyleName(selectedStyleName);
 		
-		iconSpan.removeClassName(selectedStyleName);
-		spacer.removeClassName(selectedStyleName);
+		//iconSpan.removeClassName(selectedStyleName);
+		//spacer.removeClassName(selectedStyleName);
 		textAnchor.removeStyleName(selectedStyleName);
 	}
 }

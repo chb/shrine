@@ -9,6 +9,8 @@ import net.shrine.webclient.client.domain.OntNode;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.events.CollapseDataDictionaryPanelEvent;
 import net.shrine.webclient.client.events.CollapseDataDictionaryPanelEventHandler;
+import net.shrine.webclient.client.events.VerticalScrollRequestEvent;
+import net.shrine.webclient.client.events.VerticalScrollRequestEventHandler;
 import net.shrine.webclient.client.events.ShowDataDictionaryPanelEvent;
 import net.shrine.webclient.client.events.ShowDataDictionaryPanelEventHandler;
 
@@ -16,12 +18,14 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -40,7 +44,7 @@ public final class DataDictionaryRow extends Composite {
 	CloseButton closeButton;
 
 	@UiField
-	SimplePanel dataDictionaryDataHolder;
+	ScrollPanel dataDictionaryDataHolder;
 
 	private EventBus eventBus;
 
@@ -57,6 +61,15 @@ public final class DataDictionaryRow extends Composite {
 			@Override
 			public void onClick(final ClickEvent event) {
 				hide();
+			}
+		});
+		
+		dataDictionaryDataHolder.addScrollHandler(new ScrollHandler() {
+			@Override
+			public void onScroll(final ScrollEvent event) {
+				Log.debug("Scroll event: " + event.toDebugString());
+				Log.debug("Position: " + dataDictionaryDataHolder.getVerticalScrollPosition());
+				
 			}
 		});
 
@@ -80,7 +93,7 @@ public final class DataDictionaryRow extends Composite {
 			}
 
 			boolean shouldRedraw(final ShowDataDictionaryPanelEvent event) {
-				return !dataDictionaryIsShowing() || !isSameTerm(event);
+				return !isSameTerm(event);
 			}
 
 			boolean isSameTerm(final ShowDataDictionaryPanelEvent event) {
@@ -92,6 +105,15 @@ public final class DataDictionaryRow extends Composite {
 			@Override
 			public void handle(final CollapseDataDictionaryPanelEvent event) {
 				hide();
+			}
+		});
+		
+		eventBus.addHandler(VerticalScrollRequestEvent.getType(), new VerticalScrollRequestEventHandler() {
+			@Override
+			public void handle(final VerticalScrollRequestEvent event) {
+				Log.debug("Scrolling"); 
+				
+				dataDictionaryDataHolder.ensureVisible(event.getWidgetToScrollTo());
 			}
 		});
 	}
