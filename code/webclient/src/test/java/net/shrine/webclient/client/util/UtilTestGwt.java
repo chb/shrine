@@ -20,6 +20,80 @@ import org.junit.Test;
  */
 public class UtilTestGwt extends AbstractWebclientTest {
 	@Test
+	public void testFirst() {
+		try {
+			Util.first(Collections.emptyList());
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		assertEquals(Integer.valueOf(99), Util.first(asList(99)));
+		
+		assertEquals(Integer.valueOf(42), Util.first(asList(42, 99, 123)));
+		
+		assertEquals(Integer.valueOf(42), Util.first(Util.makeHashSet(42)));
+	}
+	
+	@Test
+	public void testLast() {
+		try {
+			Util.first(Collections.emptyList());
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		assertEquals(Integer.valueOf(99), Util.last(asList(99)));
+		
+		assertEquals(Integer.valueOf(123), Util.last(asList(42, 99, 123)));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testPairWise() {
+		{
+			final List<Integer> empty = Util.makeArrayList();
+			
+			final List<List<Integer>> pairWise = Util.pairWise(empty);
+			
+			assertNotSame(empty, pairWise);
+			
+			assertTrue(empty.isEmpty());
+			assertTrue(pairWise.isEmpty());
+		}
+		
+		{
+			final List<Integer> oneThing = asList(1);
+			
+			final List<List<Integer>> pairWise = Util.pairWise(oneThing);
+			
+			assertNotSame(oneThing, pairWise);
+			
+			assertEquals(1, oneThing.size());
+			assertEquals(pairWise, asList(asList(1)));
+		}
+		
+		{
+			final List<Integer> sixThings = asList(1,2,3,4,5,6);
+			
+			final List<List<Integer>> pairWise = Util.pairWise(sixThings);
+			
+			assertNotSame(sixThings, pairWise);
+			
+			assertEquals(6, sixThings.size());
+			assertEquals(pairWise, asList(asList(1, 2), asList(2, 3), asList(3, 4), asList(4, 5), asList(5, 6)));
+		}
+		
+		{
+			final List<Integer> fiveThings = asList(1,2,3,4,5);
+			
+			final List<List<Integer>> pairWise = Util.pairWise(fiveThings);
+			
+			assertNotSame(fiveThings, pairWise);
+			
+			assertEquals(5, fiveThings.size());
+			assertEquals(pairWise, asList(asList(1, 2), asList(2, 3), asList(3, 4), asList(4, 5)));
+		}
+	}
+	
+	@Test
 	public void testSorted() {
 		final Iterable<String> stuff = asList("z", "asd", "x", "foo");
 		

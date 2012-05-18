@@ -73,6 +73,7 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
     val concept = toConcept(term)
     
     if(!ontTrie.contains(concept)) {
+      //TODO: Actually log
       println("Couldn't find term '" + term + "'")
       
       return JCollections.emptyList[OntNode]
@@ -82,27 +83,23 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
     
     import scala.collection.JavaConverters._
     
-    val childNodes = subTrie.children.flatMap { c =>
-      //println("Child path: " + c.path)
-      
-      val children = getTreeRootedAt(c.path).asScala
-      
-      //println("Child: " + children.head)
-      
-      children
-    }
+    val childNodes = for {
+      childConcept <- subTrie.children
+      node <- toOntNode(childConcept.path).asScala
+    } yield node
     
     val childNodesSorted = childNodes.toSeq.sortBy(_.getSimpleName)
     
     Helpers.toJava(childNodesSorted)
   }
   
-  override def getTreeRootedAt(term: String, prependPathFromRoot: Boolean = false): JList[OntNode] = {
+  override def toOntNode(term: String): JList[OntNode] = {
     import OntologyTrie._
     
     val concept = toConcept(term)
     
     if(!ontTrie.contains(concept)) {
+      //TODO: Actually log
       println("Couldn't find term '" + term + "'")
       
       return JCollections.emptyList[OntNode]
@@ -114,41 +111,35 @@ final class OntologySearchServiceImpl extends RemoteServiceServlet with Ontology
   
     val node = new OntNode(toTerm(rootConcept), isLeaf(subTrie))
     
+    JCollections.singletonList(node)
+  }
+  
+  override def getPathTo(term: String): JList[OntNode] = {
+    def pathsFromRoot(termPath: String): Seq[String] = {
+    	import OntologyTrie._
+    
+    	val parts = split(termPath)
+    	
+    	//[a,b,c] => [[a],[a,b],[a,b,c]], etc
+    	val paths = (1 to parts.size).map(i => parts.take(i))
+    	
+    	//Drop leading two SHRINE parts, since they're conceptually one thing
+    	val withoutFirstTwoSHRINEs = paths.dropWhile(_.last == "SHRINE")
+    	
+    	def toOntPath(parts: Seq[String]) = addSlashesIfNeeded(unSplit(parts))
+    	
+    	//unsplit, and re-add \\SHRINE\SHRINE\ 
+    	"""\\SHRINE\SHRINE\""" +: withoutFirstTwoSHRINEs.map(toOntPath)
+    }
+    
     import scala.collection.JavaConverters._
     
-    val nodes = if(prependPathFromRoot) {
-      pathsFromRoot(term).flatMap(getTreeRootedAt(_, false).asScala) :+ node
-    } else {
-      Seq(node)
-    }
+    val nodes = for {
+      ontTerm <- pathsFromRoot(term)
+      node <- toOntNode(ontTerm).asScala
+    } yield node
     
     Helpers.toJava(nodes)
-  }
-  
-  private[this] def pathsFromRoot(termPath: String): Seq[String] = {
-    import OntologyTrie._
-    
-    val parts = split(termPath)
-    
-    (1 to parts.size).map(i => parts.take(i)).dropWhile(_.last == "SHRINE").map(unSplit)
-  }
-  
-  override def getParentOntTree(path: String): JList[OntNode] = {
-    import OntologyTrie._
-    
-    def addSlashes(s: String) = addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(s))
-    
-    val parts = split(path)
-    
-    val concept = toConcept(addSlashes(path))
-    
-    if(parts.size == 1) {
-      return JCollections.singletonList(new OntNode(toTerm(concept), true))
-    } else {
-      val parentTerm = addSlashes(unSplit(parts.dropRight(1)))
-      
-      getTreeRootedAt(parentTerm)
-    }
   }
   
   private[this] def getOntFileStream: java.io.InputStream = {

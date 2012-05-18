@@ -27,13 +27,6 @@ public final class MockQueryServiceAsync implements QueryServiceAsync {
 	}};
 	
 	@Override
-	public void query(final String expr, final AsyncCallback<Integer> callback) {
-		lastExpr = expr;
-		
-		callback.onSuccess(totalToReturn);
-	}
-
-	@Override
 	public void queryForBreakdown(final String expr, final AsyncCallback<HashMap<String, IntWrapper>> callback) {
 		lastExpr = expr;
 		

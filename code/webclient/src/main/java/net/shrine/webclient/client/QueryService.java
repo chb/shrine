@@ -14,8 +14,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("query")
 public interface QueryService extends RemoteService {
-	public int query(final String expr) throws IllegalArgumentException;
-	
 	public HashMap<String, IntWrapper> queryForBreakdown(final String expr) throws IllegalArgumentException;
 }
 

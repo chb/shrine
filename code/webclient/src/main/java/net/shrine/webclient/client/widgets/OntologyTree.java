@@ -1,6 +1,12 @@
 package net.shrine.webclient.client.widgets;
 
+import static net.shrine.webclient.client.util.Util.first;
+import static net.shrine.webclient.client.util.Util.last;
+import static net.shrine.webclient.client.widgets.DataDictionaryRow.shrineRoot;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.OntologySearchService;
@@ -32,7 +38,26 @@ public final class OntologyTree extends Composite {
 	
 	private final EventBus eventBus;
 	
-	public OntologyTree(final EventBus eventBus, final Controllers controllers, final OntNode shownNode, final List<OntNode> pathFromRoot) {
+	private final Map<OntNode, OntNode> parentsToChildren = Util.makeHashMap();
+	
+	private final OntNode ontNodeToBrowseTo;
+	
+	private final class OntTreeItem extends TreeItem {
+
+		final OntNode ontNode;
+		
+		OntTreeItem(final OntNode ontNode) {
+			super(new OntTreeNode(eventBus, controllers, ontNode));
+			
+			this.ontNode = ontNode;
+		}
+		
+		public OntTreeNode getOntTreeNode() {
+			return (OntTreeNode)getWidget();
+		}
+	}
+	
+	public OntologyTree(final EventBus eventBus, final Controllers controllers, final List<OntNode> pathFromRoot) {
 		super();
 		
 		Util.requireNotNull(eventBus);
@@ -41,74 +66,75 @@ public final class OntologyTree extends Composite {
 		this.controllers = controllers;
 		this.eventBus = eventBus;
 		
-		delegate = makeTree(shownNode, pathFromRoot);
+		initParentsToDescendantsMap(pathFromRoot);
+		
+		ontNodeToBrowseTo = last(pathFromRoot);
+		
+		delegate = makeTree(makeTreeItems(pathFromRoot));
 		
 		initWidget(delegate);
 	}
 
-	private final class OntTreeItem extends TreeItem {
-
-		boolean shouldGetChildrenFromServer;
-		
-		final OntNode ontNode;
-		
-		OntTreeItem(final OntNode ontNode) {
-			this(ontNode, false);
+	private void initParentsToDescendantsMap(List<OntNode> pathFromRoot) {
+		if(pathFromRoot.size() < 2) {
+			return;
 		}
 		
-		OntTreeItem(final OntNode ontNode, final boolean shouldGetChildrenFromServer) {
-			super(new OntTreeNode(eventBus, controllers, ontNode));
+		for(final List<OntNode> pair : Util.pairWise(pathFromRoot)) {
+			final OntNode parent = first(pair);
+			final OntNode child = last(pair);
 			
-			this.shouldGetChildrenFromServer = shouldGetChildrenFromServer;
-			
-			this.ontNode = ontNode;
+			parentsToChildren.put(parent, child);
 		}
 	}
-	
+
 	private final TreeItem dummyItem() {
 		return new TreeItem("");
 	}
 	
-	private Tree makeTree(final OntNode shownNode, final List<OntNode> pathFromRoot) {
-		Log.debug("Making tree: shown node: " + shownNode);
-		Log.debug("Path from root: " + pathFromRoot);
+	private Tree makeTree(final List<OntTreeItem> treeItems) {
+		final OntTreeItem rootItem = first(treeItems);
 		
 		final Tree tree = new Tree();
 		
 		addOpenHandler(tree);
 		
-		final OntTreeItem rootItem;
-		
-		OntTreeItem cursor;
-		
-		if(pathFromRoot.isEmpty()) {
-			cursor = rootItem = new OntTreeItem(shownNode);
-		} else {
-			cursor = rootItem = new OntTreeItem(new OntNode(DataDictionaryRow.shrineRoot, false), true);
-			
-			for(final OntNode descendant : pathFromRoot) {
-				final OntTreeItem descendantItem = new OntTreeItem(descendant, true);
-				
-				cursor.addItem(descendantItem);
-				
-				cursor.setState(true, false);
-				
-				cursor = descendantItem;
-			}
-		}
-		
 		tree.addItem(rootItem);
 		
-		if(cursor != rootItem) {
-			makeOpenable(cursor, true, true);
-			
-		} else if(rootItem.getChildCount() < 1) {
-			final boolean shouldFetchRootItemsChildren = pathFromRoot.isEmpty();
-			
-			makeOpenable(rootItem, true, shouldFetchRootItemsChildren);
+		makeOpenable(rootItem, true, true);
+
+		return tree;
+	}
+
+	List<OntTreeItem> makeTreeItems(final List<OntNode> pathFromRoot) {
+		Log.debug("Making ont tree: path from root: " + pathFromRoot);
+
+		if(pathFromRoot.isEmpty() || pathOnlyContainsRoot(pathFromRoot)) {
+			return Arrays.asList(new OntTreeItem(new OntNode(shrineRoot, false)));
 		}
 		
-		return tree;
+		final List<OntTreeItem> treeItems = Util.makeArrayList();
+		
+		for(final OntNode current : pathFromRoot) {
+			final OntTreeItem currentItem = new OntTreeItem(current);
+			
+			currentItem.setState(true, true);
+			
+			treeItems.add(currentItem);
+		}
+		
+		for(final List<OntTreeItem> pair : Util.pairWise(treeItems)) {
+			final OntTreeItem parent = first(pair);
+			final OntTreeItem child = last(pair);
+			
+			parent.addItem(child);
+		}
+		
+		return treeItems;
+	}
+
+	boolean pathOnlyContainsRoot(final List<OntNode> pathFromRoot) {
+		return pathFromRoot.size() == 1 && first(pathFromRoot).getValue().equals(shrineRoot.getPath());
 	}
 	
 	void makeOpenable(final OntTreeItem item, final boolean open, final boolean fireEvents) {
@@ -119,44 +145,76 @@ public final class OntologyTree extends Composite {
 		item.setState(open, fireEvents);
 	}
 
+	static boolean isSpuriousMetaDataTerm(final OntNode childNode) {
+		return childNode.getValue().contains("SHRINE_With_Syns_08.30.10");
+	}
+
+	boolean isEdgeOnPathFromRoot(final OntNode openedParent, final OntNode child) {
+		return child.equals(parentsToChildren.get(openedParent));
+	}
+	
+	boolean isVertexOnPathFromRoot(final OntTreeItem item) {
+		return parentsToChildren.containsKey(item.ontNode);
+	}
+	
 	void addOpenHandler(final Tree tree) {
 		tree.addOpenHandler(new OpenHandler<TreeItem>() {
 			@Override
 			public void onOpen(final OpenEvent<TreeItem> event) {
-				final OntTreeItem item = (OntTreeItem)event.getTarget();
+				final OntTreeItem itemToBeOpened = (OntTreeItem)event.getTarget();
+				
+				Log.debug("Opening " + itemToBeOpened.ontNode.getValue());
 				
 				//If we haven't been opened (only have the dummy item)
-				if(shouldLoadChildren(item)) {
-					item.removeItems();
+				if(shouldLoadChildren(itemToBeOpened)) {
+					itemToBeOpened.removeItems();
 					
-					ontologyService.getChildrenFor(item.ontNode.getValue(), new AsyncCallback<List<OntNode>>() {
+					ontologyService.getChildrenFor(itemToBeOpened.ontNode.getValue(), new AsyncCallback<List<OntNode>>() {
 						@Override
 						public void onSuccess(final List<OntNode> childNodes) {
 							for(final OntNode childNode : childNodes) {
 								//TODO: TOTAL HACK: skip spurious metadata
-								if(!childNode.getValue().contains("SHRINE_With_Syns_08.30.10")) {
+								if(!isSpuriousMetaDataTerm(childNode)) {
 									final OntTreeItem childItem = new OntTreeItem(childNode);
 									
-									//If this node isn't a node, give it a dummy child so it's openable 
+									//If this node isn't a leaf, give it a dummy child so it's openable
 									if(!childNode.isLeaf()) {
 										childItem.addItem(dummyItem());
 									}
 									
-									item.addItem(childItem);
+									//NB: Child item must be added to something before it can be opened
+									itemToBeOpened.addItem(childItem);
+									
+									//In the child is on the path from the root to the term to browse to, open the term 
+									if(isEdgeOnPathFromRoot(itemToBeOpened.ontNode, childNode)) {
+										childItem.setState(true, true);
+									}
+									
+									if(childNode.equals(ontNodeToBrowseTo)) {
+										childItem.setSelected(true);
+										
+										//tree.ensureSelectedItemVisible();
+										
+										tree.setFocus(true);
+										
+										childItem.getOntTreeNode().select();
+										
+										Log.debug("Selected " + childNode);
+									}
 								}
 							}
 						}
-						
+
 						@Override
 						public void onFailure(final Throwable caught) {
-							Log.error("Couldn't get children of term: " + item.ontNode.getValue(), caught);
+							Log.error("Couldn't get children of term: " + itemToBeOpened.ontNode.getValue(), caught);
 						}
 					});
 				}
 			}
 
 			boolean shouldLoadChildren(final OntTreeItem item) {
-				return item.shouldGetChildrenFromServer || hasOnlyDummyChild(item);
+				return hasOnlyDummyChild(item) || isVertexOnPathFromRoot(item);
 			}
 
 			boolean hasOnlyDummyChild(final OntTreeItem item) {

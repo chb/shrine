@@ -1,8 +1,11 @@
 package net.shrine.webclient.client.util;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -16,11 +19,49 @@ public final class Util {
 	private Util() {
 		super();
 	}
+	
+	public static <T> T first(final Iterable<T> list) {
+		final Iterator<T> iter = list.iterator();
+		
+		require(iter.hasNext());
+		
+		return iter.next();
+	}
+	
+	public static <T> T last(final List<T> list) {
+		require(list.size() > 0);
+		
+		return list.get(list.size() - 1);
+	}
 
 	public static final List<String> rowCssClasses = makeRowCssClassNameList("row");
 
 	public static final int numRowColors = 10;
 
+	@SuppressWarnings("unchecked")
+	public static <T> List<List<T>> pairWise(final List<T> things) {
+		if(things.isEmpty()) {
+			return Collections.emptyList();
+		}
+		
+		if(things.size() == 1) {
+			return asList(asList(things.get(0)));
+		}
+		
+		final Iterator<T> iter1 = things.iterator();
+		final Iterator<T> iter2 = things.iterator();
+		
+		iter2.next();
+		
+		final List<List<T>> result = makeArrayList(); 
+		
+		while(iter1.hasNext() && iter2.hasNext()) {
+			result.add(asList(iter1.next(), iter2.next()));
+		}
+		
+		return result;
+	}
+	
 	static List<String> makeRowCssClassNameList(final String prefix) {
 		final List<String> result = Util.makeArrayList();
 
@@ -137,5 +178,13 @@ public final class Util {
 
 	public static <K, V> HashMap<K, V> makeHashMap() {
 		return new HashMap<K, V>();
+	}
+	
+	public static <T> HashSet<T> makeHashSet() {
+		return new HashSet<T>();
+	}
+	
+	public static <T> HashSet<T> makeHashSet(final T ... things) {
+		return new HashSet<T>(asList(things));
 	}
 }

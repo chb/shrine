@@ -9,3 +9,7 @@
 	height: 14px;
 	background: url("../images/folder.gif") no-repeat scroll left bottom transparent;
 }
+
+.gwt-TreeItem-selected {
+	background-color: #FFFFAA;
+}

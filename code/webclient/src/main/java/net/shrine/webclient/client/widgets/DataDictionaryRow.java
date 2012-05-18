@@ -96,12 +96,8 @@ public final class DataDictionaryRow extends Composite {
 		});
 	}
 
-	OntologyTree makeTree(final List<OntNode> ontNodes) {
-		final List<OntNode> pathFromRoot = ontNodes.subList(0, ontNodes.size() - 1);
-		
-		final OntNode shownOntNode = ontNodes.get(ontNodes.size() - 1);
-		
-		return new OntologyTree(eventBus, controllers, shownOntNode, pathFromRoot);
+	OntologyTree makeTree(final List<OntNode> pathFromRoot) {
+		return new OntologyTree(eventBus, controllers, pathFromRoot);
 	}
 
 	void toggleDataDictionaryDisplay() {
@@ -133,13 +129,11 @@ public final class DataDictionaryRow extends Composite {
 	void loadOntTree(final Controllers controllers, final Term startingTerm) {
 		final OntologySearchServiceAsync ontologyService = GWT.create(OntologySearchService.class);
 
-		final boolean shouldLoadPathFromRoot = startingTerm != null;
-		
-		ontologyService.getTreeRootedAt(startingTerm.getPath(), shouldLoadPathFromRoot, new AsyncCallback<List<OntNode>>() {
+		ontologyService.getPathTo(startingTerm.getPath(), new AsyncCallback<List<OntNode>>() {
 			@Override
-			public void onSuccess(final List<OntNode> result) {
-				if (!result.isEmpty()) {
-					showDataDictionaryTree(controllers, result);
+			public void onSuccess(final List<OntNode> pathFromRoot) {
+				if (!pathFromRoot.isEmpty()) {
+					showDataDictionaryTree(controllers, pathFromRoot);
 				} else {
 					Log.error("No results after attempting to load ontology tree rooted at term '" + startingTerm.getPath() + "'");
 				}
