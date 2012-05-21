@@ -5,7 +5,7 @@
 			 
 	<g:HTMLPanel styleName="mainContent">
 		<!--Search Box -->
-		<shrine:SearchArea ui:field="searchArea" />
+		<g:SimplePanel ui:field="searchBoxHolder" addStyleNames="searchBox"/>
 		<!-- Data Dictionary -->
 		<shrine:DataDictionaryRow ui:field="dataDictionaryRow"/>
 		<!-- Query groups -->

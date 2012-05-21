@@ -4,6 +4,7 @@ import net.shrine.webclient.client.Controllers;
 import net.shrine.webclient.client.State;
 import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
 import net.shrine.webclient.client.events.QueryGroupsChangedEventHandler;
+import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.GWT;
@@ -11,6 +12,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -25,7 +27,7 @@ public final class WebClientContent extends Composite {
 	interface WebclientUiBinder extends UiBinder<Widget, WebClientContent> { }
 
 	@UiField
-	SearchArea searchArea;
+	SimplePanel searchBoxHolder;
 	
 	@UiField
 	DataDictionaryRow dataDictionaryRow;
@@ -43,7 +45,10 @@ public final class WebClientContent extends Composite {
 	}
 
 	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox, final PickupDragController dragController) {
-		searchArea.wireUp(ontSearchBox);
+		Util.requireNotNull(eventBus);
+		Util.requireNotNull(ontSearchBox);
+		
+		searchBoxHolder.setWidget(ontSearchBox);
 		
 		dataDictionaryRow.wireUp(eventBus, controllers);
 		

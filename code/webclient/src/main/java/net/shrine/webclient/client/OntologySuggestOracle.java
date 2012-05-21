@@ -18,7 +18,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @date Mar 30, 2012
  */
 public final class OntologySuggestOracle implements RichSuggestOracle<TermSuggestion> {
-	//TODO: Get this DI-style?
+
 	private final OntologySearchServiceAsync ontologyService = GWT.create(OntologySearchService.class);
 
 	public OntologySuggestOracle() {

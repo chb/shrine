@@ -50,7 +50,6 @@ public final class QueryController extends StatefulController {
 			public void onFailure(final Throwable caught) {
 				Log.error("Error making query 'All': " + caught.getMessage(), caught);
 
-				//TODO: Is empty map appropriate here?
 				completeAllQueryWithNoResults();
 			}
 		});
