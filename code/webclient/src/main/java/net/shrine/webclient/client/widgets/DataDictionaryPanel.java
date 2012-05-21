@@ -14,7 +14,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @author clint
  * @date Apr 25, 2012
  * 
- * TODO: DUMMY DATA, placeholder only
  */
 public final class DataDictionaryPanel extends Composite  {
 
@@ -28,22 +27,22 @@ public final class DataDictionaryPanel extends Composite  {
 	@UiField
 	HTMLPanel browser;
 	
-	//private final OntologyTree ontTree;
-	
 	public DataDictionaryPanel(final OntologyTree ontTree) {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		Util.requireNotNull(ontTree);
 		
-		//this.ontTree = ontTree;
-		
 		//TODO: hacky
-		wrapper.getElement().setId("dataDictionaryData");
-		
-		browser.getElement().setId("browser");
+		setIds();
 		
 		browser.clear();
 		
 		browser.add(ontTree);
+	}
+
+	void setIds() {
+		wrapper.getElement().setId("dataDictionaryData");
+		
+		browser.getElement().setId("browser");
 	}
 }
