@@ -27,6 +27,7 @@
   <stylesheet src="/css/querysummary.css" />
   <stylesheet src="/css/queryrow-dnd.css" />
   <stylesheet src="/css/jquery-ui-1.8.18.css" />
+  <stylesheet src="/css/datepicker.css" />
   
   <!-- Begin logging config -->
   

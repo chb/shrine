@@ -27,6 +27,7 @@ public final class OntTreeNode extends Composite {
 
 	interface OntTreeNodeUiBinder extends UiBinder<Widget, OntTreeNode> { }
 
+	//TODO: Perhaps a different name
 	static final String selectedStyleName = "gwt-TreeItem-selected";
 	
 	@UiField
@@ -66,18 +67,10 @@ public final class OntTreeNode extends Composite {
 	}
 	
 	public void select() {
-		//this.addStyleName(selectedStyleName);
-		
-		//iconSpan.addClassName(selectedStyleName);
-		//spacer.addClassName(selectedStyleName);
 		textAnchor.addStyleName(selectedStyleName);
 	}
 	
 	public void deselect() {
-		//this.removeStyleName(selectedStyleName);
-		
-		//iconSpan.removeClassName(selectedStyleName);
-		//spacer.removeClassName(selectedStyleName);
 		textAnchor.removeStyleName(selectedStyleName);
 	}
 }
