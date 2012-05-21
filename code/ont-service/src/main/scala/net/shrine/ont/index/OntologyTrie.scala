@@ -18,8 +18,6 @@ object OntologyTrie {
     
     result
   }
-  
-  private val dummy = java.lang.Boolean.TRUE
 
   def empty = new OntologyTrie(PrefixMap.empty)
   
@@ -38,6 +36,8 @@ object OntologyTrie {
     
     if(term.startsWith(twoSlashes)) term else twoSlashes + term 
   }
+  
+  def addSlashesIfNeeded(term: String) = addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(term))
   
   def main(args: Array[String]) {
     /*val dao: OntologyDAO = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace-3.6.2/shrine-gwt-webclient/ontology/core/ShrineWithSyns.sql"))
