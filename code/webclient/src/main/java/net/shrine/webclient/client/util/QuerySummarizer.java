@@ -50,7 +50,7 @@ public final class QuerySummarizer {
 
 		return result.toString();
 	}
-
+	
 	static final String summarize(final ReadOnlyQueryGroup queryGroup, final String queryGroupCssClass) {
 		final StringBuilder result = new StringBuilder();
 		
@@ -61,7 +61,7 @@ public final class QuerySummarizer {
 		if(expr instanceof Term) {
 			final Term term = (Term)expr;
 			
-			final String category = Labels.forCategory.get(term.getCategory());
+			final String category = toLabel(term.getCategory());
 			
 			Util.requireNotNull(category);
 			
@@ -78,11 +78,11 @@ public final class QuerySummarizer {
 			
 			final String firstCategory = terms.get(0).getCategory();
 			
-			final String categoryLabel = Labels.forCategory.get(firstCategory);
+			final String categoryLabel = toLabel(firstCategory);
 			
 			Util.requireNotNull(categoryLabel);
 			
-			final String categoryName = Labels.singularCategories.get(firstCategory);
+			final String categoryName = toSingularCategory(firstCategory);
 			
 			if(categoryName == null) {
 				Log.warn("couldn't find singluar category for '" + firstCategory + "'");
@@ -116,25 +116,33 @@ public final class QuerySummarizer {
 		}
 	}*/
 	
-	public static final class Labels {
+	static final String toLabel(final String category) {
+		return QuerySummarizer.Labels.forCategory.get(category.toLowerCase());
+	}
+	
+	static final String toSingularCategory(final String category) {
+		return QuerySummarizer.Labels.singularCategories.get(category.toLowerCase());
+	}
+	
+	static final class Labels {
 		private Labels() {
 			super();
 		}
 
 		@SuppressWarnings("serial")
 		static final Map<String, String> forCategory = new HashMap<String, String>() {{
-			this.put("Demographics", "who were");
-			this.put("Diagnoses", "diagnosed with");
+			this.put("demographics", "who were");
+			this.put("diagnoses", "diagnosed with");
 			this.put("medications", "prescribed or administered");
-			this.put("Labs", "tested for levels of");
+			this.put("labs", "tested for levels of");
 		}};
 		
 		@SuppressWarnings("serial")
 		static final Map<String, String> singularCategories = new HashMap<String, String>() {{
-			this.put("Demographics", "demographic");
-			this.put("Diagnoses", "diagnosis");
+			this.put("demographics", "demographic");
+			this.put("diagnoses", "diagnosis");
 			this.put("medications", "medication");
-			this.put("Labs", "lab test");
+			this.put("labs", "lab test");
 		}};
 
 		static final String defaultCategoryLabel = "with a record of";
