@@ -2,6 +2,7 @@ package net.shrine.webclient.client.util;
 
 import static java.util.Arrays.asList;
 import static net.shrine.webclient.client.util.QuerySummarizer.toLabel;
+import static net.shrine.webclient.client.util.QuerySummarizer.toNegatedLabel;
 import static net.shrine.webclient.client.util.QuerySummarizer.toSingularCategory;
 
 import java.util.Collections;
@@ -57,10 +58,39 @@ public class QuerySummarizerTestGwt extends AbstractWebclientTest {
 	
 	@Test
 	public void testLabelsForCategories() {
-		assertEquals("who were", toLabel("dEmoGRaPhiCs"));
+		assertEquals("who were", toLabel("dEmoGRaPhiCs")); //should be case-insensitive
 		assertEquals("diagnosed with", toLabel("dIaGnOsEs"));
 		assertEquals("prescribed or administered", toLabel("MedIcaTioNS"));
 		assertEquals("tested for levels of", toLabel("LAbs"));
+		
+		assertEquals("who were not", toNegatedLabel("dEmoGRaPhiCs")); //should be case-insensitive
+		assertEquals("not diagnosed with", toNegatedLabel("dIaGnOsEs"));
+		assertEquals("not prescribed or administered", toNegatedLabel("MedIcaTioNS"));
+		assertEquals("not tested for levels of", toNegatedLabel("LAbs"));
+		
+		try {
+			toLabel("asldjklasdj");
+			
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		try {
+			toLabel(null);
+			
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		try {
+			toNegatedLabel("asldjklasdj");
+			
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
+		
+		try {
+			toNegatedLabel(null);
+			
+			fail("Should have thrown");
+		} catch(IllegalArgumentException expected) { }
 	}
 	
 	@Test
@@ -85,21 +115,28 @@ public class QuerySummarizerTestGwt extends AbstractWebclientTest {
 		
 		//1 term
 		{
-			for(final String category : QuerySummarizer.Labels.forCategory.keySet()) {
-				final Term term = new Term("foo", category, "foo");
-				
-				final ReadOnlyQueryGroup queryGroup = mockQueryGroup("A", term);
-				
-				final String expected = toLabel(category) + " <span class=\"someClass\">" + term.getSimpleName() + "</span>";
-				
-				assertEquals(expected, QuerySummarizer.summarize(queryGroup, "someClass"));
-			}
+			final Term demoTerm = new Term("foo", "demographics", "foo");
+			final Term diagTerm = new Term("foo", "diagnoses", "foo");
+			final Term medicationTerm = new Term("foo", "medications", "foo");
+			final Term labterm = new Term("foo", "labs", "foo");
+			
+			//NOT negated
+			assertEquals("who were <span class=\"someClass\">foo</span>", QuerySummarizer.summarize(mockQueryGroup("X", demoTerm), "someClass"));
+			assertEquals("diagnosed with <span class=\"someClass\">foo</span>", QuerySummarizer.summarize(mockQueryGroup("X", diagTerm), "someClass"));
+			assertEquals("prescribed or administered <span class=\"someClass\">foo</span>", QuerySummarizer.summarize(mockQueryGroup("X", medicationTerm), "someClass"));
+			assertEquals("tested for levels of <span class=\"someClass\">foo</span>", QuerySummarizer.summarize(mockQueryGroup("X", labterm), "someClass"));
 			
 			try {
 				QuerySummarizer.summarize(mockQueryGroup("asdf", new Term("", "")), "someClass");
 				
 				fail("Should throw on unknown category");
 			} catch(IllegalArgumentException expected) { }
+			
+			//negated
+			assertEquals("who were not <span class=\"someClass\">foo</span>", QuerySummarizer.summarize(mockQueryGroup("X", demoTerm, true), "someClass"));
+			assertEquals("not diagnosed with <span class=\"someClass\">foo</span>", QuerySummarizer.summarize(mockQueryGroup("X", diagTerm, true), "someClass"));
+			assertEquals("not prescribed or administered <span class=\"someClass\">foo</span>", QuerySummarizer.summarize(mockQueryGroup("X", medicationTerm, true), "someClass"));
+			assertEquals("not tested for levels of <span class=\"someClass\">foo</span>", QuerySummarizer.summarize(mockQueryGroup("X", labterm, true), "someClass"));
 		}
 		
 		// more than 1 term
@@ -115,6 +152,12 @@ public class QuerySummarizerTestGwt extends AbstractWebclientTest {
 				final String expected = toLabel(t1.getCategory()) + " at least one of the " + toSingularCategory(category) + " concepts in group <span class=\"someClass\">X</span>";
 				
 				assertEquals(expected, QuerySummarizer.summarize(queryGroup, "someClass"));
+				
+				final String expectedWhenNegated = toNegatedLabel(t1.getCategory()) + " any of the " + toSingularCategory(category) + " concepts in group <span class=\"someClass\">X</span>";
+				
+				final ReadOnlyQueryGroup negatedQueryGroup = mockQueryGroup("X", or, true);
+				
+				assertEquals(expectedWhenNegated, QuerySummarizer.summarize(negatedQueryGroup, "someClass"));
 			}
 		}
 	}
@@ -129,7 +172,11 @@ public class QuerySummarizerTestGwt extends AbstractWebclientTest {
 		assertEquals("<span class=\"" + cssClass + "\">" + text + "</span>", html);
 	}
 
-	private final ReadOnlyQueryGroup mockQueryGroup(final String name, final Expression expr) {
+	private static final ReadOnlyQueryGroup mockQueryGroup(final String name, final Expression expr) {
+		return mockQueryGroup(name, expr, false);
+	}
+	
+	private static final ReadOnlyQueryGroup mockQueryGroup(final String name, final Expression expr, final boolean negated) {
 		return new ReadOnlyQueryGroup() {
 			@Override
 			public void observedBy(final Observer observer) { }
@@ -147,7 +194,7 @@ public class QuerySummarizerTestGwt extends AbstractWebclientTest {
 
 			@Override
 			public boolean isNegated() {
-				return false;
+				return negated;
 			}
 
 			@Override

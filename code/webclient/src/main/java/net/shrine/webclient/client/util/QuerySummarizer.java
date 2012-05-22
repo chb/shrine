@@ -61,7 +61,7 @@ public final class QuerySummarizer {
 		if(expr instanceof Term) {
 			final Term term = (Term)expr;
 			
-			final String category = toLabel(term.getCategory());
+			final String category = queryGroup.isNegated() ? toNegatedLabel(term.getCategory()) : toLabel(term.getCategory());
 			
 			Util.requireNotNull(category);
 			
@@ -78,7 +78,7 @@ public final class QuerySummarizer {
 			
 			final String firstCategory = terms.get(0).getCategory();
 			
-			final String categoryLabel = toLabel(firstCategory);
+			final String categoryLabel = queryGroup.isNegated() ? toNegatedLabel(firstCategory) : toLabel(firstCategory);
 			
 			Util.requireNotNull(categoryLabel);
 			
@@ -90,7 +90,9 @@ public final class QuerySummarizer {
 			
 			Util.requireNotNull(categoryName);
 			
-			result.append(categoryLabel).append(" at least one of the " + categoryName + " concepts in group " + color(queryGroup.getName(), queryGroupCssClass));
+			final String quantifier = queryGroup.isNegated() ? "any" : "at least one";
+			
+			result.append(categoryLabel).append(" ").append(quantifier).append(" of the ").append(categoryName).append(" concepts in group ").append(color(queryGroup.getName(), queryGroupCssClass));
 		}
 
 		return result.toString();
@@ -117,7 +119,27 @@ public final class QuerySummarizer {
 	}*/
 	
 	static final String toLabel(final String category) {
-		return QuerySummarizer.Labels.forCategory.get(category.toLowerCase());
+		Util.requireNotNull(category);
+		
+		final String mungedCategory = category.toLowerCase();
+		
+		requireIsKnownCategory(mungedCategory);
+		
+		return Labels.forCategory.get(mungedCategory).value;
+	}
+	
+	static final String toNegatedLabel(final String category) {
+		Util.requireNotNull(category);
+		
+		final String mungedCategory = category.toLowerCase();
+		
+		requireIsKnownCategory(mungedCategory);
+		
+		return Labels.forCategory.get(mungedCategory).negated;
+	}
+
+	private static void requireIsKnownCategory(final String category) {
+		Util.require(Labels.forCategory.containsKey(category));
 	}
 	
 	static final String toSingularCategory(final String category) {
@@ -130,11 +152,11 @@ public final class QuerySummarizer {
 		}
 
 		@SuppressWarnings("serial")
-		static final Map<String, String> forCategory = new HashMap<String, String>() {{
-			this.put("demographics", "who were");
-			this.put("diagnoses", "diagnosed with");
-			this.put("medications", "prescribed or administered");
-			this.put("labs", "tested for levels of");
+		static final Map<String, Label> forCategory = new HashMap<String, Label>() {{
+			this.put("demographics", new Label("who were", "who were not"));
+			this.put("diagnoses", new Label("diagnosed with"));
+			this.put("medications", new Label("prescribed or administered"));
+			this.put("labs", new Label("tested for levels of"));
 		}};
 		
 		@SuppressWarnings("serial")
@@ -146,5 +168,22 @@ public final class QuerySummarizer {
 		}};
 
 		static final String defaultCategoryLabel = "with a record of";
+		
+		static final class Label {
+			public final String value;
+			public final String negated;
+
+			private Label(final String value) {
+				this(value, null);
+			}
+			
+			private Label(final String value, final String negated) {
+				super();
+				
+				this.value = value;
+				
+				this.negated = (negated != null) ? negated : "not " + value;
+			}
+		}
 	}
 }
