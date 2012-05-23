@@ -15,6 +15,7 @@ import java.util.{HashMap => JHashMap}
 import java.lang.{Long => JLong}
 import java.lang.{Integer => JInt}
 import net.shrine.webclient.client.domain.IntWrapper
+import net.shrine.protocol.QueryResult
 
 /**
  * @author clint
@@ -36,14 +37,15 @@ object QueryServiceImpl {
   }
 }
 
-final class QueryServiceImpl extends RemoteServiceServlet with QueryService {
-  import QueryServiceImpl._
+final class QueryServiceImpl(private[this] val client: ShrineClient) extends RemoteServiceServlet with QueryService {
 
-  private[this] def client: ShrineClient = new JerseyShrineClient(Urls.shrineDev1, Defaults.projectId, Defaults.auth, true)
+  //Needed so this class can be instantiated by an app server
+  def this() = this(new JerseyShrineClient(QueryServiceImpl.Urls.shrineDev1, QueryServiceImpl.Defaults.projectId, QueryServiceImpl.Defaults.auth, true))
 
   private[this] def uuid = java.util.UUID.randomUUID.toString
 
   import Expression.fromXml
+  import QueryServiceImpl._
   
   private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr)))
   
@@ -52,8 +54,10 @@ final class QueryServiceImpl extends RemoteServiceServlet with QueryService {
     
     def toJInt(l: Long) = new IntWrapper(l.toInt)
     
-    val breakDown = Map.empty ++ response.results.map(result => (result.description.getOrElse("Unknown Institution"), toJInt(result.setSize)))
+    def toNamedCount(result: QueryResult) = (result.description.getOrElse("Unknown Institution"), toJInt(result.setSize))
     
-    Helpers.toJava(breakDown)
+    val breakDown = Map.empty ++ response.results.map(toNamedCount)
+    
+    Helpers.toJavaMap(breakDown)
   }
 }

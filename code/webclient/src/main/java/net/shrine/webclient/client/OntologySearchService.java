@@ -17,8 +17,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface OntologySearchService extends RemoteService {
 	public List<TermSuggestion> getSuggestions(final String typedSoFar, final int limit) throws IllegalArgumentException;
 	
-	public List<OntNode> toOntNode(final String term) throws IllegalArgumentException;
-	
 	public List<OntNode> getPathTo(final String term) throws IllegalArgumentException;
 	
 	public List<OntNode> getChildrenFor(final String term) throws IllegalArgumentException;

@@ -258,8 +258,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 			controller.removeQueryGroup(9483);
 
 			fail("should have thrown");
-		} catch (IllegalArgumentException expected) {
-		}
+		} catch (IllegalArgumentException expected) { }
 
 		controller.removeQueryGroup(fooId);
 
@@ -269,8 +268,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 			state.guardQueryIsPresent(fooId);
 
 			fail("should have thrown");
-		} catch (IllegalArgumentException expected) {
-		}
+		} catch (IllegalArgumentException expected) { }
 
 		state.guardQueryIsPresent(barId);
 
