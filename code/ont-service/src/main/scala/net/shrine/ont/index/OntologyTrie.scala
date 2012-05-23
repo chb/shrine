@@ -34,7 +34,11 @@ object OntologyTrie {
   def addLeadingSlashesIfNeeded(term: String): String = {
     val twoSlashes = forwardSlash + forwardSlash
     
-    if(term.startsWith(twoSlashes)) term else twoSlashes + term 
+    term match {
+      case _ if term.startsWith(twoSlashes) => term
+      case _ if term.startsWith(forwardSlash) => twoSlashes + term.drop(1)
+      case _ => twoSlashes + term
+    }
   }
   
   def addSlashesIfNeeded(term: String) = addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(term))
@@ -80,9 +84,7 @@ sealed class OntologyTrie(entries: PrefixMap[Option[String]]) extends Iterable[C
 
   import OntologyTrie._
 
-  protected def toPath(term: String): String = {
-    addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(term))
-  }
+  protected[index] def toPath(term: String): String = addSlashesIfNeeded(term)
   
   def ++=(concepts: Iterable[Concept]): this.type = {
     concepts.foreach(this.+=)
@@ -116,7 +118,7 @@ final case class OntologySubTrie(val prefix: String, entries: PrefixMap[Option[S
   
   private def addPrefixTo(fragment: String): String = addTrailingSlashIfNeeded(prefix) + fragment
   
-  protected override def toPath(termFragment: String): String = {
+  protected[index] override def toPath(termFragment: String): String = {
     super.toPath(addPrefixTo(termFragment))
   }
   
