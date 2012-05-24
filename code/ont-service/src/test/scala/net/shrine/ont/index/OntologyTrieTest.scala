@@ -113,18 +113,6 @@ final class OntologyTrieTest extends TestCase with AssertionsForJUnit with Shoul
   }
   
   @Test
-  def testToPath {
-    val trie = OntologyTrie.empty
-	
-    trie.toPath("") should equal("""\\""")
-    trie.toPath("x") should equal("""\\x\""")
-    
-    trie.toPath("""\""") should equal("""\\""")
-    trie.toPath("""\\""") should equal("""\\""")
-    trie.toPath("""\\asdf\""") should equal("""\\asdf\""")
-  }
-  
-  @Test
   def testPlusPlusEqual {
     val trie = OntologyTrie.empty
 	
@@ -211,6 +199,8 @@ final class OntologyTrieTest extends TestCase with AssertionsForJUnit with Shoul
     bazTrie.children.toSeq should equal(Seq(blargConcept))
   }
   
+  //NB: Tests subTrieForPrefix in OntologyTrie and OntologySubTrie
+  //(OntologyTrie.subTrieForPrefix() returns an OntologySubTrie, which we subsequently operate on)
   @Test
   def testSubTrieForPrefix {
     val trie = OntologyTrie.empty
@@ -251,5 +241,17 @@ final class OntologyTrieTest extends TestCase with AssertionsForJUnit with Shoul
     
     //should be a preorder traversal
     severalThings.iterator.toSeq should equal(Seq(rootConcept, nuhConcept, fooConcept, bazConcept, blargConcept, barConcept))
+  }
+  
+  @Test
+  def testOntologySubTrieToPath {
+    val prefix = "NUH123"
+      
+    val subtrie = new OntologySubTrie(prefix, PrefixMap.empty)
+    
+    subtrie.toPath("") should equal("""\\NUH123\""")
+    subtrie.toPath("foo") should equal("""\\NUH123\foo\""")
+    subtrie.toPath("""foo\bar\baz""") should equal("""\\NUH123\foo\bar\baz\""")
+    subtrie.toPath("""foo\""") should equal("""\\NUH123\foo\""")
   }
 }

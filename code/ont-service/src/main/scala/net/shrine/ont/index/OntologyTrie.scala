@@ -42,38 +42,6 @@ object OntologyTrie {
   }
   
   def addSlashesIfNeeded(term: String) = addLeadingSlashesIfNeeded(addTrailingSlashIfNeeded(term))
-  
-  def main(args: Array[String]) {
-    /*val dao: OntologyDAO = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace-3.6.2/shrine-gwt-webclient/ontology/core/ShrineWithSyns.sql"))
-    
-    val trie = OntologyTrie(dao)
-    
-    val demoTerm = Concept("""\\SHRINE\SHRINE\Demographics\""", None)
-    
-    val subTrie = trie.subTrieForPrefix(demoTerm)
-      
-    val children = subTrie.children*/
-    
-    val trie = OntologyTrie.empty
-    
-    val demoTerm = Concept("""\\SHRINE\SHRINE\Demographics\""", Some("DemographicsSyn"))
-    val genderTerm = Concept("""\\SHRINE\SHRINE\Demographics\Gender\""", Some("GenderSyn"))
-    val maleTerm = Concept("""\\SHRINE\SHRINE\Demographics\Gender\Male\""", Some("MaleSyn"))
-    
-    trie ++= Seq(demoTerm, genderTerm, maleTerm)
-    
-    val subTrie = trie.subTrieForPrefix(demoTerm)
-      
-    val children = subTrie.children
-    
-    println("Contains? " + trie.contains(demoTerm) + " " + subTrie)
-    
-    println("Root: " + subTrie.head)
-    
-    println("Children: " + children)
-    
-    println("isLeaf? " + children.isEmpty)
-  }
 }
 
 /**
@@ -84,7 +52,7 @@ sealed class OntologyTrie(entries: PrefixMap[Option[String]]) extends Iterable[C
 
   import OntologyTrie._
 
-  protected[index] def toPath(term: String): String = addSlashesIfNeeded(term)
+  protected[index] def toPath(term: String) = addSlashesIfNeeded(term)
   
   def ++=(concepts: Iterable[Concept]): this.type = {
     concepts.foreach(this.+=)
@@ -104,12 +72,14 @@ sealed class OntologyTrie(entries: PrefixMap[Option[String]]) extends Iterable[C
   
   def contains(concept: Concept) = entries.contains(split(concept.path))
   
-  def children: Iterable[Concept] = entries.childEntries.map { case (pathParts, synonymOption) => Concept(toPath(unSplit(pathParts)), synonymOption) }
+  private def toOntPath(pathParts: Seq[String]) = toPath(unSplit(pathParts))
+  
+  def children: Iterable[Concept] = entries.childEntries.map { case (pathParts, synonymOption) => Concept(toOntPath(pathParts), synonymOption) }
   
   def subTrieForPrefix(concept: Concept): OntologySubTrie = new OntologySubTrie(concept.path, entries.withPrefix(split(concept.path)))
   
   override def iterator: Iterator[Concept] = {
-    entries.iterator.map { case (pathParts, synonymOption) => Concept(toPath(unSplit(pathParts)), synonymOption) }
+    entries.iterator.map { case (pathParts, synonymOption) => Concept(toOntPath(pathParts), synonymOption) }
   }
 }
 
@@ -118,7 +88,7 @@ final case class OntologySubTrie(val prefix: String, entries: PrefixMap[Option[S
   
   private def addPrefixTo(fragment: String): String = addTrailingSlashIfNeeded(prefix) + fragment
   
-  protected[index] override def toPath(termFragment: String): String = {
+  protected[index] override def toPath(termFragment: String) = {
     super.toPath(addPrefixTo(termFragment))
   }
   
