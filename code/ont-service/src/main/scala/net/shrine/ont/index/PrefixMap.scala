@@ -13,6 +13,8 @@ import scala.annotation.tailrec
  * for example "SHRINE", "SHRINE", "Demographics", "Gender", "Male"
  * 
  * TODO: desperately needs unit test
+ * 
+ * TODO: Make immutable?
  */
 private[index] final class PrefixMap[T] extends MMap[Seq[String], T] with MMapLike[Seq[String], T, PrefixMap[T]] {
   private var suffixes: Map[String, PrefixMap[T]] = Map.empty

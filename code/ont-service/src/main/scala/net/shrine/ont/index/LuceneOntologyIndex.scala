@@ -47,7 +47,7 @@ final class LuceneOntologyIndex(ontologyDao: OntologyDAO, dirBuilder: OntologyDA
     import java.util.{Map => JMap}
     import java.lang.{Float => JFloat}
     
-    //TODO: WhyTF does demographics\male come in somewhere int he middle of the list?
+    //TODO: Evaluate if these boosts are appropriate.  Ranking is ok for now.
     val boosts: JMap[String, JFloat] = Map(Keys.Path -> 2.0F, Keys.SimpleName -> 25.0F).mapValues(JFloat.valueOf).asJava
     
     val result = new MultiFieldQueryParser(LuceneOntologyIndex.luceneVersion, Array(Keys.Path, Keys.Synonym, Keys.SimpleName), analyzer, boosts)
