@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.shrine.webclient.client.Controllers;
+import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.IntWrapper;
-import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
 import net.shrine.webclient.client.events.QueryGroupsChangedEventHandler;
+import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.Util;

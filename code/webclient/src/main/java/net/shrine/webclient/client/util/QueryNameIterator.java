@@ -1,4 +1,4 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.util;
 
 import java.util.Iterator;
 
@@ -34,7 +34,7 @@ public final class QueryNameIterator implements Iterator<String> {
 	String getName() {
 		final String suffix = (passNumber == 0 ? "" : String.valueOf(passNumber));
 		
-		return String.valueOf(currentLabel) + suffix;
+		return currentLabel + suffix;
 	}
 
 	public boolean hasNext() {

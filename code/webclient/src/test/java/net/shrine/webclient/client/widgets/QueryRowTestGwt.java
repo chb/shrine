@@ -5,12 +5,12 @@ import java.util.Date;
 import java.util.Iterator;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
-import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.MockQueryServiceAsync;
+import net.shrine.webclient.client.controllers.Controllers;
+import net.shrine.webclient.client.controllers.MockQueryServiceAsync;
 import net.shrine.webclient.client.domain.And;
 import net.shrine.webclient.client.domain.Or;
-import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.state.QueryGroup;
 
 import org.junit.Test;
 

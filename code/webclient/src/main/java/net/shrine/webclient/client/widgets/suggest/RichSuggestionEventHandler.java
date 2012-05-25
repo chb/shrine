@@ -9,5 +9,5 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @date Apr 5, 2012
  */
 public interface RichSuggestionEventHandler<S extends IsSerializable> extends EventHandler {
-	public void onSelectionMade(final RichSuggestionEvent<S> event);
+	void onSelectionMade(final RichSuggestionEvent<S> event);
 }

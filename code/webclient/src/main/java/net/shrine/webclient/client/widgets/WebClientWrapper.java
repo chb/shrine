@@ -1,7 +1,7 @@
 package net.shrine.webclient.client.widgets;
 
-import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.State;
+import net.shrine.webclient.client.controllers.Controllers;
+import net.shrine.webclient.client.state.State;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.GWT;

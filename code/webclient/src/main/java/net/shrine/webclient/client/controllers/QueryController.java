@@ -1,8 +1,10 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.controllers;
 
 import java.util.HashMap;
 
 import net.shrine.webclient.client.domain.IntWrapper;
+import net.shrine.webclient.client.services.QueryServiceAsync;
+import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;

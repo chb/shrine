@@ -2,10 +2,10 @@ package net.shrine.webclient.client.widgets;
 
 import java.util.Arrays;
 
-import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.OntologySuggestOracle;
+import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.domain.TermSuggestion;
+import net.shrine.webclient.client.suggest.OntologySuggestOracle;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestBox;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestionEvent;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestionEventHandler;

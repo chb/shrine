@@ -1,6 +1,7 @@
 package net.shrine.webclient.client;
 
 import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.state.State;
 
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.junit.client.GWTTestCase;

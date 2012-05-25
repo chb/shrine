@@ -9,13 +9,13 @@ import java.util.Iterator;
  * @param <T>
  */
 public interface ReadOnlyObservable<T> extends IObservable, Iterable<T> {
-	public T get();
+	T get();
 	
-	public boolean isDefined();
+	boolean isDefined();
     
-    public boolean isEmpty();
+    boolean isEmpty();
     
-    public T getOrElse(final T defaultValue);
+    T getOrElse(final T defaultValue);
     
-    public Iterator<T> iterator();
+    Iterator<T> iterator();
 }

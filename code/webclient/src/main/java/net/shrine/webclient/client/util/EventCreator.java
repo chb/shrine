@@ -8,5 +8,5 @@ import com.google.gwt.event.shared.GwtEvent;
  * @date May 15, 2012
  */
 public interface EventCreator<E extends GwtEvent<?>> {
-	public E create();
+	E create();
 }

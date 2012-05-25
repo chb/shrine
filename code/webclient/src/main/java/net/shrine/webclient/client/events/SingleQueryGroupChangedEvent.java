@@ -1,6 +1,6 @@
 package net.shrine.webclient.client.events;
 
-import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
+import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.widgets.WidgetUtil;
 
 import com.google.gwt.event.shared.GwtEvent;

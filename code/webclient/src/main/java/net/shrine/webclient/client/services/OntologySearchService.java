@@ -1,4 +1,4 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.services;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("ontology")
 public interface OntologySearchService extends RemoteService {
-	public List<TermSuggestion> getSuggestions(final String typedSoFar, final int limit) throws IllegalArgumentException;
+	List<TermSuggestion> getSuggestions(final String typedSoFar, final int limit);
 	
-	public List<OntNode> getPathTo(final String term) throws IllegalArgumentException;
+	List<OntNode> getPathTo(final String term);
 	
-	public List<OntNode> getChildrenFor(final String term) throws IllegalArgumentException;
+	List<OntNode> getChildrenFor(final String term);
 }

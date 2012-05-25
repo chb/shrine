@@ -1,10 +1,11 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.controllers;
 
 import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.Or;
-import net.shrine.webclient.client.domain.QueryGroup;
-import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.state.QueryGroup;
+import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
+import net.shrine.webclient.client.state.State;
 
 import com.allen_sauer.gwt.log.client.Log;
 

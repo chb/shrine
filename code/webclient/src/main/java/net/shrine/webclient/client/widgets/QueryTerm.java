@@ -1,6 +1,6 @@
 package net.shrine.webclient.client.widgets;
 
-import net.shrine.webclient.client.QueryBuildingController;
+import net.shrine.webclient.client.controllers.QueryBuildingController;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Util;
 

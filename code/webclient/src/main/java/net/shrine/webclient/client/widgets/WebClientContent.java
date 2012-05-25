@@ -1,9 +1,9 @@
 package net.shrine.webclient.client.widgets;
 
-import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.State;
+import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
 import net.shrine.webclient.client.events.QueryGroupsChangedEventHandler;
+import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;

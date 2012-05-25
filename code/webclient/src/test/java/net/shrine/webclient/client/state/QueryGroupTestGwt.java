@@ -1,8 +1,12 @@
-package net.shrine.webclient.client.domain;
+package net.shrine.webclient.client.state;
 
 import java.util.Date;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
+import net.shrine.webclient.client.domain.And;
+import net.shrine.webclient.client.domain.Or;
+import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.state.QueryGroup;
 import net.shrine.webclient.client.util.MockObserver;
 
 import org.junit.Test;

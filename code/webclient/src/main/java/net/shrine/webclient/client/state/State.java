@@ -1,4 +1,4 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.state;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -6,13 +6,13 @@ import java.util.Iterator;
 import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.ExpressionXml;
 import net.shrine.webclient.client.domain.IntWrapper;
-import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.events.SingleQueryGroupChangedEvent;
 import net.shrine.webclient.client.events.SingleQueryGroupChangedEventHandler;
 import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
 import net.shrine.webclient.client.util.Observable;
 import net.shrine.webclient.client.util.ObservableList;
 import net.shrine.webclient.client.util.Observer;
+import net.shrine.webclient.client.util.QueryNameIterator;
 import net.shrine.webclient.client.util.SimpleObserver;
 import net.shrine.webclient.client.util.Util;
 
@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * 
  * @author clint
- * 
+ * @date Mar 30, 2012
  */
 public final class State {
 
@@ -77,7 +77,7 @@ public final class State {
 		Util.require(!isQueryIdPresent(id));
 	}
 
-	boolean isQueryIdPresent(final int id) {
+	public boolean isQueryIdPresent(final int id) {
 		for (final QueryGroup group : queries) {
 			if (id == group.getId()) {
 				return true;
@@ -89,7 +89,7 @@ public final class State {
 
 	// Make sure queries are named A,B,C,... Z, in that order, with no gaps,
 	// always starting from 'A'
-	void reNameQueries() {
+	private void reNameQueries() {
 		final Iterator<String> newIdIter = new QueryNameIterator();
 
 		for(final QueryGroup group : queries) {
@@ -97,7 +97,7 @@ public final class State {
 		}
 	}
 	
-	void removeQuery(final int id) {
+	public void removeQuery(final int id) {
 		guardQueryIsPresent(id);
 
 		final QueryGroup query = getQuery(id);
@@ -150,7 +150,7 @@ public final class State {
 		return newQuery;
 	}
 
-	void updateAllExpression() {
+	public void updateAllExpression() {
 		allExpressionXml = ExpressionXml.fromQueryGroups(queries);
 	}
 

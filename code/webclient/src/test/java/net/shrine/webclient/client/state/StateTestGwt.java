@@ -1,10 +1,10 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.state;
 
 import java.util.HashMap;
 
+import net.shrine.webclient.client.AbstractWebclientTest;
 import net.shrine.webclient.client.domain.And;
 import net.shrine.webclient.client.domain.IntWrapper;
-import net.shrine.webclient.client.domain.QueryGroup;
 import net.shrine.webclient.client.domain.Term;
 
 import org.junit.Test;

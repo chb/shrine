@@ -1,8 +1,9 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.controllers;
 
 import java.util.Date;
 
-import net.shrine.webclient.client.domain.QueryGroup;
+import net.shrine.webclient.client.state.QueryGroup;
+import net.shrine.webclient.client.state.State;
 
 import com.allen_sauer.gwt.log.client.Log;
 

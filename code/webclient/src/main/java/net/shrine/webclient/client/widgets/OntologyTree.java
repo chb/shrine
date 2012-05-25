@@ -8,11 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.OntologySearchService;
-import net.shrine.webclient.client.OntologySearchServiceAsync;
+import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.OntNode;
 import net.shrine.webclient.client.events.VerticalScrollRequestEvent;
+import net.shrine.webclient.client.services.OntologySearchService;
+import net.shrine.webclient.client.services.OntologySearchServiceAsync;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -31,8 +31,6 @@ import com.google.gwt.user.client.ui.TreeItem;
  * @date Mar 30, 2012
  */
 public final class OntologyTree extends Composite {
-	private final Tree delegate;
-	
 	private static final OntologySearchServiceAsync ontologyService = GWT.create(OntologySearchService.class);
 	
 	private final Controllers controllers;
@@ -71,9 +69,7 @@ public final class OntologyTree extends Composite {
 		
 		ontNodeToBrowseTo = last(pathFromRoot);
 		
-		delegate = makeTree(makeTreeItems(pathFromRoot));
-		
-		initWidget(delegate);
+		initWidget(makeTree(makeTreeItems(pathFromRoot)));
 	}
 
 	private void initParentsToDescendantsMap(List<OntNode> pathFromRoot) {

@@ -11,19 +11,19 @@ import java.util.Set;
  * @param <V>
  */
 public interface ReadOnlyObservableMap<K, V> extends IObservable {
-	public int size();
+	int size();
 
-	public boolean isEmpty();
+	boolean isEmpty();
 
-	public boolean containsKey(final Object key);
+	boolean containsKey(final Object key);
 
-	public boolean containsValue(final Object value);
+	boolean containsValue(final Object value);
 
-	public V get(final Object key);
+	V get(final Object key);
 	
-	public Set<K> keySet();
+	Set<K> keySet();
 
-	public Collection<V> values();
+	Collection<V> values();
 
-	public Set<java.util.Map.Entry<K, V>> entrySet();
+	Set<java.util.Map.Entry<K, V>> entrySet();
 }

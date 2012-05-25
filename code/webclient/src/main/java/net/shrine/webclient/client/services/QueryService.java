@@ -1,4 +1,4 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.services;
 
 import java.util.HashMap;
 
@@ -14,6 +14,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("query")
 public interface QueryService extends RemoteService {
-	public HashMap<String, IntWrapper> queryForBreakdown(final String expr) throws IllegalArgumentException;
+	HashMap<String, IntWrapper> queryForBreakdown(final String expr);
 }
 

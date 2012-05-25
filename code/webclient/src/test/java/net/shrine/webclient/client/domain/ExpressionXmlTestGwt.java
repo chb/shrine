@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
+import net.shrine.webclient.client.state.QueryGroup;
 
 import org.junit.Test;
 

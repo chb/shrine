@@ -1,4 +1,7 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.controllers;
+
+import net.shrine.webclient.client.services.QueryServiceAsync;
+import net.shrine.webclient.client.state.State;
 
 
 /**

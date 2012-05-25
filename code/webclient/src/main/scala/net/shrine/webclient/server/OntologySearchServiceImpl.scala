@@ -1,7 +1,7 @@
 package net.shrine.webclient.server
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet
-import net.shrine.webclient.client.OntologySearchService
+import net.shrine.webclient.client.services.OntologySearchService
 import java.util.{ Collections => JCollections }
 import java.util.{ List => JList }
 import net.shrine.ont.index.OntologyIndex

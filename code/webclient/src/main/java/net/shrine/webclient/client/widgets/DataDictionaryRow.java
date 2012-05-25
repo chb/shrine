@@ -2,17 +2,17 @@ package net.shrine.webclient.client.widgets;
 
 import java.util.List;
 
-import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.OntologySearchService;
-import net.shrine.webclient.client.OntologySearchServiceAsync;
+import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.OntNode;
 import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.events.CollapseDataDictionaryPanelEvent;
 import net.shrine.webclient.client.events.CollapseDataDictionaryPanelEventHandler;
-import net.shrine.webclient.client.events.VerticalScrollRequestEvent;
-import net.shrine.webclient.client.events.VerticalScrollRequestEventHandler;
 import net.shrine.webclient.client.events.ShowDataDictionaryPanelEvent;
 import net.shrine.webclient.client.events.ShowDataDictionaryPanelEventHandler;
+import net.shrine.webclient.client.events.VerticalScrollRequestEvent;
+import net.shrine.webclient.client.events.VerticalScrollRequestEventHandler;
+import net.shrine.webclient.client.services.OntologySearchService;
+import net.shrine.webclient.client.services.OntologySearchServiceAsync;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;

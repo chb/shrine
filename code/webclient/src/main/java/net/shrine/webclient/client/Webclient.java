@@ -1,5 +1,9 @@
 package net.shrine.webclient.client;
 
+import net.shrine.webclient.client.controllers.Controllers;
+import net.shrine.webclient.client.services.QueryService;
+import net.shrine.webclient.client.services.QueryServiceAsync;
+import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.widgets.OntologySearchBox;
 import net.shrine.webclient.client.widgets.QueryTermDragController;
 import net.shrine.webclient.client.widgets.WebClientWrapper;
@@ -14,7 +18,9 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
- * Entry point classes define <code>onModuleLoad()</code>.
+ * 
+ * @author clint
+ * @date Mar 30, 2012
  */
 public final class Webclient implements EntryPoint {
 

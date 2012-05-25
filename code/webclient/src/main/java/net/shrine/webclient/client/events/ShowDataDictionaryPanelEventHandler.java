@@ -8,5 +8,5 @@ import com.google.gwt.event.shared.EventHandler;
  * @date Apr 5, 2012
  */
 public interface ShowDataDictionaryPanelEventHandler extends EventHandler {
-	public void handle(final ShowDataDictionaryPanelEvent event);
+	void handle(final ShowDataDictionaryPanelEvent event);
 }

@@ -1,9 +1,9 @@
 package net.shrine.webclient.client.widgets;
 
-import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.domain.QueryGroup;
-import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
+import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.state.QueryGroup;
+import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;

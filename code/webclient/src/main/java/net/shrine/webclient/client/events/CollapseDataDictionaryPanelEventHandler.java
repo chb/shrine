@@ -8,5 +8,5 @@ import com.google.gwt.event.shared.EventHandler;
  * @date Apr 4, 2012
  */
 public interface CollapseDataDictionaryPanelEventHandler extends EventHandler {
-	public void handle(final CollapseDataDictionaryPanelEvent event);
+	void handle(final CollapseDataDictionaryPanelEvent event);
 }

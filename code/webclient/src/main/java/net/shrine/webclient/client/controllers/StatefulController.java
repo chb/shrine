@@ -1,5 +1,6 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.controllers;
 
+import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.util.Util;
 
 /**

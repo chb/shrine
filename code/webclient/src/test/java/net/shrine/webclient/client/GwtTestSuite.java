@@ -1,13 +1,18 @@
 package net.shrine.webclient.client;
 
 import junit.framework.Test;
+import net.shrine.webclient.client.controllers.QueryBuildingControllerTestGwt;
+import net.shrine.webclient.client.controllers.QueryConstraintControllerTestGwt;
+import net.shrine.webclient.client.controllers.QueryControllerTestGwt;
 import net.shrine.webclient.client.domain.AndTestGwt;
 import net.shrine.webclient.client.domain.ExpressionXmlTestGwt;
 import net.shrine.webclient.client.domain.OrTestGwt;
-import net.shrine.webclient.client.domain.QueryGroupTestGwt;
 import net.shrine.webclient.client.domain.TermTestGwt;
+import net.shrine.webclient.client.state.QueryGroupTestGwt;
+import net.shrine.webclient.client.state.StateTestGwt;
 import net.shrine.webclient.client.util.FormatsTestGwt;
 import net.shrine.webclient.client.util.ObservableTestGwt;
+import net.shrine.webclient.client.util.QueryGroupNamesIteratorTestGwt;
 import net.shrine.webclient.client.util.QuerySummarizerTestGwt;
 import net.shrine.webclient.client.util.UtilTestGwt;
 import net.shrine.webclient.client.widgets.QueryRowTestGwt;

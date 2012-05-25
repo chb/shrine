@@ -6,8 +6,8 @@ import java.util.Map;
 
 import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.Or;
-import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
 
 import com.allen_sauer.gwt.log.client.Log;
 

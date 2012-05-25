@@ -2,7 +2,7 @@ package net.shrine.webclient.client.events;
 
 import java.util.List;
 
-import net.shrine.webclient.client.domain.ReadOnlyQueryGroup;
+import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.client.widgets.WidgetUtil;
 

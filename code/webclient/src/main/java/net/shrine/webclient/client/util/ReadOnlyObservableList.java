@@ -13,30 +13,30 @@ import java.util.ListIterator;
  */
 public interface ReadOnlyObservableList<T> extends IObservable, Iterable<T> {
 
-	public abstract int size();
+	int size();
 
-	public abstract boolean isEmpty();
+	boolean isEmpty();
 
-	public abstract boolean contains(final Object o);
+	boolean contains(final Object o);
 
-	public abstract Iterator<T> iterator();
+	Iterator<T> iterator();
 
-	public abstract Object[] toArray();
+	Object[] toArray();
 
-	public abstract <A> A[] toArray(final A[] a);
+	<A> A[] toArray(final A[] a);
 
-	public abstract boolean containsAll(final Collection<?> c);
+	boolean containsAll(final Collection<?> c);
 
-	public abstract T get(final int index);
+	T get(final int index);
 
-	public abstract int indexOf(final Object o);
+	int indexOf(final Object o);
 
-	public abstract int lastIndexOf(final Object o);
+	int lastIndexOf(final Object o);
 
-	public abstract ListIterator<T> listIterator();
+	ListIterator<T> listIterator();
 
-	public abstract ListIterator<T> listIterator(final int index);
+	ListIterator<T> listIterator(final int index);
 
-	public abstract List<T> subList(final int fromIndex, final int toIndex);
+	List<T> subList(final int fromIndex, final int toIndex);
 
 }

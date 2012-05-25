@@ -1,7 +1,7 @@
 package net.shrine.webclient.server
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet
-import net.shrine.webclient.client.QueryService
+import net.shrine.webclient.client.services.QueryService
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.Credential

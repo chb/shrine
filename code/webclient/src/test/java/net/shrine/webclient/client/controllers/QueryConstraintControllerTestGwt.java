@@ -1,6 +1,9 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.controllers;
 
 import java.util.Date;
+
+import net.shrine.webclient.client.AbstractWebclientTest;
+import net.shrine.webclient.client.state.State;
 
 import org.junit.Test;
 

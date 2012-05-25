@@ -8,5 +8,5 @@ import com.google.gwt.event.shared.EventHandler;
  * @date May 18, 2012
  */
 public interface VerticalScrollRequestEventHandler extends EventHandler {
-	public void handle(final VerticalScrollRequestEvent event);
+	void handle(final VerticalScrollRequestEvent event);
 }

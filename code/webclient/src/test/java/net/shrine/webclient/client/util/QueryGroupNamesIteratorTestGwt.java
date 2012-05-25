@@ -1,8 +1,10 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.util;
 
 import java.util.Arrays;
 import java.util.List;
 
+import net.shrine.webclient.client.AbstractWebclientTest;
+import net.shrine.webclient.client.util.QueryNameIterator;
 import net.shrine.webclient.client.util.Util;
 
 import org.junit.Test;

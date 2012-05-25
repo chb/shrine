@@ -1,7 +1,7 @@
 package net.shrine.webclient.client.widgets;
 
-import net.shrine.webclient.client.Controllers;
-import net.shrine.webclient.client.domain.QueryGroup;
+import net.shrine.webclient.client.controllers.Controllers;
+import net.shrine.webclient.client.state.QueryGroup;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservableList;
 import net.shrine.webclient.client.util.Util;

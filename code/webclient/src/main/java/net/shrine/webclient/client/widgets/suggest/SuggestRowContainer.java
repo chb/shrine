@@ -11,5 +11,5 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * basically a side-effecting function RichSuggestionEvent<S> => void
  */
 public interface SuggestRowContainer<S extends IsSerializable> extends HasHideablePopup {
-	public void fireSuggestionEvent(final RichSuggestionEvent<S> event);
+	void fireSuggestionEvent(final RichSuggestionEvent<S> event);
 }

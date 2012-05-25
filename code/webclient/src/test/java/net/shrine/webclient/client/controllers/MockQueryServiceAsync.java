@@ -1,8 +1,9 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.controllers;
 
 import java.util.HashMap;
 
 import net.shrine.webclient.client.domain.IntWrapper;
+import net.shrine.webclient.client.services.QueryServiceAsync;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 

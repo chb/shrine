@@ -3,7 +3,7 @@ package net.shrine.webclient.client.widgets;
 import java.util.Collections;
 import java.util.Iterator;
 
-import net.shrine.webclient.client.Controllers;
+import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;

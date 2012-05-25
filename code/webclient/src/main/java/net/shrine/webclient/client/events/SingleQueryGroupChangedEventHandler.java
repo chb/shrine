@@ -8,5 +8,5 @@ import com.google.gwt.event.shared.EventHandler;
  * @date May 15, 2012
  */
 public interface SingleQueryGroupChangedEventHandler extends EventHandler {
-	public void handle(final SingleQueryGroupChangedEvent event);
+	void handle(final SingleQueryGroupChangedEvent event);
 }

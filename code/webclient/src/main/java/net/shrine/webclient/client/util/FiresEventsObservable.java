@@ -12,7 +12,7 @@ import com.google.gwt.event.shared.GwtEvent;
 public abstract class FiresEventsObservable<E extends GwtEvent<?>> extends AbstractObservable {
 	protected final EventBus eventBus;
 	
-	private EventCreator<E> eventCreator;
+	private EventCreator<E> eventCreator = null;
 
 	protected FiresEventsObservable(final EventBus eventBus) {
 		super();

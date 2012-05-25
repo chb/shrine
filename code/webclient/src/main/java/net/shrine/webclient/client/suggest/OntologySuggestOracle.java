@@ -1,8 +1,10 @@
-package net.shrine.webclient.client;
+package net.shrine.webclient.client.suggest;
 
 import java.util.List;
 
 import net.shrine.webclient.client.domain.TermSuggestion;
+import net.shrine.webclient.client.services.OntologySearchService;
+import net.shrine.webclient.client.services.OntologySearchServiceAsync;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestCallback;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestOracle;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestRequest;
