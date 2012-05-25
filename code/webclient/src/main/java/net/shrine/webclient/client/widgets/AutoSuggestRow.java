@@ -2,7 +2,6 @@ package net.shrine.webclient.client.widgets;
 
 import static java.util.Arrays.asList;
 import net.shrine.webclient.client.domain.TermSuggestion;
-import net.shrine.webclient.client.events.ShowDataDictionaryPanelEvent;
 import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestionEvent;
 import net.shrine.webclient.client.widgets.suggest.SuggestRowContainer;

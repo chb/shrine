@@ -1,6 +1,5 @@
-package net.shrine.webclient.client.events;
+package net.shrine.webclient.client.widgets;
 
-import net.shrine.webclient.client.widgets.WidgetUtil;
 
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Widget;

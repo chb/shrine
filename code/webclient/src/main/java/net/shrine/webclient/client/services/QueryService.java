@@ -14,6 +14,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("query")
 public interface QueryService extends RemoteService {
+	//NB: Must be a HashMap (and not a Map) for GWT serialization purposes.
 	HashMap<String, IntWrapper> queryForBreakdown(final String expr);
 }
 

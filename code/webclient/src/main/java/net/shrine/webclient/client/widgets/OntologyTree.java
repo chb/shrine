@@ -10,7 +10,6 @@ import java.util.Map;
 
 import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.OntNode;
-import net.shrine.webclient.client.events.VerticalScrollRequestEvent;
 import net.shrine.webclient.client.services.OntologySearchService;
 import net.shrine.webclient.client.services.OntologySearchServiceAsync;
 import net.shrine.webclient.client.util.Util;

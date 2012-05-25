@@ -5,12 +5,6 @@ import java.util.List;
 import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.OntNode;
 import net.shrine.webclient.client.domain.Term;
-import net.shrine.webclient.client.events.CollapseDataDictionaryPanelEvent;
-import net.shrine.webclient.client.events.CollapseDataDictionaryPanelEventHandler;
-import net.shrine.webclient.client.events.ShowDataDictionaryPanelEvent;
-import net.shrine.webclient.client.events.ShowDataDictionaryPanelEventHandler;
-import net.shrine.webclient.client.events.VerticalScrollRequestEvent;
-import net.shrine.webclient.client.events.VerticalScrollRequestEventHandler;
 import net.shrine.webclient.client.services.OntologySearchService;
 import net.shrine.webclient.client.services.OntologySearchServiceAsync;
 
