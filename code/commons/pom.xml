@@ -60,12 +60,6 @@
             <version>${spin-base-version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.spin</groupId>
-            <artifactId>identity-service</artifactId>
-            <version>${spin-base-version}</version>
-        </dependency>
-
         <!--TODO SHRINE 1.6.6 jars not yet ported to shrine 1.7 -->
 
         <!--TODO requires manually building of the 1.6.6 jar -->
