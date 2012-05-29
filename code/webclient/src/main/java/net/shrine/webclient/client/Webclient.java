@@ -24,6 +24,8 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public final class Webclient implements EntryPoint {
 
+	private static final int DefaultDragSensitivity = 5;
+
 	private void doOnModuleLoad() {
 		final SimpleEventBus eventBus = new SimpleEventBus();
 		
@@ -53,7 +55,7 @@ public final class Webclient implements EntryPoint {
 	    dragController.setBehaviorMultipleSelection(false);
 	    //NB: widgets must be "dragged" at least 5 pixels before dragging is considered to have begun.
 	    //This allows widgets to receive click events (for close buttons, etc) without triggering DnD.
-	    dragController.setBehaviorDragStartSensitivity(5);
+	    dragController.setBehaviorDragStartSensitivity(DefaultDragSensitivity);
 	}
 	
 	public void onModuleLoad() {

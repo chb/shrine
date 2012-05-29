@@ -166,6 +166,20 @@ public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
 
 		assertSame(suggestionsPanel3, suggestBox.getSuggestionPopup().getWidget());
 	}
+	
+	public void testIsEmpty() {
+		final MockRichSuggestOracle oracle = new MockRichSuggestOracle();
+
+		final RichSuggestBox<MockSuggestion> suggestBox = new RichSuggestBox<MockSuggestion>(oracle, new MockWidgetMaker());
+		
+		assertEquals(0, suggestBox.getText().length());
+		assertTrue(suggestBox.isEmpty());
+		
+		suggestBox.setText("foo");
+		
+		assertEquals(3, suggestBox.getText().length());
+		assertFalse(suggestBox.isEmpty());
+	}
 
 	public void testKeyHandlers() {
 		final MockRichSuggestOracle oracle = new MockRichSuggestOracle();

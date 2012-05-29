@@ -22,7 +22,7 @@ public final class ObservableList<T> extends AbstractObservable implements List<
 		this.delegate = delegate;
 	}
 
-	public static final <T> ObservableList<T> empty() {
+	public static <T> ObservableList<T> empty() {
 		return new ObservableList<T>(new ArrayList<T>());
 	}
 

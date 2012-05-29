@@ -1,10 +1,9 @@
-package net.shrine.webclient.client.events;
+package net.shrine.webclient.client.state;
 
 import java.util.List;
 
-import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
+import net.shrine.webclient.client.util.EventUtil;
 import net.shrine.webclient.client.util.Util;
-import net.shrine.webclient.client.widgets.WidgetUtil;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -14,7 +13,7 @@ import com.google.gwt.event.shared.GwtEvent;
  * @date May 15, 2012
  */
 public final class QueryGroupsChangedEvent extends GwtEvent<QueryGroupsChangedEventHandler> {
-	private static final GwtEvent.Type<QueryGroupsChangedEventHandler> TYPE = WidgetUtil.eventType();
+	private static final GwtEvent.Type<QueryGroupsChangedEventHandler> TYPE = EventUtil.eventType();
 	
 	private final List<ReadOnlyQueryGroup> queryGroups;
 	
@@ -28,7 +27,7 @@ public final class QueryGroupsChangedEvent extends GwtEvent<QueryGroupsChangedEv
 		return queryGroups;
 	}
 
-	public static final GwtEvent.Type<QueryGroupsChangedEventHandler> getType() {
+	public static GwtEvent.Type<QueryGroupsChangedEventHandler> getType() {
 		return TYPE;
 	}
 	

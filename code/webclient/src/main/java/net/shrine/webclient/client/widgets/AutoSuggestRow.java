@@ -82,7 +82,7 @@ public final class AutoSuggestRow extends Composite {
 		iconImage.setSrc("images/" + (termSuggestion.isLeaf() ? "document.png" : "folder.gif"));
 	}
 
-	public static final WidgetMaker<TermSuggestion> autoSuggestRowWidgetMaker(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> suggestionEventSink) {
+	public static WidgetMaker<TermSuggestion> autoSuggestRowWidgetMaker(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> suggestionEventSink) {
 		return new WidgetMaker<TermSuggestion>() {
 			@Override
 			public Widget makeWidget(final TermSuggestion termSuggestion) {

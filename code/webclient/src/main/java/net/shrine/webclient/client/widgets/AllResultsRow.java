@@ -1,15 +1,15 @@
 package net.shrine.webclient.client.widgets;
 
-import static net.shrine.webclient.client.util.QuerySummarizer.summarize;
+import static net.shrine.webclient.client.state.QuerySummarizer.summarize;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.IntWrapper;
-import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
-import net.shrine.webclient.client.events.QueryGroupsChangedEventHandler;
+import net.shrine.webclient.client.state.QueryGroupsChangedEvent;
+import net.shrine.webclient.client.state.QueryGroupsChangedEventHandler;
 import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
@@ -39,7 +39,7 @@ public final class AllResultsRow extends Composite implements Observer {
 
 	interface AllResultsRowUiBinder extends UiBinder<Widget, AllResultsRow> { }
 
-	private ReadOnlyObservable<HashMap<String, IntWrapper>> allResults;
+	private ReadOnlyObservable<Map<String, IntWrapper>> allResults;
 	
 	@UiField
 	SimplePanel querySummaryHolder;
@@ -59,7 +59,7 @@ public final class AllResultsRow extends Composite implements Observer {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	void wireUp(final EventBus eventBus, final Controllers controllers, final ReadOnlyObservable<HashMap<String, IntWrapper>> allResults) {
+	void wireUp(final EventBus eventBus, final Controllers controllers, final ReadOnlyObservable<Map<String, IntWrapper>> allResults) {
 		Util.requireNotNull(controllers);
 		Util.requireNotNull(allResults);
 		Util.requireNotNull(eventBus);
@@ -93,34 +93,12 @@ public final class AllResultsRow extends Composite implements Observer {
 	}
 
 	void initQueryGroupsChangeHandler(final EventBus eventBus) {
-		eventBus.addHandler(QueryGroupsChangedEvent.getType(), new QueryGroupsChangedEventHandler() {
-			@Override
-			public void handle(final QueryGroupsChangedEvent event) {
-				final List<ReadOnlyQueryGroup> queryGroups = event.getQueryGroups();
-				
-				if(queryGroups.size() > 0) {
-					updateQuerySummary(queryGroups);
-				} else {
-					clearQuerySummary();
-				}
-				
-				//TODO, REVISITME: We shouldn't clear the result display if the new query group list
-				//isn't actually different than the old one.  This is tricky in the face of a mutable
-				//query list made of mutable QueryGroups. :/
-				clearResults();
-				
-				setRunQueryButtonEnabledStatus(queryGroups);
-			}
-
-			void setRunQueryButtonEnabledStatus(final List<ReadOnlyQueryGroup> queryGroups) {
-				runQueryButton.setEnabled(queryGroups.size() > 0);
-			}
-		});
+		eventBus.addHandler(QueryGroupsChangedEvent.getType(), new AllResultsQueryGroupsChangedEventHandler());
 	}
 
 	@Override
 	public void inform() {
-		for(final HashMap<String, IntWrapper> resultsMap : allResults) {
+		for(final Map<String, IntWrapper> resultsMap : allResults) {
 			clearResults();
 			
 			resultsWrapper.setVisible(true);
@@ -162,5 +140,29 @@ public final class AllResultsRow extends Composite implements Observer {
 		resultsWrapper.setVisible(true);
 		
 		resultsPanel.add(new LoadingSpinner());
+	}
+	
+	private final class AllResultsQueryGroupsChangedEventHandler implements QueryGroupsChangedEventHandler {
+		@Override
+		public void handle(final QueryGroupsChangedEvent event) {
+			final List<ReadOnlyQueryGroup> queryGroups = event.getQueryGroups();
+			
+			if(queryGroups.size() > 0) {
+				updateQuerySummary(queryGroups);
+			} else {
+				clearQuerySummary();
+			}
+			
+			//TODO, REVISITME: We shouldn't clear the result display if the new query group list
+			//isn't actually different than the old one.  This is tricky in the face of a mutable
+			//query list made of mutable QueryGroups. :/
+			clearResults();
+			
+			setRunQueryButtonEnabledStatus(queryGroups);
+		}
+
+		void setRunQueryButtonEnabledStatus(final List<ReadOnlyQueryGroup> queryGroups) {
+			runQueryButton.setEnabled(queryGroups.size() > 0);
+		}
 	}
 }

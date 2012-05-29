@@ -106,9 +106,12 @@ public final class Util {
 	public static int count(final Iterable<?> elems) {
 		int result = 0;
 
-		for (@SuppressWarnings("unused")
-		final Object elem : elems) {
+		final Iterator<?> iterator = elems.iterator();
+		
+		while(iterator.hasNext()) {
 			++result;
+			
+			iterator.next();
 		}
 
 		return result;

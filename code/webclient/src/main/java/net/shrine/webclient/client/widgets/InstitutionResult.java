@@ -16,6 +16,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class InstitutionResult extends Composite {
 
+	private static final int MinimumSetSizeToDisplay = 10;
+	
 	private static InstitutionResultUiBinder uiBinder = GWT.create(InstitutionResultUiBinder.class);
 
 	interface InstitutionResultUiBinder extends UiBinder<Widget, InstitutionResult> { }
@@ -34,8 +36,8 @@ public final class InstitutionResult extends Composite {
 	}
 
 	String asString(final int resultSetSize) {
-		if(resultSetSize < 10) {
-			return "< 10";
+		if(resultSetSize < MinimumSetSizeToDisplay) {
+			return "< " + MinimumSetSizeToDisplay;
 		}
 		
 		return String.valueOf(resultSetSize);

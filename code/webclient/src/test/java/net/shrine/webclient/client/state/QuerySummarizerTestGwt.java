@@ -1,9 +1,9 @@
-package net.shrine.webclient.client.util;
+package net.shrine.webclient.client.state;
 
 import static java.util.Arrays.asList;
-import static net.shrine.webclient.client.util.QuerySummarizer.toLabel;
-import static net.shrine.webclient.client.util.QuerySummarizer.toNegatedLabel;
-import static net.shrine.webclient.client.util.QuerySummarizer.toSingularCategory;
+import static net.shrine.webclient.client.state.QuerySummarizer.toLabel;
+import static net.shrine.webclient.client.state.QuerySummarizer.toNegatedLabel;
+import static net.shrine.webclient.client.state.QuerySummarizer.toSingularCategory;
 
 import java.util.Collections;
 import java.util.Date;
@@ -13,7 +13,9 @@ import net.shrine.webclient.client.domain.And;
 import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.Or;
 import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.state.QuerySummarizer;
 import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
+import net.shrine.webclient.client.util.Observer;
 
 import org.junit.Test;
 

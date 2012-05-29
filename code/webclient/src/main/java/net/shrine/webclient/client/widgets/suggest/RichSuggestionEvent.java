@@ -19,7 +19,7 @@ public final class RichSuggestionEvent<S extends IsSerializable> extends GwtEven
 	// GwtEvent.Type<RichSuggestionEventHandler<S>> made handlers not get
 	// called. :(
 	@SuppressWarnings("unchecked")
-	public static final <S extends IsSerializable> GwtEvent.Type<RichSuggestionEventHandler<S>> getType() {
+	public static <S extends IsSerializable> GwtEvent.Type<RichSuggestionEventHandler<S>> getType() {
 		return TYPE;
 	}
 
@@ -35,11 +35,11 @@ public final class RichSuggestionEvent<S extends IsSerializable> extends GwtEven
 		this.suggestion = suggestion;
 	}
 
-	public static final <S extends IsSerializable> RichSuggestionEvent<S> from(final S suggestion) {
+	public static <S extends IsSerializable> RichSuggestionEvent<S> from(final S suggestion) {
 		return new RichSuggestionEvent<S>(suggestion);
 	}
 
-	public final S getSuggestion() {
+	public S getSuggestion() {
 		return suggestion;
 	}
 

@@ -1,6 +1,8 @@
 package net.shrine.webclient.client.widgets;
 
 
+import net.shrine.webclient.client.util.EventUtil;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -10,7 +12,7 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public final class CollapseDataDictionaryPanelEvent extends GwtEvent<CollapseDataDictionaryPanelEventHandler> {
 
-	private static final GwtEvent.Type<CollapseDataDictionaryPanelEventHandler> TYPE = WidgetUtil.eventType();
+	private static final GwtEvent.Type<CollapseDataDictionaryPanelEventHandler> TYPE = EventUtil.eventType();
 	
 	public static final CollapseDataDictionaryPanelEvent Instance = new CollapseDataDictionaryPanelEvent();
 	
@@ -18,7 +20,7 @@ public final class CollapseDataDictionaryPanelEvent extends GwtEvent<CollapseDat
 		super();
 	}
 	
-	public static final GwtEvent.Type<CollapseDataDictionaryPanelEventHandler> getType() {
+	public static GwtEvent.Type<CollapseDataDictionaryPanelEventHandler> getType() {
 		return TYPE;
 	}
 	

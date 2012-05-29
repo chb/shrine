@@ -1,9 +1,8 @@
-package net.shrine.webclient.client.domain;
+package net.shrine.webclient.client.state;
 
 import java.util.Collection;
 import java.util.List;
 
-import net.shrine.webclient.client.state.QueryGroup;
 import net.shrine.webclient.client.util.Util;
 
 /**

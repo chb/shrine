@@ -12,21 +12,21 @@ import net.shrine.webclient.client.util.IObservable;
  */
 public interface ReadOnlyQueryGroup extends IObservable {
 
-	public abstract String toXmlString();
+	String toXmlString();
 
-	public abstract Expression getExpression();
+	Expression getExpression();
 
-	public abstract int getId();
+	int getId();
 
-	public abstract String getName();
+	String getName();
 	
-	public abstract int getMinOccurances();
+	int getMinOccurances();
 
-	public abstract boolean isNegated();
+	boolean isNegated();
 
-	public abstract Date getStart();
+	Date getStart();
 
-	public abstract Date getEnd();
+	Date getEnd();
 	
-	public abstract Date getCreatedOn();
+	Date getCreatedOn();
 }

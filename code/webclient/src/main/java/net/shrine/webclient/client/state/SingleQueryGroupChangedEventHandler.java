@@ -1,4 +1,4 @@
-package net.shrine.webclient.client.events;
+package net.shrine.webclient.client.state;
 
 import com.google.gwt.event.shared.EventHandler;
 

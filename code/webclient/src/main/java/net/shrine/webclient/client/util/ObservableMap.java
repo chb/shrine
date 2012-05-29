@@ -23,7 +23,7 @@ public final class ObservableMap<K, V> extends AbstractObservable implements Map
 		this.delegate = delegate;
 	}
 
-	public static final <K, V> ObservableMap<K, V> empty() {
+	public static <K, V> ObservableMap<K, V> empty() {
 		return new ObservableMap<K, V>(new HashMap<K, V>());
 	}
 

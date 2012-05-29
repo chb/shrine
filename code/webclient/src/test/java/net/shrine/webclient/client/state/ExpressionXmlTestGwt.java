@@ -1,4 +1,4 @@
-package net.shrine.webclient.client.domain;
+package net.shrine.webclient.client.state;
 
 import static java.util.Arrays.asList;
 
@@ -6,6 +6,9 @@ import java.util.Collections;
 import java.util.List;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
+import net.shrine.webclient.client.domain.And;
+import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.client.state.ExpressionXml;
 import net.shrine.webclient.client.state.QueryGroup;
 
 import org.junit.Test;

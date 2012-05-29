@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @date Apr 5, 2012
  */
 public class RichSuggestBox<S extends IsSerializable> extends Composite implements SuggestRowContainer<S>, HasText {
+
 	private final TextBox textBox = new TextBox();
 
 	private RichSuggestOracle<S> oracle;
@@ -40,11 +41,12 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 
 	private final Observable<Integer> highlightedPopupRow = Observable.empty();
 
-	// TODO: make this a param
 	private final int maxSuggestions;
 
+	private static final int DefaultMaxSuggestions = 20;
+
 	public RichSuggestBox(final RichSuggestOracle<S> oracle, final WidgetMaker<S> widgetMaker) {
-		this(oracle, widgetMaker, 20);
+		this(oracle, widgetMaker, DefaultMaxSuggestions);
 	}
 
 	public RichSuggestBox(final RichSuggestOracle<S> oracle, final WidgetMaker<S> widgetMaker, final int maxSuggestions) {
@@ -65,7 +67,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		initWidget(textBox);
 	}
 
-	void clampHighlightedPopupRow() {
+	final void clampHighlightedPopupRow() {
 		if (highlightedPopupRow.isDefined()) {
 			if (highlightedPopupRow.get() < 0) {
 				highlightedPopupRow.set(0);
@@ -76,23 +78,27 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 	}
 
 	@Override
-	public String getText() {
+	public final String getText() {
 		return textBox.getText();
 	}
 
 	@Override
-	public void setText(final String text) {
+	public final void setText(final String text) {
 		textBox.setText(text);
+	}
+	
+	final boolean isEmpty() {
+		return getText().length() == 0;
 	}
 
 	@Override
-	public void fireSuggestionEvent(final RichSuggestionEvent<S> event) {
+	public final void fireSuggestionEvent(final RichSuggestionEvent<S> event) {
 		fireEvent(event);
 
 		hidePopup();
 	}
 
-	public HandlerRegistration addSelectionHandler(final RichSuggestionEventHandler<S> handler) {
+	public final HandlerRegistration addSelectionHandler(final RichSuggestionEventHandler<S> handler) {
 		Util.requireNotNull(handler);
 
 		return this.addHandler(handler, RichSuggestionEvent.<S> getType());
@@ -108,50 +114,10 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 
 		// NB: Use keyUp instead of keyPress so that suggestions are presented
 		// after each keypress based on the entire contents of the TextBox
-		textBox.addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(final KeyUpEvent event) {
-				if (event.isUpArrow()) {
-					decrementHighlightedRow();
-				} else if (event.isDownArrow()) {
-					incrementHighlightedRow();
-				} else if (isEnter(event)) {
-					if (highlightedPopupRow.isDefined()) {
-						selectHighlightedRow();
-					}
-				} else if (isKeyThatTriggersSuggestRequest(event)) {
-					if (getText().length() > 0) {
-						oracle.requestSuggestions(new RichSuggestRequest(maxSuggestions, textBox.getText()), new RichSuggestCallback<S>() {
-							@Override
-							public void onSuggestionsReady(final RichSuggestRequest request, final RichSuggestResponse<S> response) {
-								if (response.hasSuggestions()) {
-									fillSuggestionPanel(response);
-
-									positionAndShowPopup();
-								} else {
-									hidePopup();
-								}
-							}
-						});
-					} else {
-						hidePopup();
-					}
-				}
-			}
-
-			boolean isKeyThatTriggersSuggestRequest(final KeyUpEvent event) {
-				final int keyCode = event.getNativeKeyCode();
-
-				return keyCode == ' ' || (keyCode >= 'A' && keyCode <= 'Z') || (keyCode >= '0' && keyCode <= '9') || keyCode == KeyCodes.KEY_BACKSPACE || keyCode == KeyCodes.KEY_DELETE;
-			}
-
-			boolean isEnter(final KeyUpEvent event) {
-				return event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
-			}
-		});
+		textBox.addKeyUpHandler(new SuggestBoxKeyUpHandler());
 	}
 
-	void setHighlightedRow(final int r) {
+	final void setHighlightedRow(final int r) {
 		highlightedPopupRow.set(r);
 
 		clampHighlightedPopupRow();
@@ -159,13 +125,13 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
 	}
 
-	void zeroHighlightedRow() {
+	final void zeroHighlightedRow() {
 		highlightedPopupRow.set(0);
 
 		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
 	}
 
-	void decrementHighlightedRow() {
+	final void decrementHighlightedRow() {
 		if (highlightedPopupRow.isDefined()) {
 			highlightedPopupRow.set(highlightedPopupRow.get() - 1);
 
@@ -177,7 +143,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
 	}
 
-	void incrementHighlightedRow() {
+	final void incrementHighlightedRow() {
 		if (highlightedPopupRow.isDefined()) {
 			highlightedPopupRow.set(highlightedPopupRow.get() + 1);
 
@@ -189,35 +155,35 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
 	}
 
-	public RichSuggestOracle<S> getOracle() {
+	public final RichSuggestOracle<S> getOracle() {
 		return oracle;
 	}
 
-	public void setOracle(final RichSuggestOracle<S> oracle) {
+	public final void setOracle(final RichSuggestOracle<S> oracle) {
 		Util.requireNotNull(oracle);
 
 		this.oracle = oracle;
 	}
 
-	public WidgetMaker<S> getWidgetMaker() {
+	public final WidgetMaker<S> getWidgetMaker() {
 		return widgetMaker;
 	}
 
-	public void setWidgetMaker(final WidgetMaker<S> widgetMaker) {
+	public final void setWidgetMaker(final WidgetMaker<S> widgetMaker) {
 		Util.requireNotNull(widgetMaker);
 
 		this.widgetMaker = widgetMaker;
 	}
 
-	Observable<Integer> getHighlightedPopupRow() {
+	final Observable<Integer> getHighlightedPopupRow() {
 		return highlightedPopupRow;
 	}
 
-	int getMaxSuggestions() {
+	final int getMaxSuggestions() {
 		return maxSuggestions;
 	}
 
-	TextBox getTextBox() {
+	final TextBox getTextBox() {
 		return textBox;
 	}
 
@@ -236,13 +202,14 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		// TODO: HACK ALERT: "- textBoxElement.getClientHeight() - 7" is totally
 		// arbitrary.
 		// Needed to place suggest popup right under text box. :( :(
-		final int bottom = textBoxElement.getAbsoluteBottom() - textBoxElement.getClientHeight() - 7;
+		final int hackOffset = 7;
+		final int bottom = textBoxElement.getAbsoluteBottom() - textBoxElement.getClientHeight() - hackOffset;
 
 		suggestionPopup.setPopupPosition(left, bottom);
 	}
 
 	// NB: Exposed for testing
-	public void fillSuggestionPanel(final RichSuggestResponse<S> response) {
+	public final void fillSuggestionPanel(final RichSuggestResponse<S> response) {
 		refreshSuggestionPanel();
 
 		int i = 0;
@@ -256,7 +223,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		}
 	}
 
-	void refreshSuggestionPanel() {
+	final void refreshSuggestionPanel() {
 		highlightedPopupRow.clear();
 
 		if (suggestionsPanel != null) {
@@ -269,7 +236,7 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		suggestionPopup.setWidget(suggestionsPanel);
 	}
 
-	RichSuggestionRow rowFromWidget(final int index, final S suggestion, final Widget widget) {
+	final RichSuggestionRow rowFromWidget(final int index, final S suggestion, final Widget widget) {
 		final RichSuggestionRow richSuggestionRow = new RichSuggestionRow(this, widget, new Runnable() {
 			@Override
 			public void run() {
@@ -303,34 +270,104 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 	}
 
 	@Override
-	public void hidePopup() {
+	public final void hidePopup() {
 		Log.debug("Hiding popup");
 
 		suggestionPopup.hide();
 	}
 
 	// NB: For testing
-	PopupPanel getSuggestionPopup() {
+	final PopupPanel getSuggestionPopup() {
 		return suggestionPopup;
 	}
 
 	// NB: For testing
-	SuggestionsPanel getSuggestionsPanel() {
+	final SuggestionsPanel getSuggestionsPanel() {
 		return suggestionsPanel;
 	}
 
-	void selectHighlightedRow() {
+	final void selectHighlightedRow() {
 		final RichSuggestionRow highlightedRow = (RichSuggestionRow) suggestionsPanel.getWidget(highlightedPopupRow.get());
 
 		highlightedRow.select();
 
 		hidePopup();
-		
+
 		clearTextBox();
 	}
 
 	@Override
-	public void clearTextBox() {
+	public final void clearTextBox() {
 		textBox.setText("");
+	}
+
+	private static boolean isKeyThatTriggersSuggestRequest(final KeyUpEvent event) {
+		final int keyCode = event.getNativeKeyCode();
+
+		return isSpace(keyCode) || isLetterOrNumber(keyCode) || isBackspace(keyCode) || isDelete(keyCode);
+	}
+
+	private static boolean isSpace(final int keyCode) {
+		return keyCode == ' ';
+	}
+
+	private static boolean isDelete(final int keyCode) {
+		return keyCode == KeyCodes.KEY_DELETE;
+	}
+
+	private static boolean isBackspace(final int keyCode) {
+		return keyCode == KeyCodes.KEY_BACKSPACE;
+	}
+
+	private static boolean isLetterOrNumber(final int keyCode) {
+		return isLetter(keyCode) || isNumber(keyCode);
+	}
+
+	private static boolean isNumber(final int keyCode) {
+		return (keyCode >= '0' && keyCode <= '9');
+	}
+
+	private static boolean isLetter(final int keyCode) {
+		return (keyCode >= 'A' && keyCode <= 'Z') || (keyCode >= 'a' && keyCode <= 'z');
+	}
+
+	private static boolean isEnter(final KeyUpEvent event) {
+		return event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
+	}
+
+	private final class SuggestBoxKeyUpHandler implements KeyUpHandler {
+		@Override
+		public void onKeyUp(final KeyUpEvent event) {
+			if (event.isUpArrow()) {
+				decrementHighlightedRow();
+			} else if (event.isDownArrow()) {
+				incrementHighlightedRow();
+			} else if (isEnter(event)) {
+				if (highlightedPopupRow.isDefined()) {
+					selectHighlightedRow();
+				}
+			} else if (isKeyThatTriggersSuggestRequest(event)) {
+				if(!isEmpty()) {
+					requestSuggestions();
+				} else {
+					hidePopup();
+				}
+			}
+		}
+	}
+	
+	final void requestSuggestions() {
+		oracle.requestSuggestions(new RichSuggestRequest(maxSuggestions, textBox.getText()), new RichSuggestCallback<S>() {
+			@Override
+			public void onSuggestionsReady(final RichSuggestRequest request, final RichSuggestResponse<S> response) {
+				if (response.hasSuggestions()) {
+					fillSuggestionPanel(response);
+
+					positionAndShowPopup();
+				} else {
+					hidePopup();
+				}
+			}
+		});
 	}
 }

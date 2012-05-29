@@ -1,8 +1,8 @@
 package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.controllers.Controllers;
-import net.shrine.webclient.client.events.QueryGroupsChangedEvent;
-import net.shrine.webclient.client.events.QueryGroupsChangedEventHandler;
+import net.shrine.webclient.client.state.QueryGroupsChangedEvent;
+import net.shrine.webclient.client.state.QueryGroupsChangedEventHandler;
 import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.util.Util;
 

@@ -1,4 +1,4 @@
-package net.shrine.webclient.client.util;
+package net.shrine.webclient.client.state;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.domain.Or;
 import net.shrine.webclient.client.domain.Term;
-import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
+import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -51,7 +51,7 @@ public final class QuerySummarizer {
 		return result.toString();
 	}
 	
-	static final String summarize(final ReadOnlyQueryGroup queryGroup, final String queryGroupCssClass) {
+	static String summarize(final ReadOnlyQueryGroup queryGroup, final String queryGroupCssClass) {
 		final StringBuilder result = new StringBuilder();
 		
 		final Expression expr = queryGroup.getExpression();
@@ -118,7 +118,7 @@ public final class QuerySummarizer {
 		}
 	}*/
 	
-	static final String toLabel(final String category) {
+	static String toLabel(final String category) {
 		Util.requireNotNull(category);
 		
 		final String mungedCategory = category.toLowerCase();
@@ -128,7 +128,7 @@ public final class QuerySummarizer {
 		return Labels.forCategory.get(mungedCategory).value;
 	}
 	
-	static final String toNegatedLabel(final String category) {
+	static String toNegatedLabel(final String category) {
 		Util.requireNotNull(category);
 		
 		final String mungedCategory = category.toLowerCase();
@@ -142,7 +142,7 @@ public final class QuerySummarizer {
 		Util.require(Labels.forCategory.containsKey(category));
 	}
 	
-	static final String toSingularCategory(final String category) {
+	static String toSingularCategory(final String category) {
 		return QuerySummarizer.Labels.singularCategories.get(category.toLowerCase());
 	}
 	

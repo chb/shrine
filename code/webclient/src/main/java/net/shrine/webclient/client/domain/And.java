@@ -13,8 +13,6 @@ import net.shrine.webclient.client.util.Util;
  */
 public final class And implements Expression {
 	
-	private static final long serialVersionUID = 1L;
-	
 	private final List<Andable> components = Util.makeArrayList();
 
 	public And(final Collection<? extends Andable> components) {

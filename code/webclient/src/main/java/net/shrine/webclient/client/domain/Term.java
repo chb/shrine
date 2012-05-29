@@ -13,7 +13,6 @@ import net.shrine.webclient.client.util.Util;
  * @date Mar 23, 2012
  */
 public final class Term implements Andable, IsSerializable {
-	private static final long serialVersionUID = 1L;
 	
 	private String path;
 	

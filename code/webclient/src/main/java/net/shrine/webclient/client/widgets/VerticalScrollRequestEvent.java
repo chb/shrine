@@ -1,6 +1,8 @@
 package net.shrine.webclient.client.widgets;
 
 
+import net.shrine.webclient.client.util.EventUtil;
+
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -11,7 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class VerticalScrollRequestEvent extends GwtEvent<VerticalScrollRequestEventHandler> {
 
-	private static final GwtEvent.Type<VerticalScrollRequestEventHandler> TYPE = WidgetUtil.eventType();
+	private static final GwtEvent.Type<VerticalScrollRequestEventHandler> TYPE = EventUtil.eventType();
 	
 	private final Widget toScrollTo;
 	
@@ -29,7 +31,7 @@ public final class VerticalScrollRequestEvent extends GwtEvent<VerticalScrollReq
 		return toScrollTo.getAbsoluteTop();
 	}
 	
-	public static final GwtEvent.Type<VerticalScrollRequestEventHandler> getType() {
+	public static GwtEvent.Type<VerticalScrollRequestEventHandler> getType() {
 		return TYPE;
 	}
 	

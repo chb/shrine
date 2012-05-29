@@ -30,7 +30,7 @@ public final class RichSuggestionRow extends SimplePanel implements HasMouseOutH
 	public static enum StyleNames {
 		Highlighted, NotHighlighted;
 		
-		public final String toStyleName() {
+		public String toStyleName() {
 			return "richSuggestionRow-" + name();
 		}
 	}

@@ -40,21 +40,6 @@ public final class OntologyTree extends Composite {
 	
 	private final OntNode ontNodeToBrowseTo;
 	
-	private final class OntTreeItem extends TreeItem {
-
-		final OntNode ontNode;
-		
-		OntTreeItem(final OntNode ontNode) {
-			super(new OntTreeNode(eventBus, controllers, ontNode));
-			
-			this.ontNode = ontNode;
-		}
-		
-		public OntTreeNode getOntTreeNode() {
-			return (OntTreeNode)getWidget();
-		}
-	}
-	
 	public OntologyTree(final EventBus eventBus, final Controllers controllers, final List<OntNode> pathFromRoot) {
 		super();
 		
@@ -84,7 +69,7 @@ public final class OntologyTree extends Composite {
 		}
 	}
 
-	private final TreeItem dummyItem() {
+	private TreeItem dummyItem() {
 		return new TreeItem("");
 	}
 	
@@ -162,68 +147,93 @@ public final class OntologyTree extends Composite {
 	}
 	
 	void addOpenHandler(final Tree tree) {
-		tree.addOpenHandler(new OpenHandler<TreeItem>() {
-			@Override
-			public void onOpen(final OpenEvent<TreeItem> event) {
-				final OntTreeItem itemToBeOpened = (OntTreeItem)event.getTarget();
+		tree.addOpenHandler(new OntologyTreeItemOpenHandler());
+	}
+	
+	private final class OntologyTreeItemOpenHandler implements OpenHandler<TreeItem> {
+		@Override
+		public void onOpen(final OpenEvent<TreeItem> event) {
+			final OntTreeItem itemToBeOpened = (OntTreeItem)event.getTarget();
+			
+			Log.debug("Opening " + itemToBeOpened.ontNode.getValue());
+			
+			//If we haven't been opened (only have the dummy item)
+			if(shouldLoadChildren(itemToBeOpened)) {
+				itemToBeOpened.removeItems();
 				
-				Log.debug("Opening " + itemToBeOpened.ontNode.getValue());
-				
-				//If we haven't been opened (only have the dummy item)
-				if(shouldLoadChildren(itemToBeOpened)) {
-					itemToBeOpened.removeItems();
-					
-					ontologyService.getChildrenFor(itemToBeOpened.ontNode.getValue(), new AsyncCallback<List<OntNode>>() {
-						@Override
-						public void onSuccess(final List<OntNode> childNodes) {
-							for(final OntNode childNode : childNodes) {
-								//TODO: TOTAL HACK: skip spurious metadata
-								if(!isSpuriousMetaDataTerm(childNode)) {
-									final OntTreeItem childItem = new OntTreeItem(childNode);
-									
-									//If this node isn't a leaf, give it a dummy child so it's openable
-									if(!childNode.isLeaf()) {
-										childItem.addItem(dummyItem());
-									}
-									
-									//NB: Child item must be added to something before it can be opened
-									itemToBeOpened.addItem(childItem);
-									
-									//In the child is on the path from the root to the term to browse to, open the term 
-									if(isEdgeOnPathFromRoot(itemToBeOpened.ontNode, childNode)) {
-										childItem.setState(true, true);
-									}
-									
-									if(childNode.equals(ontNodeToBrowseTo)) {
-										select(childItem);
-									}
-								}
-							}
-						}
+				ontologyService.getChildrenFor(itemToBeOpened.ontNode.getValue(), new OntologyChildrenReceivedCallback(itemToBeOpened));
+			}
+		}
 
-						@Override
-						public void onFailure(final Throwable caught) {
-							Log.error("Couldn't get children of term: " + itemToBeOpened.ontNode.getValue(), caught);
-						}
-					});
+		boolean shouldLoadChildren(final OntTreeItem item) {
+			return hasOnlyDummyChild(item) || isVertexOnPathFromRoot(item);
+		}
+
+		boolean hasOnlyDummyChild(final OntTreeItem item) {
+			return hasOnlyOneChild(item) && hasDummyChild(item);
+		}
+
+		boolean hasOnlyOneChild(final OntTreeItem item) {
+			return item.getChildCount() == 1;
+		}
+
+		boolean hasDummyChild(final OntTreeItem item) {
+			return item.getChild(0).getText().equals("");
+		}
+	}
+
+	private final class OntologyChildrenReceivedCallback implements AsyncCallback<List<OntNode>> {
+		private final OntTreeItem itemToBeOpened;
+
+		private OntologyChildrenReceivedCallback(OntTreeItem itemToBeOpened) {
+			this.itemToBeOpened = itemToBeOpened;
+		}
+
+		@Override
+		public void onSuccess(final List<OntNode> childNodes) {
+			for(final OntNode childNode : childNodes) {
+				//TODO: TOTAL HACK: skip spurious metadata
+				if(!isSpuriousMetaDataTerm(childNode)) {
+					final OntTreeItem childItem = new OntTreeItem(childNode);
+					
+					//If this node isn't a leaf, give it a dummy child so it's openable
+					if(!childNode.isLeaf()) {
+						childItem.addItem(dummyItem());
+					}
+					
+					//NB: Child item must be added to something before it can be opened
+					itemToBeOpened.addItem(childItem);
+					
+					//In the child is on the path from the root to the term to browse to, open the term 
+					if(isEdgeOnPathFromRoot(itemToBeOpened.ontNode, childNode)) {
+						childItem.setState(true, true);
+					}
+					
+					if(childNode.equals(ontNodeToBrowseTo)) {
+						select(childItem);
+					}
 				}
 			}
+		}
 
-			boolean shouldLoadChildren(final OntTreeItem item) {
-				return hasOnlyDummyChild(item) || isVertexOnPathFromRoot(item);
-			}
+		@Override
+		public void onFailure(final Throwable caught) {
+			Log.error("Couldn't get children of term: " + itemToBeOpened.ontNode.getValue(), caught);
+		}
+	}
+	
+	final class OntTreeItem extends TreeItem {
 
-			boolean hasOnlyDummyChild(final OntTreeItem item) {
-				return hasOnlyOneChild(item) && hasDummyChild(item);
-			}
-
-			boolean hasOnlyOneChild(final OntTreeItem item) {
-				return item.getChildCount() == 1;
-			}
-
-			boolean hasDummyChild(final OntTreeItem item) {
-				return item.getChild(0).getText().equals("");
-			}
-		});
+		final OntNode ontNode;
+		
+		OntTreeItem(final OntNode ontNode) {
+			super(new OntTreeNode(eventBus, controllers, ontNode));
+			
+			this.ontNode = ontNode;
+		}
+		
+		public OntTreeNode getOntTreeNode() {
+			return (OntTreeNode)getWidget();
+		}
 	}
 }

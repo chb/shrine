@@ -2,8 +2,6 @@ package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.util.ReadOnlyObservable;
 
-import com.google.gwt.event.shared.EventHandler;
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -15,10 +13,6 @@ import com.google.gwt.user.client.ui.Widget;
 public final class WidgetUtil {
 	private WidgetUtil() {
 		super();
-	}
-	
-	public static final <H extends EventHandler> GwtEvent.Type<H> eventType() {
-		return new GwtEvent.Type<H>();
 	}
 	
 	public static String textFor(final ReadOnlyObservable<Integer> handle) {

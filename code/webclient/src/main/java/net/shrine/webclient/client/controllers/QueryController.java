@@ -1,6 +1,7 @@
 package net.shrine.webclient.client.controllers;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.services.QueryServiceAsync;
@@ -61,7 +62,7 @@ public final class QueryController extends StatefulController {
 		state.completeAllQuery(noResults());
 	}
 	
-	private static final HashMap<String, IntWrapper> noResults() {
+	private static Map<String, IntWrapper> noResults() {
 		return new HashMap<String, IntWrapper>();
 	}
 }

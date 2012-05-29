@@ -98,7 +98,7 @@ public final class Spinner extends Composite {
 		this.textBox.setWidth(width);
 	}
 
-	private final boolean isAllowedChar(final char ch) {
+	private boolean isAllowedChar(final char ch) {
 		Log.debug("Char: " + ch + " (" + ((int)ch) + ")");
 		
 		final boolean result = !Character.isLetter(ch);//Character.isDigit(ch) || ch == KeyCodes.KEY_ALT || ch == KeyCodes.KEY_CTRL || ch == KeyCodes.KEY_SHIFT || ch == KeyCodes.KEY_BACKSPACE || ch == KeyCodes.KEY_DELETE || ch == KeyCodes.KEY_UP || ch == KeyCodes.KEY_DOWN || ch == KeyCodes.KEY_LEFT || ch == KeyCodes.KEY_RIGHT;
@@ -127,7 +127,7 @@ public final class Spinner extends Composite {
 		// after something new is typed AND focus leaves the widget :(
 		this.textBox.addKeyUpHandler(new KeyUpHandler() {
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
+			public void onKeyUp(final KeyUpEvent event) {
 				update(getTextBoxValue());
 			}
 

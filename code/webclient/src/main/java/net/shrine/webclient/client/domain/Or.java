@@ -15,8 +15,6 @@ import net.shrine.webclient.client.util.Util;
  */
 public final class Or implements Andable, Iterable<Term>{
 
-	private static final long serialVersionUID = 1L;
-
 	private final List<Term> terms = Util.makeArrayList();
 
 	public Or(final Collection<Term> terms) {
