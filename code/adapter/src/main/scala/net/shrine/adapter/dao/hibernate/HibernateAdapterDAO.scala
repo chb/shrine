@@ -47,7 +47,7 @@ class HibernateAdapterDAO extends AdapterDAO {
   import HibernateAdapterDAO._
 
   @Autowired
-  var sessionFactory: SessionFactory = _
+  private var sessionFactory: SessionFactory = _
 
   private def withCurrentSession[T](body: Session => T): T = body(sessionFactory.getCurrentSession())
 
