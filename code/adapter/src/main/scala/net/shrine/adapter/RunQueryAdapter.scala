@@ -23,8 +23,8 @@ class RunQueryAdapter(
     override protected val dao: AdapterDAO,
     override protected val hiveCredentials: HiveCredentials,
     private[adapter] val conceptTranslator: QueryDefinitionTranslator,
-    private val config: ShrineConfig,
-    private val doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, dao, hiveCredentials) {
+    config: ShrineConfig,
+    doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, dao, hiveCredentials) {
 
   override protected def parseShrineResponse(nodeSeq: NodeSeq) = RunQueryResponse.fromI2b2(nodeSeq)
 
@@ -99,12 +99,10 @@ class RunQueryAdapter(
       throw new AdapterLockoutException(identity)
     }
 
-    var response = super.processRequest(identity, message).asInstanceOf[RunQueryResponse]
+    val response = super.processRequest(identity, message).asInstanceOf[RunQueryResponse]
     
     createIdMappings(identity, message, response)
     
-    response = translateLocalIdsToNetworkIds(response, message.masterId.get, message.instanceId.get, message.resultIds.get)
-    
-    obfuscateResponse(response)
+    obfuscateResponse(translateLocalIdsToNetworkIds(response, message.masterId.get, message.instanceId.get, message.resultIds.get))
   }
 }
