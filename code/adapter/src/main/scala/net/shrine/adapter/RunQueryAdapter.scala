@@ -86,11 +86,9 @@ class RunQueryAdapter(
   }
 
   private def isLockedOut(identity: Identity): Boolean = {
-    if(config.getAdapterLockoutAttemptsThreshold == 0) {
-      false
-    }
-    else {
-      dao.isUserLockedOut(identity, config.getAdapterLockoutAttemptsThreshold)
+    config.getAdapterLockoutAttemptsThreshold match {
+      case 0 => false
+      case _ => dao.isUserLockedOut(identity, config.getAdapterLockoutAttemptsThreshold)
     }
   }
 
