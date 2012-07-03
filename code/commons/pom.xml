@@ -60,18 +60,6 @@
             <version>${spin-base-version}</version>
         </dependency>
 
-        <!--TODO SHRINE 1.6.6 jars not yet ported to shrine 1.7 -->
-
-        <!--TODO requires manually building of the 1.6.6 jar -->
-        <!--this is required for the SheriffEntryList type read by the CRC response serializer.-->
-        <!--SheriffEntryList will be moved to serializers when 1.6.6 is fully ported. -->
-        <dependency>
-            <groupId>net.shrine.i2b2.schema.crc</groupId>
-            <artifactId>shrine-i2b2-jaxb</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-        </dependency>
-
         <dependency>
             <groupId>net.liftweb</groupId>
             <artifactId>lift-json_2.9.1</artifactId>

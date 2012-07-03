@@ -41,16 +41,8 @@ public abstract class GaussianObfuscator {
     public static final String SAMPLE_SMALLER_THAN_TEN = "Sample sizes smaller than 10 will not be returned in order to prevent inadvertent identification of the sampled patients.";
     public static final int RANGE = 3;
 
-    //Holder for static methods only
-
     private GaussianObfuscator() {
         super();
-    }
-
-    // return phi(x) = standard Gaussian mean 1.0 standard deviation 1.33
-
-    public static double obfuscate(final double x) {
-        return x + Math.round(gaussian(MEAN, STD_DEV));
     }
 
     public static int determineObfuscationAmount(final long x) {

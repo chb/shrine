@@ -2,7 +2,7 @@ package net.shrine.adapter.dao
 
 import org.spin.tools.crypto.signature.Identity
 
-import java.util.{ List => JList }
+import java.util.{ List => JList, Date }
 import net.shrine.protocol.QueryMaster
 
 /**
@@ -30,6 +30,8 @@ trait AdapterDAO {
   def findRecentQueries(limit: Int): Seq[UserAndMaster]
 
   def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean
+
+  def overrideLockout(id: Identity, overrideDate: Date)
 
   def findMasterQueryDefinition(broadcastMasterID: Long): MasterQueryDefinition
 

@@ -10,6 +10,9 @@ import org.springframework.test.AbstractTransactionalDataSourceSpringContextTest
 
 import javax.annotation.Resource;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static java.util.Arrays.asList;
 
 /**
@@ -23,8 +26,7 @@ import static java.util.Arrays.asList;
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 
-public class PrivilegedUserTest extends AbstractTransactionalDataSourceSpringContextTests
-{
+public class PrivilegedUserTest extends AbstractTransactionalDataSourceSpringContextTests {
     @Resource
     protected AdapterDAO adapterDAO;
 
@@ -35,89 +37,97 @@ public class PrivilegedUserTest extends AbstractTransactionalDataSourceSpringCon
     protected final Integer defaultThreshold = 10;
 
     @Override
-    protected String getConfigPath()
-    {
+    protected String getConfigPath() {
         return "/testApplicationContext.xml";
     }
 
     @Override
-    protected void onSetUpInTransaction() throws Exception
-    {
+    protected void onSetUpInTransaction() throws Exception {
         adapterDAO.insertUserThreshold(testId, testThreshold);
     }
 
     @Test
-    public void testGetUserThreshold() throws DAOException
-    {
+    public void testGetUserThreshold() throws DAOException {
         final int threshold = adapterDAO.findUserThreshold(testId);
-        
+
         assertEquals((int) testThreshold, threshold);
     }
 
     @Test
-    public void testIsUserWithNoThresholdEntryLockedOut() throws DAOException
-    {
+    public void testIsUserWithNoThresholdEntryLockedOut() throws DAOException {
         final String username = "noEntry";
         final String domain = "noEntryDomain";
-        
+
         final Identity noThresholdId1 = new Identity(testDomain, username);
         final Identity noThresholdId2 = new Identity(domain, testUsername);
-        
+
         for(final Identity noThreshold : asList(noThresholdId1, noThresholdId2)) {
-	        assertFalse(adapterDAO.isUserLockedOut(noThreshold, defaultThreshold));
-	        
-	        lockoutUser(noThreshold, 42);
-	        
-	        assertFalse(adapterDAO.isUserLockedOut(noThreshold, defaultThreshold));
+            assertFalse(adapterDAO.isUserLockedOut(noThreshold, defaultThreshold));
+
+            lockoutUser(noThreshold, 42);
+
+            assertFalse(adapterDAO.isUserLockedOut(noThreshold, defaultThreshold));
         }
     }
 
     @Test
-    public void testIsUserLockedOut() throws DAOException
-    {
+    public void testIsUserLockedOut() throws DAOException {
         assertFalse(adapterDAO.isUserLockedOut(testId, defaultThreshold));
-        
+
         insertRequestResponse(0, testId, 42);
-        
+
         assertFalse(adapterDAO.isUserLockedOut(testId, defaultThreshold));
-        
+
         lockoutUser(testId, 42);
-        
+
         assertTrue(adapterDAO.isUserLockedOut(testId, defaultThreshold));
-        
+
         //Make sure username + domain is how users are identified 
         assertFalse(adapterDAO.isUserLockedOut(new Identity(testDomain, "some-other-username"), defaultThreshold));
         assertFalse(adapterDAO.isUserLockedOut(new Identity("some-other-domain", testUsername), defaultThreshold));
     }
 
     @Test
-    public void testIsUserLockedOutWithResultSetSizeOfZero() throws DAOException
-    {
+    public void testIsUserLockedOutWithResultSetSizeOfZero() throws DAOException {
         assertFalse(adapterDAO.isUserLockedOut(testId, defaultThreshold));
-        
+
         insertRequestResponse(0, testId, 0);
-        
+
         assertFalse(adapterDAO.isUserLockedOut(testId, defaultThreshold));
-        
+
         lockoutUser(testId, 0);
 
         //user should not be locked out
         assertFalse(adapterDAO.isUserLockedOut(testId, defaultThreshold));
     }
 
-    private void lockoutUser(final Identity lockedOutId, final int resultSetSize) throws DAOException
-    {
-        for(int i : Util.range(1, testThreshold + 1))
-        {
+    @Test
+    public void testLockoutOverride() throws DAOException {
+        assertFalse(adapterDAO.isUserLockedOut(testId, defaultThreshold));
+        lockoutUser(testId, 42);
+        assertTrue(adapterDAO.isUserLockedOut(testId, defaultThreshold));
+
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+        adapterDAO.overrideLockout(testId, tomorrow.getTime());
+
+        assertFalse(adapterDAO.isUserLockedOut(testId, defaultThreshold));
+
+        Calendar thirtyOneDaysAgo = Calendar.getInstance();
+        thirtyOneDaysAgo.add(Calendar.DAY_OF_MONTH, -31);
+        adapterDAO.overrideLockout(testId, thirtyOneDaysAgo.getTime());
+    }
+
+    private void lockoutUser(final Identity lockedOutId, final int resultSetSize) throws DAOException {
+        for(int i : Util.range(1, testThreshold + 2)) {
             insertRequestResponse(i, lockedOutId, resultSetSize);
         }
     }
 
     private void insertRequestResponse(int queryId, final Identity lockedOutId, final int resultSetSize)
-            throws DAOException
-    {
+            throws DAOException {
         RequestResponseData data = new RequestResponseData(lockedOutId.getDomain(), lockedOutId.getUsername(), queryId, queryId, queryId, "OK", resultSetSize, 12, String.valueOf(queryId), "<result_xml/>");
-        
+
         adapterDAO.insertRequestResponseData(data);
     }
 }
