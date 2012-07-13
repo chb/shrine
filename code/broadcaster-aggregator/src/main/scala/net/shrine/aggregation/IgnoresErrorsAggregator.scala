@@ -18,7 +18,7 @@ import net.shrine.protocol.ErrorResponse
  * Needs to be an abstract class instead of a trait due to the view bound on T (: Manifest)
  */
 abstract class IgnoresErrorsAggregator[T <: ShrineResponse : Manifest] extends BasicAggregator[T] {
-  private[aggregation] def makeResponseFrom(validResponses: Seq[Valid[T]], errorResponses: Seq[Error], invalidResponses: Seq[Invalid]): ShrineResponse = {
+  private[aggregation] override def makeResponseFrom(validResponses: Seq[Valid[T]], errorResponses: Seq[Error], invalidResponses: Seq[Invalid]): ShrineResponse = {
     //Filter out errors and invalid responses
     makeResponseFrom(validResponses)
   }

@@ -7,7 +7,7 @@ import net.liftweb.json._
 import net.shrine.protocol.{AuthenticationInfo, ReadApprovedQueryTopicsResponse, ApprovedTopic, RunQueryRequest, ReadApprovedQueryTopicsRequest}
 import xml.{XML, Utility}
 import net.shrine.util.{XmlUtil, Loggable}
-import net.shrine.serializers.HTTPClient
+import net.shrine.util.HTTPClient
 import net.shrine.i2b2.protocol.pm.{User, GetUserConfigurationRequest}
 import net.shrine.authorization.{AuthorizationException, QueryAuthorizationService}
 

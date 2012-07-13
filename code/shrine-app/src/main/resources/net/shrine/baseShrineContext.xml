@@ -82,7 +82,7 @@
 
     <bean id="nodeConfig" factory-bean="shrineConfig" factory-method="generateNodeConfig"/>
 
-    <bean id="spinClient" class="org.spin.query.message.agent.Agent">
+    <bean id="spinClient" class="org.spin.client.Agent">
         <constructor-arg index="0" ref="agentConfig"/>
     </bean>
 

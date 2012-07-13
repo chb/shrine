@@ -5,7 +5,7 @@
 
     <import resource="classpath:net/shrine/baseShrineContext.xml"/>
     
-    <bean id="identityService" class="org.spin.query.message.identity.AlwaysCertifiesIdentityService"/>
+    <bean id="identityService" class="org.spin.identity.AlwaysCertifiesIdentityService"/>
 
     <bean id="authorizationService" class="net.shrine.authorization.AllowsAllAuthorizationService"/>
         

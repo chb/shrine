@@ -2,25 +2,25 @@ package net.shrine.service
 
 import net.shrine.protocol._
 import net.shrine.authorization.QueryAuthorizationService
-import org.spin.query.message.identity.IdentityService
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.config.ShrineConfig
 import org.spin.tools.config.{EndpointType, EndpointConfig}
 import org.apache.log4j.MDC
 import net.shrine.filters.LogFilter
-import org.spin.node.acknack.AckNack
 import java.lang.String
 import org.spin.tools.crypto.PKCryptor
 import scala.collection.JavaConversions._
 import net.shrine.broadcaster.dao.AuditDAO
 import net.shrine.broadcaster.dao.hibernate.AuditEntry
 import org.springframework.transaction.annotation.Transactional
-import org.spin.query.message.headers.{ResultSet, QueryInfo}
-import org.spin.query.message.agent.{SpinAgent, TimeoutException, AgentException}
+import org.spin.message.{AckNack, Failure, Response, Result, ResultSet, QueryInfo}
 import net.shrine.aggregation._
 import org.apache.log4j.Logger
-import org.spin.query.message.headers.Result
 import org.spin.tools.crypto.Envelope
+import org.spin.identity.IdentityService
+import org.spin.client.AgentException
+import org.spin.client.SpinAgent
+import org.spin.client.TimeoutException
 
 /**
  * @author Bill Simons
@@ -41,7 +41,7 @@ class ShrineService(
 
   import ShrineService._
   
-  private lazy val endpointConfig = new EndpointConfig(EndpointType.SOAP, shrineConfig.getAggregatorEndpoint);
+  private lazy val aggregatorEndpointConfig = new EndpointConfig(EndpointType.SOAP, shrineConfig.getAggregatorEndpoint);
 
   protected def generateIdentity(authn: AuthenticationInfo): Identity = identityService.certify(authn.domain, authn.username, authn.credential.value)
 
@@ -74,12 +74,27 @@ class ShrineService(
   }
 
   private[service] def aggregate(queryId: String, identity: Identity, aggregator: Aggregator) = {
+    
+    def toDescription(response: Response): String = Option(response).map(_.getDescription).getOrElse("Unknown")
+    
     val spinResults = getSpinResults(queryId, identity)
     
-    val (notNullResults, nullResults) = spinResults.toSeq.partition(_ != null)
+    val (results, failures, nullResponses) = {
+      val (results, nullResults) = spinResults.getResults.toSeq.partition(_ != null)
+      
+      val (failures, nullFailures) = spinResults.getFailures.toSeq.partition(_ != null)
+      
+      (results, failures, nullResults ++ nullFailures)
+    }
+
+    if(!failures.isEmpty) {
+      log.warn("Received " + failures.size + " failures. descriptions:")
+      
+      failures.map("  " + _.getDescription).foreach(log.warn)
+    }
     
-    if(!nullResults.isEmpty) {
-      log.error("Received " + nullResults.size + " null results.  Got non-null results from " + notNullResults.size + " nodes: " + notNullResults.map(r => Option(r.getDescription).getOrElse("Unknown")))
+    if(!nullResponses.isEmpty) {
+      log.error("Received " + nullResponses.size + " null results.  Got non-null results from " + (results.size + failures.size) + " nodes: " + (results ++ failures).map(toDescription))
     }
     
     def decrypt(envelope: Envelope) = {
@@ -90,17 +105,19 @@ class ShrineService(
       }
     }
     
-    val spinResultEntries = notNullResults.map(result => new SpinResultEntry(decrypt(result.getPayload), result))
+    val spinResultEntries = results.map(result => new SpinResultEntry(decrypt(result.getPayload), result))
 
-    aggregator.aggregate(spinResultEntries)
+    val errorResponses = failures.map(f => ErrorResponse(f.getDescription))
+
+    aggregator.aggregate(spinResultEntries, errorResponses)
   }
 
   protected def executeRequest(identity: Identity, message: BroadcastMessage, aggregator: Aggregator): ShrineResponse = {
-    val queryInfo = new QueryInfo(determinePeergroup(message.request.projectId), identity, message.request.requestType.name, endpointConfig)
+    val queryInfo = new QueryInfo(determinePeergroup(message.request.projectId), identity, message.request.requestType.name, null.asInstanceOf[EndpointConfig])
     
     val ackNack = broadcastMessage(message, queryInfo)
     
-    aggregate(ackNack.getQueryID, identity, aggregator)
+    aggregate(ackNack.getQueryId, identity, aggregator)
   }
 
   protected def executeRequest(request: ShrineRequest, aggregator: Aggregator): ShrineResponse = {

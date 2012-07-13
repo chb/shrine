@@ -2,10 +2,9 @@ package net.shrine.adapter.query
 
 import org.spin.node.DestroyableQueryActionMap
 import org.spin.node.UnknownQueryTypeException
-import org.spin.node.actions.QueryAction
-
 import java.util.{Collection => JCollection}
 import java.util.{Map => JMap}
+import org.spin.node.QueryAction
 
 /**
  * @author Bill Simons

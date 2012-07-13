@@ -1,9 +1,12 @@
 package net.shrine.hms
 
-import net.shrine.serializers.HTTPClient
-import net.shrine.i2b2.protocol.pm.{User, GetUserConfigurationRequest}
-import org.spin.tools.crypto.signature.{XMLSignatureUtil, Identity}
-import org.spin.query.message.identity.{IdentityServiceException, IdentityService}
+import org.spin.tools.crypto.signature.Identity
+import net.shrine.i2b2.protocol.pm.GetUserConfigurationRequest
+import net.shrine.i2b2.protocol.pm.User
+import net.shrine.util.HTTPClient
+import org.spin.identity.IdentityService
+import org.spin.identity.IdentityServiceException
+import org.spin.tools.crypto.XMLSignatureUtil
 
 /**
  * @author Bill Simons

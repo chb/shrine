@@ -34,7 +34,10 @@ class ReadQueryInstancesAggregatorTest extends AssertionsForJUnit with ShouldMat
     val result1 = new SpinResultEntry(response1.toXml.toString(), null)
     val result2 = new SpinResultEntry(response2.toXml.toString(), null)
     val aggregator = new ReadQueryInstancesAggregator(queryId, userId, projectId)
-    val actual = aggregator.aggregate(Seq(result1, result2)).asInstanceOf[ReadQueryInstancesResponse]
+    
+    //TODO: test handling error responses
+    val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[ReadQueryInstancesResponse]
+    
     assertNotNull(actual)
     assertTrue(actual.isInstanceOf[ReadQueryInstancesResponse])
     actual.queryInstances.size should equal(2)
@@ -54,7 +57,8 @@ class ReadQueryInstancesAggregatorTest extends AssertionsForJUnit with ShouldMat
     val result1 = new SpinResultEntry(response1.toXml.toString(), null)
     val result2 = new SpinResultEntry(response2.toXml.toString(), null)
     val aggregator = new ReadQueryInstancesAggregator(queryId, userId, projectId)
-    val actual = aggregator.aggregate(Seq(result1, result2)).asInstanceOf[ReadQueryInstancesResponse]
+    //TODO: test handling error responses
+    val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[ReadQueryInstancesResponse]
     assertNotNull(actual)
     assertTrue(actual.isInstanceOf[ReadQueryInstancesResponse])
     actual.queryInstances.size should equal(1)

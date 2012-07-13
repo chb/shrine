@@ -12,11 +12,6 @@
     </parent>
     <dependencies>
         <dependency>
-            <groupId>org.spin</groupId>
-            <artifactId>extension-support</artifactId>
-            <version>${spin-base-version}</version>
-        </dependency>
-        <dependency>
             <groupId>net.shrine</groupId>
             <artifactId>shrine-commons</artifactId>
             <version>${project.version}</version>
@@ -30,5 +25,11 @@
     </dependencies>
     <build>
         <finalName>shrine-proxy</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>

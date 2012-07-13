@@ -1,6 +1,6 @@
 package net.shrine.aggregation
 
-import org.spin.query.message.headers.Result
+import org.spin.message.Result
 
 /**
  * @author Bill Simons

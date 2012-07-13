@@ -50,13 +50,13 @@
         </dependency>
         <dependency>
             <groupId>org.spin</groupId>
-            <artifactId>query-message</artifactId>
+            <artifactId>spin-messages</artifactId>
             <version>${spin-base-version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.spin</groupId>
-            <artifactId>identity-service</artifactId>
+            <artifactId>spin-identity-service</artifactId>
             <version>${spin-base-version}</version>
         </dependency>
 

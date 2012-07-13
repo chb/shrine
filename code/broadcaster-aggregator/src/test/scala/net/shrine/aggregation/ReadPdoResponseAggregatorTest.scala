@@ -10,7 +10,7 @@ import org.spin.tools.NetworkTime._
 class ReadPdoResponseAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
   val aggregator = new ReadPdoResponseAggregator()
 
-  def createPdoResponse(): ReadPdoResponse = {
+  def createPdoResponse: ReadPdoResponse = {
     val patientId1 = "1000000001";
     val patientId2 = "1000000002";
     val patient1Param1 = new ParamResponse("vital_status_cd", "vital_status_cd", "N")
@@ -33,35 +33,29 @@ class ReadPdoResponseAggregatorTest extends AssertionsForJUnit with ShouldMatche
   }
 
   @Test
-  def testAggregate() {
-    val result1 = new SpinResultEntry(createPdoResponse().toXml.toString, null)
-    val result2 = new SpinResultEntry(createPdoResponse().toXml.toString, null)
-    val result3 = new SpinResultEntry(createPdoResponse().toXml.toString, null)
+  def testAggregate {
+    val result1 = new SpinResultEntry(createPdoResponse.toXmlString, null)
+    val result2 = new SpinResultEntry(createPdoResponse.toXmlString, null)
+    val result3 = new SpinResultEntry(createPdoResponse.toXmlString, null)
     val userId = "userId"
     val authn = new AuthenticationInfo("domain", userId, new Credential("value", false))
-    var actual = aggregator.aggregate(Vector(result1, result2, result3))
-    assertTrue(actual.isInstanceOf[ReadPdoResponse])
-    actual = actual.asInstanceOf[ReadPdoResponse]
-
+    
+    //TODO: test handling passed-in errors
+    val actual = aggregator.aggregate(Vector(result1, result2, result3), Nil).asInstanceOf[ReadPdoResponse]
+    
     actual.patients.size should equal(6)
 
-    val paramList = new ListBuffer[ParamResponse]
-
-    for (
-      p <- actual.patients) {
+    val paramList = actual.patients.flatMap { p =>
       p.params.size should equal(2)
-      paramList ++= p.params
+      
+      p.params
     }
 
-    paramList.filter {
-      x => x.name == "vital_status_cd"
-    }.size should equal(6)
+    paramList.filter(_.name == "vital_status_cd").size should equal(6)
 
-    paramList.filter {
-      x => x.name == "birth_date"
-    }.size should equal(6)
+    paramList.filter(_.name == "birth_date").size should equal(6)
 
-    actual.patients.map{x => x.patientId}.size should equal(6)
+    actual.patients.map(_.patientId).size should equal(6)
 
     actual.observations.size should equal(6)
 

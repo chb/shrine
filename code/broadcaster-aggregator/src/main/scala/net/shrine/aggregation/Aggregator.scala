@@ -1,6 +1,7 @@
 package net.shrine.aggregation
 
 import net.shrine.protocol.ShrineResponse
+import net.shrine.protocol.ErrorResponse
 
 /**
  * @author Bill Simons
@@ -13,5 +14,5 @@ import net.shrine.protocol.ShrineResponse
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 trait Aggregator {
-  def aggregate(spinCacheResults: Seq[SpinResultEntry]): ShrineResponse
+  def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse
 }

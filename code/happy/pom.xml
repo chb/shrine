@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>org.spin</groupId>
-            <artifactId>node-core</artifactId>
+            <artifactId>spin-node-core</artifactId>
             <version>${spin-base-version}</version>
         </dependency>
     </dependencies>

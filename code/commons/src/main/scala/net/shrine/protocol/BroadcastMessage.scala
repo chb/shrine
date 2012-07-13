@@ -5,7 +5,7 @@ import collection.JavaConversions._
 import org.apache.log4j.MDC
 import net.shrine.filters.LogFilter
 import util.Random
-import org.spin.query.message.serializer.BasicSerializer
+import org.spin.message.serializer.BasicSerializer
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.{XmlMarshaller, XmlUnmarshaller}
 

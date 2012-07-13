@@ -1,9 +1,11 @@
 package net.shrine.aggregation
 
 import net.shrine.aggregation.BasicAggregator.Valid
-import org.spin.query.message.headers.Result
-import net.shrine.protocol.{QueryResult, ShrineResponse, ReadInstanceResultsResponse}
+import net.shrine.protocol.QueryResult
+import net.shrine.protocol.ReadInstanceResultsResponse
 import net.shrine.protocol.ResultOutputType
+import net.shrine.protocol.ShrineResponse
+import org.spin.message.Result
 
 /**
  * @author Bill Simons

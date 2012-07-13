@@ -1,31 +1,52 @@
 package net.shrine.service
 
-import org.springframework.beans.factory.annotation.Autowired
-import scala.collection.JavaConversions._
 import java.io.StringWriter
-import javax.xml.bind.JAXBContext
-import org.springframework.transaction.annotation.Transactional
-import org.spin.query.message.agent.SpinAgent
-import org.spin.query.message.headers.QueryInfo
+
+import scala.collection.JavaConversions.asScalaBuffer
+import scala.collection.JavaConversions.asScalaSet
+import scala.collection.JavaConversions.collectionAsScalaIterable
+import scala.xml.NodeSeq
+import scala.xml.XML
+
+import org.spin.client.SpinAgent
+import org.spin.message.Failure
+import org.spin.message.QueryInfo
+import org.spin.message.Result
+import org.spin.message.ResultSet
+import org.spin.node.actions.discovery.DiscoveryResult
+import org.spin.node.actions.discovery.DiscoveryCriteria
 import org.spin.node.DefaultQueries
-import org.spin.tools.crypto.signature.{XMLSignatureUtil, Identity, CertID}
-import org.spin.tools.{JAXBUtils, PKITool}
+import org.spin.tools.config.RoutingTableConfig
+import org.spin.tools.config.ConfigTool
+import org.spin.tools.config.EndpointConfig
+import org.spin.tools.crypto.signature.CertID
+import org.spin.tools.crypto.signature.Identity
 import org.spin.tools.crypto.PKCryptor
-import org.spin.node.actions.discovery.{DiscoveryResult, DiscoveryCriteria}
-import net.shrine.protocol._
-import xml.XML
-import org.spin.tools.config.{RoutingTableConfig, EndpointType, EndpointConfig, ConfigTool}
-import java.lang.StringBuilder
-import net.shrine.broadcaster.dao.AuditDAO
-import net.shrine.adapter.dao.AdapterDAO
+import org.spin.tools.crypto.PKITool
+import org.spin.tools.crypto.XMLSignatureUtil
+import org.spin.tools.JAXBUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import net.shrine.util.XmlUtil
-import net.shrine.protocol.query.QueryDefinition
+import org.springframework.transaction.annotation.Transactional
+
+import javax.xml.bind.JAXBContext
+import net.shrine.adapter.dao.AdapterDAO
+import net.shrine.broadcaster.dao.AuditDAO
+import net.shrine.config.ShrineConfig
+import net.shrine.config.HiveCredentials
+import net.shrine.i2b2.protocol.pm.GetUserConfigurationRequest
+import net.shrine.i2b2.protocol.pm.HiveConfig
 import net.shrine.protocol.query.OccuranceLimited
+import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
-import net.shrine.serializers.HTTPClient
-import net.shrine.i2b2.protocol.pm.{HiveConfig, GetUserConfigurationRequest}
-import net.shrine.config.{HiveCredentials, ShrineConfig}
+import net.shrine.protocol.AuthenticationInfo
+import net.shrine.protocol.BroadcastMessage
+import net.shrine.protocol.CRCRequestType
+import net.shrine.protocol.Credential
+import net.shrine.protocol.ResultOutputType
+import net.shrine.protocol.RunQueryRequest
+import net.shrine.util.HTTPClient
+import net.shrine.util.XmlUtil
 
 /**
  * @author Bill Simons
@@ -38,53 +59,53 @@ import net.shrine.config.{HiveCredentials, ShrineConfig}
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 @Service
-class HappyShrineService @Autowired()(
-    private val shrineConfig: ShrineConfig,
-    private val hiveCredentials: HiveCredentials,
-    private val pmEndpoint: String,
-    private val spinClient: SpinAgent,
-    private val auditDao: AuditDAO,
-    private val adapterDao: AdapterDAO) extends HappyShrineRequestHandler {
+class HappyShrineService @Autowired() (
+  private val shrineConfig: ShrineConfig,
+  private val hiveCredentials: HiveCredentials,
+  private val pmEndpoint: String,
+  private val spinClient: SpinAgent,
+  private val auditDao: AuditDAO,
+  private val adapterDao: AdapterDAO) extends HappyShrineRequestHandler {
 
   //TODO - maybe make this a spring bean since its used in shrine service too?
-  private lazy val endpointConfig = new EndpointConfig(EndpointType.SOAP, shrineConfig.getAggregatorEndpoint)
+  private lazy val endpointConfig = EndpointConfig.soap(shrineConfig.getAggregatorEndpoint)
 
   def keystoreReport: String = {
-    val keystoreConfig = ConfigTool.loadKeyStoreConfig()
+    val keystoreConfig = ConfigTool.loadKeyStoreConfig
     val pki: PKITool = PKITool.getInstance
     val certId: CertID = pki.getMyX509.getCertID
     XmlUtil.stripWhitespace(
       <keystoreReport>
-        <configFile>{keystoreConfig.getFile.toURI}</configFile>
+        <configFile>{ keystoreConfig.getFile.toURI }</configFile>
         <certId>
-          <name>{certId.getName}</name>
-          <serial>{certId.getSerial}</serial>
+          <name>{ certId.getName }</name>
+          <serial>{ certId.getSerial }</serial>
         </certId>
         <importedCerts>
-        {
-          pki.getImportedCertsCopy map {cert =>
-            <cert>
-              <name>{cert.getCertID().getName}</name>
-              <serial>{cert.getCertID().getSerial.toString}</serial>
-            </cert>
+          {
+            pki.getImportedCertsCopy map { cert =>
+              <cert>
+                <name>{ cert.getCertID.getName }</name>
+                <serial>{ cert.getCertID.getSerial.toString }</serial>
+              </cert>
+            }
           }
-        }
         </importedCerts>
-      </keystoreReport>).toString()
+      </keystoreReport>).toString
   }
 
   def shrineConfigReport: String = {
-    val marshaller = JAXBContext.newInstance(classOf[ShrineConfig]).createMarshaller()
+    val marshaller = JAXBContext.newInstance(classOf[ShrineConfig]).createMarshaller
     marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", false);
-    val sWriter = new StringWriter()
+    val sWriter = new StringWriter
     marshaller.marshal(shrineConfig, sWriter)
     sWriter.toString
   }
 
   def routingReport: String = {
-    val marshaller = JAXBContext.newInstance(classOf[RoutingTableConfig]).createMarshaller()
+    val marshaller = JAXBContext.newInstance(classOf[RoutingTableConfig]).createMarshaller
     marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", false);
-    val sWriter = new StringWriter()
+    val sWriter = new StringWriter
     marshaller.marshal(ConfigTool.loadRoutingTableConfig, sWriter)
     sWriter.toString
   }
@@ -100,37 +121,50 @@ class HappyShrineService @Autowired()(
     <spin>
       <properlyConnected>false</properlyConnected>
       <error>peer group to query is not defined in routing table</error>
-    </spin>
-  ).toString()
+    </spin>).toString
+
+  private[service] def partitionSpinResults(resultSet: ResultSet): (Seq[Result], Seq[Failure]) = {
+    val results = resultSet.getResults.toSeq
+
+    val failures = resultSet.getFailures.toSeq
+
+    (results, failures)
+  }
 
   private[service] def generateSpinReport(routingTable: RoutingTableConfig): String = {
-    val peerGroupOption = routingTable.getPeerGroups find {x => x.getGroupName.equals(shrineConfig.getBroadcasterPeerGroupToQuery)}
+    val peerGroupOption = routingTable.getPeerGroups find (_.getGroupName == shrineConfig.getBroadcasterPeerGroupToQuery)
 
-    if(!peerGroupOption.isDefined) {
+    if (!peerGroupOption.isDefined) {
       return invalidSpinConfig
     }
 
     val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
     val queryInfo: QueryInfo = new QueryInfo(shrineConfig.getBroadcasterPeerGroupToQuery, identity, DefaultQueries.Discovery.queryType, endpointConfig)
-    val ackNack = spinClient.send(queryInfo, new DiscoveryCriteria())
-    val results = spinClient.receive(ackNack.getQueryID, identity)
-    val expectedCount = peerGroupOption.get.getChildren.size() + 1 //add one to include self
+    val ackNack = spinClient.send(queryInfo, DiscoveryCriteria.Instance)
+    val resultSet = spinClient.receive(ackNack.getQueryId, identity)
+    val expectedCount = peerGroupOption.get.getChildren.size + 1 //add one to include self
+    val (results, failures) = partitionSpinResults(resultSet)
+
     XmlUtil.stripWhitespace(
       <spin>
-        <properlyConnected>{expectedCount == results.size()}</properlyConnected>
-        <expectedNodeCount>{expectedCount}</expectedNodeCount>
-        <actualNodeCount>{results.size()}</actualNodeCount>
+        <properlyConnected>{ !resultSet.getFailures.isEmpty }</properlyConnected>
+        <expectedNodeCount>{ expectedCount }</expectedNodeCount>
+        <actualNodeCount>{ resultSet.getResults.size }</actualNodeCount>
+        <failureCount>{ resultSet.getFailures.size }</failureCount>
         {
-          results map {spinResult =>
-            val xmlString = new PKCryptor().decrypt(spinResult.getPayload())
+          results.map { spinResult =>
+            val xmlString = (new PKCryptor).decrypt(spinResult.getPayload)
             val discoveryResult = JAXBUtils.unmarshal(xmlString, classOf[DiscoveryResult]) //TODO fixme - use scala xpath instead of JAXB?
             <node>
-              <name>{discoveryResult.getNodeConfig.getNodeName}</name>
-              <url>{discoveryResult.getNodeURL}</url>
+              <name>{ discoveryResult.getNodeConfig.getNodeName }</name>
+              <url>{ discoveryResult.getNodeURL }</url>
             </node>
           }
         }
-      </spin>).toString()
+        {
+          failures.map(toXml)
+        }
+      </spin>).toString
   }
 
   def spinReport: String = {
@@ -151,37 +185,49 @@ class HappyShrineService @Autowired()(
   }
 
   def adapterReport: String = {
-    if(!shrineConfig.isAdapter) {
+    if (!shrineConfig.isAdapter) {
       XmlUtil.stripWhitespace(
         <adapter>
           <isAdapter>false</isAdapter>
-        </adapter>).toString()
+        </adapter>).toString
     } else {
       val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
-      val queryInfo: QueryInfo = new QueryInfo("LOCAL", identity, CRCRequestType.QueryDefinitionRequestType.name(), endpointConfig)
+      val queryInfo: QueryInfo = new QueryInfo("LOCAL", identity, CRCRequestType.QueryDefinitionRequestType.name, endpointConfig)
       val message = BroadcastMessage(newRunQueryRequest)
 
       val ackNack = spinClient.send(queryInfo, message, BroadcastMessage.serializer)
-      val resultSet = spinClient.receive(ackNack.getQueryID, identity)
+      val resultSet = spinClient.receive(ackNack.getQueryId, identity)
+
+      val (results, failures) = partitionSpinResults(resultSet)
 
       XmlUtil.stripWhitespace(
         <adapter>
           <isAdapter>true</isAdapter>
           {
-            resultSet map {result =>
+            results.map { result =>
               <result>
-                <description>{result.getDescription}</description>
+                <description>{ result.getDescription }</description>
                 <payload>
                   {
-                    val decryptedPayload = new PKCryptor().decrypt(result.getPayload())
+                    val decryptedPayload = (new PKCryptor).decrypt(result.getPayload)
                     XML.loadString(decryptedPayload)
                   }
                 </payload>
               </result>
             }
           }
-        </adapter>).toString()
+          {
+            failures.map(toXml)
+          }
+        </adapter>).toString
     }
+  }
+
+  private[service] def toXml(failure: Failure): NodeSeq = {
+    <failure>
+      <origin>{ failure.getDescription }</origin>
+      <description>{ failure.getDescription }</description>
+    </failure>
   }
 
   @Transactional(readOnly = true)
@@ -190,16 +236,15 @@ class HappyShrineService @Autowired()(
     XmlUtil.stripWhitespace(
       <recentAuditEntries>
         {
-          recentEntries map {entry =>
+          recentEntries map { entry =>
             <entry>
-              <id>{entry.getAuditEntryId}</id>
-              <time>{entry.getTime}</time>
-              <username>{entry.getUsername}</username>
+              <id>{ entry.getAuditEntryId }</id>
+              <time>{ entry.getTime }</time>
+              <username>{ entry.getUsername }</username>
             </entry>
           }
         }
-      </recentAuditEntries>
-    ).toString
+      </recentAuditEntries>).toString
   }
 
   @Transactional(readOnly = true)
@@ -208,29 +253,28 @@ class HappyShrineService @Autowired()(
     XmlUtil.stripWhitespace(
       <recentQueries>
         {
-          recentQueries map {query =>
+          recentQueries map { query =>
             <query>
-              <id>{query.getNetworkMasterID}</id>
-              <date>{query.getMasterCreateDate}</date>
-              <name>{query.getMasterName}</name>
+              <id>{ query.getNetworkMasterID }</id>
+              <date>{ query.getMasterCreateDate }</date>
+              <name>{ query.getMasterName }</name>
             </query>
           }
         }
-      </recentQueries>
-    ).toString
+      </recentQueries>).toString
   }
 
   @Transactional(readOnly = true)
   def all: String = {
     new StringBuilder("<all>")
-        .append(keystoreReport)
-        .append(shrineConfigReport)
-        .append(routingReport)
-        .append(hiveReport)
-        .append(spinReport)
-        .append(adapterReport)
-        .append(auditReport)
-        .append(queryReport)
-        .append("</all>").toString
+      .append(keystoreReport)
+      .append(shrineConfigReport)
+      .append(routingReport)
+      .append(hiveReport)
+      .append(spinReport)
+      .append(adapterReport)
+      .append(auditReport)
+      .append(queryReport)
+      .append("</all>").toString
   }
 }

@@ -31,15 +31,13 @@
         </dependency>
         <dependency>
             <groupId>org.spin</groupId>
-            <artifactId>query-agent</artifactId>
+            <artifactId>spin-client</artifactId>
             <version>${spin-base-version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.spin</groupId>
-            <artifactId>node-core</artifactId>
+            <artifactId>spin-node-core</artifactId>
             <version>${spin-node-version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -121,6 +119,5 @@
             <version>3.0</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 </project>

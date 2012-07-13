@@ -134,9 +134,7 @@ object QueryDefinition extends XmlUnmarshaller[QueryDefinition] {
 
         toPanels(e).map(_.withStart(truncatedStart)).map(_.withEnd(truncatedEnd))
       }
-      case OccuranceLimited(min, e) => {
-        toPanels(e).map(_.withMinOccurrences(min))
-      }
+      case OccuranceLimited(min, e) => toPanels(e).map(_.withMinOccurrences(min))
     }
 
     //Assign indicies; i2b2 indicies start from 1 

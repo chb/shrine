@@ -6,7 +6,7 @@ import org.junit.Test
 import org.junit.Assert._
 import java.util.Date
 import net.shrine.protocol._
-import org.spin.query.message.headers.Result
+import org.spin.message.Result
 import xml.Utility
 import net.shrine.util.XmlUtil
 import net.shrine.protocol.query.QueryDefinition
@@ -32,7 +32,7 @@ final class RunQueryAggregatorTest extends AssertionsForJUnit with ShouldMatcher
   private val queryInstanceId = 9999L
 
   @Test
-  def testAggregate() {
+  def testAggregate {
     val qrCount = new QueryResult(1L, queryInstanceId, "PATIENT_COUNT_XML", 10L, now, now, "Desc", "FINISHED")
     val qrSet = new QueryResult(2L, queryInstanceId, "PATIENTSET", 10L, now, now, "Desc", "FINISHED")
 
@@ -43,7 +43,10 @@ final class RunQueryAggregatorTest extends AssertionsForJUnit with ShouldMatcher
     val result1 = new SpinResultEntry(rqr1.toXml.toString(), new Result(null, "description2", null, null))
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
-    val actual = aggregator.aggregate(Vector(result1, result2)).asInstanceOf[RunQueryResponse]
+    
+    //TODO: test handling error responses
+    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
+    
     assertTrue(actual.isInstanceOf[RunQueryResponse])
 
     actual.results.size should equal(5)
@@ -66,9 +69,12 @@ final class RunQueryAggregatorTest extends AssertionsForJUnit with ShouldMatcher
     val result2 = new SpinResultEntry(rqr2.toXml.toString(), new Result(null, "description2", null, null))
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
-    val actual = aggregator.aggregate(Vector(result1, result2)).asInstanceOf[RunQueryResponse]
+    
+    //TODO: test handling error responses
+    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
+    
     assertTrue(actual.isInstanceOf[RunQueryResponse])
-    actual.results.filter(x=>x.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).head.setSize should equal(20)
+    actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).head.setSize should equal(20)
   }
 
   @Test
@@ -83,7 +89,10 @@ final class RunQueryAggregatorTest extends AssertionsForJUnit with ShouldMatcher
     val result1 = new SpinResultEntry(rqr1.toXml.toString(), new Result(null, "description2", null, null))
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
-    val actual = aggregator.aggregate(Vector(result1, result2)).asInstanceOf[RunQueryResponse]
+    
+    //TODO: test handling error responses
+    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
+    
     assertTrue(actual.isInstanceOf[RunQueryResponse])
     actual.results.size should equal(3)
     actual.results.filter(x=>x.resultType.equalsIgnoreCase("PATIENT_COUNT_XML")).head.setSize should equal(10)

@@ -1,11 +1,11 @@
 package net.shrine.aggregation
 
 import org.spin.tools.NetworkTime
-import org.spin.query.message.headers.Result
-import net.shrine.protocol.{ShrineResponse, QueryResult, RunQueryResponse}
+import net.shrine.protocol.{ ShrineResponse, QueryResult, RunQueryResponse }
 import net.shrine.aggregation.BasicAggregator.Valid
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.query.QueryDefinition
+import org.spin.message.Result
 
 /**
  *
@@ -32,7 +32,7 @@ class RunQueryAggregator(
 
     val results = validResponses.flatMap {
       case Valid(spinResult, response) =>
-        response.results.map(transformResult(_,spinResult.spinResultMetadata))
+        response.results.map(transformResult(_, spinResult.spinResultMetadata))
     }
 
     val counts = validResponses.map {
@@ -47,12 +47,11 @@ class RunQueryAggregator(
     val now = (new NetworkTime).getXMLGregorianCalendar
 
     val aggResults =
-      if(doAggregation) {
+      if (doAggregation) {
         val sumResult = new QueryResult(0L, queryInstance, PATIENT_COUNT_XML.name, counts.sum, now, now, "TOTAL COUNT", "FINISHED")
 
         results :+ sumResult
-      }
-      else {
+      } else {
         results
       }
 

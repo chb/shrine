@@ -4,7 +4,7 @@ import org.junit.Test
 import org.junit.Assert.{assertNotNull, assertTrue}
 import org.spin.tools.NetworkTime
 import org.scalatest.junit.{ShouldMatchersForJUnit, AssertionsForJUnit}
-import org.spin.query.message.headers.Result
+import org.spin.message.Result
 import net.shrine.protocol.{ErrorResponse, QueryResult, ReadInstanceResultsResponse}
 
 /**
@@ -40,7 +40,8 @@ class ReadInstanceResultsAggregatorTest extends AssertionsForJUnit with ShouldMa
     val result2 = new SpinResultEntry(response2.toXml.toString(), new Result(null, description2, null, null))
 
     {
-	    val actual = aggregator.aggregate(Seq(result1, result2)).asInstanceOf[ReadInstanceResultsResponse]
+    	//TODO: test handling error responses
+	    val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[ReadInstanceResultsResponse]
 	    assertTrue(actual.isInstanceOf[ReadInstanceResultsResponse])
 	
 	    assertNotNull(actual)
@@ -51,7 +52,8 @@ class ReadInstanceResultsAggregatorTest extends AssertionsForJUnit with ShouldMa
     }
 
     {
-	    val actual = aggregatorNoAggregate.aggregate(Seq(result1, result2)).asInstanceOf[ReadInstanceResultsResponse]
+    	//TODO: test handling error responses
+	    val actual = aggregatorNoAggregate.aggregate(Seq(result1, result2), Nil).asInstanceOf[ReadInstanceResultsResponse]
 	    assertTrue(actual.isInstanceOf[ReadInstanceResultsResponse])
 
 	    assertNotNull(actual)
@@ -79,12 +81,13 @@ class ReadInstanceResultsAggregatorTest extends AssertionsForJUnit with ShouldMa
     val result1 = new SpinResultEntry(patientCountResponse.toXml.toString(), new Result(null, patientCountNodeDescription, null, null))
     val result2 = new SpinResultEntry(errorResponse.toXml.toString(), new Result(null, errorNodeDescription, null, null))
 
-    val actual = aggregator.aggregate(Seq(result1, result2)).asInstanceOf[ReadInstanceResultsResponse]
+    //TODO: test handling error responses
+    val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[ReadInstanceResultsResponse]
     assertTrue(actual.isInstanceOf[ReadInstanceResultsResponse])
     assertNotNull(actual)
     assertNotNull(actual.results)
     actual.results.size should equal(3)
     assertTrue(actual.results.contains(queryResult.withDescription(patientCountNodeDescription)))
-    assertTrue(actual.results.contains(QueryResult.errorResult(errorNodeDescription, "No results available")))
+    assertTrue(actual.results.contains(QueryResult.errorResult(Option(errorNodeDescription), "No results available")))
   }
 }

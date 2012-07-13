@@ -26,12 +26,20 @@ class ReadQueryDefinitionAggregatorTest extends AssertionsForJUnit with ShouldMa
     val userId = "userId"
     val queryName = "queryname"
     val queryDefinition = "<queryDef/>"
+    
     val response1 = new ReadQueryDefinitionResponse(queryId, queryName, userId, new NetworkTime().getXMLGregorianCalendar, queryDefinition)
-    val result1 = new SpinResultEntry(response1.toXml.toString(), null)
+    
+    val result1 = new SpinResultEntry(response1.toXmlString, null)
+    
     val response2 = new ReadQueryDefinitionResponse(queryId, queryName, userId, new NetworkTime().getXMLGregorianCalendar, queryDefinition)
-    val result2 = new SpinResultEntry(response2.toXml.toString(), null)
-    val actual = aggregator.aggregate(Vector(result1, result2)).asInstanceOf[ReadQueryDefinitionResponse]
+    
+    val result2 = new SpinResultEntry(response2.toXmlString, null)
+    
+    //TODO: test handling error responses
+    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[ReadQueryDefinitionResponse]
+    
     assertNotNull(actual)
+    
     actual.masterId should equal(queryId)
     actual.name should equal(queryName)
     actual.userId should equal(userId)

@@ -1,7 +1,6 @@
 package net.shrine.adapter
 
 import dao.AdapterDAO
-import org.spin.node.actions.AbstractQueryAction
 import org.spin.node.QueryContext
 import java.lang.String
 import org.springframework.transaction.annotation.Transactional
@@ -9,6 +8,7 @@ import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol.{ErrorResponse, ShrineResponse, BroadcastMessage}
 import net.shrine.util.Loggable
 import net.shrine.config.HiveCredentials
+import org.spin.node.AbstractQueryAction
 
 /**
  * @author Bill Simons

@@ -1,11 +1,11 @@
 package net.shrine.adapter
 
 import dao.AdapterDAO
-import net.shrine.serializers.HTTPClient
 import xml.{NodeSeq, XML}
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
+import net.shrine.util.HTTPClient
 
 /**
  * @author Bill Simons

@@ -22,6 +22,11 @@
             <version>2.4</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+        	<groupId>org.spin</groupId>
+			<artifactId>spin-node-server</artifactId>
+			<version>${spin-base-version}</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>shrine-cell</finalName>

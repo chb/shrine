@@ -5,7 +5,7 @@ import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.spin.node.actions.EchoQueryAction
 import org.spin.node.actions.discovery.DiscoveryQueryAction
-import org.spin.node.actions.QueryAction
+import org.spin.node.QueryAction
 
 /**
  * @author Clint Gilbert

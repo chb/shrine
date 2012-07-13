@@ -33,14 +33,14 @@ abstract class BasicAggregator[T <: ShrineResponse : Manifest] extends Aggregato
   
   import BasicAggregator._
   
-  def aggregate(spinCacheResults: Seq[SpinResultEntry]) = {
+  override def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]) = {
     
     val resultsOrErrors: Seq[ParsedResult[T]] =
       for {
         result <- spinCacheResults
         unmarshalled = ShrineResponse.fromXml(result.spinResultXml)
       } yield unmarshalled match {
-        case Some(errorResponse: ErrorResponse) => Error(result, errorResponse)
+        case Some(errorResponse: ErrorResponse) => Error(Some(result), errorResponse)
         case Some(unmarshalled: T) if isAggregatable(unmarshalled) => Valid(result, unmarshalled)
         case _ => Invalid(result, "Unexpected response in" + this.getClass.toString + ":\r\n" + result.spinResultXml)
       }
@@ -54,7 +54,9 @@ abstract class BasicAggregator[T <: ShrineResponse : Manifest] extends Aggregato
     //Log all parsing errors
     invalidResponses.map(_.errorMessage).foreach(this.error(_))
     
-    makeResponseFrom(validResponses, errorResponses, invalidResponses)
+    val previouslyDetectedErrors = errors.map(Error(None, _))
+    
+    makeResponseFrom(validResponses, errorResponses ++ previouslyDetectedErrors, invalidResponses)
   }
   
   private[aggregation] def makeResponseFrom(validResponses: Seq[Valid[T]], errorResponses: Seq[Error], invalidResponses: Seq[Invalid]): ShrineResponse
@@ -64,6 +66,6 @@ object BasicAggregator {
   private[aggregation] sealed abstract class ParsedResult[+T]
   
   private[aggregation] final case class Valid[T](spinResult: SpinResultEntry, response: T) extends ParsedResult[T]
-  private[aggregation] final case class Error(spinResult: SpinResultEntry, esponse: ErrorResponse) extends ParsedResult[Nothing]
+  private[aggregation] final case class Error(spinResult: Option[SpinResultEntry], esponse: ErrorResponse) extends ParsedResult[Nothing]
   private[aggregation] final case class Invalid(spinResult: SpinResultEntry, errorMessage: String) extends ParsedResult[Nothing]
 }

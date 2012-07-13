@@ -152,6 +152,6 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
     makeXMLGregorianCalendar((nodeSeq \ "end_date").text),
     (nodeSeq \ "query_status_type" \ "name").text)
 
-  def errorResult(description: String, statusMessage: String) = new QueryResult(
-    0L, 0L, "", 0L, None, None, Some(description), "ERROR", Some(statusMessage))
+  def errorResult(description: Option[String], statusMessage: String) = new QueryResult(
+    0L, 0L, "", 0L, None, None, description, "ERROR", Option(statusMessage))
 }

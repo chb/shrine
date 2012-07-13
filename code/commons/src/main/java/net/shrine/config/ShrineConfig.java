@@ -1,13 +1,12 @@
 package net.shrine.config;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.spin.tools.config.AgentConfig;
 import org.spin.tools.config.EndpointConfig;
-import org.spin.tools.config.EndpointType;
 import org.spin.tools.config.KeyStoreConfig;
 import org.spin.tools.config.NodeConfig;
 import org.spin.tools.config.RoutingTableConfig;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * ShrineConfig provides configuration details for broadcaster-aggregator and adapter configurations.
@@ -429,16 +428,14 @@ public class ShrineConfig {
     }
 
     public AgentConfig generateAgentConfig() {
-        EndpointConfig endpointConfig = new EndpointConfig(EndpointType.SOAP, aggregatorEndpoint);
-        AgentConfig agentConfig = new AgentConfig(endpointConfig, endpointConfig,
+        final EndpointConfig endpointConfig = EndpointConfig.soap(aggregatorEndpoint);
+        
+        return new AgentConfig(endpointConfig, endpointConfig,
                 broadcasterPeerGroupToQuery, null, new Long(queryTTL), 1.0f);
-
-
-        return agentConfig;
     }
 
     public NodeConfig generateNodeConfig() {
-        NodeConfig nodeConfig = new NodeConfig(this.getHumanReadableNodeName(),
+        return new NodeConfig(this.getHumanReadableNodeName(),
                 false,
                 this.isBroadcasterAggregator(),
                 this.isBroadcasterAggregator(),
@@ -447,9 +444,7 @@ public class ShrineConfig {
                 this.getCertificationTTL(),
                 this.getCacheTTL(),
                 NodeConfig.defaultBroadcastTimeoutPeriod,
-                NodeConfig.defaultResultStoreType,
                 queryActionMapClassName,
                 null);
-        return nodeConfig;
     }
 }

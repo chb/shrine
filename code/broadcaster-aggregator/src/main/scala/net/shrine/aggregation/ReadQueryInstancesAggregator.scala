@@ -18,10 +18,10 @@ final class ReadQueryInstancesAggregator(
     private val queryId: Long,
     private val username: String,
     private val projectId: String) extends IgnoresErrorsAggregator[ReadQueryInstancesResponse] {
-  
+
   override def makeResponseFrom(validResponses: Seq[Valid[ReadQueryInstancesResponse]]) = {
-     val distinctQueryInstances = validResponses.flatMap(_.response.queryInstances).distinct
-    
+    val distinctQueryInstances = validResponses.flatMap(_.response.queryInstances).distinct
+
     new ReadQueryInstancesResponse(queryId, username, projectId, distinctQueryInstances)
   }
 }

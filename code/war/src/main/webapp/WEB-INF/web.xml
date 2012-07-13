@@ -8,8 +8,13 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>classpath:/net/shrine/applicationContext.xml</param-value>
     </context-param>
+    
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    
+    <listener>
+    	<listener-class>org.spin.node.server.NodeShutdownServletContextListener</listener-class>
     </listener>
 
     <servlet>

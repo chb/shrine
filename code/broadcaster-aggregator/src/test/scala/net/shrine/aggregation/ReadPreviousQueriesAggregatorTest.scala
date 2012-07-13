@@ -70,7 +70,8 @@ class ReadPreviousQueriesAggregatorTest extends AssertionsForJUnit with ShouldMa
     val result2 = new SpinResultEntry(response2.toXml.toString(), null)
     val aggregator = new ReadPreviousQueriesAggregator(userId, groupId)
 
-    val actual = aggregator.aggregate(Seq(result1, result2)).asInstanceOf[ReadPreviousQueriesResponse]
+    //TODO: test handling error responses
+    val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[ReadPreviousQueriesResponse]
     assertTrue(actual.isInstanceOf[ReadPreviousQueriesResponse])
 
     actual.queryMasters.size should equal(3)

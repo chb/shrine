@@ -1,13 +1,15 @@
 package net.shrine.authorization;
 
+import java.io.IOException;
+
+import javax.xml.bind.JAXBException;
+
 import net.shrine.protocol.ReadApprovedQueryTopicsRequest;
 import net.shrine.protocol.ReadApprovedQueryTopicsResponse;
 import net.shrine.protocol.RunQueryRequest;
-import org.spin.query.message.serializer.SerializationException;
-import org.spin.tools.config.ConfigException;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
+import org.spin.message.serializer.SerializationException;
+import org.spin.tools.config.ConfigException;
 
 /**
  * @author Bill Simons

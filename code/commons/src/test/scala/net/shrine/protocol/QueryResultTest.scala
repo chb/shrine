@@ -18,7 +18,8 @@ import net.shrine.util.XmlUtil
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class QueryResultTest extends AssertionsForJUnit with ShouldMatchersForJUnit with I2b2SerializableValidator{
-  def testFromI2b2() = null
+  //TODO
+  def testFromI2b2 = null
 
   @Test
   def testToI2b2() = {
@@ -51,10 +52,10 @@ class QueryResultTest extends AssertionsForJUnit with ShouldMatchersForJUnit wit
   }
 
   @Test
-  def testToI2b2WithErrors() {
+  def testToI2b2WithErrors {
     val statusMessage = "status message"
     val description = "description"
-    val actual = QueryResult.errorResult(description, statusMessage).toI2b2
+    val actual = QueryResult.errorResult(Some(description), statusMessage).toI2b2
     val expected = XmlUtil.stripWhitespace(
       <query_result_instance>
         <result_instance_id>0</result_instance_id>
@@ -69,7 +70,7 @@ class QueryResultTest extends AssertionsForJUnit with ShouldMatchersForJUnit wit
           <description>{statusMessage}</description>
         </query_status_type>
       </query_result_instance>)
-    actual.toString() should equal (expected.toString()) //compare strings because scala xml comparison isn't working right here
+    actual.toString should equal (expected.toString) //compare strings because scala xml comparison isn't working right here
 
   }
 }
