@@ -31,8 +31,6 @@ final class ShrineProxyServlet(val proxy: ShrineProxy) extends HttpServlet {
   def this() = this(try {
     ShrineProxyServlet.logger.info("Starting ProxyServlet")
 
-    PKITool.getInstance()
-
     new DefaultShrineProxy
   } catch {
     case e: ConfigException => {
