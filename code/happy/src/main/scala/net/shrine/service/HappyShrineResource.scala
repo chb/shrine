@@ -56,6 +56,10 @@ class HappyShrineResource @Autowired()(private val happyService: HappyShrineRequ
   def queryReport: String = happyService.queryReport
 
   @GET
+  @Path("version")
+  def versionReport: String = happyService.versionReport
+  
+  @GET
   @Path("all")
   def all: String = happyService.all
 }
