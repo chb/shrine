@@ -11,12 +11,15 @@
 		<spring.version>3.0.1.RELEASE</spring.version>
 		<spin-base-version>1.20-SNAPSHOT</spin-base-version>
 		<spin-node-version>1.20-SNAPSHOT</spin-node-version>
-		<jaxb.api.version>2.1</jaxb.api.version>
-		<jaxb.impl.version>2.1.7</jaxb.impl.version>
-		<jaxws.api.version>2.1-1</jaxws.api.version>
-		<jaxws.impl.version>2.1.4</jaxws.impl.version>
-		<hibernate.version>3.2.1.ga</hibernate.version>
-		<scala.version>2.9.2</scala.version>
+		<jaxb-api-version>2.1</jaxb-api-version>
+		<jaxb-impl-version>2.1.7</jaxb-impl-version>
+		<jaxws-api-version>2.1-1</jaxws-api-version>
+		<jaxws-impl-version>2.1.4</jaxws-impl-version>
+		<hibernate-version>3.2.1.ga</hibernate-version>
+		<lift-version>2.4</lift-version>
+		<!-- Lift (which we use for Json) is only built against Scala 2.9.1 -->
+		<lift-scala-version>2.9.1</lift-scala-version>
+		<scala-version>2.9.2</scala-version>
 		<junit-version>4.7</junit-version>
 		<slf4j-version>1.5.10</slf4j-version>
 	</properties>
@@ -59,12 +62,77 @@
 					</configuration>
 				</plugin>
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<version>2.1.1</version>
-				</plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <!-- use explicit version because 1.0-beta-4 came with 
+                        borked checksums -->
+                    <version>1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.1.1</version>
+                </plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<!-- This creates properties ${timestamp} and ${buildNumber} 
+                (the SCM revision number) -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <timestampFormat>{0,date,yyyy-MM-dd HH:mm:ss}</timestampFormat>
+                    <revisionOnScmFailure>(not available)</revisionOnScmFailure>
+                </configuration>
+            </plugin>
+            <!-- Add versioning information to jars and wars -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <SCM-Revision>${buildNumber}</SCM-Revision>
+                            <SCM-Branch>${scmBranch}</SCM-Branch>
+                            <buildDate>${timestamp}</buildDate>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <SCM-Revision>${buildNumber}</SCM-Revision>
+                            <SCM-Branch>${scmBranch}</SCM-Branch>
+                            <buildDate>${timestamp}</buildDate>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+		</plugins>
 	</build>
 	<modules>
 		<module>adapter</module>
@@ -193,12 +261,12 @@
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
+			<version>${scala-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-compiler</artifactId>
-			<version>${scala.version}</version>
+			<version>${scala-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -223,12 +291,12 @@
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
-			<version>${jaxb.api.version}</version>
+			<version>${jaxb-api-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
-			<version>${jaxb.impl.version}</version>
+			<version>${jaxb-impl-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>

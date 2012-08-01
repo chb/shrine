@@ -1,13 +1,11 @@
 package net.shrine.service
 
 import java.io.StringWriter
-
 import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.JavaConversions.asScalaSet
 import scala.collection.JavaConversions.collectionAsScalaIterable
 import scala.xml.NodeSeq
 import scala.xml.XML
-
 import org.spin.client.SpinAgent
 import org.spin.message.Failure
 import org.spin.message.QueryInfo
@@ -28,7 +26,6 @@ import org.spin.tools.JAXBUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-
 import javax.xml.bind.JAXBContext
 import net.shrine.adapter.dao.AdapterDAO
 import net.shrine.broadcaster.dao.AuditDAO
@@ -47,6 +44,7 @@ import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.RunQueryRequest
 import net.shrine.util.HTTPClient
 import net.shrine.util.XmlUtil
+import net.shrine.util.Versions
 
 /**
  * @author Bill Simons
@@ -70,7 +68,7 @@ class HappyShrineService @Autowired() (
   //TODO - maybe make this a spring bean since its used in shrine service too?
   private lazy val endpointConfig = EndpointConfig.soap(shrineConfig.getAggregatorEndpoint)
 
-  def keystoreReport: String = {
+  override def keystoreReport: String = {
     val keystoreConfig = ConfigTool.loadKeyStoreConfig
     val pki: PKITool = PKITool.getInstance
     val certId: CertID = pki.getMyX509.getCertID
@@ -94,7 +92,7 @@ class HappyShrineService @Autowired() (
       </keystoreReport>).toString
   }
 
-  def shrineConfigReport: String = {
+  override def shrineConfigReport: String = {
     val marshaller = JAXBContext.newInstance(classOf[ShrineConfig]).createMarshaller
     marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", false);
     val sWriter = new StringWriter
@@ -102,7 +100,7 @@ class HappyShrineService @Autowired() (
     sWriter.toString
   }
 
-  def routingReport: String = {
+  override def routingReport: String = {
     val marshaller = JAXBContext.newInstance(classOf[RoutingTableConfig]).createMarshaller
     marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", false);
     val sWriter = new StringWriter
@@ -110,7 +108,7 @@ class HappyShrineService @Autowired() (
     sWriter.toString
   }
 
-  def hiveReport: String = {
+  override def hiveReport: String = {
     val pmRequest = new GetUserConfigurationRequest(hiveCredentials.domain, hiveCredentials.username, hiveCredentials.password)
     val responseXml: String = HTTPClient.post(pmRequest.toI2b2String, pmEndpoint)
 
@@ -167,7 +165,7 @@ class HappyShrineService @Autowired() (
       </spin>).toString
   }
 
-  def spinReport: String = {
+  override def spinReport: String = {
     val routingTable: RoutingTableConfig = ConfigTool.loadRoutingTableConfig
     generateSpinReport(routingTable)
   }
@@ -184,7 +182,7 @@ class HappyShrineService @Autowired() (
       queryDefinition)
   }
 
-  def adapterReport: String = {
+  override def adapterReport: String = {
     if (!shrineConfig.isAdapter) {
       XmlUtil.stripWhitespace(
         <adapter>
@@ -231,7 +229,7 @@ class HappyShrineService @Autowired() (
   }
 
   @Transactional(readOnly = true)
-  def auditReport: String = {
+  override def auditReport: String = {
     val recentEntries = auditDao.findRecentEntries(10)
     XmlUtil.stripWhitespace(
       <recentAuditEntries>
@@ -248,7 +246,7 @@ class HappyShrineService @Autowired() (
   }
 
   @Transactional(readOnly = true)
-  def queryReport: String = {
+  override def queryReport: String = {
     val recentQueries = adapterDao.findRecentQueries(10)
     XmlUtil.stripWhitespace(
       <recentQueries>
@@ -264,9 +262,20 @@ class HappyShrineService @Autowired() (
       </recentQueries>).toString
   }
 
+  override def versionReport: String = {
+    XmlUtil.stripWhitespace(
+      <versionInfo>
+        <shrineVersion>{ Versions.version }</shrineVersion>
+        <scmRevision>{ Versions.scmRevision }</scmRevision>
+        <scmBranch>{ Versions.scmBranch }</scmBranch>
+        <buildDate>{ Versions.buildDate }</buildDate>
+      </versionInfo>).toString
+  }
+
   @Transactional(readOnly = true)
-  def all: String = {
+  override def all: String = {
     new StringBuilder("<all>")
+      .append(versionReport)
       .append(keystoreReport)
       .append(shrineConfigReport)
       .append(routingReport)

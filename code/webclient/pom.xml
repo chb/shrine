@@ -78,6 +78,11 @@
 			<artifactId>gwt-dnd</artifactId>
 			<version>${gwt-dnd-version}</version>
 		</dependency>
+		<dependency>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-json_${lift-scala-version}</artifactId>
+            <version>${lift-version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>

@@ -27,5 +27,7 @@ trait HappyShrineRequestHandler {
 
     def queryReport: String
 
+    def versionReport: String
+    
     def all: String
 }

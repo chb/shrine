@@ -16,7 +16,6 @@
 		<jersey-version>1.7</jersey-version>
 		<hsqldb-version>2.0.0</hsqldb-version>
 		<lucene-version>3.4.0</lucene-version>
-		<lift-version>2.4</lift-version>
 	</properties>
 	<build>
 		<plugins>
@@ -56,7 +55,7 @@
 			</dependency>
 			<dependency>
 				<groupId>net.liftweb</groupId>
-				<artifactId>lift-json_2.9.1</artifactId>
+				<artifactId>lift-json_${lift-scala-version}</artifactId>
 				<version>${lift-version}</version>
 			</dependency>
 		</dependencies>
@@ -85,7 +84,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.liftweb</groupId>
-			<artifactId>lift-json_2.9.1</artifactId>
+			<artifactId>lift-json_${lift-scala-version}</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.shrine</groupId>
