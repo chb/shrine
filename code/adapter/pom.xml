@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>org.spin</groupId>
-            <artifactId>spin-node-core</artifactId>
+            <artifactId>spin-node-api</artifactId>
             <version>${spin-node-version}</version>
         </dependency>
         <dependency>

@@ -3,9 +3,9 @@ package net.shrine.adapter.query
 import junit.framework.TestCase
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.spin.node.actions.EchoQueryAction
-import org.spin.node.actions.discovery.DiscoveryQueryAction
 import org.spin.node.QueryAction
+import org.spin.node.AbstractQueryAction
+import org.spin.node.QueryContext
 
 /**
  * @author Clint Gilbert
@@ -15,8 +15,9 @@ import org.spin.node.QueryAction
 final class ShrineQueryActionMapTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
   import scala.collection.JavaConverters._
   
-  private val echo = new EchoQueryAction
-  private val discovery = new DiscoveryQueryAction
+  private val echo = new MockEchoQueryAction
+  
+  private val discovery = new MockDiscoveryQueryAction
   
   private val qas: Map[String, QueryAction[_]] = Map("echo" -> echo, "discovery" -> discovery)
   
@@ -57,4 +58,14 @@ final class ShrineQueryActionMapTest extends TestCase with AssertionsForJUnit wi
     
     empty.getQueryTypes.isEmpty should be(true)
   }
+  
+  private sealed abstract class MockQueryAction extends AbstractQueryAction[String] {
+    override def perform(context: QueryContext, input: String) = input
+    
+    override def unmarshal(input: String) = input 
+  }
+  
+  private final class MockEchoQueryAction extends MockQueryAction
+  
+  private final class MockDiscoveryQueryAction extends MockQueryAction
 }

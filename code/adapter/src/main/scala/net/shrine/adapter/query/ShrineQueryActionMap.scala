@@ -2,8 +2,8 @@ package net.shrine.adapter.query
 
 import org.spin.node.DestroyableQueryActionMap
 import org.spin.node.UnknownQueryTypeException
-import java.util.{Collection => JCollection}
-import java.util.{Map => JMap}
+import java.util.{ Collection => JCollection }
+import java.util.{ Map => JMap }
 import org.spin.node.QueryAction
 
 /**
@@ -18,9 +18,9 @@ import org.spin.node.QueryAction
  */
 final class ShrineQueryActionMap(actionMap: JMap[String, QueryAction[_]]) extends DestroyableQueryActionMap {
 
-    override def containsQueryType(queryType: String) = actionMap.get(queryType) != null
+  override def containsQueryType(queryType: String) = actionMap.get(queryType) != null
 
-    override def getQueryAction(queryType: String): QueryAction[_] = actionMap.get(queryType)
+  override def getQueryAction(queryType: String): QueryAction[_] = actionMap.get(queryType)
 
-    override def getQueryTypes(): JCollection[String] = actionMap.keySet
+  override def getQueryTypes(): JCollection[String] = actionMap.keySet
 }
