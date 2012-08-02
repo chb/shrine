@@ -21,6 +21,7 @@ import org.spin.identity.IdentityService
 import org.spin.client.AgentException
 import org.spin.client.SpinAgent
 import org.spin.client.TimeoutException
+import java.net.MalformedURLException
 
 /**
  * @author Bill Simons
@@ -105,9 +106,22 @@ class ShrineService(
       }
     }
     
+    def toHostName(url: String): Option[String] = {
+      try {
+        Option((new java.net.URL(url)).getHost)
+      } catch {
+        case e: MalformedURLException => None
+      }
+    }
+    
     val spinResultEntries = results.map(result => new SpinResultEntry(decrypt(result.getPayload), result))
 
-    val errorResponses = failures.map(f => ErrorResponse(f.getDescription))
+    //TODO: Make something better here, using the failing node's human-readable name.  
+    //Using the failing node's hostname is the best we can do for now.
+    val errorResponses = for {
+      failure <- failures
+      hostname <- toHostName(failure.getOriginUrl)
+    } yield ErrorResponse(hostname)
 
     aggregator.aggregate(spinResultEntries, errorResponses)
   }

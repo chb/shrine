@@ -83,7 +83,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
     
     def toResult(description: Char) = new Result(new CertID("123456"), description.toString, envelope, Interval.milliseconds(500))
     
-    def toFailure(description: Char) = new Failure(new CertID("123456"), description.toString)
+    def toFailure(description: Char) = new Failure(new CertID("123456"), "http://example.com/foo", description.toString)
   
     val results = "ab".map(toResult) ++ Seq(null, null) ++ "cde".map(toResult)
     
