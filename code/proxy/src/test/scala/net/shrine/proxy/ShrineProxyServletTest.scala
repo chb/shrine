@@ -47,13 +47,15 @@ final class ShrineProxyServletTest extends TestCase with ShouldMatchers with Ass
   def testDoPost {
     val whiteList = Set("http://example.com")
     
+    val blackList = Set("http://malware.com") 
+    
     //Should work 
     
     Seq("http://example.com", "http://example.com/foo", "http://example.com/lots/of/stuff").foreach { url =>
 
       val mockUrlPoster = new DefaultShrineProxyTest.MockUrlPoster
     
-      val servlet = new ShrineProxyServlet(new DefaultShrineProxy(whiteList, mockUrlPoster))
+      val servlet = new ShrineProxyServlet(new DefaultShrineProxy(whiteList, blackList, mockUrlPoster))
       
       val mockRequest = new MockHttpServletRequest(url)
     
@@ -79,7 +81,7 @@ final class ShrineProxyServletTest extends TestCase with ShouldMatchers with Ass
     Seq("http://google.com", null, "", "  ").foreach { url =>
       val mockUrlPoster = new DefaultShrineProxyTest.MockUrlPoster
     
-      val servlet = new ShrineProxyServlet(new DefaultShrineProxy(whiteList, mockUrlPoster))
+      val servlet = new ShrineProxyServlet(new DefaultShrineProxy(whiteList, blackList, mockUrlPoster))
       
       val mockRequest = new MockHttpServletRequest(url)
     

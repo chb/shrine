@@ -27,13 +27,15 @@ final class DefaultShrineProxyTest extends TestCase with ShouldMatchers with Ass
   
   def testRedirect {
     val whiteList = Set("http://example.com")
+    
+    val blackList = Set("http://malware.com")
 
     val shouldWork = Seq("http://example.com", "http://example.com/foo", "http://example.com/foo/lots/of/stuff?blah=nuh")
 
     shouldWork.foreach { url =>
       val mockUrlPoster = new DefaultShrineProxyTest.MockUrlPoster
 
-      val proxy = new DefaultShrineProxy(whiteList, mockUrlPoster)
+      val proxy = new DefaultShrineProxy(whiteList, blackList, mockUrlPoster)
 
       val inputXml = getQuery(url)
 
@@ -48,7 +50,7 @@ final class DefaultShrineProxyTest extends TestCase with ShouldMatchers with Ass
     shouldFail.foreach { url =>
       val mockUrlPoster = new MockUrlPoster
 
-      val proxy = new DefaultShrineProxy(whiteList, mockUrlPoster)
+      val proxy = new DefaultShrineProxy(whiteList, blackList, mockUrlPoster)
 
       intercept[ShrineMessageFormatException] {
         proxy.redirect(getQuery(url))

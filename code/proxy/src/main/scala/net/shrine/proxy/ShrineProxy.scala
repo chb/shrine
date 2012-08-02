@@ -47,13 +47,17 @@ object DefaultShrineProxy {
   
   private val DEBUG = log.isDebugEnabled
 
-  private[proxy] def loadWhiteList: Set[String] = {
+  private[proxy] def loadWhiteList: Set[String] = loadList("whitelist")
+  
+  private[proxy] def loadBlackList: Set[String] = loadList("blacklist")
+  
+  private def loadList(listname: String): Set[String] = {
     try {
       val confFile = ConfigTool.getConfigFileWithFailover("shrine-proxy-acl.xml")
 
       val confXml = XML.loadFile(confFile)
 
-      (confXml \\ "lists" \ "whitelist" \ "host").map(_.text.trim).toSet
+      (confXml \\ "lists" \ listname \ "host").map(_.text.trim).toSet
     } catch {
       case e: Exception => {
         log.error("ShrineProxy encountered a problem while checking ACL permissions: " + e)
@@ -68,17 +72,18 @@ object DefaultShrineProxy {
   }
 }
 
-final class DefaultShrineProxy(val whiteList: Set[String], val urlPoster: ShrineProxy.UrlPoster ) extends ShrineProxy {
+final class DefaultShrineProxy(val whiteList: Set[String], val blackList: Set[String], val urlPoster: ShrineProxy.UrlPoster ) extends ShrineProxy {
 
-  def this() = this(DefaultShrineProxy.loadWhiteList, DefaultShrineProxy.HttpClientUrlPoster)
+  def this() = this(DefaultShrineProxy.loadWhiteList, DefaultShrineProxy.loadBlackList, DefaultShrineProxy.HttpClientUrlPoster)
 
   import DefaultShrineProxy._
   
   whiteList.foreach(entry => log.info("Whitelist entry:" + entry))
+  whiteList.foreach(entry => log.info("Blacklist entry:" + entry))
 
   log.info("Loaded access control lists.")
 
-  override def isAllowableUrl(redirectURL: String): Boolean = whiteList.exists(redirectURL.startsWith)
+  override def isAllowableUrl(redirectURL: String): Boolean = whiteList.exists(redirectURL.startsWith) && !blackList.exists(redirectURL.startsWith)
 
   /**
    * Redirect to a URL embedded within the I2B2 message
