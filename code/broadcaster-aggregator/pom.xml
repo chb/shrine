@@ -25,7 +25,6 @@
 		</plugins>
 	</build>
 	<properties>
-		<jersey-version>1.7</jersey-version>
 		<cxf-version>2.2.9</cxf-version>
 	</properties>
 	<dependencies>

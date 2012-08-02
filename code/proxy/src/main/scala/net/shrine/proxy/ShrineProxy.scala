@@ -64,7 +64,7 @@ object DefaultShrineProxy {
   }
   
   object HttpClientUrlPoster extends ShrineProxy.UrlPoster {
-    override def post(url: String, input: String): String = HTTPClient.post(input, url, trustAllSslCerts = true)
+    override def post(url: String, input: String): String = HTTPClient.post(input, url, acceptAllSslCerts = true)
   }
 }
 

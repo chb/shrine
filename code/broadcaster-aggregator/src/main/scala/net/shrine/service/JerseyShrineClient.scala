@@ -33,6 +33,7 @@ import java.security.SecureRandom
 import com.sun.jersey.api.client.RequestBuilder
 import com.sun.jersey.api.client.UniformInterface
 import net.shrine.protocol.query.QueryDefinition
+import net.shrine.util.HTTPClient.createJerseyClient
 
 /**
  *
@@ -56,11 +57,7 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
   require(projectId != null)
   require(authorization != null)
 
-  private[service] lazy val webResource = {
-    val jerseyClient = createClient(acceptAllSslCerts)
-
-    jerseyClient.resource(shrineUrl)
-  }
+  private[service] lazy val webResource = createJerseyClient(acceptAllSslCerts).resource(shrineUrl)
 
   override def readApprovedQueryTopics(userId: String) = {
     get[ReadApprovedQueryTopicsResponse] {
@@ -168,40 +165,4 @@ object JerseyShrineClient {
   private[service] implicit val deleteQueryResponseDeserializer: Deserializer[DeleteQueryResponse] = DeleteQueryResponse.fromXml
 
   private[service] implicit val renameQueryResponseDeserializer: Deserializer[RenameQueryResponse] = RenameQueryResponse.fromXml
-
-  private[service] object TrustsAllCertsHostnameVerifier extends HostnameVerifier {
-    override def verify(s: String, sslSession: SSLSession) = true
-  }
-
-  private[service] object TrustsAllCertsTrustManager extends X509TrustManager {
-    override def getAcceptedIssuers(): Array[X509Certificate] = null
-    override def checkClientTrusted(certs: Array[X509Certificate], authType: String): Unit = ()
-    override def checkServerTrusted(certs: Array[X509Certificate], authType: String): Unit = ()
-  }
-
-  private[service] def createClient(acceptAllSslCerts: Boolean): Client = {
-    if (!acceptAllSslCerts) {
-      Client.create
-    } else {
-      // Create a trust manager that does not validate certificate chains
-      val trustsAllCerts: Array[TrustManager] = Array(TrustsAllCertsTrustManager)
-
-      // Install the all-trusting trust manager in an SSLContext
-      val sslContext = {
-        val context = SSLContext.getInstance("TLS")
-
-        context.init(null, trustsAllCerts, new SecureRandom)
-
-        context
-      }
-
-      val httpsProperties = new HTTPSProperties(TrustsAllCertsHostnameVerifier, sslContext)
-
-      val config: ClientConfig = new DefaultClientConfig
-
-      config.getProperties.put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES, httpsProperties)
-
-      Client.create(config)
-    }
-  }
 }
