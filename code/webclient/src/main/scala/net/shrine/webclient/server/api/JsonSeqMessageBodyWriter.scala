@@ -1,7 +1,6 @@
 package net.shrine.webclient.server.api
 
 import javax.ws.rs.ext.MessageBodyWriter
-import java.util.{List => JList}
 import java.lang.reflect.Type
 import java.lang.annotation.{Annotation => JAnnotation}
 import javax.ws.rs.core.MediaType
@@ -13,11 +12,11 @@ import java.io.OutputStream
  * @author clint
  * @date Aug 3, 2012
  */
-abstract class JsonJavaListMessageBodyWriter[T : Manifest : Jsonable] extends MessageBodyWriter[JList[T]] {
+abstract class JsonJavaListMessageBodyWriter[T : Manifest : Jsonable] extends MessageBodyWriter[Seq[T]] {
   private val classOfT = manifest[T].erasure
   
   override def getSize(
-    list: JList[T],
+    list: Seq[T],
     clazz: Class[_],
     genericType: Type,
     annotations: Array[JAnnotation],
@@ -29,7 +28,7 @@ abstract class JsonJavaListMessageBodyWriter[T : Manifest : Jsonable] extends Me
     annotations: Array[JAnnotation],
     mediaType: MediaType): Boolean = {
 
-    val isAList = classOf[JList[_]].isAssignableFrom(clazz)
+    val isAList = classOf[Seq[_]].isAssignableFrom(clazz)
 
     val isAListOfT = genericType match {
       case parameterizedType: ParameterizedType => {
@@ -48,7 +47,7 @@ abstract class JsonJavaListMessageBodyWriter[T : Manifest : Jsonable] extends Me
   import net.liftweb.json.JsonDSL._
   
   override def writeTo(
-    list: JList[T],
+    items: Seq[T],
     clazz: Class[_],
     genericType: Type,
     annotations: Array[JAnnotation],
@@ -58,9 +57,7 @@ abstract class JsonJavaListMessageBodyWriter[T : Manifest : Jsonable] extends Me
     
     val toJson = implicitly[Jsonable[T]].toJson _
     
-    val json = list.asScala.toSeq.map(toJson)
-    
-    val jsonString = compact(render(json))
+    val jsonString = compact(render(items.map(toJson)))
     
     val writer = new java.io.OutputStreamWriter(out)
     

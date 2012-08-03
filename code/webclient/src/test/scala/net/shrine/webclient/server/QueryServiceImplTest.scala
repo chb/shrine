@@ -47,8 +47,8 @@ final class QueryServiceImplTest extends TestCase with AssertionsForJUnit with S
     queryResult.size should equal(toReturn.size)
     
     toReturn.map { case (instName, count) =>
-      queryResult.containsKey(instName) should be(true)
-      queryResult.get(instName).getValue should equal(count)
+      queryResult.contains(instName) should be(true)
+      queryResult.get(instName).get should equal(count)
     }
   }
 }

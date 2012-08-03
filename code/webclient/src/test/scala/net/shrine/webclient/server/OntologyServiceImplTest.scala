@@ -15,12 +15,12 @@ import net.shrine.webclient.client.domain.OntNode
  * @author clint
  * @date May 22, 2012
  */
-final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
+final class OntologyServiceImplTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
   private def shrineSqlStream = getClass.getClassLoader.getResourceAsStream("testShrineWithSyns.sql")
   
   private def dao = new ShrineSqlOntologyDAO(shrineSqlStream)
   
-  import OntologySearchServiceImpl.toConcept
+  import OntologyServiceImpl.toConcept
   
   private val gender = toConcept("""\\SHRINE\SHRINE\Demographics\Gender\""")
   
@@ -35,20 +35,20 @@ final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUn
   def testIsLeafTrie {
     val ontTrie = OntologyTrie(dao)
     
-    OntologySearchServiceImpl.isLeafTrie(ontTrie) should be(false)
+    OntologyServiceImpl.isLeafTrie(ontTrie) should be(false)
     
     val genderSubTrie = ontTrie.subTrieForPrefix(gender)
     
-    OntologySearchServiceImpl.isLeafTrie(genderSubTrie) should be(false)
+    OntologyServiceImpl.isLeafTrie(genderSubTrie) should be(false)
     
     val maleSubTrie = ontTrie.subTrieForPrefix(male)
     
-    OntologySearchServiceImpl.isLeafTrie(maleSubTrie) should be(true)
+    OntologyServiceImpl.isLeafTrie(maleSubTrie) should be(true)
   }
   
   @Test
   def testIsLeafConcept {
-    val ontService = new OntologySearchServiceImpl(shrineSqlStream)
+    val ontService = new OntologyServiceImpl(shrineSqlStream)
     
     ontService.isLeaf(gender) should be(false)
     
@@ -57,7 +57,7 @@ final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUn
   
   @Test
   def testToConcept {
-    val concept = OntologySearchServiceImpl.toConcept("foo")
+    val concept = OntologyServiceImpl.toConcept("foo")
     
     concept should not be(null)
     concept.path should equal("foo")
@@ -66,7 +66,7 @@ final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUn
   
   @Test
   def testToTerm {
-    import OntologySearchServiceImpl.toTerm
+    import OntologyServiceImpl.toTerm
     
     val maleTerm = toTerm(male)
     
@@ -87,7 +87,7 @@ final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUn
   
   @Test
   def testIsCodedValue {
-    import OntologySearchServiceImpl.{isCodedValue, toConcept}
+    import OntologyServiceImpl.{isCodedValue, toConcept}
     
     isCodedValue(male) should be(false)
     isCodedValue(gender) should be(false)
@@ -98,7 +98,7 @@ final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUn
   
   @Test
   def testDetermineSimpleNameFor {
-    import OntologySearchServiceImpl.{determineSimpleNameFor, toConcept}
+    import OntologyServiceImpl.{determineSimpleNameFor, toConcept}
     
     determineSimpleNameFor(male) should equal("Male")
     determineSimpleNameFor(gender) should equal("Gender")
@@ -109,7 +109,7 @@ final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUn
   
   @Test
   def testGetSuggestions {
-    val ontService = new OntologySearchServiceImpl(shrineSqlStream)
+    val ontService = new OntologyServiceImpl(shrineSqlStream)
     
     val suggestions = ontService.getSuggestions("male", 10)
     
@@ -129,28 +129,28 @@ final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUn
       a.getSynonym should equal(b.getSynonym)
     }
     
-    deepEquals(suggestions.asScala.head, expected.head) 
-    deepEquals(suggestions.asScala.tail.head, expected.tail.head)
+    deepEquals(suggestions.head, expected.head) 
+    deepEquals(suggestions.tail.head, expected.tail.head)
     
-    suggestions.asScala should equal(expected)
+    suggestions should equal(expected)
   }
   
   @Test
   def testGetChildrenFor {
-    val ontService = new OntologySearchServiceImpl(shrineSqlStream)
+    val ontService = new OntologyServiceImpl(shrineSqlStream)
     
     import scala.collection.JavaConverters._
     
-    val children = ontService.getChildrenFor(gender.path).asScala.toSet
+    val children = ontService.getChildrenFor(gender.path)
     
-    val expected = Set(male, female, undifferentiated, unknown).map(c => new OntNode(OntologySearchServiceImpl.toTerm(c), true))
+    val expected = Set(male, female, undifferentiated, unknown).map(c => new OntNode(OntologyServiceImpl.toTerm(c), true))
     
     children should equal(expected)
   }
 
   @Test
   def testToOntNode {
-    val ontService = new OntologySearchServiceImpl(shrineSqlStream)
+    val ontService = new OntologyServiceImpl(shrineSqlStream)
    
     val maleOntNodeOption = ontService.toOntNode(male.path)
     
@@ -192,13 +192,13 @@ final class OntologySearchServiceImplTest extends TestCase with AssertionsForJUn
   
   @Test
   def testGetPathTo {
-    val ontService = new OntologySearchServiceImpl(shrineSqlStream)
+    val ontService = new OntologyServiceImpl(shrineSqlStream)
    
     import scala.collection.JavaConverters._
     
-    val pathToMale = ontService.getPathTo(male.path).asScala.toSeq
+    val pathToMale = ontService.getPathTo(male.path)
     
-    import OntologySearchServiceImpl.toTerm
+    import OntologyServiceImpl.toTerm
     
     def ontNode(path: String, isLeaf: Boolean = false) = new OntNode(toTerm(toConcept(path)), isLeaf)
     

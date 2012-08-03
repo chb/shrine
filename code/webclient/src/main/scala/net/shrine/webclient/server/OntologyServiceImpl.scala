@@ -1,33 +1,34 @@
 package net.shrine.webclient.server
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet
-import net.shrine.webclient.client.services.OntologySearchService
-import java.util.{ Collections => JCollections }
-import java.util.{ List => JList }
-import net.shrine.ont.index.OntologyIndex
-import net.shrine.ont.index.LuceneOntologyIndex
+import java.io.InputStream
+
+import scala.util.matching.Regex
+
+import org.apache.log4j.Logger
+
+import net.shrine.ont.data.OntologyDAO
 import net.shrine.ont.data.ShrineSqlOntologyDAO
-import java.io.FileInputStream
+import net.shrine.ont.index.LuceneOntologyIndex
+import net.shrine.ont.index.OntologyIndex
+import net.shrine.ont.index.OntologyTrie
+import net.shrine.ont.index.OntologyTrie.addSlashesIfNeeded
+import net.shrine.ont.index.OntologyTrie.split
+import net.shrine.ont.index.OntologyTrie.unSplit
+import net.shrine.ont.messaging.Concept
+import net.shrine.webclient.client.domain.OntNode
 import net.shrine.webclient.client.domain.Term
 import net.shrine.webclient.client.domain.TermSuggestion
-import net.shrine.ont.data.OntologyDAO
-import net.shrine.ont.index.OntologyTrie
-import net.shrine.webclient.client.domain.OntNode
-import net.shrine.ont.messaging.Concept
-import scala.util.matching.Regex
-import org.apache.log4j.Logger
-import java.io.InputStream
 
 /**
  * @author clint
  * @date Mar 23, 2012
  *
  */
-final class OntologySearchServiceImpl(ontologyStream: => InputStream) extends RemoteServiceServlet with OntologySearchService {
+final class OntologyServiceImpl(ontologyStream: => InputStream) extends OntologyService {
   require(ontologyStream != null)
 
   //Needed so this can be instantiated by an app server :/ 
-  def this() = this(OntologySearchServiceImpl.ontFileStream)
+  def this() = this(OntologyServiceImpl.ontFileStream)
 
   private[this] def dao: OntologyDAO = new ShrineSqlOntologyDAO(ontologyStream)
 
@@ -35,21 +36,19 @@ final class OntologySearchServiceImpl(ontologyStream: => InputStream) extends Re
 
   private[this] val ontTrie = OntologyTrie(dao)
 
-  import OntologySearchServiceImpl._
+  import OntologyServiceImpl._
 
   private[server] def isLeaf(concept: Concept): Boolean = isLeafTrie(ontTrie.subTrieForPrefix(concept))
 
-  override def getSuggestions(typedSoFar: String, limit: Int): JList[TermSuggestion] = {
+  def getSuggestions(typedSoFar: String, limit: Int): Seq[TermSuggestion] = {
     val concepts = index.search(typedSoFar).take(limit)
 
     def toTermSuggestion(c: Concept): TermSuggestion = new TermSuggestion(c.path, determineSimpleNameFor(c), typedSoFar, c.synonym.orNull, c.category, isLeaf(c))
 
-    val suggestions = concepts.map(toTermSuggestion)
-
-    Helpers.toJavaList(suggestions)
+    concepts.map(toTermSuggestion)
   }
 
-  override def getChildrenFor(term: String): JList[OntNode] = {
+  def getChildrenFor(term: String): Seq[OntNode] = {
     val concept = toConcept(term)
 
     if (ontTrie.contains(concept)) {
@@ -60,13 +59,11 @@ final class OntologySearchServiceImpl(ontologyStream: => InputStream) extends Re
         node <- toOntNode(childConcept.path)
       } yield node
 
-      val childNodesSorted = childNodes.toSeq.sortBy(_.getSimpleName)
-
-      Helpers.toJavaList(childNodesSorted)
+      childNodes.toSeq.sortBy(_.getSimpleName)
     } else {
       logger.info("Couldn't get children for nonexistent term '" + term + "'")
 
-      emptyOntNodeList
+      Seq.empty
     }
   }
 
@@ -92,7 +89,7 @@ final class OntologySearchServiceImpl(ontologyStream: => InputStream) extends Re
     result
   }
 
-  override def getPathTo(term: String): JList[OntNode] = {
+  def getPathTo(term: String): Seq[OntNode] = {
     def pathsFromRoot(termPath: String): Seq[String] = {
       import OntologyTrie._
 
@@ -110,17 +107,15 @@ final class OntologySearchServiceImpl(ontologyStream: => InputStream) extends Re
       """\\SHRINE\SHRINE\""" +: withoutFirstTwoSHRINEs.map(toOntPath)
     }
 
-    if(ontTrie.contains(toConcept(term))) {
-	    val nodes = for {
-	      ontTerm <- pathsFromRoot(term)
-	      node <- toOntNode(ontTerm)
-	    } yield node
-	
-	    Helpers.toJavaList(nodes)
+    if (ontTrie.contains(toConcept(term))) {
+      for {
+        ontTerm <- pathsFromRoot(term)
+        node <- toOntNode(ontTerm)
+      } yield node
     } else {
       logger.info("Couldn't get path to nonexistent term '" + term + "'")
-      
-      emptyOntNodeList
+
+      Seq.empty
     }
   }
 }
@@ -129,10 +124,8 @@ final class OntologySearchServiceImpl(ontologyStream: => InputStream) extends Re
  * @author clint
  * @date Mar 23, 2012
  */
-object OntologySearchServiceImpl {
-  private val emptyOntNodeList = JCollections.emptyList[OntNode]
-  
-  private val logger = Logger.getLogger(classOf[OntologySearchServiceImpl])
+object OntologyServiceImpl {
+  private val logger = Logger.getLogger(classOf[OntologyServiceImpl])
 
   private[server] def isLeafTrie(trie: OntologyTrie): Boolean = trie.children.isEmpty
 
