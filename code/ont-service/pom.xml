@@ -12,9 +12,6 @@
 		<version>1.14-SNAPSHOT</version>
 	</parent>
 	<properties>
-		<mysql-version>5.1.18</mysql-version>
-		<jersey-version>1.7</jersey-version>
-		<hsqldb-version>2.0.0</hsqldb-version>
 		<lucene-version>3.4.0</lucene-version>
 	</properties>
 	<build>
@@ -28,11 +25,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>mysql</groupId>
-				<artifactId>mysql-connector-java</artifactId>
-				<version>${mysql-version}</version>
-			</dependency>
-			<dependency>
 				<groupId>com.sun.jersey</groupId>
 				<artifactId>jersey-server</artifactId>
 				<version>${jersey-version}</version>
@@ -41,12 +33,6 @@
 				<groupId>com.sun.jersey.contribs</groupId>
 				<artifactId>jersey-spring</artifactId>
 				<version>${jersey-version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hsqldb</groupId>
-				<artifactId>hsqldb</artifactId>
-				<version>${hsqldb-version}</version>
-				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.lucene</groupId>
@@ -62,21 +48,12 @@
 	</dependencyManagement>
 	<dependencies>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-server</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-spring</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
