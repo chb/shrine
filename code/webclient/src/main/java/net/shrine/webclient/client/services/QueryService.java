@@ -1,17 +1,22 @@
 package net.shrine.webclient.client.services;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import com.google.gwt.user.client.rpc.RemoteService;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+
+import org.fusesource.restygwt.client.MethodCallback;
+import org.fusesource.restygwt.client.RestService;
 
 /**
  * 
  * @author clint
  * @date Mar 23, 2012
  */
-//@RemoteServiceRelativePath("query")
-public interface QueryService {// extends RemoteService {
-	//NB: Must be a HashMap (and not a Map) for GWT serialization purposes.
-	HashMap<String, Integer> queryForBreakdown(final String expr);
+
+public interface QueryService extends RestService {
+	@POST
+	@Path("rest/api/query/submit")
+	void queryForBreakdown(final String expr, final MethodCallback<Map<String, Integer>> callback);
 }
 

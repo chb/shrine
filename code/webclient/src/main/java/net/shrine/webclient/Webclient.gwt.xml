@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='Webclient'>
-<!-- <module rename-to='Webclient'> -->
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User' />
 
@@ -10,6 +9,9 @@
 
   <!-- For drag-and-drop support -->
   <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+
+  <!-- For JAX-RS client support -->
+  <inherits name='org.fusesource.restygwt.RestyGWT'/>
 
   <!-- Specify the app entry point class.                         -->
   <entry-point class='net.shrine.webclient.client.Webclient' />

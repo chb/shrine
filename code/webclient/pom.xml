@@ -24,9 +24,28 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<gwt-log-version>3.1.8</gwt-log-version>
 		<gwt-dnd-version>3.1.2</gwt-dnd-version>
+		<restygwt-version>1.2</restygwt-version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>RestyGWT-Repo</id>
+			<url>http://repo.fusesource.com/nexus/content/repositories/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
+		<dependency>
+			<groupId>org.fusesource.restygwt</groupId>
+			<artifactId>restygwt</artifactId>
+			<version>${restygwt-version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
@@ -84,10 +103,10 @@
 			<version>${gwt-dnd-version}</version>
 		</dependency>
 		<dependency>
-            <groupId>net.liftweb</groupId>
-            <artifactId>lift-json_${lift-scala-version}</artifactId>
-            <version>${lift-version}</version>
-        </dependency>
+			<groupId>net.liftweb</groupId>
+			<artifactId>lift-json_${lift-scala-version}</artifactId>
+			<version>${lift-version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

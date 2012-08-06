@@ -44,7 +44,7 @@ final class ClientApiResource(queryService: QueryService, ontologyService: Ontol
   @Path("ontology/children-of")
   def getChildrenFor(@QueryParam("term") term: String): Seq[OntNode] = ontologyService.getChildrenFor(term)
   
-  @GET
+  @POST
   @Path("query/submit")
   //TODO: MessageBodyWriter that does immutable.Map => Json 
   def queryForBreakdown(@QueryParam("expr") expr: String): MultiInstitutionQueryResult = MultiInstitutionQueryResult(Map("foo" -> java.lang.Integer.valueOf(123), "bar" -> java.lang.Integer.valueOf(987654321)))//queryService.queryForBreakdown(expr)

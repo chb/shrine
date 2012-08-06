@@ -13,16 +13,18 @@ import net.shrine.webclient.client.util.Util;
  * @date Mar 23, 2012
  */
 public final class Term implements Andable, IsSerializable {
+	//NB: Field must be public for RestyGWT to serialize it
+	public String path;
 	
-	private String path;
+	//NB: Field must be public for RestyGWT to serialize it
+	public String category;
 	
-	private String category;
-	
-	private String simpleName;
+	//NB: Field must be public for RestyGWT to serialize it
+	public String simpleName;
 
-	//NB: For GWT serialization
+	//NB: For RestyGWT serialization
 	@SuppressWarnings("unused")
-	private Term() {
+	public Term() {
 		super();
 	}
 	

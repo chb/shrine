@@ -8,21 +8,27 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @date Mar 29, 2012
  */
 public final class TermSuggestion implements IsSerializable {
-	private String path;
+	//NB: Field must be public for RestyGWT to serialize it
+	public String path;
 
-	private String simpleName;
+	//NB: Field must be public for RestyGWT to serialize it
+	public String simpleName;
 
-	private String highlight;
+	//NB: Field must be public for RestyGWT to serialize it
+	public String highlight;
 
-	private String synonym;
+	//NB: Field must be public for RestyGWT to serialize it
+	public String synonym;
 
-	private String category;
+	//NB: Field must be public for RestyGWT to serialize it
+	public String category;
 
-	private boolean isLeaf;
+	//NB: Field must be public for RestyGWT to serialize it
+	public boolean isLeaf;
 
-	// NB: For GWT
+	// NB: For RestyGWT
 	@SuppressWarnings("unused")
-	private TermSuggestion() {
+	public TermSuggestion() {
 		super();
 	}
 

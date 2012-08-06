@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.shrine.webclient.client.domain.Expression;
-import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.util.Observable;
 import net.shrine.webclient.client.util.ObservableList;
 import net.shrine.webclient.client.util.Observer;
@@ -27,7 +26,7 @@ public final class State {
 	
 	private String allExpressionXml = null;
 
-	private final Observable<Map<String, IntWrapper>> allResult = Observable.empty();
+	private final Observable<Map<String, Integer>> allResult = Observable.empty();
 	
 	// Query group name => QueryGroup (Expression, integer result (patient set
 	// size), negated (t/f), start date, end date, min occurrances )
@@ -106,11 +105,11 @@ public final class State {
 		return queries.size();
 	}
 
-	public void completeAllQuery(final Map<String, IntWrapper> resultsByInstitution) {
+	public void completeAllQuery(final Map<String, Integer> resultsByInstitution) {
 		if (Log.isInfoEnabled()) {
 			Log.info("Completing query 'All' with: '" + resultsByInstitution + "'");
 
-			for (final Entry<String, IntWrapper> entry : resultsByInstitution.entrySet()) {
+			for (final Entry<String, Integer> entry : resultsByInstitution.entrySet()) {
 				Log.info(entry.getKey() + ": " + entry.getValue());
 			}
 		}
@@ -159,7 +158,7 @@ public final class State {
 		return allExpressionXml;
 	}
 
-	public Observable<Map<String, IntWrapper>> getAllResult() {
+	public Observable<Map<String, Integer>> getAllResult() {
 		return allResult;
 	}
 

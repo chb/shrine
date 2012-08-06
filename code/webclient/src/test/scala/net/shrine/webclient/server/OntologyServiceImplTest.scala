@@ -143,7 +143,16 @@ final class OntologyServiceImplTest extends TestCase with AssertionsForJUnit wit
     
     val children = ontService.getChildrenFor(gender.path)
     
-    val expected = Set(male, female, undifferentiated, unknown).map(c => new OntNode(OntologyServiceImpl.toTerm(c), true))
+    val expected = Seq(female, male, undifferentiated, unknown).map(c => new OntNode(OntologyServiceImpl.toTerm(c), true))
+    
+    val Seq(c1, c2, c3, c4) = children
+    
+    val Seq(e1, e2, e3, e4) = expected
+    
+    c1 should equal(e1)
+    c2 should equal(e2)
+    c3 should equal(e3)
+    c4 should equal(e4)
     
     children should equal(expected)
   }

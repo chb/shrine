@@ -1,10 +1,10 @@
 package net.shrine.webclient.client.state;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
 import net.shrine.webclient.client.domain.And;
-import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.domain.Term;
 
 import org.junit.Test;
@@ -50,9 +50,9 @@ public class StateTestGwt extends AbstractWebclientTest {
 		final State state = state();
 		
 		@SuppressWarnings("serial")
-		final HashMap<String, IntWrapper> results = new HashMap<String, IntWrapper>() {{
-			this.put("foo", new IntWrapper(5));
-			this.put("bar", new IntWrapper(99));
+		final Map<String, Integer> results = new HashMap<String, Integer>() {{
+			this.put("foo", Integer.valueOf(5));
+			this.put("bar", Integer.valueOf(99));
 		}};
 		
 		assertTrue(state.getAllResult().isEmpty());

@@ -1,36 +1,36 @@
 package net.shrine.webclient.client.controllers;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import net.shrine.webclient.client.domain.IntWrapper;
-import net.shrine.webclient.client.services.QueryServiceAsync;
+import net.shrine.webclient.client.services.QueryService;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.fusesource.restygwt.client.MethodCallback;
 
 /**
  * 
  * @author clint
  * @date Apr 23, 2012
  */
-public final class MockQueryServiceAsync implements QueryServiceAsync {
+public final class MockQueryServiceAsync implements QueryService {
 	public Integer totalToReturn = total;
 	
-	public HashMap<String, IntWrapper> multiNodeResultsToReturn = multiNodeResults;
+	public Map<String, Integer> multiNodeResultsToReturn = multiNodeResults;
 	
 	public String lastExpr = null; 
 	
 	static final Integer total = 99;
 	
 	@SuppressWarnings("serial")
-	static final HashMap<String, IntWrapper> multiNodeResults = new HashMap<String, IntWrapper>() {{
-		this.put("foo", new IntWrapper(99));
-		this.put("bar", new IntWrapper(42));
+	static final HashMap<String, Integer> multiNodeResults = new HashMap<String, Integer>() {{
+		this.put("foo", Integer.valueOf(99));
+		this.put("bar", Integer.valueOf(42));
 	}};
 	
 	@Override
-	public void queryForBreakdown(final String expr, final AsyncCallback<HashMap<String, IntWrapper>> callback) {
+	public void queryForBreakdown(final String expr, final MethodCallback<Map<String, Integer>> callback) {
 		lastExpr = expr;
 		
-		callback.onSuccess(multiNodeResultsToReturn);
+		callback.onSuccess(null, multiNodeResultsToReturn);
 	}
 }

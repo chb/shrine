@@ -1,8 +1,7 @@
 package net.shrine.webclient.client;
 
 import net.shrine.webclient.client.controllers.Controllers;
-import net.shrine.webclient.client.services.QueryService;
-import net.shrine.webclient.client.services.QueryServiceAsync;
+import net.shrine.webclient.client.services.Services;
 import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.widgets.OntologySearchBox;
 import net.shrine.webclient.client.widgets.QueryTermDragController;
@@ -31,7 +30,7 @@ public final class Webclient implements EntryPoint {
 		
 		final State state = new State(eventBus);
 
-		final Controllers controllers = new Controllers(state, GWT.<QueryServiceAsync>create(QueryService.class));
+		final Controllers controllers = new Controllers(state, Services.makeQueryService());
 		
 		final WebClientWrapper wrapper = new WebClientWrapper();
 

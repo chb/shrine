@@ -5,8 +5,11 @@ import java.util.List;
 import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.OntNode;
 import net.shrine.webclient.client.domain.Term;
-import net.shrine.webclient.client.services.OntologySearchService;
-import net.shrine.webclient.client.services.OntologySearchServiceAsync;
+import net.shrine.webclient.client.services.OntologyService;
+import net.shrine.webclient.client.services.Services;
+
+import org.fusesource.restygwt.client.Method;
+import org.fusesource.restygwt.client.MethodCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -17,7 +20,6 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -143,11 +145,11 @@ public final class DataDictionaryRow extends Composite {
 	}
 
 	void loadOntTree(final Controllers controllers, final Term startingTerm) {
-		final OntologySearchServiceAsync ontologyService = GWT.create(OntologySearchService.class);
+		final OntologyService ontologyService = Services.makeOntologyService();
 
-		ontologyService.getPathTo(startingTerm.getPath(), new AsyncCallback<List<OntNode>>() {
+		ontologyService.getPathTo(startingTerm.getPath(), new MethodCallback<List<OntNode>>() {
 			@Override
-			public void onSuccess(final List<OntNode> pathFromRoot) {
+			public void onSuccess(final Method method, final List<OntNode> pathFromRoot) {
 				if (!pathFromRoot.isEmpty()) {
 					showDataDictionaryTree(controllers, pathFromRoot);
 				} else {
@@ -156,7 +158,7 @@ public final class DataDictionaryRow extends Composite {
 			}
 
 			@Override
-			public void onFailure(final Throwable caught) {
+			public void onFailure(final Method method, final Throwable caught) {
 				Log.error("Failed to browse ontology: " + caught.getMessage(), caught);
 
 				hideDataDictionaryTree();

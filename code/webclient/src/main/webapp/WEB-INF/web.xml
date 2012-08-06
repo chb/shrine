@@ -19,7 +19,7 @@
 
   <servlet-mapping>
 	<servlet-name>Shrine Web Client Rest Service</servlet-name>
-	<url-pattern>/rest/*</url-pattern>
+	<url-pattern>/Webclient/rest/*</url-pattern>
   </servlet-mapping>            
   
   <!-- 

@@ -3,13 +3,14 @@ package net.shrine.webclient.client.controllers;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.shrine.webclient.client.domain.IntWrapper;
-import net.shrine.webclient.client.services.QueryServiceAsync;
+import net.shrine.webclient.client.services.QueryService;
 import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.util.Util;
 
+import org.fusesource.restygwt.client.Method;
+import org.fusesource.restygwt.client.MethodCallback;
+
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * 
@@ -19,9 +20,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public final class QueryController extends StatefulController {
 
-	private final QueryServiceAsync queryService;
+	private final QueryService queryService;
 
-	public QueryController(final State state, final QueryServiceAsync queryService) {
+	public QueryController(final State state, final QueryService queryService) {
 		super(state);
 		
 		Util.requireNotNull(queryService);
@@ -43,14 +44,14 @@ public final class QueryController extends StatefulController {
 		
 		Log.debug("Query XML for 'All': " + state.getAllExpression());
 		
-		queryService.queryForBreakdown(state.getAllExpression(), new AsyncCallback<HashMap<String, IntWrapper>>() {
+		queryService.queryForBreakdown(state.getAllExpression(), new MethodCallback<Map<String, Integer>>() {
 			@Override
-			public void onSuccess(final HashMap<String, IntWrapper> result) {
+			public void onSuccess(final Method method, final Map<String, Integer> result) {
 				state.completeAllQuery(result);
 			}
 
 			@Override
-			public void onFailure(final Throwable caught) {
+			public void onFailure(final Method method, final Throwable caught) {
 				Log.error("Error making query 'All': " + caught.getMessage(), caught);
 
 				completeAllQueryWithNoResults();
@@ -62,7 +63,7 @@ public final class QueryController extends StatefulController {
 		state.completeAllQuery(noResults());
 	}
 	
-	private static Map<String, IntWrapper> noResults() {
-		return new HashMap<String, IntWrapper>();
+	private static Map<String, Integer> noResults() {
+		return new HashMap<String, Integer>();
 	}
 }

@@ -12,15 +12,18 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @date Apr 2, 2012
  */
 public final class OntNode implements IsSerializable {
-	private Term term;
+	//NB: Field must be public for RestyGWT to serialize it
+	public Term term;
 
-	private boolean isLeaf;
+	//NB: Field must be public for RestyGWT to serialize it
+	public boolean isLeaf;
 
-	private List<OntNode> children;
+	//NB: Field must be public for RestyGWT to serialize it
+	public List<OntNode> children;
 
-	// For GWT
+	// For RestyGWT
 	@SuppressWarnings("unused")
-	private OntNode() {
+	public OntNode() {
 		this(null, new ArrayList<OntNode>(), false);
 	}
 

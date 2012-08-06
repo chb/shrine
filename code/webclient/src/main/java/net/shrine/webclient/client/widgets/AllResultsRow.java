@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.shrine.webclient.client.controllers.Controllers;
-import net.shrine.webclient.client.domain.IntWrapper;
 import net.shrine.webclient.client.state.QueryGroupsChangedEvent;
 import net.shrine.webclient.client.state.QueryGroupsChangedEventHandler;
 import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
@@ -39,7 +38,7 @@ public final class AllResultsRow extends Composite implements Observer {
 
 	interface AllResultsRowUiBinder extends UiBinder<Widget, AllResultsRow> { }
 
-	private ReadOnlyObservable<Map<String, IntWrapper>> allResults;
+	private ReadOnlyObservable<Map<String, Integer>> allResults;
 	
 	@UiField
 	SimplePanel querySummaryHolder;
@@ -59,7 +58,7 @@ public final class AllResultsRow extends Composite implements Observer {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
-	void wireUp(final EventBus eventBus, final Controllers controllers, final ReadOnlyObservable<Map<String, IntWrapper>> allResults) {
+	void wireUp(final EventBus eventBus, final Controllers controllers, final ReadOnlyObservable<Map<String, Integer>> allResults) {
 		Util.requireNotNull(controllers);
 		Util.requireNotNull(allResults);
 		Util.requireNotNull(eventBus);
@@ -98,14 +97,14 @@ public final class AllResultsRow extends Composite implements Observer {
 
 	@Override
 	public void inform() {
-		for(final Map<String, IntWrapper> resultsMap : allResults) {
+		for(final Map<String, Integer> resultsMap : allResults) {
 			clearResults();
 			
 			resultsWrapper.setVisible(true);
 			
-			for(final Entry<String, IntWrapper> entry : resultsMap.entrySet()) {
+			for(final Entry<String, Integer> entry : resultsMap.entrySet()) {
 				final String instName = entry.getKey();
-				final int count = entry.getValue().getValue();
+				final int count = entry.getValue();
 				
 				resultsPanel.add(new InstitutionResult(instName, count));
 			}

@@ -1,6 +1,6 @@
 package net.shrine.webclient.client.controllers;
 
-import net.shrine.webclient.client.services.QueryServiceAsync;
+import net.shrine.webclient.client.services.QueryService;
 import net.shrine.webclient.client.state.State;
 
 
@@ -16,7 +16,7 @@ public final class Controllers {
     
     public final QueryController query;
     
-    public Controllers(final State state, final QueryServiceAsync queryService) {
+    public Controllers(final State state, final QueryService queryService) {
     	super();
     	
     	this.query = new QueryController(state, queryService);

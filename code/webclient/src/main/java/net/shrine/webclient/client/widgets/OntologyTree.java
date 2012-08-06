@@ -10,16 +10,17 @@ import java.util.Map;
 
 import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.domain.OntNode;
-import net.shrine.webclient.client.services.OntologySearchService;
-import net.shrine.webclient.client.services.OntologySearchServiceAsync;
+import net.shrine.webclient.client.services.OntologyService;
+import net.shrine.webclient.client.services.Services;
 import net.shrine.webclient.client.util.Util;
 
+import org.fusesource.restygwt.client.Method;
+import org.fusesource.restygwt.client.MethodCallback;
+
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -30,7 +31,7 @@ import com.google.gwt.user.client.ui.TreeItem;
  * @date Mar 30, 2012
  */
 public final class OntologyTree extends Composite {
-	private static final OntologySearchServiceAsync ontologyService = GWT.create(OntologySearchService.class);
+	private static final OntologyService ontologyService = Services.makeOntologyService();
 	
 	private final Controllers controllers;
 	
@@ -182,7 +183,7 @@ public final class OntologyTree extends Composite {
 		}
 	}
 
-	private final class OntologyChildrenReceivedCallback implements AsyncCallback<List<OntNode>> {
+	private final class OntologyChildrenReceivedCallback implements MethodCallback<List<OntNode>> {
 		private final OntTreeItem itemToBeOpened;
 
 		private OntologyChildrenReceivedCallback(OntTreeItem itemToBeOpened) {
@@ -190,7 +191,7 @@ public final class OntologyTree extends Composite {
 		}
 
 		@Override
-		public void onSuccess(final List<OntNode> childNodes) {
+		public void onSuccess(final Method method, final List<OntNode> childNodes) {
 			for(final OntNode childNode : childNodes) {
 				//TODO: TOTAL HACK: skip spurious metadata
 				if(!isSpuriousMetaDataTerm(childNode)) {
@@ -217,7 +218,7 @@ public final class OntologyTree extends Composite {
 		}
 
 		@Override
-		public void onFailure(final Throwable caught) {
+		public void onFailure(final Method method, final Throwable caught) {
 			Log.error("Couldn't get children of term: " + itemToBeOpened.ontNode.getValue(), caught);
 		}
 	}
