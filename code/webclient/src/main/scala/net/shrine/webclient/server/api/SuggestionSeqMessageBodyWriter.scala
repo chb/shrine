@@ -11,4 +11,4 @@ import javax.ws.rs.core.MediaType
  * 
  */
 @Provider
-final class SuggestionListMessageBodyWriter extends JsonJavaListMessageBodyWriter[TermSuggestion]
+final class SuggestionListMessageBodyWriter extends JsonSeqMessageBodyWriter[TermSuggestion]

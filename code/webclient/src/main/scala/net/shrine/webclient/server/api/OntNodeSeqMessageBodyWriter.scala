@@ -11,4 +11,4 @@ import javax.ws.rs.core.MediaType
  * 
  */
 @Provider
-final class OntNodeListMessageBodyWriter extends JsonJavaListMessageBodyWriter[OntNode]
+final class OntNodeListMessageBodyWriter extends JsonSeqMessageBodyWriter[OntNode]

@@ -42,11 +42,13 @@ final class QueryServiceImpl(private[this] val client: ShrineClient) extends Que
 
   private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr)))
 
-  override def queryForBreakdown(expr: String): Map[String, Int] = {
+  override def queryForBreakdown(expr: String): MultiInstitutionQueryResult = {
     val response: RunQueryResponse = doQuery(expr)
 
     def toNamedCount(result: QueryResult) = (result.description.getOrElse("Unknown Institution"), result.setSize.toInt)
 
-    Map.empty ++ response.results.map(toNamedCount)
+    val results = response.results.map(toNamedCount).toMap
+    
+    MultiInstitutionQueryResult(results)
   }
 }

@@ -5,5 +5,5 @@ package net.shrine.webclient.server
  * @date Aug 3, 2012
  */
 trait QueryService {
-  def queryForBreakdown(expr: String): Map[String, Int]
+  def queryForBreakdown(expr: String): MultiInstitutionQueryResult
 }

@@ -2,7 +2,6 @@ package net.shrine.webclient.server.api
 
 import java.util.{List => JList}
 import java.util.{HashMap => JHashMap}
-
 import javax.ws.rs.{GET, POST}
 import javax.ws.rs.Path
 import javax.ws.rs.QueryParam
@@ -15,6 +14,7 @@ import net.shrine.webclient.server.QueryService
 import net.shrine.webclient.server.OntologyService
 import net.shrine.webclient.server.QueryServiceImpl
 import net.shrine.webclient.server.OntologyServiceImpl
+import net.shrine.webclient.server.MultiInstitutionQueryResult
 
 
 /**
@@ -44,9 +44,10 @@ final class ClientApiResource(queryService: QueryService, ontologyService: Ontol
   @Path("ontology/children-of")
   def getChildrenFor(@QueryParam("term") term: String): Seq[OntNode] = ontologyService.getChildrenFor(term)
   
-  @POST
+  @GET
   @Path("query/submit")
-  def queryForBreakdown(@QueryParam("expr") expr: String): Map[String, Int] = queryService.queryForBreakdown(expr)
+  //TODO: MessageBodyWriter that does immutable.Map => Json 
+  def queryForBreakdown(@QueryParam("expr") expr: String): MultiInstitutionQueryResult = MultiInstitutionQueryResult(Map("foo" -> java.lang.Integer.valueOf(123), "bar" -> java.lang.Integer.valueOf(987654321)))//queryService.queryForBreakdown(expr)
 }
 
 object ClientApiResource {

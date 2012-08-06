@@ -7,6 +7,7 @@ import net.shrine.webclient.client.domain.OntNode
 import net.shrine.webclient.client.domain.Term
 import net.liftweb.json.JValue
 import net.liftweb.json.JInt
+import net.shrine.webclient.server.MultiInstitutionQueryResult
 
 /**
  * @author clint
@@ -52,7 +53,9 @@ object Jsonable {
     }
   }
   
-  implicit val intIsJsonable: Jsonable[Int] = new Jsonable[Int] {
-    override def toJson(i: Int): JValue = JInt(i)
+  implicit val multiInstitutionQueryResultIsJsonable: Jsonable[MultiInstitutionQueryResult] = new Jsonable[MultiInstitutionQueryResult] {
+    override def toJson(results: MultiInstitutionQueryResult): JValue = {
+      JObject(results.map { case (key, value) => JField(key, value) }.toList)
+    }
   }
 }
