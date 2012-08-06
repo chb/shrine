@@ -1,20 +1,18 @@
 package net.shrine.webclient.server.api
 
-import java.util.{List => JList}
-import java.util.{HashMap => JHashMap}
-import javax.ws.rs.{GET, POST}
+import javax.ws.rs.GET
+import javax.ws.rs.POST
 import javax.ws.rs.Path
-import javax.ws.rs.QueryParam
 import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
 import net.shrine.webclient.client.domain.OntNode
 import net.shrine.webclient.client.domain.TermSuggestion
-import net.shrine.webclient.client.domain.IntWrapper
-import net.shrine.webclient.server.QueryService
-import net.shrine.webclient.server.OntologyService
-import net.shrine.webclient.server.QueryServiceImpl
-import net.shrine.webclient.server.OntologyServiceImpl
 import net.shrine.webclient.server.MultiInstitutionQueryResult
+import net.shrine.webclient.server.OntologyService
+import net.shrine.webclient.server.OntologyServiceImpl
+import net.shrine.webclient.server.QueryService
+import net.shrine.webclient.server.QueryServiceImpl
 
 
 /**
@@ -46,7 +44,6 @@ final class ClientApiResource(queryService: QueryService, ontologyService: Ontol
   
   @POST
   @Path("query/submit")
-  //TODO: MessageBodyWriter that does immutable.Map => Json 
   def queryForBreakdown(@QueryParam("expr") expr: String): MultiInstitutionQueryResult = MultiInstitutionQueryResult(Map("foo" -> java.lang.Integer.valueOf(123), "bar" -> java.lang.Integer.valueOf(987654321)))//queryService.queryForBreakdown(expr)
 }
 
