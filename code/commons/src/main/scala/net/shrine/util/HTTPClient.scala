@@ -1,25 +1,18 @@
 package net.shrine.util
 
-import java.net.InetAddress
-import java.net.InetSocketAddress
-import java.net.Socket
-import java.net.SocketAddress
-import java.security.cert.X509Certificate
-import java.security.KeyStore
-import java.security.NoSuchAlgorithmException
-import org.apache.log4j.Logger
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.TrustManagerFactory
-import javax.net.ssl.X509TrustManager
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLSession
-import com.sun.jersey.api.client.Client
 import java.security.SecureRandom
-import com.sun.jersey.client.urlconnection.HTTPSProperties
-import com.sun.jersey.api.client.config.DefaultClientConfig
+import java.security.cert.X509Certificate
+
+import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.config.ClientConfig
-import com.sun.jersey.api.client.WebResource
+import com.sun.jersey.api.client.config.DefaultClientConfig
+import com.sun.jersey.client.urlconnection.HTTPSProperties
+
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSession
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 import javax.ws.rs.core.MediaType
 
 /**
