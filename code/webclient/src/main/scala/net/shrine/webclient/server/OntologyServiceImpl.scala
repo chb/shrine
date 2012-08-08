@@ -165,7 +165,7 @@ object OntologyServiceImpl {
     val stream = getClass.getClassLoader.getResourceAsStream(ontFileName)
 
     require(stream != null, "Couldn't find ontology file '" + ontFileName + "' on the classpath")
-
+    
     stream
   }
 }

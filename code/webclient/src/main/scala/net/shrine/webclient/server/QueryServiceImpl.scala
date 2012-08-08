@@ -35,6 +35,8 @@ final class QueryServiceImpl(private[this] val client: ShrineClient) extends Que
   //Needed so this class can be instantiated by an app server
   def this() = this(new JerseyShrineClient(QueryServiceImpl.Urls.shrineDev1, QueryServiceImpl.Defaults.projectId, QueryServiceImpl.Defaults.auth, true))
 
+  override def toString = "QueryServiceImpl(" + client + ")"
+  
   private[this] def uuid = java.util.UUID.randomUUID.toString
 
   import Expression.fromXml

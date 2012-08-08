@@ -29,8 +29,6 @@ import net.shrine.protocol.query.And
  * @date May 22, 2012
  */
 final class QueryServiceImplTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
-  import QueryServiceImplTest._
-
   @Test
   def testQueryForBreakdown {
     val toReturn = Map("fooInst" -> 123, "barInst" -> 42)
@@ -50,39 +48,5 @@ final class QueryServiceImplTest extends TestCase with AssertionsForJUnit with S
       queryResult.contains(instName) should be(true)
       queryResult.get(instName).get should equal(count)
     }
-  }
-}
-
-object QueryServiceImplTest {
-  private final class MockShrineClient(toReturn: Map[String, Int]) extends ShrineClient {
-    var queryDefinition: QueryDefinition = _
-    
-    def readApprovedQueryTopics(userId: String): ReadApprovedQueryTopicsResponse = null
-
-    def readPreviousQueries(userId: String, fetchSize: Int): ReadPreviousQueriesResponse = null
-
-    def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition): RunQueryResponse = {
-      this.queryDefinition = queryDefinition
-      
-      val now = NetworkTime.makeXMLGregorianCalendar(new Date)
-      
-      val queryResults = toReturn.map { case (instName, count) => 
-        QueryResult(123L, 456L, "some-result-type", count.toLong, Some(now), Some(now), Some(instName), "some-status-type", None) 
-      }
-      
-      RunQueryResponse(987L, now, "some-user-id", "some-group-id", queryDefinition, 42L, queryResults.toSeq)
-    }
-
-    def readQueryInstances(queryId: Long): ReadQueryInstancesResponse = null
-
-    def readInstanceResults(instanceId: Long): ReadInstanceResultsResponse = null
-
-    def readPdo(patientSetCollId: String, optionsXml: NodeSeq): ReadPdoResponse = null
-
-    def readQueryDefinition(queryId: Long): ReadQueryDefinitionResponse = null
-
-    def deleteQuery(queryId: Long): DeleteQueryResponse = null
-
-    def renameQuery(queryId: Long, queryName: String): RenameQueryResponse = null
   }
 }

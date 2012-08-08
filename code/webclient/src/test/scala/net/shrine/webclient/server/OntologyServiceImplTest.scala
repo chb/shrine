@@ -15,8 +15,13 @@ import net.shrine.webclient.client.domain.OntNode
  * @author clint
  * @date May 22, 2012
  */
+object OntologyServiceImplTest {
+  def shrineSqlStream = getClass.getClassLoader.getResourceAsStream("testShrineWithSyns.sql")
+} 
+
 final class OntologyServiceImplTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
-  private def shrineSqlStream = getClass.getClassLoader.getResourceAsStream("testShrineWithSyns.sql")
+  
+  import OntologyServiceImplTest._
   
   private def dao = new ShrineSqlOntologyDAO(shrineSqlStream)
   

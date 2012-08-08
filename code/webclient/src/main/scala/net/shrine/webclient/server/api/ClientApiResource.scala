@@ -22,11 +22,9 @@ import net.shrine.webclient.server.QueryServiceImpl
  */
 @Path("/api")
 @Produces(Array(MediaType.APPLICATION_JSON))
-final class ClientApiResource(queryService: QueryService, ontologyService: OntologyService) {
+final class ClientApiResource(@Injectable queryService: QueryService, @Injectable ontologyService: OntologyService) {
   //NB: Needed so Jersey can instantiate this class :(
   def this() = this(ClientApiResource.defaultQueryService, ClientApiResource.defaultOntologyService)
-  
-  println("Instantiated ClientApiResource")
   
   @GET
   @Path("ontology/suggestions")
@@ -44,7 +42,7 @@ final class ClientApiResource(queryService: QueryService, ontologyService: Ontol
   
   @POST
   @Path("query/submit")
-  def queryForBreakdown(@QueryParam("expr") expr: String): MultiInstitutionQueryResult = MultiInstitutionQueryResult(Map("foo" -> java.lang.Integer.valueOf(123), "bar" -> java.lang.Integer.valueOf(987654321)))//queryService.queryForBreakdown(expr)
+  def queryForBreakdown(expr: String): MultiInstitutionQueryResult = queryService.queryForBreakdown(expr)
 }
 
 object ClientApiResource {
