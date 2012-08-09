@@ -80,9 +80,7 @@ object Jsonable {
   }
 
   implicit val multiInstitutionQueryResultIsJsonable: Jsonable[MultiInstitutionQueryResult] = new Jsonable[MultiInstitutionQueryResult] {
-    override def toJson(results: MultiInstitutionQueryResult): JValue = {
-      JObject(results.map { case (key, value) => JField(key, value) }.toList)
-    }
+    override def toJson(results: MultiInstitutionQueryResult): JValue = results.toMap
 
     override def fromJson(json: JValue): Option[MultiInstitutionQueryResult] = json match {
       case JObject(List(fields @ _*)) => {
