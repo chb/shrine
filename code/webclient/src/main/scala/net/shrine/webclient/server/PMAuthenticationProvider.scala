@@ -16,7 +16,7 @@ import net.shrine.util.HTTPClient
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class PMAuthenticationProvider(val pmEndpoint: String) extends AuthenticationProvider{
+final class PMAuthenticationProvider(val pmEndpoint: String) extends AuthenticationProvider {
   def authenticate(authentication: Authentication) = {
     val domain = authentication.asInstanceOf[DomainUsernamePasswordAuthenticationToken].domain
     val pmRequest = new GetUserConfigurationRequest(domain, authentication.getPrincipal.asInstanceOf[String], authentication.getCredentials.asInstanceOf[String])
@@ -26,8 +26,9 @@ class PMAuthenticationProvider(val pmEndpoint: String) extends AuthenticationPro
 
     //TODO validate user
 
-    import scala.collection.JavaConversions._
-    new UsernamePasswordAuthenticationToken(authentication.getPrincipal, authentication.getCredentials, Seq(new SimpleGrantedAuthority("ROLE_USER")))
+    import scala.collection.JavaConverters._
+    
+    new UsernamePasswordAuthenticationToken(authentication.getPrincipal, authentication.getCredentials, Seq(new SimpleGrantedAuthority("ROLE_USER")).asJava)
   }
 
   def supports(authenticationClass: Class[_]) = classOf[DomainUsernamePasswordAuthenticationToken].isAssignableFrom(authenticationClass)

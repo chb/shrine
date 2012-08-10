@@ -14,23 +14,28 @@ import org.springframework.security.authentication.{UsernamePasswordAuthenticati
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class DomainUsernamePasswordAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter("/j_spring_security_check") {
-
+object DomainUsernamePasswordAuthenticationProcessingFilter {
   private val domainParameter = "j_domain"
   private val usernameParameter = "j_username"
   private val passwordParameter = "j_password"
+  private val securityCheckUrl = "/j_spring_security_check"
+}
+
+import DomainUsernamePasswordAuthenticationProcessingFilter._
+
+final class DomainUsernamePasswordAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter(securityCheckUrl) {
 
   def attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse) = {
-    if(!request.getMethod().equals("POST")) {
-      throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod())
+    if(request.getMethod != "POST") {
+      throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod)
     }
 
     val domain = Option(request.getParameter(domainParameter)).getOrElse("")
     val username = Option(request.getParameter(usernameParameter)).getOrElse("")
     val password = Option(request.getParameter(passwordParameter)).getOrElse("")
 
-    val authRequest = new DomainUsernamePasswordAuthenticationToken(domain,username, password)
+    val authRequest = new DomainUsernamePasswordAuthenticationToken(domain, username, password)
 
-    getAuthenticationManager().authenticate(authRequest);
+    getAuthenticationManager.authenticate(authRequest)
   }
 }

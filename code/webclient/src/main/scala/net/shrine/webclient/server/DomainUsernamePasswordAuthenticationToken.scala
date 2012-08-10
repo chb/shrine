@@ -12,7 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class DomainUsernamePasswordAuthenticationToken(
+final class DomainUsernamePasswordAuthenticationToken(
     val domain: String,
     val principal: String,
     val credentials: String) extends UsernamePasswordAuthenticationToken(principal, credentials)
