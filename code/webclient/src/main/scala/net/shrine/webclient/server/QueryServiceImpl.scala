@@ -27,7 +27,7 @@ object QueryServiceImpl {
     val domain = "i2b2demo"
 
     val auth = AuthenticationInfo(domain, "bsimons", Credential("testtest", true))
-    val outputTypes = Set(ResultOutputType.PATIENT_COUNT_XML).toSet
+    val outputTypes = Set(ResultOutputType.PATIENT_COUNT_XML)
   }
 }
 
