@@ -21,11 +21,11 @@
     <jee:jndi-lookup id="realCRCEndpoint" jndi-name="java:comp/env/shrine/realCRCEndpoint"
                      default-value="http://services.i2b2.org/i2b2/rest/QueryToolService/"/>
     <jee:jndi-lookup id="aggregatorEndpoint" jndi-name="java:comp/env/shrine/aggregatorEndpoint"
-                     default-value="http://localhost:8080/shrine-cell/QueryToolService/aggregate?wsdl"/>
+                     default-value="http://localhost:8080/shrine/soap/aggregate?wsdl"/>
     <jee:jndi-lookup id="shrineEndpoint" jndi-name="java:comp/env/shrine/shrineEndpoint"
-                     default-value="http://localhost:8080/shrine-cell/QueryToolService/"/>
+                     default-value="http://localhost:8080/shrine/soap/"/>
     <jee:jndi-lookup id="sheriffEndpoint" jndi-name="java:comp/env/shrine/sheriffEndpoint"
-                     default-value="http://localhost:8080/sheriff/webservice?wsdl"/>
+                     default-value="http://localhost:8080/shrine-hms-authorization/queryAuthorization"/>
     <jee:jndi-lookup id="sheriffUsername" jndi-name="java:comp/env/shrine/sheriffUsername" default-value="service"/>
     <jee:jndi-lookup id="sheriffPassword" jndi-name="java:comp/env/shrine/sheriffPassword" default-value="service"/>
     <jee:jndi-lookup id="broadcasterPeerGroupToQuery" jndi-name="java:comp/env/shrine/broadcasterPeerGroupToQuery"

@@ -102,25 +102,41 @@
 			<artifactId>gwt-dnd</artifactId>
 			<version>${gwt-dnd-version}</version>
 		</dependency>
-		<dependency>
-			<groupId>net.liftweb</groupId>
-			<artifactId>lift-json_${lift-scala-version}</artifactId>
-			<version>${lift-version}</version>
-		</dependency>
-		<!-- For Jersey's in-process web server JAX-RS testing framework -->
-                <dependency>
-                        <groupId>com.sun.jersey.jersey-test-framework</groupId>
-                        <artifactId>jersey-test-framework-http</artifactId>
-                        <version>${jersey-version}</version>
-                        <scope>test</scope>
-                </dependency>
-                <dependency>
-                        <groupId>com.sun.jersey.contribs</groupId>
-                        <artifactId>jersey-simple-server</artifactId>
-                        <version>${jersey-version}</version>
-                        <scope>test</scope>
-                </dependency>
+        <dependency>
+            <groupId>net.liftweb</groupId>
+            <artifactId>lift-json_${lift-scala-version}</artifactId>
+            <version>${lift-version}</version>
+        </dependency>
+        <!-- For Jersey's in-process web server JAX-RS testing framework -->
+        <dependency>
+                <groupId>com.sun.jersey.jersey-test-framework</groupId>
+                <artifactId>jersey-test-framework-http</artifactId>
+                <version>${jersey-version}</version>
+                <scope>test</scope>
+        </dependency>
+        <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-simple-server</artifactId>
+                <version>${jersey-version}</version>
+                <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 	</dependencies>
+
 	<build>
 		<!-- Generate compiled stuff in the folder used for developing mode -->
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>

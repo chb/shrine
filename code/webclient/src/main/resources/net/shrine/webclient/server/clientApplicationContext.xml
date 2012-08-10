@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
+
+    <jee:jndi-lookup id="pmEndpoint" jndi-name="java:comp/env/shrine/pmEndpoint"
+                         default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
+
+    <sec:authentication-manager alias="authenticationManager">
+        <sec:authentication-provider ref="pmAuthProvider"/>
+    </sec:authentication-manager>
+
+    <bean name="authFilter" class="net.shrine.webclient.server.DomainUsernamePasswordAuthenticationProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+    </bean>
+
+    <bean name="pmAuthProvider" class="net.shrine.webclient.server.PMAuthenticationProvider">
+        <constructor-arg ref="pmEndpoint"/>
+    </bean>
+
+    <sec:http auto-config="false" entry-point-ref="authenticationProcessingFilterEntryPoint">
+        <sec:custom-filter ref="authFilter" position="FORM_LOGIN_FILTER"/>
+        <sec:intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <sec:intercept-url pattern="/**" access="ROLE_USER"/>
+        <sec:logout/>
+    </sec:http>
+
+    <bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+        <constructor-arg index="0" value="/login.html"/>
+        <property name="forceHttps" value="false"/>
+    </bean>
+</beans>

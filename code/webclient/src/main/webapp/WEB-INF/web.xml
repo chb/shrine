@@ -4,45 +4,41 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:/net/shrine/webclient/server/clientApplicationContext.xml</param-value>
+    </context-param>
+    
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
 
   <!-- Servlets -->
   
-  <servlet>
-	<servlet-name>Shrine Web Client Rest Service</servlet-name>
-	<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-	<init-param>
-		<param-name>com.sun.jersey.config.property.packages</param-name>
-		<param-value>net.shrine.webclient.server.api</param-value>
-	</init-param>
-	<load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-	<servlet-name>Shrine Web Client Rest Service</servlet-name>
-	<url-pattern>/Webclient/rest/*</url-pattern>
-  </servlet-mapping>            
-  
-  <!-- 
-  <servlet>
-    <servlet-name>ontSearchServlet</servlet-name>
-    <servlet-class>net.shrine.webclient.server.OntologySearchServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet>
-    <servlet-name>queryServlet</servlet-name>
-    <servlet-class>net.shrine.webclient.server.QueryServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>ontSearchServlet</servlet-name>
-    <url-pattern>/Webclient/ontology</url-pattern>
-  </servlet-mapping>
-  
-  <servlet-mapping>
-    <servlet-name>queryServlet</servlet-name>
-    <url-pattern>/Webclient/query</url-pattern>
-  </servlet-mapping>
-  -->
+    <servlet>
+    	<servlet-name>Shrine Web Client Rest Service</servlet-name>
+    	<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    	<init-param>
+    		<param-name>com.sun.jersey.config.property.packages</param-name>
+    		<param-value>net.shrine.webclient.server.api</param-value>
+    	</init-param>
+    	<load-on-startup>1</load-on-startup>
+      </servlet>
+    
+      <servlet-mapping>
+    	<servlet-name>Shrine Web Client Rest Service</servlet-name>
+    	<url-pattern>/Webclient/rest/*</url-pattern>
+      </servlet-mapping>
 
   <!-- Default page to serve -->
   <welcome-file-list>
