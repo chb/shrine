@@ -49,9 +49,9 @@ final class LuceneOntologyIndexTest extends TestCase with ShouldMatchersForJUnit
   
   @Test
   def testSearchingByICD9Code {
-    index.search("705.82")
+    val expected = Seq(Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease"), Some("705.82")))
     
-    //fail("")
+    index.search("705.82") should equal(expected)
   }
 
   override def setUp() {
