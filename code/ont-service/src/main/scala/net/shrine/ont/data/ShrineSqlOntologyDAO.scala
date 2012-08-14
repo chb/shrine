@@ -18,7 +18,19 @@ final class ShrineSqlOntologyDAO(val file: InputStream) extends OntologyDAO {
   override def ontologyEntries: Iterable[Concept] = {
     //Matches VALUES (99, '<full term>', 'synonym', '<is_synonym>'
     //where is_synonym is 'Y' or 'N'
-    val pathAndSynonymRegex = """VALUES\s+\(\d+,\s+'(.+?)',\s+'(.+?)',\s+'(\w)'""".r
+    val pathAndSynonymRegex = """VALUES\s+\(\d+,\s+'(.+?)',\s+'(.+?)',\s+'(\w)',\s+'(.+?)',\s+(NULL|'.*?'),\s+(NULL|'(.*?)')""".r
+    
+    def mungeBaseCode(rawBaseCode: String): Option[String] = {
+      val icd9BaseCodePrefix = """SHRINE|ICD9:"""
+        
+      def isNotNull(s: String) = s != "NULL"
+      
+      def isNotEmpty(s: String) = !s.isEmpty
+        
+      def isAcceptable(s: String): Boolean = !s.isEmpty && s != "NULL" && s.startsWith(icd9BaseCodePrefix)
+      
+      Option(rawBaseCode).filter(isAcceptable).map(_.drop(icd9BaseCodePrefix.size))
+    }
     
     def toConcept(termMatch: Match): Concept = {
       /*val synonym = termMatch.group(3) match {
@@ -37,8 +49,10 @@ final class ShrineSqlOntologyDAO(val file: InputStream) extends OntologyDAO {
 
       val rawPath = termMatch.group(1)
       
+      val rawBaseCode = termMatch.group(7)
+      
       //Need to add '\\SHRINE' that's missing from the SQL file, but needed by i2b2 
-      Concept("""\\SHRINE""" + rawPath, synonym)
+      Concept("""\\SHRINE""" + rawPath, synonym, mungeBaseCode(rawBaseCode))
     }
     
     parseWith(pathAndSynonymRegex, toConcept)
@@ -46,7 +60,15 @@ final class ShrineSqlOntologyDAO(val file: InputStream) extends OntologyDAO {
   
   private def parseWith(regex: Regex, parser: Match => Concept): Iterable[Concept] = {
     
-    def parseLine(line: String): Option[Concept] = regex.findFirstMatchIn(line).map(parser)
+    def parseLine(line: String): Option[Concept] = {
+      val result = regex.findFirstMatchIn(line).map(parser)
+      
+      if(result.isEmpty) {
+        println("Failed to parse line: " + line)
+      }
+      
+      result
+    }
     
     def noEmptyLines(line: String) = line != null && line.trim != ""
       
@@ -54,6 +76,14 @@ final class ShrineSqlOntologyDAO(val file: InputStream) extends OntologyDAO {
     
     val source = Source.fromInputStream(file)
     
-    source.getLines.filter(noEmptyLines).map(mungeSingleQuotes).flatMap(parseLine).toIterable
+    source.getLines.filter(noEmptyLines)/*.map(mungeSingleQuotes)*/.flatMap(parseLine).toIterable
+  }
+}
+
+object Foo {
+  def main(args: Array[String]) {
+    val dao = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace/shrine-trunk/ontology/core/ShrineWithSyns.sql"))
+    
+    dao.ontologyEntries.filter(_.baseCode.isDefined).take(5).foreach(println)
   }
 }

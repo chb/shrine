@@ -29,10 +29,10 @@ final class ShrineSqlOntologyDAOTest extends ShouldMatchersForJUnit with Asserti
     
     val fordyceConcepts = concepts.filter(c => c.path.toLowerCase.contains("fordyce") || c.synonym.exists(_.toLowerCase.contains("fordyce"))).toList
     
-    val expected = Seq(Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease")),
-    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease")),
-    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fordyce-Fox disease")),
-    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Apocrine miliaria")))
+    val expected = Seq(Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease"), Some("705.82")),
+    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease"), Some("705.82")),
+    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fordyce-Fox disease"), Some("705.82")),
+    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Apocrine miliaria"), Some("705.82")))
     				   
     val Seq(firstExpected, secondExpected, thirdExpected, fourthExpected) = expected
     

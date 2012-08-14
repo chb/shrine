@@ -50,7 +50,7 @@ final class LuceneOntologyIndex(ontologyDao: OntologyDAO, dirBuilder: OntologyDA
     //TODO: Evaluate if these boosts are appropriate.  Ranking is ok for now.
     val boosts: JMap[String, JFloat] = Map(Keys.Path -> 2.0F, Keys.SimpleName -> 25.0F).mapValues(JFloat.valueOf).asJava
     
-    val result = new MultiFieldQueryParser(LuceneOntologyIndex.luceneVersion, Array(Keys.Path, Keys.Synonym, Keys.SimpleName), analyzer, boosts)
+    val result = new MultiFieldQueryParser(LuceneOntologyIndex.luceneVersion, Array(Keys.Path, Keys.Synonym, Keys.SimpleName, Keys.BaseCode), analyzer, boosts)
     
     result.setDefaultOperator(QueryParser.Operator.AND)
     
@@ -93,7 +93,7 @@ final class LuceneOntologyIndex(ontologyDao: OntologyDAO, dirBuilder: OntologyDA
     def toConcept(scoreDoc: ScoreDoc): Concept = {
       val doc = searcher.doc(scoreDoc.doc)
 
-      Concept(doc.get(Keys.Path), Option(doc.get(Keys.Synonym)))
+      Concept(doc.get(Keys.Path), Option(doc.get(Keys.Synonym)), Option(doc.get(Keys.BaseCode)))
     }
 
     val mungedQueryString = munge(queryString)
@@ -121,7 +121,8 @@ object LuceneOntologyIndex {
     val Path = "key"
     val Synonym = "synonym"
     val Category = "category"
-    val SimpleName = "simepleName"
+    val SimpleName = "simpleName"
+    val BaseCode = "baseCode"
   }
 
   val luceneVersion = Version.LUCENE_34
@@ -141,6 +142,12 @@ object LuceneOntologyIndex {
           conceptDoc.add(field(Keys.Synonym, synonym))
         }
         
+        for (baseCode <- entry.baseCode) {
+          conceptDoc.add(field(Keys.BaseCode, baseCode))
+          
+          println("Indexed baseCode: '" + baseCode + "'")
+        }
+        
         conceptDoc.add(field(Keys.SimpleName, entry.simpleName))
 
         conceptDoc
@@ -157,7 +164,7 @@ object LuceneOntologyIndex {
 
     val in = new java.io.BufferedReader(new java.io.InputStreamReader(System.in))
 
-    val dao = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace-3.6.2/shrine-ontology-service/ontology/core/ShrineWithSyns.sql"))
+    val dao = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace/shrine-trunk/ontology/core/ShrineWithSyns.sql"))
 
     val index = LuceneOntologyIndex(dao)
 

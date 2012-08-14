@@ -22,7 +22,7 @@ final class LuceneOntologyIndexTest extends TestCase with ShouldMatchersForJUnit
     				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Iowa Sac and Fox\""", Some("Iowa Sac and Fox")),
     				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Missouri Sac and Fox\""", Some("Missouri Sac and Fox")),
     				   Concept("""\\SHRINE\SHRINE\Demographics\Race\American Indian or Alaska Native\American Indian\Sac and Fox\Oklahoma Sac and Fox\""", Some("Oklahoma Sac and Fox")),
-    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease")))
+    				   Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Fox-Fordyce disease"), Some("705.82")))
 
     //Search term that returns a smallish number of things, some of which are found through synonymy 
 
@@ -42,10 +42,15 @@ final class LuceneOntologyIndexTest extends TestCase with ShouldMatchersForJUnit
 
     //Search on a synonym
 
-    val expectedForSynonym = Seq(Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Apocrine miliaria")))
+    val expectedForSynonym = Seq(Concept("""\\SHRINE\SHRINE\Diagnoses\Diseases of the skin and subcutaneous tissue\Other skin disorders\Fox-Fordyce disease\""", Some("Apocrine miliaria"), Some("705.82")))
 
     index.search("apocrine") should equal(expectedForSynonym)
   }
+  
+  /*@Test
+  def testSearchingByICD9Code {
+    index.search("705.82")
+  }*/
 
   override def setUp() {
     this.index = {
