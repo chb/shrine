@@ -47,10 +47,12 @@ final class LuceneOntologyIndexTest extends TestCase with ShouldMatchersForJUnit
     index.search("apocrine") should equal(expectedForSynonym)
   }
   
-  /*@Test
+  @Test
   def testSearchingByICD9Code {
     index.search("705.82")
-  }*/
+    
+    //fail("")
+  }
 
   override def setUp() {
     this.index = {

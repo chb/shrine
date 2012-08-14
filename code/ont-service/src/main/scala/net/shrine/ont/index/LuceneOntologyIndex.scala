@@ -144,8 +144,6 @@ object LuceneOntologyIndex {
         
         for (baseCode <- entry.baseCode) {
           conceptDoc.add(field(Keys.BaseCode, baseCode))
-          
-          println("Indexed baseCode: '" + baseCode + "'")
         }
         
         conceptDoc.add(field(Keys.SimpleName, entry.simpleName))
