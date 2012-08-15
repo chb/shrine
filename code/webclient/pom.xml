@@ -135,6 +135,10 @@
             <artifactId>spring-security-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
