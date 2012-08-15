@@ -15,31 +15,31 @@ import net.shrine.serialization.I2b2Unmarshaller
  *       NOTICE: This software comes with NO guarantees whatsoever and is
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
 final case class RunQueryRequest(
-    override val projectId: String,
-    override val waitTimeMs: Long,
-    override val authn: AuthenticationInfo,
-    val topicId: String,
-    val outputTypes: Set[ResultOutputType],
-    val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with TranslatableRequest[RunQueryRequest] {
+  override val projectId: String,
+  override val waitTimeMs: Long,
+  override val authn: AuthenticationInfo,
+  val topicId: String,
+  val outputTypes: Set[ResultOutputType],
+  val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
 
   val requestType = QueryDefinitionRequestType
 
   def toXml = XmlUtil.stripWhitespace(
     <runQuery>
-      {headerFragment}
-      <topicId>{topicId}</topicId>
+      { headerFragment }
+      <topicId>{ topicId }</topicId>
       <outputTypes>
-      {
-        outputTypes map {x =>
-          <outputType>{new Text(x.toString)}</outputType>
+        {
+          outputTypes map { x =>
+            <outputType>{ new Text(x.toString) }</outputType>
+          }
         }
-      }
       </outputTypes>
-      {queryDefinition.toXml}
+      { queryDefinition.toXml }
     </runQuery>)
 
   def handle(handler: ShrineRequestHandler) = {
@@ -48,25 +48,21 @@ final case class RunQueryRequest(
 
   protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>
-      <ns4:psmheader>
-        <user group={authn.domain} login={authn.username}>{authn.username}</user>
-        <patient_set_limit>0</patient_set_limit>
-        <estimated_time>0</estimated_time>
-        <request_type>CRC_QRY_runQueryInstance_fromQueryDefinition</request_type>
-      </ns4:psmheader>
+      { i2b2PsmHeaderWithDomain }
       <ns4:request xsi:type="ns4:query_definition_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         { queryDefinition.toI2b2 }
         <result_output_list>
-        {
-          for {
-            i <- 1 to outputTypes.size
-          } yield {
-            <result_output priority_index={i.toString} name={outputTypes.toList(i - 1).toString.toLowerCase}/>
+          {
+            for {
+              i <- 1 to outputTypes.size
+              outputType <- outputTypes
+            } yield {
+              <result_output priority_index={ i.toString } name={ outputType.toString.toLowerCase }/>
+            }
           }
-        }
         </result_output_list>
       </ns4:request>
-      <shrine><queryTopicID>{topicId}</queryTopicID></shrine>
+      <shrine><queryTopicID>{ topicId }</queryTopicID></shrine>
     </message_body>)
 
   def withProject(proj: String) = this.copy(projectId = proj)
@@ -79,7 +75,7 @@ final case class RunQueryRequest(
 object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequestUnmarshaller[RunQueryRequest] {
 
   val neededI2b2Namespace = "http://www.i2b2.org/xsd/cell/crc/psm/1.1/"
-  
+
   def fromI2b2(nodeSeq: NodeSeq): RunQueryRequest = {
     val queryDefNode = nodeSeq \ "message_body" \ "request" \ "query_definition"
 
@@ -100,18 +96,23 @@ object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequ
   }
 
   private def determineI2b2OutputTypes(nodeSeq: NodeSeq): Set[ResultOutputType] = {
+    import ResultOutputType._
+
+    def matches(attribute: NodeSeq, resultOutputType: ResultOutputType): Boolean = {
+      attribute.toString.equalsIgnoreCase(resultOutputType.name)
+    }
+
     val sequence = (nodeSeq \ "result_output") collect {
-      case x if (x \ "@name").toString.equalsIgnoreCase("patientset") => ResultOutputType.PATIENTSET
-      case x if (x \ "@name").toString.equalsIgnoreCase("patient_count_xml") => ResultOutputType.PATIENT_COUNT_XML
+      case x if matches(x \ "@name", PATIENTSET) => PATIENTSET
+      case x if matches(x \ "@name", PATIENT_COUNT_XML) => PATIENT_COUNT_XML
     }
 
     sequence.toSet
   }
 
-  private def determineShrineOutputTypes(nodeSeq: NodeSeq): Set[ResultOutputType] =
-    (nodeSeq \ "outputType").map {x =>
-      ResultOutputType.valueOf(x.text)
-    }.toSet
+  private def determineShrineOutputTypes(nodeSeq: NodeSeq): Set[ResultOutputType] = {
+    (nodeSeq \ "outputType").map(x => ResultOutputType.valueOf(x.text)).toSet
+  }
 
   def fromXml(nodeSeq: NodeSeq) = {
     new RunQueryRequest(

@@ -11,5 +11,10 @@ package net.shrine.protocol;
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 public enum ResultOutputType {
-    PATIENT_COUNT_XML, PATIENTSET
+    PATIENTSET,
+    PATIENT_COUNT_XML, 
+    PATIENT_AGE_COUNT_XML,
+    PATIENT_RACE_COUNT_XML,
+    PATIENT_VITALSTATUS_COUNT_XML,
+    PATIENT_GENDER_COUNT_XML
 }

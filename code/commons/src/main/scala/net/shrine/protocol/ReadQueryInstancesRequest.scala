@@ -5,7 +5,6 @@ import net.shrine.protocol.CRCRequestType.MasterRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 
-
 /**
  * @author Bill Simons
  * @date 3/17/11
@@ -15,21 +14,21 @@ import net.shrine.serialization.I2b2Unmarshaller
  *       NOTICE: This software comes with NO guarantees whatsoever and is
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
 final case class ReadQueryInstancesRequest(
-    override val projectId: String,
-    override val waitTimeMs: Long,
-    override val authn: AuthenticationInfo,
-    val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with TranslatableRequest[ReadQueryInstancesRequest] {
+  override val projectId: String,
+  override val waitTimeMs: Long,
+  override val authn: AuthenticationInfo,
+  val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[ReadQueryInstancesRequest] {
 
   val requestType = MasterRequestType
 
   def toXml = XmlUtil.stripWhitespace(
     <readQueryInstances>
-      {headerFragment}
-      <queryId>{queryId}</queryId>
+      { headerFragment }
+      <queryId>{ queryId }</queryId>
     </readQueryInstances>)
 
   def handle(handler: ShrineRequestHandler) = {
@@ -38,14 +37,9 @@ final case class ReadQueryInstancesRequest(
 
   protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>
-      <ns4:psmheader>
-        <user login={authn.username}>{authn.username}</user>
-        <patient_set_limit>0</patient_set_limit>
-        <estimated_time>0</estimated_time>
-        <request_type>CRC_QRY_getQueryInstanceList_fromQueryMasterId</request_type>
-      </ns4:psmheader>
+      { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:master_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <query_master_id>{queryId}</query_master_id>
+        <query_master_id>{ queryId }</query_master_id>
       </ns4:request>
     </message_body>)
 
