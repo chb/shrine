@@ -5,6 +5,7 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 import net.shrine.protocol.ResultOutputType
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response.Status
+import org.junit.Test
 
 /**
  *
@@ -26,6 +27,7 @@ final class OutputTypeSetTest extends TestCase with AssertionsForJUnit with Shou
     Set(ResultOutputType.PATIENTSET),
     Set.empty[ResultOutputType])
 
+  @Test
   def testConstructorAndToSet {
     possibleOutputTypeSets.foreach { outputTypes =>
 
@@ -41,6 +43,7 @@ final class OutputTypeSetTest extends TestCase with AssertionsForJUnit with Shou
     }
   }
 
+  @Test
   def testStringConstructorAndSerialized {
     possibleOutputTypeSets.foreach { outputTypes =>
       val outputTypeSet = new OutputTypeSet(outputTypes)
@@ -75,6 +78,7 @@ final class OutputTypeSetTest extends TestCase with AssertionsForJUnit with Shou
     }
   }
 
+  @Test
   def testSerialized {
     import ResultOutputType._
 
@@ -87,6 +91,7 @@ final class OutputTypeSetTest extends TestCase with AssertionsForJUnit with Shou
     }
   }
 
+  @Test
   def testDeserialize {
     import OutputTypeSet.deserialize
     import ResultOutputType._
@@ -101,9 +106,9 @@ final class OutputTypeSetTest extends TestCase with AssertionsForJUnit with Shou
       deserialize(outputType.name) should equal(Set(outputType))
     }
 
-    val allOutputTypes = ResultOutputType.values.toSet
+    val someOutputTypes = Set(ResultOutputType.PATIENTSET, ResultOutputType.PATIENT_COUNT_XML)
 
-    deserialize("PATIENT_COUNT_XML%2CPATIENTSET") should equal(allOutputTypes)
-    deserialize("PATIENTSET%2CPATIENT_COUNT_XML") should equal(allOutputTypes)
+    deserialize("PATIENT_COUNT_XML%2CPATIENTSET") should equal(someOutputTypes)
+    deserialize("PATIENTSET%2CPATIENT_COUNT_XML") should equal(someOutputTypes)
   }
 }
