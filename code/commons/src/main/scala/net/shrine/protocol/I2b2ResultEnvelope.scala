@@ -16,7 +16,7 @@ final case class I2b2ResultEnvelope(resultType: ResultOutputType, columns: Seq[C
   def +[T: I2b2ColumnType](column: (String, T)): I2b2ResultEnvelope = {
     val (name, value) = column
 
-    val columnType = implicitly[I2b2ColumnType[T]].toI2b2
+    val columnType = implicitly[I2b2ColumnType[T]].name
     
     this + Column(columnType, name, value)
   }
@@ -35,14 +35,14 @@ final case class I2b2ResultEnvelope(resultType: ResultOutputType, columns: Seq[C
 
 object I2b2ResultEnvelope {
   sealed trait I2b2ColumnType[T] {
-    def toI2b2: String
+    def name: String
     
     def fromI2b2(s: String): T
   }
 
   object I2b2ColumnType {
     implicit object intI2b2ColumnType extends I2b2ColumnType[Int] {
-      override def toI2b2 = "int"
+      override def name = "int"
         
       override def fromI2b2(serialized: String): Int = serialized.toInt
     }
@@ -76,7 +76,7 @@ object I2b2ResultEnvelope {
       columnType <- I2b2ColumnType.fromI2b2((columnXml \ "@type").text)
       name = (columnXml \ "@column").text
       value = columnXml.text
-    } yield Column(columnType.toI2b2, name, columnType.fromI2b2(value))
+    } yield Column(columnType.name, name, columnType.fromI2b2(value))
 
     resultTypeOption.map(I2b2ResultEnvelope(_, columns))
   }
