@@ -158,11 +158,14 @@ object LuceneOntologyIndex {
   }
 
   def main(args: Array[String]) {
+    //"/home/clint/workspace/shrine-trunk/ontology/core/ShrineWithSyns.sql"
+    val ontFile = args.headOption.getOrElse(sys.error("Please specify an ontology SQL file as the only command-line arg."))
+    
     def prompt() = print("> ")
 
     val in = new java.io.BufferedReader(new java.io.InputStreamReader(System.in))
 
-    val dao = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace/shrine-trunk/ontology/core/ShrineWithSyns.sql"))
+    val dao = new ShrineSqlOntologyDAO(new java.io.FileInputStream(ontFile))
 
     val index = LuceneOntologyIndex(dao)
 
