@@ -57,6 +57,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
 
     val param = MockShrineRequestHandler.readApprovedQueryTopicsParam
 
@@ -81,6 +82,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
 
     val param = MockShrineRequestHandler.readPreviousQueriesParam
 
@@ -107,6 +109,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       MockShrineRequestHandler.readQueryDefinitionParam should be(null)
       MockShrineRequestHandler.deleteQueryParam should be(null)
       MockShrineRequestHandler.renameQueryParam should be(null)
+      MockShrineRequestHandler.readResultListParam should be(null)
 
       val param = MockShrineRequestHandler.runQueryParam
 
@@ -150,6 +153,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
 
     val param = MockShrineRequestHandler.readQueryInstancesParam
 
@@ -174,6 +178,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
 
     val param = MockShrineRequestHandler.readInstanceResultsParam
 
@@ -199,6 +204,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
 
     val param = MockShrineRequestHandler.readPdoParam
 
@@ -225,6 +231,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
 
     val param = MockShrineRequestHandler.readQueryDefinitionParam
 
@@ -248,6 +255,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readPdoParam should be(null)
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
     
     val param = MockShrineRequestHandler.deleteQueryParam
 
@@ -272,6 +280,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readPdoParam should be(null)
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
     
     val param = MockShrineRequestHandler.renameQueryParam
 
@@ -326,6 +335,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readResultListParam should be(null)
     
     body
   }
@@ -344,6 +354,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     var readQueryDefinitionParam: ReadQueryDefinitionRequest = _
     var deleteQueryParam: DeleteQueryRequest = _
     var renameQueryParam: RenameQueryRequest = _
+    var readResultListParam: ReadResultListRequest = _
 
     def reset() {
       readApprovedQueryTopicsParam = null
@@ -355,33 +366,34 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       readQueryDefinitionParam = null
       deleteQueryParam = null
       renameQueryParam = null
+      readResultListParam = null
     }
 
-    def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest): ShrineResponse = {
+    override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest): ShrineResponse = {
       readApprovedQueryTopicsParam = request
 
       new ReadApprovedQueryTopicsResponse(Seq(new ApprovedTopic(123L, "some topic")))
     }
 
-    def readPreviousQueries(request: ReadPreviousQueriesRequest): ShrineResponse = {
+    override def readPreviousQueries(request: ReadPreviousQueriesRequest): ShrineResponse = {
       readPreviousQueriesParam = request
 
       new ReadPreviousQueriesResponse("userId", "groupId", Seq.empty)
     }
 
-    def readQueryInstances(request: ReadQueryInstancesRequest): ShrineResponse = {
+    override def readQueryInstances(request: ReadQueryInstancesRequest): ShrineResponse = {
       readQueryInstancesParam = request
 
       new ReadQueryInstancesResponse(999L, "userId", "groupId", Seq.empty)
     }
 
-    def readInstanceResults(request: ReadInstanceResultsRequest): ShrineResponse = {
+    override def readInstanceResults(request: ReadInstanceResultsRequest): ShrineResponse = {
       readInstanceResultsParam = request
 
       new ReadInstanceResultsResponse(1337L, Seq(new QueryResult(123L, 1337L, "resultType", 789L, None, None, Some("description"), "statusType", Some("statusMessage"))))
     }
 
-    def readPdo(request: ReadPdoRequest): ShrineResponse = {
+    override def readPdo(request: ReadPdoRequest): ShrineResponse = {
       readPdoParam = request
 
       import RandomTool.randomString
@@ -391,28 +403,34 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       new ReadPdoResponse(Seq(new EventResponse("event", "patient", None, None, Seq.empty)), Seq(new PatientResponse("patientId", Seq(paramResponse))), Seq(new ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode",None,None,None,None,None,None,None, Seq(paramResponse))))
     }
 
-    def readQueryDefinition(request: ReadQueryDefinitionRequest): ShrineResponse = {
+    override def readQueryDefinition(request: ReadQueryDefinitionRequest): ShrineResponse = {
       readQueryDefinitionParam = request
 
       new ReadQueryDefinitionResponse(87456L, "name", "userId", now, "<foo/>")
     }
 
-    def runQuery(request: RunQueryRequest): ShrineResponse = {
+    override def runQuery(request: RunQueryRequest): ShrineResponse = {
       runQueryParam = request
 
       new RunQueryResponse(123L, now, "userId", "groupId", request.queryDefinition, 456L, Seq.empty)
     }
 
-    def deleteQuery(request: DeleteQueryRequest): ShrineResponse = {
+    override def deleteQuery(request: DeleteQueryRequest): ShrineResponse = {
       deleteQueryParam = request
 
       new DeleteQueryResponse(56834756L)
     }
 
-    def renameQuery(request: RenameQueryRequest): ShrineResponse = {
+    override def renameQuery(request: RenameQueryRequest): ShrineResponse = {
       renameQueryParam = request
 
       new RenameQueryResponse(873468L, "some-name")
+    }
+    
+    override def readResultList(request: ReadResultListRequest): ShrineResponse = {
+      readResultListParam = request
+      
+      sys.error("TODO")
     }
     
     private def now = (new NetworkTime).getXMLGregorianCalendar

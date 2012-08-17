@@ -14,6 +14,8 @@ import net.shrine.serialization.XmlUnmarshaller
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 trait ShrineRequestUnmarshaller[T] extends XmlUnmarshaller[T] {
+  def shrineHeader(nodeSeq: NodeSeq): RequestHeader = RequestHeader(shrineProjectId(nodeSeq), shrineWaitTimeMs(nodeSeq), shrineAuthenticationInfo(nodeSeq))
+  
   def shrineProjectId(nodeSeq: NodeSeq): String = (nodeSeq \ "projectId").text
 
   def shrineWaitTimeMs(nodeSeq: NodeSeq): Long = (nodeSeq \ "waitTimeMs").text.toLong

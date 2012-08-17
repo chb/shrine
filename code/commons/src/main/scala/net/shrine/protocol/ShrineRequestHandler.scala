@@ -28,4 +28,8 @@ trait ShrineRequestHandler {
   def deleteQuery(request: DeleteQueryRequest): ShrineResponse
 
   def renameQuery(request: RenameQueryRequest): ShrineResponse
+  
+  def readResultList(request: ReadResultListRequest): ShrineResponse
+  
+  //def readResult(request: ReadResultRequest): ShrineResponse
 }

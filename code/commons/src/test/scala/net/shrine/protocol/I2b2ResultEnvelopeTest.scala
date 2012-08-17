@@ -144,4 +144,13 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
       (env1 eq env2) should be(false)
     }
   }
+  
+  @Test
+  def testToMap {
+    val resultType = ResultOutputType.PATIENT_COUNT_XML
+    
+    val env = I2b2ResultEnvelope(resultType, Seq(Column("int", "foo", 123), Column("int", "bar", 99)))
+    
+    env.toMap should equal(Map("foo" -> 123, "bar" -> 99))
+  }
 }

@@ -58,7 +58,7 @@ class ShrineService(
   private[service] def broadcastMessage(message: BroadcastMessage, queryInfo: QueryInfo): AckNack = {
     val ackNack = spinClient.send(queryInfo, message, BroadcastMessage.serializer)
 
-    if(ackNack.isError()) {
+    if(ackNack.isError) {
       throw new AgentException("Error encountered during query.")
     }
 
@@ -150,7 +150,7 @@ class ShrineService(
   }
 
   @Transactional
-  def runQuery(request: RunQueryRequest) = {
+  override def runQuery(request: RunQueryRequest) = {
     authorizationService.authorizeRunQueryRequest(request)
     val identity = generateIdentity(request.authn)
 
@@ -161,21 +161,23 @@ class ShrineService(
     executeRequest(identity, message, aggregator)
   }
 
-  def readQueryDefinition(request: ReadQueryDefinitionRequest) = executeRequest(request, new ReadQueryDefinitionAggregator())
+  override def readQueryDefinition(request: ReadQueryDefinitionRequest) = executeRequest(request, new ReadQueryDefinitionAggregator)
 
-  def readPdo(request: ReadPdoRequest) = executeRequest(request, new ReadPdoResponseAggregator())
+  override def readPdo(request: ReadPdoRequest) = executeRequest(request, new ReadPdoResponseAggregator)
 
-  def readInstanceResults(request: ReadInstanceResultsRequest) = executeRequest(request, new ReadInstanceResultsAggregator(request.instanceId, false))
+  override def readInstanceResults(request: ReadInstanceResultsRequest) = executeRequest(request, new ReadInstanceResultsAggregator(request.instanceId, false))
 
-  def readQueryInstances(request: ReadQueryInstancesRequest) = executeRequest(request, new ReadQueryInstancesAggregator(request.queryId, request.authn.username, request.projectId))
+  override def readQueryInstances(request: ReadQueryInstancesRequest) = executeRequest(request, new ReadQueryInstancesAggregator(request.queryId, request.authn.username, request.projectId))
 
-  def readPreviousQueries(request: ReadPreviousQueriesRequest) = executeRequest(request, new ReadPreviousQueriesAggregator(request.authn.username, request.projectId))
+  override def readPreviousQueries(request: ReadPreviousQueriesRequest) = executeRequest(request, new ReadPreviousQueriesAggregator(request.authn.username, request.projectId))
 
-  def renameQuery(request: RenameQueryRequest) = executeRequest(request, new RenameQueryAggregator())
+  override def renameQuery(request: RenameQueryRequest) = executeRequest(request, new RenameQueryAggregator)
 
-  def deleteQuery(request: DeleteQueryRequest) = executeRequest(request, new DeleteQueryAggregator())
+  override def deleteQuery(request: DeleteQueryRequest) = executeRequest(request, new DeleteQueryAggregator)
 
-  def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest) = authorizationService.readApprovedEntries(request)
+  override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest) = authorizationService.readApprovedEntries(request)
+  
+  override def readResultList(request: ReadResultListRequest): ShrineResponse = sys.error("TODO")
 }
 
 object ShrineService {

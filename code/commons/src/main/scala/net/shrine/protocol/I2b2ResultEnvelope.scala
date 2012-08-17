@@ -21,6 +21,8 @@ final case class I2b2ResultEnvelope(resultType: ResultOutputType, columns: Seq[C
     this + Column(columnType, name, value)
   }
 
+  def toMap: Map[String, _] = columns.map(_.toTuple).toMap
+  
   //TODO: Produce gross i2b2 semi-escaped form?
   def toI2b2: NodeSeq = {
     <ns10:i2b2_result_envelope xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
@@ -59,6 +61,8 @@ object I2b2ResultEnvelope {
     def toI2b2: NodeSeq = {
       <data type={ columnType } column={ name }>{ value }</data>
     }
+    
+    def toTuple: (String, T) = (name, value)
   }
 
   def empty(resultType: ResultOutputType) = new I2b2ResultEnvelope(resultType, Seq.empty)

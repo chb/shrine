@@ -2,6 +2,7 @@ package net.shrine.serialization
 
 import xml.{XML, NodeSeq}
 import net.shrine.protocol.AuthenticationInfo
+import net.shrine.protocol.RequestHeader
 
 
 /**
@@ -20,6 +21,8 @@ trait I2b2Unmarshaller[T] {
 
   def fromI2b2(nodeSeq: NodeSeq): T
 
+  def i2b2Header(nodeSeq: NodeSeq): RequestHeader = RequestHeader(i2b2ProjectId(nodeSeq), i2b2WaitTimeMs(nodeSeq), i2b2AuthenticationInfo(nodeSeq))
+  
   def i2b2ProjectId(nodeSeq: NodeSeq): String = (nodeSeq \ "message_header" \ "project_id").text
 
   def i2b2WaitTimeMs(nodeSeq: NodeSeq): Long = (nodeSeq \ "request_header" \ "result_waittime_ms").text.toLong
