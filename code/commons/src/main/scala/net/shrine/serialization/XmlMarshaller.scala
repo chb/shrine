@@ -15,5 +15,5 @@ import xml.NodeSeq
 trait XmlMarshaller {
   def toXml: NodeSeq
 
-  def toXmlString: String = toXml.toString()
+  def toXmlString: String = toXml.toString
 }

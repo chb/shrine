@@ -13,7 +13,7 @@ import net.shrine.protocol.I2b2ResultEnvelope.Column
 final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
   @Test
   def testFromI2b2 {
-    val xml = """&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    val xml = I2b2Workarounds.unescape("""&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 &lt;ns10:i2b2_result_envelope xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
     &lt;body>
         &lt;ns10:result name="PATIENT_AGE_COUNT_XML">
@@ -30,9 +30,9 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
             &lt;data type="int" column="Not recorded">0&lt;/data>
         &lt;/ns10:result>
     &lt;/body>
-&lt;/ns10:i2b2_result_envelope>"""
+&lt;/ns10:i2b2_result_envelope>""")
 
-    val env = I2b2ResultEnvelope.fromI2b2String(xml).get
+    val env = I2b2ResultEnvelope.fromI2b2(xml).get
     
     env.resultType should be(ResultOutputType.PATIENT_AGE_COUNT_XML)
     
@@ -56,7 +56,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
       actual.value should equal(expected.value)
     }
     
-    val badXml1 = """&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    val badXml1 = I2b2Workarounds.unescape("""&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 &lt;ns10:i2b2_result_envelope xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
     &lt;body>
         &lt;ns10:result name="PATIENT_AGE_COUNT_XML_JKALSHFKAJSFHKASHFJKSAHFKHJH">
@@ -73,20 +73,20 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
             &lt;data type="int" column="Not recorded">0&lt;/data>
         &lt;/ns10:result>
     &lt;/body>
-&lt;/ns10:i2b2_result_envelope>"""
+&lt;/ns10:i2b2_result_envelope>""")
       
-      I2b2ResultEnvelope.fromI2b2String(badXml1) should be(None)
+      I2b2ResultEnvelope.fromI2b2(badXml1) should be(None)
     
-     val badXml2 = """&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+     val badXml2 = I2b2Workarounds.unescape("""&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 &lt;ns10:i2b2_result_envelope xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
     &lt;body>
         &lt;ns10:result name="PATIENT_AGE_COUNT_XML">
             &lt;foo type="int" column="  0-9 years old">0&lt;/foo>
         &lt;/ns10:result>
     &lt;/body>
-&lt;/ns10:i2b2_result_envelope>"""
+&lt;/ns10:i2b2_result_envelope>""")
        
-     I2b2ResultEnvelope.fromI2b2String(badXml2).get.columns should equal(Nil)
+     I2b2ResultEnvelope.fromI2b2(badXml2).get.columns should equal(Nil)
   }
 
   @Test

@@ -23,7 +23,6 @@ public enum CRCRequestType {
     QueryDefinitionRequestType("CRC_QRY_runQueryInstance_fromQueryDefinition"),
     UserRequestType("CRC_QRY_getQueryMasterList_fromUserId"),
     SheriffRequestType(null),
-    ResultListRequestType("CRC_QRY_getQueryResultInstanceList_fromQueryInstanceId"),
     ResultRequestType("CRC_QRY_getResultDocument_fromResultInstanceId"),
     MasterDeleteRequestType("CRC_QRY_deleteQueryMaster"),
     MasterRenameRequestType("CRC_QRY_renameQueryMaster"),
@@ -31,8 +30,11 @@ public enum CRCRequestType {
     
     public final Option<String> i2b2RequestType;
 
-    private CRCRequestType(final String i2b2RequestType)
-    {
+    public String unsafeI2b2RequestType() {
+        return i2b2RequestType.get();
+    }
+    
+    private CRCRequestType(final String i2b2RequestType) {
         this.i2b2RequestType = option(i2b2RequestType);
     }
     

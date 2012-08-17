@@ -57,7 +57,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
 
     val param = MockShrineRequestHandler.readApprovedQueryTopicsParam
 
@@ -82,7 +82,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
 
     val param = MockShrineRequestHandler.readPreviousQueriesParam
 
@@ -109,7 +109,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       MockShrineRequestHandler.readQueryDefinitionParam should be(null)
       MockShrineRequestHandler.deleteQueryParam should be(null)
       MockShrineRequestHandler.renameQueryParam should be(null)
-      MockShrineRequestHandler.readResultListParam should be(null)
+      MockShrineRequestHandler.readResultParam should be(null)
 
       val param = MockShrineRequestHandler.runQueryParam
 
@@ -153,7 +153,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
 
     val param = MockShrineRequestHandler.readQueryInstancesParam
 
@@ -178,7 +178,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
 
     val param = MockShrineRequestHandler.readInstanceResultsParam
 
@@ -204,7 +204,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
 
     val param = MockShrineRequestHandler.readPdoParam
 
@@ -231,7 +231,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
 
     val param = MockShrineRequestHandler.readQueryDefinitionParam
 
@@ -255,7 +255,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readPdoParam should be(null)
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
     
     val param = MockShrineRequestHandler.deleteQueryParam
 
@@ -280,7 +280,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readPdoParam should be(null)
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
     
     val param = MockShrineRequestHandler.renameQueryParam
 
@@ -335,7 +335,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readQueryDefinitionParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    MockShrineRequestHandler.readResultListParam should be(null)
+    MockShrineRequestHandler.readResultParam should be(null)
     
     body
   }
@@ -354,7 +354,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     var readQueryDefinitionParam: ReadQueryDefinitionRequest = _
     var deleteQueryParam: DeleteQueryRequest = _
     var renameQueryParam: RenameQueryRequest = _
-    var readResultListParam: ReadResultListRequest = _
+    var readResultParam: ReadResultRequest = _
 
     def reset() {
       readApprovedQueryTopicsParam = null
@@ -366,7 +366,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       readQueryDefinitionParam = null
       deleteQueryParam = null
       renameQueryParam = null
-      readResultListParam = null
+      readResultParam = null
     }
 
     override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest): ShrineResponse = {
@@ -427,8 +427,8 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       new RenameQueryResponse(873468L, "some-name")
     }
     
-    override def readResultList(request: ReadResultListRequest): ShrineResponse = {
-      readResultListParam = request
+    override def readResult(request: ReadResultRequest): ShrineResponse = {
+      readResultParam = request
       
       sys.error("TODO")
     }

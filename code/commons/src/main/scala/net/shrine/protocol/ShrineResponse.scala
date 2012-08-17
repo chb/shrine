@@ -20,7 +20,7 @@ abstract class ShrineResponse extends XmlMarshaller with I2b2Marshaller {
   protected def status = <status type="DONE">DONE</status>
 
   //TODO better xmlns strategy
-  def toI2b2: NodeSeq = XmlUtil.stripWhitespace(
+  override def toI2b2: NodeSeq = XmlUtil.stripWhitespace(
     <ns4:response xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns7="http://sheriff.shrine.net/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns11="http://www.i2b2.org/xsd/hive/msg/result/1.1/">
       <message_header>
         <i2b2_version_compatible>1.1</i2b2_version_compatible>
@@ -49,7 +49,7 @@ abstract class ShrineResponse extends XmlMarshaller with I2b2Marshaller {
 }
 
 object ShrineResponse extends XmlUnmarshaller[Option[ShrineResponse]] {
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     //.headOption handles possibly-empty NodeSeqs
     //.collect returns a Some of the result of the pattern match, or None if no cases match
     nodeSeq match {

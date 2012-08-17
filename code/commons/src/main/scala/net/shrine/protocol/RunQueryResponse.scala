@@ -85,25 +85,27 @@ final case class RunQueryResponse(
 }
 
 object RunQueryResponse extends I2b2Unmarshaller[RunQueryResponse] with XmlUnmarshaller[RunQueryResponse] {
-  def firstChild(nodeSeq: NodeSeq) = nodeSeq.head.asInstanceOf[Elem].child.head
-  
   def fromI2b2(nodeSeq: NodeSeq) = {
+    def firstChild(nodeSeq: NodeSeq) = nodeSeq.head.asInstanceOf[Elem].child.head
+    
     val results = (nodeSeq \ "message_body" \ "response" \ "query_result_instance").map(QueryResult.fromI2b2)
     val queryId = (nodeSeq \ "message_body" \ "response" \ "query_master" \ "query_master_id").text.toLong
     val userId = (nodeSeq \ "message_body" \ "response" \ "query_master" \ "user_id").text
     val groupId = (nodeSeq \ "message_body" \ "response" \ "query_master" \ "group_id").text
     val createDate = (nodeSeq \ "message_body" \ "response" \ "query_master" \ "create_date").text
+
+    def asString(a: Atom[_]): String = a.data.asInstanceOf[String]
+    
+    def holdsString(a: Atom[_]): Boolean = a.data.isInstanceOf[String] 
+    
     //NB: We need to handle the query def situtation two different ways:
     // 1) Where the query def is an escaped String, as is returned by the CRC
     // 2) Where the query def is plain XML, as is provided by Shrine
     val requestXml = firstChild(nodeSeq \ "message_body" \ "response" \ "query_master" \ "request_xml") match {
-      case a: Atom[_] if a.data.isInstanceOf[String] => {
-        QueryDefinition.fromI2b2(a.data.asInstanceOf[String])
-      }
-      case xml: NodeSeq => {
-        QueryDefinition.fromI2b2(xml)
-      }
+      case a: Atom[_] if holdsString(a) => QueryDefinition.fromI2b2(asString(a))
+      case xml: NodeSeq => QueryDefinition.fromI2b2(xml)
     }
+    
     val queryInstanceId = (nodeSeq \ "message_body" \ "response" \ "query_instance" \ "query_instance_id").text.toLong
     
     new RunQueryResponse(queryId, makeXMLGregorianCalendar(createDate), userId, groupId, requestXml, queryInstanceId, results)

@@ -11,14 +11,14 @@ import scala.xml.NodeSeq
  * @author clint
  * @date Aug 16, 2012
  */
-final class ReadResultListRequestTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
+final class ReadResultRequestTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
 
   private val projectId = "2qfhsjksdfhkshdf"
   private val waitTime = 12345L
   private val authn = AuthenticationInfo("some-domain", "some-user", Credential("ksdlghjksdghksdghk", true))
-  private val instanceId = 8734568L
+  private val resultId = 8734568L
 
-  private val exampleReq = ReadResultListRequest(projectId, waitTime, authn, instanceId)
+  private val exampleReq = ReadResultRequest(projectId, waitTime, authn, resultId)
 
   private val expectedI2b2Message = XmlUtil.stripWhitespace(
     <ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns8="http://sheriff.shrine.net/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
@@ -65,54 +65,54 @@ final class ReadResultListRequestTest extends TestCase with AssertionsForJUnit w
           <user login={ exampleReq.authn.username }>{ exampleReq.authn.username }</user>
           <patient_set_limit>0</patient_set_limit>
           <estimated_time>0</estimated_time>
-          <request_type>{ CRCRequestType.ResultListRequestType.i2b2RequestType.get }</request_type>
+          <request_type>{ CRCRequestType.ResultRequestType.unsafeI2b2RequestType }</request_type>
         </ns4:psmheader>
-        <ns4:request xsi:type="ns4:instance_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <query_instance_id>{ exampleReq.instanceId }</query_instance_id>
+        <ns4:request xsi:type="ns4:result_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <query_result_instance_id>{ resultId }</query_result_instance_id>
         </ns4:request>
       </message_body>
     </ns6:request>)
 
   val expectedShrineMessage = XmlUtil.stripWhitespace(
-    <readResultList>
+    <readResult>
       <projectId>{ exampleReq.projectId }</projectId>
       <waitTimeMs>{ exampleReq.waitTimeMs }</waitTimeMs>
       { exampleReq.authn.toXml }
-      <instanceId>{ exampleReq.instanceId }</instanceId>
-    </readResultList>)
+      <resultId>{ exampleReq.resultId }</resultId>
+    </readResult>)
 
   @Test
   def testRequestType {
-    ReadResultListRequest("", 123L, null, 456L).requestType should equal(CRCRequestType.ResultListRequestType)
+    ReadResultRequest("", 123L, null, 456L).requestType should equal(CRCRequestType.ResultRequestType)
   }
 
   @Test
   def testAuxConstructor {
-    val req = new ReadResultListRequest(RequestHeader(projectId, waitTime, authn), instanceId)
+    val req = new ReadResultRequest(RequestHeader(projectId, waitTime, authn), resultId)
 
-    req should equal(ReadResultListRequest(projectId, waitTime, authn, instanceId))
+    req should equal(ReadResultRequest(projectId, waitTime, authn, resultId))
 
     req.projectId should equal(projectId)
     req.waitTimeMs should equal(waitTime)
     req.authn should equal(authn)
-    req.instanceId should equal(instanceId)
+    req.resultId should equal(resultId)
   }
 
   @Test
   def testFromXml {
-    doRoundTrip(_.toXml, ReadResultListRequest.fromXml)(exampleReq)
+    doRoundTrip(_.toXml, ReadResultRequest.fromXml)(exampleReq)
 
-    ReadResultListRequest.fromXml(expectedShrineMessage) should equal(exampleReq)
+    ReadResultRequest.fromXml(expectedShrineMessage) should equal(exampleReq)
   }
 
   @Test
   def testFromI2b2 {
-    doRoundTrip(_.toI2b2, ReadResultListRequest.fromI2b2)(exampleReq)
+    doRoundTrip(_.toI2b2, ReadResultRequest.fromI2b2)(exampleReq)
 
-    ReadResultListRequest.fromI2b2(expectedI2b2Message) should equal(exampleReq)
+    ReadResultRequest.fromI2b2(expectedI2b2Message) should equal(exampleReq)
   }
 
-  private def doRoundTrip(serialize: ReadResultListRequest => NodeSeq, deserialize: NodeSeq => ReadResultListRequest)(req: ReadResultListRequest) {
+  private def doRoundTrip(serialize: ReadResultRequest => NodeSeq, deserialize: NodeSeq => ReadResultRequest)(req: ReadResultRequest) {
     val roundTripped = deserialize(serialize(req))
 
     roundTripped should equal(req)

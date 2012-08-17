@@ -1,8 +1,8 @@
 package net.shrine.protocol
 
-import xml.{NodeBuffer, NodeSeq}
+import xml.{ NodeBuffer, NodeSeq }
 import net.shrine.util.XmlUtil
-import net.shrine.serialization.{I2b2Marshaller, I2b2Unmarshaller, XmlMarshaller, XmlUnmarshaller}
+import net.shrine.serialization.{ I2b2Marshaller, I2b2Unmarshaller, XmlMarshaller, XmlUnmarshaller }
 
 /**
  * @author Bill Simons
@@ -15,7 +15,7 @@ import net.shrine.serialization.{I2b2Marshaller, I2b2Unmarshaller, XmlMarshaller
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 abstract class ShrineRequest(val projectId: String, val waitTimeMs: Long, val authn: AuthenticationInfo) extends XmlMarshaller with I2b2Marshaller {
-  protected def headerFragment: NodeBuffer = <projectId>{projectId}</projectId><waitTimeMs>{waitTimeMs}</waitTimeMs> &+ authn.toXml
+  protected def headerFragment: NodeBuffer = <projectId>{ projectId }</projectId><waitTimeMs>{ waitTimeMs }</waitTimeMs> &+ authn.toXml
 
   protected def i2b2MessageBody: NodeSeq
 
@@ -43,7 +43,7 @@ abstract class ShrineRequest(val projectId: String, val waitTimeMs: Long, val au
         <receiving_facility>
           <facility_name>SHRINE</facility_name>
         </receiving_facility>
-        {authn.toI2b2}
+        { authn.toI2b2 }
         <message_type>
           <message_code>Q04</message_code>
           <event_type>EQQ</event_type>
@@ -57,17 +57,17 @@ abstract class ShrineRequest(val projectId: String, val waitTimeMs: Long, val au
           <processing_mode>I</processing_mode>
         </processing_id>
         <accept_acknowledgement_type>AL</accept_acknowledgement_type>
-        <project_id>{projectId}</project_id>
+        <project_id>{ projectId }</project_id>
         <country_code>US</country_code>
       </message_header>
       <request_header>
-        <result_waittime_ms>{waitTimeMs}</result_waittime_ms>
+        <result_waittime_ms>{ waitTimeMs }</result_waittime_ms>
       </request_header>
-      {i2b2MessageBody}
+      { i2b2MessageBody }
     </ns6:request>)
 }
 
-object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshaller[ShrineRequest]{
+object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshaller[ShrineRequest] {
   def fromI2b2(i2b2Request: NodeSeq): ShrineRequest = {
     i2b2Request match {
       case x if isPsmRequest(x) => parsePsmRequest(x)
@@ -90,22 +90,16 @@ object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshalle
   }
 
   private def parsePsmRequest(requestXml: NodeSeq): ShrineRequest = {
-    (requestXml \ "message_body" \ "psmheader" \ "request_type").text match {
-      case "CRC_QRY_getQueryResultInstanceList_fromQueryInstanceId" => ReadInstanceResultsRequest.fromI2b2(requestXml)
-      case "CRC_QRY_getQueryMasterList_fromUserId" => ReadPreviousQueriesRequest.fromI2b2(requestXml)
-      case "CRC_QRY_getRequestXml_fromQueryMasterId" => ReadQueryDefinitionRequest.fromI2b2(requestXml)
-      case "CRC_QRY_getQueryInstanceList_fromQueryMasterId" => ReadQueryInstancesRequest.fromI2b2(requestXml)
-      case "CRC_QRY_runQueryInstance_fromQueryDefinition" => RunQueryRequest.fromI2b2(requestXml)
-      case "CRC_QRY_renameQueryMaster" => RenameQueryRequest.fromI2b2(requestXml)
-      case "CRC_QRY_deleteQueryMaster" => DeleteQueryRequest.fromI2b2(requestXml)
-      case _ => null
-    }
+    val incomingRequestType = (requestXml \ "message_body" \ "psmheader" \ "request_type").text
+    
+    i2b2Unmarshallers.get(incomingRequestType).map(_.fromI2b2(requestXml)).orNull
   }
 
+  import CRCRequestType._
+  
   private def parsePdoRequest(requestXml: NodeSeq): ReadPdoRequest = {
     (requestXml \ "message_body" \ "pdoheader" \ "request_type").text match {
-      case "getPDO_fromInputList" =>
-        ReadPdoRequest.fromI2b2(requestXml)
+      case x if x == GetPDOFromInputListRequestType.unsafeI2b2RequestType => ReadPdoRequest.fromI2b2(requestXml)
       case _ => null
     }
   }
@@ -115,18 +109,28 @@ object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshalle
   }
 
   def fromXml(nodeSeq: NodeSeq) = {
-    nodeSeq match {
-      case x if (x.head.label == "deleteQuery") => DeleteQueryRequest.fromXml(nodeSeq)
-      case x if (x.head.label == "readApprovedQueryTopics") => ReadApprovedQueryTopicsRequest.fromXml(nodeSeq)
-      case x if (x.head.label == "readInstanceResults") => ReadInstanceResultsRequest.fromXml(nodeSeq)
-      case x if (x.head.label == "readPdo") => ReadPdoRequest.fromXml(nodeSeq)
-      case x if (x.head.label == "readPreviousQueries") => ReadPreviousQueriesRequest.fromXml(nodeSeq)
-      case x if (x.head.label == "readQueryDefinition") => ReadQueryDefinitionRequest.fromXml(nodeSeq)
-      case x if (x.head.label == "readQueryInstances") => ReadQueryInstancesRequest.fromXml(nodeSeq)
-      case x if (x.head.label == "renameQuery") => RenameQueryRequest.fromXml(nodeSeq)
-      case x if (x.head.label == "runQuery") => RunQueryRequest.fromXml(nodeSeq)
-      case _ => null
-    }
+    shrineUnmarshallers.get(nodeSeq.head.label).map(_.fromXml(nodeSeq)).orNull
   }
-
+  
+  private val i2b2Unmarshallers: Map[String, I2b2Unmarshaller[_ <: ShrineRequest]] = Map(
+    InstanceRequestType -> ReadInstanceResultsRequest,
+    UserRequestType -> ReadPreviousQueriesRequest,
+    GetRequestXml -> ReadQueryDefinitionRequest,
+    MasterRequestType -> ReadQueryInstancesRequest,
+    QueryDefinitionRequestType -> RunQueryRequest,
+    MasterRenameRequestType -> RenameQueryRequest,
+    MasterDeleteRequestType -> DeleteQueryRequest,
+    ResultRequestType -> ReadResultRequest).map { case (rt, u) => (rt.unsafeI2b2RequestType, u) }
+  
+  private val shrineUnmarshallers: Map[String, XmlUnmarshaller[_ <: ShrineRequest]] = Map(
+    "deleteQuery" -> DeleteQueryRequest,
+    "readApprovedQueryTopics" -> ReadApprovedQueryTopicsRequest,
+    "readInstanceResults" -> ReadInstanceResultsRequest,
+    "readPdo" -> ReadPdoRequest,
+    "readPreviousQueries" -> ReadPreviousQueriesRequest,
+    "readQueryDefinition" -> ReadQueryDefinitionRequest,
+    "readQueryInstances" -> ReadQueryInstancesRequest,
+    "renameQuery" -> RenameQueryRequest,
+    "runQuery" -> RunQueryRequest,
+    "readResult" -> ReadResultRequest)
 }
