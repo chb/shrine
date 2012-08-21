@@ -2,8 +2,8 @@ package net.shrine.webclient.server
 
 import org.springframework.security.authentication.{BadCredentialsException, UsernamePasswordAuthenticationToken, AuthenticationProvider}
 import org.springframework.security.core.Authentication
-import net.shrine.i2b2.protocol.pm.{User, HiveConfig, GetUserConfigurationRequest}
-import org.springframework.security.core.authority.{SimpleGrantedAuthority, GrantedAuthorityImpl}
+import net.shrine.i2b2.protocol.pm.{User, GetUserConfigurationRequest}
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import net.shrine.util.HTTPClient
 
 /**
@@ -34,7 +34,7 @@ final class PMAuthenticationProvider(val pmEndpoint: String) extends Authenticat
 
     import scala.collection.JavaConverters._
     //TODO - parse Security information from user response and include i2b2 password (isToken = true) in authentication token
-    new UsernamePasswordAuthenticationToken(authentication.getPrincipal, authentication.getCredentials, Seq(new SimpleGrantedAuthority("ROLE_USER")).asJava)
+    new UsernamePasswordAuthenticationToken(user, authentication.getCredentials, Seq(new SimpleGrantedAuthority("ROLE_USER")).asJava)
 
   }
 

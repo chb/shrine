@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app
-    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
-    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE web-app
+        PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
     <context-param>
@@ -22,15 +21,18 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
 
-  <!-- Servlets -->
-  
+    <!-- Servlets -->
+
     <servlet>
     	<servlet-name>Shrine Web Client Rest Service</servlet-name>
-    	<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    	<servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
     	<init-param>
     		<param-name>com.sun.jersey.config.property.packages</param-name>
-    		<param-value>net.shrine.webclient.server.api</param-value>
+    		<param-value>net.shrine.webclient.server</param-value>
     	</init-param>
     	<load-on-startup>1</load-on-startup>
       </servlet>
@@ -40,8 +42,8 @@
     	<url-pattern>/Webclient/rest/*</url-pattern>
       </servlet-mapping>
 
-  <!-- Default page to serve -->
-  <welcome-file-list>
+    <!-- Default page to serve -->
+    <welcome-file-list>
     <welcome-file>Webclient.html</welcome-file>
   </welcome-file-list>
 

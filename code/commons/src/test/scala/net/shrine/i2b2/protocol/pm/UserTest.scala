@@ -45,7 +45,7 @@ class UserTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
                           <user>
                               <full_name>Full name</full_name>
                               <user_name>user name</user_name>
-                              <password>password</password>
+                              <password token_ms_timeout="1800000" is_token="true">SessionKey:key</password>
                               <domain>demo</domain>
                               <param name="ecommons_username">ecommons</param>
                               <param name="other_param">other</param>
@@ -77,6 +77,8 @@ class UserTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
   @Test
   def testFromI2b2() {
     val user = User.fromI2b2(response)
+    user.credential.value should equal("SessionKey:key")
+    user.credential.isToken should be(true)
     user.params("ecommons_username") should equal ("ecommons")
     user.params("other_param") should equal ("other")
   }

@@ -13,6 +13,9 @@ import net.shrine.webclient.server.OntologyService
 import net.shrine.webclient.server.OntologyServiceImpl
 import net.shrine.webclient.server.QueryService
 import net.shrine.webclient.server.QueryServiceImpl
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Scope
 
 
 /**
@@ -22,10 +25,10 @@ import net.shrine.webclient.server.QueryServiceImpl
  */
 @Path("/api")
 @Produces(Array(MediaType.APPLICATION_JSON))
-final class ClientApiResource(@Injectable queryService: QueryService, @Injectable ontologyService: OntologyService) {
-  //NB: Needed so Jersey can instantiate this class :(
-  def this() = this(ClientApiResource.defaultQueryService, ClientApiResource.defaultOntologyService)
-  
+@Component
+@Scope("singleton")
+final class ClientApiResource @Autowired()(@Injectable queryService: QueryService, @Injectable ontologyService: OntologyService) {
+
   @GET
   @Path("ontology/suggestions")
   def getSuggestions(
@@ -43,11 +46,4 @@ final class ClientApiResource(@Injectable queryService: QueryService, @Injectabl
   @POST
   @Path("query/submit")
   def queryForBreakdown(expr: String): MultiInstitutionQueryResult = queryService.queryForBreakdown(expr)
-}
-
-object ClientApiResource {
-  //Ugh, done to prevent re-instantiation of these classes on every incoming HTTP request
-  private lazy val defaultQueryService: QueryService = new QueryServiceImpl 
-  
-  private lazy val defaultOntologyService: OntologyService = new OntologyServiceImpl 
 }

@@ -2,12 +2,31 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:sec="http://www.springframework.org/schema/security"
        xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
-       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd">
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <context:component-scan base-package="net.shrine.webclient.server"/>
 
     <jee:jndi-lookup id="pmEndpoint" jndi-name="java:comp/env/shrine/pmEndpoint"
-                         default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
+            default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
+    <jee:jndi-lookup id="shrineUrl" jndi-name="java:comp/env/shrine/shrineUrl"
+            default-value="https://shrine-dev1.chip.org:6060/shrine-cell/rest/"/>
+    <jee:jndi-lookup id="projectId" jndi-name="java:comp/env/shrine/projectId"
+            default-value="SHRINE"/>
+
+    <bean name="shrineClient" class="net.shrine.webclient.server.RequestScopedShrineClient" factory-method="apply" scope="request">
+        <aop:scoped-proxy/>
+        <constructor-arg index="0" ref="shrineUrl"/>
+        <constructor-arg index="1" ref="projectId"/>
+    </bean>
+
+    <!--FIXME - figure out if we can do this with component scanning-->
+    <bean name="ontService" class="net.shrine.webclient.server.OntologyServiceImpl"/>
 
     <sec:authentication-manager alias="authenticationManager">
         <sec:authentication-provider ref="pmAuthProvider"/>

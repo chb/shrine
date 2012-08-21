@@ -10,31 +10,25 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.service.JerseyShrineClient
 import net.shrine.service.ShrineClient
 import net.shrine.protocol.query.Expression
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.{Service, Component}
+import org.springframework.context.annotation.Scope
 
 /**
  * @author clint
  * @date Mar 23, 2012
  */
 object QueryServiceImpl {
-  object Urls {
-    val shrineDev1 = "https://shrine-dev1.chip.org:6060/shrine-cell/rest/"
-    val shrineDev2 = "https://shrine-dev2.chip.org:6060/shrine-cell/rest/"
-  }
-
   object Defaults {
     val topicId = "4" //Magic
-    val projectId = "SHRINE"
-    val domain = "i2b2demo"
 
-    val auth = AuthenticationInfo(domain, "bsimons", Credential("testtest", true))
     val outputTypes = Set(ResultOutputType.PATIENT_COUNT_XML)
   }
 }
 
-final class QueryServiceImpl(private[this] val client: ShrineClient) extends QueryService {
-  //Needed so this class can be instantiated by an app server
-  def this() = this(new JerseyShrineClient(QueryServiceImpl.Urls.shrineDev1, QueryServiceImpl.Defaults.projectId, QueryServiceImpl.Defaults.auth, true))
-
+@Service
+@Scope("singleton")
+final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient) extends QueryService {
   override def toString = "QueryServiceImpl(" + client + ")"
   
   private[this] def uuid = java.util.UUID.randomUUID.toString
