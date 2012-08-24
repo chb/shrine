@@ -31,14 +31,12 @@ final case class QueryResult(
   val breakdowns: Map[ResultOutputType, I2b2ResultEnvelope] = Map.empty) extends XmlMarshaller with I2b2Marshaller {
 
   def this(resultId: Long, instanceId: Long, resultType: ResultOutputType, setSize: Long, startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar, statusType: String) = {
-    this(resultId, instanceId, resultType, setSize, Some(startDate), Some(endDate), None, statusType, None)
+    this(resultId, instanceId, resultType, setSize, Option(startDate), Option(endDate), None, statusType, None)
   }
 
   def this(resultId: Long, instanceId: Long, resultType: ResultOutputType, setSize: Long, startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar, description: String, statusType: String) = {
-    this(resultId, instanceId, resultType, setSize, Some(startDate), Some(endDate), Some(description), statusType, None)
+    this(resultId, instanceId, resultType, setSize, Option(startDate), Option(endDate), Option(description), statusType, None)
   }
-
-  require(resultType != null)
 
   def toI2b2 = {
     import ResultOutputType._
@@ -99,6 +97,11 @@ final case class QueryResult(
       {
         statusMessage.map(x => <statusMessage>{ x }</statusMessage>).orNull
       }
+      {
+        //Sorting isn't strictly necessary, but makes deterministic unit testing easier.  
+        //The number of breakdowns will be at most 4, so performance should not be an issue. 
+        breakdowns.values.toSeq.sortBy(_.resultType).map(_.toXml)
+      }
     </queryResult>)
 
   def withId(id: Long): QueryResult = copy(resultId = id)
@@ -126,6 +129,12 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
 
     def asLong = extractLong(nodeSeq) _
 
+    def extractBreakdowns(elemName: String): Map[ResultOutputType, I2b2ResultEnvelope] = {
+      val envelopes = (nodeSeq \ elemName).flatMap(I2b2ResultEnvelope.fromXml)
+      
+      Map.empty ++ envelopes.map(envelope => (envelope.resultType -> envelope))
+    }
+    
     new QueryResult(
       asLong("resultId"),
       asLong("instanceId"),
@@ -135,7 +144,8 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
       extractDate("endDate"),
       extract("description"),
       (nodeSeq \ "status").text,
-      extract("statusMessage"))
+      extract("statusMessage"),
+      extractBreakdowns("resultEnvelope"))
   }
 
   def fromI2b2(nodeSeq: NodeSeq) = {
@@ -143,19 +153,30 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
 
     def asText(elemNames: String*) = (elemNames.foldLeft(nodeSeq)(_ \ _)).text
 
-    def asXmlGc(elemName: String) = makeXMLGregorianCalendar(asText(elemName))
+    def asXmlGc(elemName: String) = Option(asText(elemName)).filter(!_.isEmpty).map(makeXMLGregorianCalendar)
 
+    def asResultOutputType(elemNames: String*) = {
+      try {
+        ResultOutputType.valueOf(asText(elemNames: _*))
+      } catch {
+        case e: Exception => null
+      }
+    }
+    
     new QueryResult(
       asLong("result_instance_id"),
       asLong("query_instance_id"),
-      ResultOutputType.valueOf(asText("query_result_type", "name")),
+      asResultOutputType("query_result_type", "name"),
       asLong("set_size"),
       asXmlGc("start_date"),
       asXmlGc("end_date"),
-      asText("query_status_type", "name"))
+      None, //no description
+      asText("query_status_type", "name"),
+      //no status message
+      None)
   }
 
   def errorResult(description: Option[String], statusMessage: String) = {
-    QueryResult(0L, 0L, ResultOutputType.ERROR, 0L, None, None, description, "ERROR", Option(statusMessage))
+    QueryResult(0L, 0L, null, 0L, None, None, description, "ERROR", Option(statusMessage))
   }
 }
