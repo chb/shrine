@@ -2,6 +2,7 @@ package net.shrine.util
 
 import scala.collection.mutable.ListBuffer
 import scala.collection.mutable.Buffer
+import scala.math.Ordering
 
 /**
  * @author clint
@@ -30,10 +31,16 @@ trait SEnum[T] {
     //Enums can be ordered by their ordinal field
     override def compare(other: Value): Int = this.ordinal - other.asInstanceOf[Value].ordinal
   }
+  
+  implicit object ordering extends Ordering[ValueType] {
+    def compare(x: ValueType, y: ValueType): Int = x.compare(y)
+  }
 
   def values: Seq[T] = constants.toSeq
 
-  def valueOf(name: String): Option[T] = constantsByName.get(name)
+  private def asKey(name: String): String = name.toLowerCase
+  
+  def valueOf(name: String): Option[T] = constantsByName.get(asKey(name))
   
   private var ordinalCounter = 0
 
@@ -47,7 +54,7 @@ trait SEnum[T] {
 
   private def register(v: ValueType) {
     constants += v
-    constantsByName += (v.name -> v)
+    constantsByName += (asKey(v.name) -> v)
   }
   
   private val constants: Buffer[ValueType] = new ListBuffer
