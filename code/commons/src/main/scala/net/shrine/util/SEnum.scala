@@ -29,18 +29,18 @@ trait SEnum[T] {
     override def toString = name
 
     //Enums can be ordered by their ordinal field
-    override def compare(other: Value): Int = this.ordinal - other.asInstanceOf[Value].ordinal
+    final override def compare(other: Value): Int = this.ordinal - other.asInstanceOf[Value].ordinal
   }
   
   implicit object ordering extends Ordering[ValueType] {
-    def compare(x: ValueType, y: ValueType): Int = x.compare(y)
+    final override def compare(x: ValueType, y: ValueType): Int = x.compare(y)
   }
 
-  def values: Seq[T] = constants.toSeq
+  final def values: Seq[T] = constants.toSeq
 
   private def asKey(name: String): String = name.toLowerCase
   
-  def valueOf(name: String): Option[T] = constantsByName.get(asKey(name))
+  final def valueOf(name: String): Option[T] = constantsByName.get(asKey(name))
   
   private var ordinalCounter = 0
 
