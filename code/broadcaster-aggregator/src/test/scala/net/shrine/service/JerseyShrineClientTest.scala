@@ -127,7 +127,9 @@ final class JerseyShrineClientTest extends TestCase with AssertionsForJUnit with
 
   private def now = (new NetworkTime).getXMLGregorianCalendar
 
-  private def dummyQueryResult(enclosingInstanceId: Long) = new QueryResult(123L, enclosingInstanceId, ResultOutputType.PATIENT_COUNT_XML, 789L, None, None, Some("description"), "statusType", Some("statusMessage"))
+  import ResultOutputType._
+  
+  private def dummyQueryResult(enclosingInstanceId: Long) = new QueryResult(123L, enclosingInstanceId, Some(PATIENT_COUNT_XML), 789L, None, None, Some("description"), "statusType", Some("statusMessage"))
 
   private def paramResponse = new ParamResponse(randomString, randomString, randomString)
 }

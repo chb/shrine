@@ -23,7 +23,7 @@ class ReadInstanceResultsAggregator(
 
   import ResultOutputType._
   
-  private val setType = PATIENTSET
+  private val setType = Some(PATIENTSET)
   private val statusType = "FINISHED"
   private val allowedSetTypes = ResultOutputType.values.toSet
 
@@ -35,10 +35,15 @@ class ReadInstanceResultsAggregator(
 
   private[aggregation] final override def makeResponse(validResponses: Seq[Valid[ReadInstanceResultsResponse]], errorResponses: Seq[QueryResult], invalidResponses: Seq[QueryResult]): ShrineResponse = {
 
+    def isAllowedSetType(result: QueryResult) = result.resultType match {
+      case Some(rt) => allowedSetTypes.contains(rt)
+      case _ => false
+    }
+    
     val queryResults =
       for {
         Valid(spinResult, response) <- validResponses
-        goodResults = response.results.filter(result => allowedSetTypes.contains(result.resultType))
+        goodResults = response.results.filter(isAllowedSetType)
         firstResult <- goodResults.headOption
         newResult = firstResult.withResultType(PATIENT_COUNT_XML)
       } yield {

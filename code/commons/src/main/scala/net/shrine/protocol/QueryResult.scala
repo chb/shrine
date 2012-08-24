@@ -21,7 +21,7 @@ import net.shrine.serialization.{ I2b2Marshaller, I2b2Unmarshaller, XmlMarshalle
 final case class QueryResult(
   val resultId: Long,
   val instanceId: Long,
-  val resultType: ResultOutputType,
+  val resultType: Option[ResultOutputType], //this won't be present in the case of an error result
   val setSize: Long,
   val startDate: Option[XMLGregorianCalendar],
   val endDate: Option[XMLGregorianCalendar],
@@ -31,11 +31,11 @@ final case class QueryResult(
   val breakdowns: Map[ResultOutputType, I2b2ResultEnvelope] = Map.empty) extends XmlMarshaller with I2b2Marshaller {
 
   def this(resultId: Long, instanceId: Long, resultType: ResultOutputType, setSize: Long, startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar, statusType: String) = {
-    this(resultId, instanceId, resultType, setSize, Option(startDate), Option(endDate), None, statusType, None)
+    this(resultId, instanceId, Option(resultType), setSize, Option(startDate), Option(endDate), None, statusType, None)
   }
 
   def this(resultId: Long, instanceId: Long, resultType: ResultOutputType, setSize: Long, startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar, description: String, statusType: String) = {
-    this(resultId, instanceId, resultType, setSize, Option(startDate), Option(endDate), Option(description), statusType, None)
+    this(resultId, instanceId, Option(resultType), setSize, Option(startDate), Option(endDate), Option(description), statusType, None)
   }
 
   def toI2b2 = {
@@ -49,11 +49,11 @@ final case class QueryResult(
           description.map(x => <description>{ x }</description>).orNull
         }
         <query_result_type>
-          <name>{ Option(resultType).filter(_ != ERROR).map(_.name).orNull }</name>
+          <name>{ resultType.filter(_ != ERROR).map(_.name).orNull }</name>
           {
             resultType match {
-              case PATIENTSET => <result_type_id>1</result_type_id><display_type>LIST</display_type><visual_attribute_type>LA</visual_attribute_type><description>Patient list</description>
-              case PATIENT_COUNT_XML => <result_type_id>4</result_type_id><display_type>CATNUM</display_type><visual_attribute_type>LA</visual_attribute_type><description>Number of patients</description>
+              case Some(PATIENTSET) => <result_type_id>1</result_type_id><display_type>LIST</display_type><visual_attribute_type>LA</visual_attribute_type><description>Patient list</description>
+              case Some(PATIENT_COUNT_XML) => <result_type_id>4</result_type_id><display_type>CATNUM</display_type><visual_attribute_type>LA</visual_attribute_type><description>Number of patients</description>
               case _ => null
             }
           }
@@ -82,7 +82,12 @@ final case class QueryResult(
     <queryResult>
       <resultId>{ resultId }</resultId>
       <instanceId>{ instanceId }</instanceId>
-      <resultType>{ resultType.name }</resultType>
+      <resultType>{
+        resultType match {
+          case Some(rt) => rt.name
+          case _ => null
+        }
+      }</resultType>
       <setSize>{ setSize }</setSize>
       {
         startDate.map(x => <startDate>{ x }</startDate>).orNull
@@ -112,9 +117,9 @@ final case class QueryResult(
 
   def withDescription(desc: String): QueryResult = copy(description = Option(desc))
 
-  def withResultType(resType: ResultOutputType): QueryResult = copy(resultType = resType)
-  
-  def withBreakdown(breakdownData: I2b2ResultEnvelope) = copy(breakdowns = breakdowns + (breakdownData.resultType -> breakdownData)) 
+  def withResultType(resType: ResultOutputType): QueryResult = copy(resultType = Option(resType))
+
+  def withBreakdown(breakdownData: I2b2ResultEnvelope) = copy(breakdowns = breakdowns + (breakdownData.resultType -> breakdownData))
 }
 
 object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[QueryResult] {
@@ -131,14 +136,14 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
 
     def extractBreakdowns(elemName: String): Map[ResultOutputType, I2b2ResultEnvelope] = {
       val envelopes = (nodeSeq \ elemName).flatMap(I2b2ResultEnvelope.fromXml)
-      
+
       Map.empty ++ envelopes.map(envelope => (envelope.resultType -> envelope))
     }
-    
+
     new QueryResult(
       asLong("resultId"),
       asLong("instanceId"),
-      ResultOutputType.valueOf((nodeSeq \ "resultType").text),
+      tryOrNone(ResultOutputType.valueOf((nodeSeq \ "resultType").text)),
       asLong("setSize"),
       extractDate("startDate"),
       extractDate("endDate"),
@@ -146,6 +151,14 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
       (nodeSeq \ "status").text,
       extract("statusMessage"),
       extractBreakdowns("resultEnvelope"))
+  }
+  
+  private def tryOrNone[T](f: => T): Option[T] = {
+    try {
+      Option(f)
+    } catch {
+      case e: Exception => None
+    }
   }
 
   def fromI2b2(nodeSeq: NodeSeq) = {
@@ -162,11 +175,11 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
         case e: Exception => null
       }
     }
-    
+
     new QueryResult(
       asLong("result_instance_id"),
       asLong("query_instance_id"),
-      asResultOutputType("query_result_type", "name"),
+      tryOrNone(asResultOutputType("query_result_type", "name")),
       asLong("set_size"),
       asXmlGc("start_date"),
       asXmlGc("end_date"),
@@ -177,6 +190,6 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
   }
 
   def errorResult(description: Option[String], statusMessage: String) = {
-    QueryResult(0L, 0L, null, 0L, None, None, description, "ERROR", Option(statusMessage))
+    QueryResult(0L, 0L, None, 0L, None, None, description, "ERROR", Option(statusMessage))
   }
 }

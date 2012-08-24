@@ -37,9 +37,9 @@ class RunQueryAggregator(
     
     val counts = validResponses.map {
       case Valid(spinResult, response) =>
-        val setResultOption = response.results.find(_.resultType == PATIENTSET).map(_.setSize)
+        val setResultOption = response.results.find(_.resultType == Some(PATIENTSET)).map(_.setSize)
 
-        val countResultOption = response.results.find(_.resultType == PATIENT_COUNT_XML).map(_.setSize)
+        val countResultOption = response.results.find(_.resultType == Some(PATIENT_COUNT_XML)).map(_.setSize)
 
         setResultOption.getOrElse(countResultOption.getOrElse(0L))
     }

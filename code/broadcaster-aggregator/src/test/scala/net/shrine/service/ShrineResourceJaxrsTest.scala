@@ -390,7 +390,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     override def readInstanceResults(request: ReadInstanceResultsRequest): ShrineResponse = {
       readInstanceResultsParam = request
 
-      new ReadInstanceResultsResponse(1337L, Seq(new QueryResult(123L, 1337L, ResultOutputType.PATIENT_COUNT_XML, 789L, None, None, Some("description"), "statusType", Some("statusMessage"))))
+      new ReadInstanceResultsResponse(1337L, Seq(new QueryResult(123L, 1337L, Some(ResultOutputType.PATIENT_COUNT_XML), 789L, None, None, Some("description"), "statusType", Some("statusMessage"))))
     }
 
     override def readPdo(request: ReadPdoRequest): ShrineResponse = {

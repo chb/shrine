@@ -30,7 +30,7 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
   private val statusType = "FINISHED"
   private val description = "description"
   private val statusMessage = "lakjdalsjd"
-  private val queryResult = new QueryResult(resultId, instanceId, resultType, setSize, Option(date), Option(date), Option(description), statusType, Option(statusMessage))
+  private val queryResult = new QueryResult(resultId, instanceId, Some(resultType), setSize, Option(date), Option(date), Option(description), statusType, Option(statusMessage))
 
   private def intColumn(name: String, value: Int) = Column("int", name, value)
 

@@ -111,7 +111,7 @@ class RunQueryAdapter(
 
     val obfuscated = obfuscateResponse(translateLocalIdsToNetworkIds(response, message.masterId.get, message.instanceId.get, message.resultIds.get))
 
-    def isBreakdown(result: QueryResult) = result.resultType.isBreakdown
+    def isBreakdown(result: QueryResult) = result.resultType.map(_.isBreakdown).getOrElse(false)
 
     val (breakdownResults, nonBreakDownResults) = response.results.partition(isBreakdown)
 

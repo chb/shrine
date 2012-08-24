@@ -12,6 +12,7 @@ import net.shrine.util.XmlUtil
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import net.shrine.protocol.ResultOutputType._
+import junit.framework.TestCase
 
 /**
  *
@@ -20,7 +21,7 @@ import net.shrine.protocol.ResultOutputType._
  * @link http://chip.org
  * Date: 8/12/11
  */
-final class RunQueryAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
+final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
   
   private val queryId = 1234L
   private val queryName = "someQueryName"
@@ -50,8 +51,8 @@ final class RunQueryAggregatorTest extends AssertionsForJUnit with ShouldMatcher
     assertTrue(actual.isInstanceOf[RunQueryResponse])
 
     actual.results.size should equal(5)
-    actual.results.filter(_.resultType == PATIENT_COUNT_XML).size should equal(3)
-    actual.results.filter(_.resultType == PATIENTSET).size should equal(2)
+    actual.results.filter(_.resultType == Some(PATIENT_COUNT_XML)).size should equal(3)
+    actual.results.filter(_.resultType == Some(PATIENTSET)).size should equal(2)
     actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).size should equal(1)
     actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).head.setSize should equal(20)
     actual.queryName should equal(queryName)
@@ -77,24 +78,23 @@ final class RunQueryAggregatorTest extends AssertionsForJUnit with ShouldMatcher
   }
 
   @Test
-  def testHandleErrorResponse() {
+  def testHandleErrorResponse {
     val qrCount = new QueryResult(1L, queryInstanceId, PATIENT_COUNT_XML, 10L, now, now, "Desc", "FINISHED")
 
     val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrCount))
     val errorMessage = "error message"
     val errorResponse = new ErrorResponse(errorMessage)
 
-    val result2 = new SpinResultEntry(errorResponse.toXml.toString(), new Result(null, "description1", null, null))
-    val result1 = new SpinResultEntry(rqr1.toXml.toString(), new Result(null, "description2", null, null))
+    val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description1", null, null))
+    val result2 = new SpinResultEntry(errorResponse.toXmlString, new Result(null, "description2", null, null))
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
     
-    //TODO: test handling error responses
     val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
     
     assertTrue(actual.isInstanceOf[RunQueryResponse])
     actual.results.size should equal(3)
-    actual.results.filter(_.resultType == PATIENT_COUNT_XML).head.setSize should equal(10)
+    actual.results.filter(_.resultType == Some(PATIENT_COUNT_XML)).head.setSize should equal(10)
     actual.results.filter(_.statusType.equalsIgnoreCase("ERROR")).head.statusMessage should equal(Some(errorMessage))
     actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).head.setSize should equal(10)
   }
