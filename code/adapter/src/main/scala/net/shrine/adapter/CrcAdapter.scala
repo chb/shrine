@@ -57,11 +57,15 @@ abstract class CrcAdapter[T <: ShrineRequest, V <: ShrineResponse](
     }
   }
 
-  private def callCrc(request: ShrineRequest) = {
+  protected def callCrc(request: ShrineRequest): String = {
     val crcRequest = request.toI2b2.toString
+    
     debug(String.format("Request to CRC:\r\n%s", crcRequest))
+    
     val crcResponse = HTTPClient.post(crcRequest, crcUrl)
+    
     debug(String.format("Response from CRC:\r\n%s", crcResponse))
+    
     crcResponse
   }
 }

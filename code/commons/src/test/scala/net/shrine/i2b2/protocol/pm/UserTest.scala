@@ -4,6 +4,8 @@ import org.scalatest.FunSuite
 import net.shrine.util.XmlUtil
 import org.scalatest.junit.{AssertionsForJUnit, ShouldMatchersForJUnit}
 import org.junit.Test
+import net.shrine.protocol.Credential
+import junit.framework.TestCase
 
 /**
  * @author Bill Simons
@@ -15,7 +17,7 @@ import org.junit.Test
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class UserTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
+final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
 
   def response = XmlUtil.stripWhitespace(
             <ns4:response xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns7="http://sheriff.shrine.net/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns11="http://www.i2b2.org/xsd/hive/msg/result/1.1/">
@@ -75,7 +77,23 @@ class UserTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
             </ns4:response>)
   
   @Test
-  def testFromI2b2() {
+  def testToAuthInfo {
+    val username = "some-user"
+    val domain = "some-domain"
+    val credential = Credential("kalsdjald", true)
+    
+    val user = new User("some-full-name", username, domain, credential, Map.empty)
+    
+    val authn = user.toAuthInfo
+    
+    authn should not be(null)
+    authn.credential should equal(credential)
+    authn.domain should equal(domain)
+    authn.username should equal(username)
+  }
+            
+  @Test
+  def testFromI2b2 {
     val user = User.fromI2b2(response)
     user.credential.value should equal("SessionKey:key")
     user.credential.isToken should be(true)

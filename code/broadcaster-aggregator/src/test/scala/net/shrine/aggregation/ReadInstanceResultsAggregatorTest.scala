@@ -6,6 +6,9 @@ import org.spin.tools.NetworkTime
 import org.scalatest.junit.{ShouldMatchersForJUnit, AssertionsForJUnit}
 import org.spin.message.Result
 import net.shrine.protocol.{ErrorResponse, QueryResult, ReadInstanceResultsResponse}
+import net.shrine.protocol.ResultOutputType._
+import junit.framework.TestCase
+
 
 /**
  * @author Bill Simons
@@ -17,17 +20,17 @@ import net.shrine.protocol.{ErrorResponse, QueryResult, ReadInstanceResultsRespo
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadInstanceResultsAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
-
+final class ReadInstanceResultsAggregatorTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
+  
   @Test
-  def testAggregate() {
+  def testAggregate {
     val instanceId = 123L
     val startDate = new NetworkTime().getXMLGregorianCalendar
     val endDate = new NetworkTime().getXMLGregorianCalendar
-    val queryResult1 = new QueryResult(1L, instanceId, "PATIENT_COUNT_XML", 12, startDate, endDate, "FINISHED")
-    val queryResult1_set = new QueryResult(1L, instanceId, "PATIENTSET", 12, startDate, endDate, "FINISHED")
+    val queryResult1 = new QueryResult(1L, instanceId, PATIENT_COUNT_XML, 12, startDate, endDate, "FINISHED")
+    val queryResult1_set = new QueryResult(1L, instanceId, PATIENTSET, 12, startDate, endDate, "FINISHED")
 
-    val queryResult2 = new QueryResult(2L, instanceId, "PATIENTSET", 14, startDate, endDate, "FINISHED")
+    val queryResult2 = new QueryResult(2L, instanceId, PATIENTSET, 14, startDate, endDate, "FINISHED")
     val aggregator = new ReadInstanceResultsAggregator(instanceId, true)
     val aggregatorNoAggregate = new ReadInstanceResultsAggregator(instanceId, false)
 
@@ -47,8 +50,8 @@ class ReadInstanceResultsAggregatorTest extends AssertionsForJUnit with ShouldMa
 	    assertNotNull(actual)
 	    assertNotNull(actual.results)
 	    actual.results.size should equal(3)
-	    assertTrue(actual.results.contains(queryResult1.withDescription(description1).withResultType("PATIENT_COUNT_XML")))
-	    assertTrue(actual.results.contains(queryResult2.withDescription(description2).withResultType("PATIENT_COUNT_XML")))
+	    assertTrue(actual.results.contains(queryResult1.withDescription(description1).withResultType(PATIENT_COUNT_XML)))
+	    assertTrue(actual.results.contains(queryResult2.withDescription(description2).withResultType(PATIENT_COUNT_XML)))
     }
 
     {
@@ -59,17 +62,17 @@ class ReadInstanceResultsAggregatorTest extends AssertionsForJUnit with ShouldMa
 	    assertNotNull(actual)
 	    assertNotNull(actual.results)
 	    actual.results.size should equal(2)
-	    assertTrue(actual.results.contains(queryResult1.withDescription(description1).withResultType("PATIENT_COUNT_XML")))
-	    assertTrue(actual.results.contains(queryResult2.withDescription(description2).withResultType("PATIENT_COUNT_XML")))
+	    assertTrue(actual.results.contains(queryResult1.withDescription(description1).withResultType(PATIENT_COUNT_XML)))
+	    assertTrue(actual.results.contains(queryResult2.withDescription(description2).withResultType(PATIENT_COUNT_XML)))
     }
   }
 
   @Test
-  def testAggregateWithError() {
+  def testAggregateWithError {
     val instanceId = 123L
-    val startDate = new NetworkTime().getXMLGregorianCalendar
-    val endDate = new NetworkTime().getXMLGregorianCalendar
-    val queryResult = new QueryResult(1L, instanceId, "PATIENT_COUNT_XML", 12, startDate, endDate, "FINISHED")
+    val startDate = (new NetworkTime).getXMLGregorianCalendar
+    val endDate = (new NetworkTime).getXMLGregorianCalendar
+    val queryResult = new QueryResult(1L, instanceId, PATIENT_COUNT_XML, 12, startDate, endDate, "FINISHED")
     val aggregator = new ReadInstanceResultsAggregator(instanceId, true)
     val errorMessage = "you are an error"
 

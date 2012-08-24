@@ -54,10 +54,10 @@ final case class RunQueryRequest(
         <result_output_list>
           {
             for {
-              i <- 1 to outputTypes.size
-              outputType <- outputTypes
+              (outputType, i) <- outputTypes.zipWithIndex
+              priorityIndex = i + 1
             } yield {
-              <result_output priority_index={ i.toString } name={ outputType.toString.toLowerCase }/>
+              <result_output priority_index={ priorityIndex.toString } name={ outputType.toString.toLowerCase }/>
             }
           }
         </result_output_list>
@@ -72,8 +72,24 @@ final case class RunQueryRequest(
   def withQueryDefinition(qDef: QueryDefinition) = this.copy(queryDefinition = qDef)
 }
 
-object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequestUnmarshaller[RunQueryRequest] {
+/**
+ * @author clint
+ * 
+ * Extractor to allow pattern matching on a ShrineRequest and extracting a RunQueryRequest
+ * 
+ * Patterned after scala.util.control.NonFatal: 
+ * http://www.scala-lang.org/archives/downloads/distrib/files/nightly/docs/library/index.html#scala.util.control.NonFatal$
+ */
+object AsRunQueryRequest {
+  def apply(req: ShrineRequest) = req.isInstanceOf[RunQueryRequest]
+  
+  def unapply(req: ShrineRequest): Option[RunQueryRequest] = {
+    Option(req).collect { case runQueryReq: RunQueryRequest => runQueryReq }
+  }
+}
 
+object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequestUnmarshaller[RunQueryRequest] {
+  
   val neededI2b2Namespace = "http://www.i2b2.org/xsd/cell/crc/psm/1.1/"
 
   def fromI2b2(nodeSeq: NodeSeq): RunQueryRequest = {

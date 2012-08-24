@@ -10,11 +10,23 @@ package net.shrine.protocol;
  * licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
+//NB: This MUST be a Java enum, or else the Groovy compiler will blow up when building the utilities module.
 public enum ResultOutputType {
-    PATIENTSET,
-    PATIENT_COUNT_XML, 
-    PATIENT_AGE_COUNT_XML,
-    PATIENT_RACE_COUNT_XML,
-    PATIENT_VITALSTATUS_COUNT_XML,
-    PATIENT_GENDER_COUNT_XML
+    PATIENTSET(false),
+    PATIENT_COUNT_XML(false), 
+    PATIENT_AGE_COUNT_XML(true),
+    PATIENT_RACE_COUNT_XML(true),
+    PATIENT_VITALSTATUS_COUNT_XML(true),
+    PATIENT_GENDER_COUNT_XML(true),
+    ERROR(false);
+    
+    public final boolean isBreakdown;
+
+    private ResultOutputType() {
+        this(false);
+    }
+    
+    private ResultOutputType(final boolean isBreakdown) {
+        this.isBreakdown = isBreakdown;
+    }
 }

@@ -6,6 +6,8 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import net.shrine.util.XmlUtil
+import junit.framework.TestCase
+import junit.framework.Assert
 
 /**
  * @author Bill Simons
@@ -17,25 +19,24 @@ import net.shrine.util.XmlUtil
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadInstanceResultsResponseTest extends ShrineResponseI2b2SerializableValidator {
+final class ReadInstanceResultsResponseTest extends TestCase with ShrineResponseI2b2SerializableValidator {
   val instanceId = 1111111L
   val resultId1 = 1111111L
   val setSize = 12
-  val typeName1 = "PATIENTSET"
+  val type1 = ResultOutputType.PATIENTSET
   val statusName1 = "FINISHED"
   val startDate1 = makeXMLGregorianCalendar(Calendar.getInstance.getTime)
   val endDate1 = makeXMLGregorianCalendar(Calendar.getInstance.getTime)
-  val result1 = makeInstanceResult(instanceId, resultId1, typeName1, setSize, statusName1, startDate1, endDate1)
+  val result1 = makeInstanceResult(instanceId, resultId1, type1, setSize, statusName1, startDate1, endDate1)
 
   val resultId2 = 222222L
-  val typeName2 = "PATIENT_COUNT_XML"
+  val type2 = ResultOutputType.PATIENT_COUNT_XML
   val statusName2 = "FINISHED"
   val startDate2 = makeXMLGregorianCalendar(Calendar.getInstance.getTime)
   val endDate2 = makeXMLGregorianCalendar(Calendar.getInstance.getTime)
-  val result2 = makeInstanceResult(instanceId, resultId2, typeName2, setSize, statusName2, startDate2, endDate2)
+  val result2 = makeInstanceResult(instanceId, resultId2, type2, setSize, statusName2, startDate2, endDate2)
 
-
-  def makeInstanceResult(queryInstanceId: Long, resultId: Long, typeName: String, setSize: Int, statusName: String,
+  def makeInstanceResult(queryInstanceId: Long, resultId: Long, typeName: ResultOutputType, setSize: Int, statusName: String,
           startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar) = {
     new QueryResult(resultId, queryInstanceId, typeName, setSize, startDate, endDate, statusName)
   }
@@ -49,7 +50,7 @@ class ReadInstanceResultsResponseTest extends ShrineResponseI2b2SerializableVali
                 <result_instance_id>{resultId1}</result_instance_id>
                 <query_instance_id>{instanceId}</query_instance_id>
                 <query_result_type>
-                    <name>{typeName1}</name>
+                    <name>{type1}</name>
                     <result_type_id>1</result_type_id>
                     <display_type>LIST</display_type>
                     <visual_attribute_type>LA</visual_attribute_type>
@@ -68,7 +69,7 @@ class ReadInstanceResultsResponseTest extends ShrineResponseI2b2SerializableVali
                 <result_instance_id>{resultId2}</result_instance_id>
                 <query_instance_id>{instanceId}</query_instance_id>
                 <query_result_type>
-                    <name>{typeName2}</name>
+                    <name>{type2}</name>
                     <result_type_id>4</result_type_id>
                     <display_type>CATNUM</display_type>
                     <visual_attribute_type>LA</visual_attribute_type>
@@ -93,7 +94,7 @@ class ReadInstanceResultsResponseTest extends ShrineResponseI2b2SerializableVali
         <queryResult>
           <resultId>{resultId1}</resultId>
           <instanceId>{instanceId}</instanceId>
-          <resultType>{typeName1}</resultType>
+          <resultType>{type1}</resultType>
           <setSize>{setSize}</setSize>
           <startDate>{startDate1}</startDate>
           <endDate>{endDate1}</endDate>
@@ -102,7 +103,7 @@ class ReadInstanceResultsResponseTest extends ShrineResponseI2b2SerializableVali
         <queryResult>
           <resultId>{resultId2}</resultId>
           <instanceId>{instanceId}</instanceId>
-          <resultType>{typeName2}</resultType>
+          <resultType>{type2}</resultType>
           <setSize>{setSize}</setSize>
           <startDate>{startDate2}</startDate>
           <endDate>{endDate2}</endDate>
@@ -112,7 +113,7 @@ class ReadInstanceResultsResponseTest extends ShrineResponseI2b2SerializableVali
     </readInstanceResultsResponse>)
 
   @Test
-  def testFromXml() {
+  def testFromXml {
     val actual = ReadInstanceResultsResponse.fromXml(readInstanceResultsResponse)
     actual.queryInstanceId should equal(instanceId)
     assertTrue(actual.results.contains(result1))
@@ -120,13 +121,13 @@ class ReadInstanceResultsResponseTest extends ShrineResponseI2b2SerializableVali
   }
 
   @Test
-  def testToXml() {
+  def testToXml {
     //we compare the string versions of the xml because Scala's xml equality does not always behave properly
     new ReadInstanceResultsResponse(instanceId, Seq(result1, result2)).toXml.toString should equal(readInstanceResultsResponse.toString)
   }
 
   @Test
-  def testFromI2b2() {
+  def testFromI2b2 {
     val actual = ReadInstanceResultsResponse.fromI2b2(response)
     actual.queryInstanceId should equal(instanceId)
     assertTrue(actual.results.contains(result1))
@@ -134,8 +135,10 @@ class ReadInstanceResultsResponseTest extends ShrineResponseI2b2SerializableVali
   }
 
   @Test
-  def testToI2b2() {
+  def testToI2b2 {
     //we compare the string versions of the xml because Scala's xml equality does not always behave properly
-    new ReadInstanceResultsResponse(instanceId, Seq(result1, result2)).toI2b2.toString should equal(response.toString)
+    val actual = new ReadInstanceResultsResponse(instanceId, Seq(result1, result2)).toI2b2String
+    
+    actual should equal(response.toString)
   }
 }

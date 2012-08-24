@@ -34,7 +34,7 @@ final case class MockShrineClient(toReturn: Map[String, Int]) extends ShrineClie
     val now = NetworkTime.makeXMLGregorianCalendar(new Date)
 
     val queryResults = toReturn.map { case (instName, count) =>
-      QueryResult(123L, 456L, "some-result-type", count.toLong, Some(now), Some(now), Some(instName), "some-status-type", None)
+      QueryResult(123L, 456L, ResultOutputType.PATIENT_COUNT_XML, count.toLong, Some(now), Some(now), Some(instName), "some-status-type", None)
     }
 
     RunQueryResponse(987L, now, "some-user-id", "some-group-id", queryDefinition, 42L, queryResults.toSeq)

@@ -21,9 +21,11 @@ import org.spin.message.Result
 class ReadInstanceResultsAggregator(
     instanceId: Long, showAggregation: Boolean) extends PackagesErrorsAggregator[ReadInstanceResultsResponse](Some("No results available"), Some("No results available")) {
 
-  private val setType = "PATIENTSET"
+  import ResultOutputType._
+  
+  private val setType = PATIENTSET
   private val statusType = "FINISHED"
-  private val allowedSetTypes = ResultOutputType.values.map(_.name).toSet
+  private val allowedSetTypes = ResultOutputType.values.toSet
 
   /**
    * Default implementation only replaces the description with the spinResult description; Subclasses can override
@@ -38,7 +40,7 @@ class ReadInstanceResultsAggregator(
         Valid(spinResult, response) <- validResponses
         goodResults = response.results.filter(result => allowedSetTypes.contains(result.resultType))
         firstResult <- goodResults.headOption
-        newResult = firstResult.withResultType("PATIENT_COUNT_XML")
+        newResult = firstResult.withResultType(PATIENT_COUNT_XML)
       } yield {
         transformResult(newResult, spinResult.spinResultMetadata)
       }

@@ -55,7 +55,7 @@ final case class RunQueryResponse(
         </query_status_type>
       </query_instance>
       {
-        results map { _.withInstanceId(queryInstanceId).toI2b2 }
+        results.map(_.withInstanceId(queryInstanceId).toI2b2)
       }
     </ns5:response>)
 
@@ -70,7 +70,7 @@ final case class RunQueryResponse(
       <createDate>{createDate}</createDate>
       <queryResults>
       {
-        results map { _.withInstanceId(queryInstanceId).toXml }
+        results.map(_.withInstanceId(queryInstanceId).toXml)
       }
       </queryResults>
     </runQueryResponse>)

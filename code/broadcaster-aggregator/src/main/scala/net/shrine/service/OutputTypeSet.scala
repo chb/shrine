@@ -23,13 +23,13 @@ import javax.ws.rs.core.Response.Status
  */
 final case class OutputTypeSet(private val outputTypes: Set[ResultOutputType]) {
   require(outputTypes != null)
-  
+
   def this(outputTypesString: String) = this(OutputTypeSet.deserialize(outputTypesString))
+
+  import OutputTypeSet._
 
   def serialized: String = {
     require(outputTypes != null)
-
-    import java.net.URLEncoder.encode
 
     encode(outputTypes.map(_.name).mkString(","))
   }
@@ -40,8 +40,6 @@ final case class OutputTypeSet(private val outputTypes: Set[ResultOutputType]) {
 object OutputTypeSet {
 
   private[service] def deserialize(outputTypesString: String): Set[ResultOutputType] = {
-    import java.net.URLDecoder.decode
-
     try {
       require(outputTypesString != null)
       
@@ -56,4 +54,12 @@ object OutputTypeSet {
         .build())
     }
   }
+
+  private[this] val utf8 = "UTF-8"
+
+  import java.net.{ URLEncoder, URLDecoder }
+
+  private[service] def encode(s: String): String = URLEncoder.encode(s, utf8)
+
+  private[service] def decode(s: String): String = URLDecoder.decode(s, utf8)
 }

@@ -28,18 +28,18 @@ class RunQueryAggregator(
 
   private[aggregation] final override def makeResponse(validResponses: Seq[Valid[RunQueryResponse]], errorResponses: Seq[QueryResult], invalidResponses: Seq[QueryResult]): ShrineResponse = {
 
-    import ResultOutputType._
-
     val results = validResponses.flatMap {
       case Valid(spinResult, response) =>
         response.results.map(transformResult(_, spinResult.spinResultMetadata))
     }
 
+    import ResultOutputType._
+    
     val counts = validResponses.map {
       case Valid(spinResult, response) =>
-        val setResultOption = response.results.find(_.resultType.equalsIgnoreCase(PATIENTSET.name)).map(_.setSize)
+        val setResultOption = response.results.find(_.resultType == PATIENTSET).map(_.setSize)
 
-        val countResultOption = response.results.find(_.resultType.equalsIgnoreCase(PATIENT_COUNT_XML.name)).map(_.setSize)
+        val countResultOption = response.results.find(_.resultType == PATIENT_COUNT_XML).map(_.setSize)
 
         setResultOption.getOrElse(countResultOption.getOrElse(0L))
     }
@@ -48,7 +48,7 @@ class RunQueryAggregator(
 
     val aggResults =
       if (doAggregation) {
-        val sumResult = new QueryResult(0L, queryInstance, PATIENT_COUNT_XML.name, counts.sum, now, now, "TOTAL COUNT", "FINISHED")
+        val sumResult = new QueryResult(0L, queryInstance, PATIENT_COUNT_XML, counts.sum, now, now, "TOTAL COUNT", "FINISHED")
 
         results :+ sumResult
       } else {

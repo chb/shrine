@@ -33,8 +33,8 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
   private val startDate = createDate
   private val endDate = createDate
   private val resultId2 = 4L
-  private val resultType1 = "PATIENTSET"
-  private val resultType2 = "PATIENT_COUNT_XML"
+  private val resultType1 = ResultOutputType.PATIENTSET
+  private val resultType2 = ResultOutputType.PATIENT_COUNT_XML
   private val statusType = "FINISHED"
 
   override def messageBody = <message_body>
