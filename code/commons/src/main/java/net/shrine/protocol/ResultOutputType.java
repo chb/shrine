@@ -1,5 +1,8 @@
 package net.shrine.protocol;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Bill Simons
  * @date 8/30/11
@@ -22,11 +25,31 @@ public enum ResultOutputType {
     
     public final boolean isBreakdown;
 
-    private ResultOutputType() {
-        this(false);
-    }
-    
     private ResultOutputType(final boolean isBreakdown) {
         this.isBreakdown = isBreakdown;
+    }
+    
+    public static ResultOutputType[] breakdownTypes() {
+        final List<ResultOutputType> results = new ArrayList<ResultOutputType>();
+        
+        for(final ResultOutputType resultType : values()) {
+            if(resultType.isBreakdown) {
+                results.add(resultType);
+            }
+        }
+        
+        return results.toArray(new ResultOutputType[0]);
+    }
+    
+    public static ResultOutputType[] nonBreakdownTypes() {
+        final List<ResultOutputType> results = new ArrayList<ResultOutputType>();
+        
+        for(final ResultOutputType resultType : values()) {
+            if(!resultType.isBreakdown) {
+                results.add(resultType);
+            }
+        }
+        
+        return results.toArray(new ResultOutputType[0]);
     }
 }

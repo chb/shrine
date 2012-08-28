@@ -16,12 +16,12 @@ import org.spin.message.Result
  * Date: 8/11/11
  */
 class RunQueryAggregator(
-    private val queryId: Long,
-    private val userId: String,
-    private val groupId: String,
-    private val requestQueryDefinition: QueryDefinition,
-    private val queryInstance: Long,
-    private val doAggregation: Boolean) extends PackagesErrorsAggregator[RunQueryResponse](errorMessage = None, invalidMessage = Some("Unexpected response")) {
+  private val queryId: Long,
+  private val userId: String,
+  private val groupId: String,
+  private val requestQueryDefinition: QueryDefinition,
+  private val queryInstance: Long,
+  private val doAggregation: Boolean) extends PackagesErrorsAggregator[RunQueryResponse](errorMessage = None, invalidMessage = Some("Unexpected response")) {
 
   /* We need to override this some place in Carranet, we need this method to change descriptions of responses */
   protected def transformResult(n: QueryResult, metaData: Result): QueryResult = n.withDescription(metaData.getDescription)
@@ -34,14 +34,14 @@ class RunQueryAggregator(
     }
 
     import ResultOutputType._
-    
+
     val counts = validResponses.map {
       case Valid(spinResult, response) =>
-        val setResultOption = response.results.find(_.resultType == Some(PATIENTSET)).map(_.setSize)
+        val setResultOption = response.results.find(_.resultTypeIs(PATIENTSET)).map(_.setSize)
 
-        val countResultOption = response.results.find(_.resultType == Some(PATIENT_COUNT_XML)).map(_.setSize)
+        val countResultOption = response.results.find(_.resultTypeIs(PATIENT_COUNT_XML)).map(_.setSize)
 
-        setResultOption.getOrElse(countResultOption.getOrElse(0L))
+        (setResultOption orElse countResultOption).getOrElse(0L)
     }
 
     val now = (new NetworkTime).getXMLGregorianCalendar

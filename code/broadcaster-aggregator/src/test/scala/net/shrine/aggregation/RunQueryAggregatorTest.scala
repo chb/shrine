@@ -13,6 +13,7 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import net.shrine.protocol.ResultOutputType._
 import junit.framework.TestCase
+import net.shrine.protocol.I2b2ResultEnvelope.Column
 
 /**
  *
@@ -40,40 +41,36 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrCount, qrSet))
     val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrCount, qrSet))
 
-    val result2 = new SpinResultEntry(rqr2.toXml.toString(), new Result(null, "description1", null, null))
-    val result1 = new SpinResultEntry(rqr1.toXml.toString(), new Result(null, "description2", null, null))
+    val result2 = new SpinResultEntry(rqr2.toXmlString, new Result(null, "description1", null, null))
+    val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description2", null, null))
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
     
-    //TODO: test handling error responses
     val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
-    
-    assertTrue(actual.isInstanceOf[RunQueryResponse])
 
     actual.results.size should equal(5)
-    actual.results.filter(_.resultType == Some(PATIENT_COUNT_XML)).size should equal(3)
-    actual.results.filter(_.resultType == Some(PATIENTSET)).size should equal(2)
-    actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).size should equal(1)
-    actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).head.setSize should equal(20)
+    actual.results.filter(_.resultTypeIs(PATIENT_COUNT_XML)).size should equal(3)
+    actual.results.filter(_.resultTypeIs(PATIENTSET)).size should equal(2)
+    actual.results.filter(hasTotalCount).size should equal(1)
+    actual.results.filter(hasTotalCount).head.setSize should equal(20)
     actual.queryName should equal(queryName)
   }
 
   @Test
-  def testAggCount() {
+  def testAggCount {
     val qrSet = new QueryResult(2L, queryInstanceId, PATIENTSET, 10L, now, now, "Desc", "FINISHED")
 
     val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrSet))
     val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrSet))
 
-    val result1 = new SpinResultEntry(rqr1.toXml.toString(), new Result(null, "description1", null, null))
-    val result2 = new SpinResultEntry(rqr2.toXml.toString(), new Result(null, "description2", null, null))
+    val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description1", null, null))
+    val result2 = new SpinResultEntry(rqr2.toXmlString, new Result(null, "description2", null, null))
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
     
     //TODO: test handling error responses
     val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
     
-    assertTrue(actual.isInstanceOf[RunQueryResponse])
     actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).head.setSize should equal(20)
   }
 
@@ -92,11 +89,53 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     
     val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
     
-    assertTrue(actual.isInstanceOf[RunQueryResponse])
     actual.results.size should equal(3)
-    actual.results.filter(_.resultType == Some(PATIENT_COUNT_XML)).head.setSize should equal(10)
+    
+    actual.results.filter(_.resultTypeIs(PATIENT_COUNT_XML)).head.setSize should equal(10)
     actual.results.filter(_.statusType.equalsIgnoreCase("ERROR")).head.statusMessage should equal(Some(errorMessage))
-    actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).head.setSize should equal(10)
+    actual.results.filter(hasTotalCount).head.setSize should equal(10)
   }
 
+  @Test
+  def testAggregateResponsesWithBreakdowns {
+    val breakdowns1 = Map.empty ++ ResultOutputType.breakdownTypes.map { resultType =>
+      resultType -> I2b2ResultEnvelope(resultType, (1 to 10).map(i => Column("int", "x" + i, i)))
+    }
+    
+    val breakdowns2 = Map.empty ++ ResultOutputType.breakdownTypes.map { resultType =>
+      resultType -> I2b2ResultEnvelope(resultType, (11 to 20).map(i => Column("int", "x" + i, i)))
+    }
+    
+    val qr1 = new QueryResult(1L, queryInstanceId, Some(PATIENT_COUNT_XML), 10L, Some(now), Some(now), Some("Desc"), "FINISHED", None, breakdowns1)
+    
+    val qr2 = new QueryResult(2L, queryInstanceId, Some(PATIENT_COUNT_XML), 20L, Some(now), Some(now), Some("Desc"), "FINISHED", None, breakdowns2)
+
+    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, Seq(qr1))
+    
+    val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, Seq(qr2))
+
+    val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description2", null, null))
+    
+    val result2 = new SpinResultEntry(rqr2.toXmlString, new Result(null, "description1", null, null))
+
+    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
+    
+    val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[RunQueryResponse]
+    
+    actual.results.size should equal(3)
+    actual.results.filter(hasTotalCount).size should equal(1)
+    
+    val Seq(actualQr1, actualQr2, actualQr3) = actual.results.filter(_.resultTypeIs(PATIENT_COUNT_XML))
+    
+    actualQr1.setSize should equal(10)
+    actualQr2.setSize should equal(20)
+    actualQr3.setSize should equal(30)
+    
+    actualQr1.breakdowns should equal(breakdowns1)
+    actualQr2.breakdowns should equal(breakdowns2)
+    
+    actualQr3.breakdowns.isEmpty should be(true)
+  }
+  
+  private def hasTotalCount(result: QueryResult) = result.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")
 }

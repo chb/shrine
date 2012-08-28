@@ -38,6 +38,11 @@ final case class QueryResult(
     this(resultId, instanceId, Option(resultType), setSize, Option(startDate), Option(endDate), Option(description), statusType, None)
   }
 
+  def resultTypeIs(testedResultType: ResultOutputType): Boolean = resultType match {
+    case Some(rt) => rt == testedResultType
+    case _ => false
+  }
+  
   def toI2b2 = {
     import ResultOutputType._
 
