@@ -33,7 +33,6 @@ final class PMAuthenticationProvider(val pmEndpoint: String) extends Authenticat
     }
 
     import scala.collection.JavaConverters._
-    //TODO - parse Security information from user response and include i2b2 password (isToken = true) in authentication token
     new UsernamePasswordAuthenticationToken(user, authentication.getCredentials, Seq(new SimpleGrantedAuthority("ROLE_USER")).asJava)
 
   }
