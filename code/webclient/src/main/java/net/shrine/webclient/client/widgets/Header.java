@@ -8,7 +8,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,10 +25,10 @@ public final class Header extends Composite {
 	interface HeaderUiBinder extends UiBinder<Widget, Header> { }
 
 	@UiField
-	Button queryHistoryButton;
+	Anchor queryHistoryLink;
 	
 	@UiField
-	Button dataDictionaryButton;
+	Anchor dataDictionaryLink;
 	
 	private final PopupPanel queryHistoryPopup = new PopupPanel(true, false);
 	
@@ -41,7 +41,7 @@ public final class Header extends Composite {
 		
 		queryHistoryPopup.hide();
 		
-		queryHistoryButton.addClickHandler(new ClickHandler() {
+		queryHistoryLink.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				if(queryHistoryPopup.isShowing()) {
@@ -60,7 +60,7 @@ public final class Header extends Composite {
 		
 		this.eventBus = eventBus;
 		
-		dataDictionaryButton.addClickHandler(new ClickHandler() {
+		dataDictionaryLink.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				Header.this.eventBus.fireEvent(new ShowDataDictionaryPanelEvent(null));
