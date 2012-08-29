@@ -4,7 +4,8 @@
 			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
 
 	<g:HTMLPanel styleName="header">
-		<div class="headerLinks">
+        <shrine:LoggedInUserPanel styleName="headerLinks"/>
+		<div class="headerLinks topMenu">
 			<span class="buttonPanel">
 				<g:Button ui:field="queryHistoryButton" styleName="smallButton" text="Query History" />
 				<g:Button ui:field="dataDictionaryButton" styleName="smallButton" text="Data Dictionary" />

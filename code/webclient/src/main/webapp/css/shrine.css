@@ -1,10 +1,13 @@
 /* CSS Document */
 
 body {
-	font: 12px Verdana, Geneva, sans-serif;
+	font: 12px Verdana, Geneva, sans-serif !important;
 	background: #fff;
 }
 
+a:link, a:hover, a:visited, a:active {
+	color: #046698;
+}
 
 /* Containers */
 
@@ -22,6 +25,12 @@ body {
 .headerLinks {
 	float: right;
 	padding: 15px 0 0 0;
+	clear: both;
+}
+
+.topMenu {
+	font-size: 14px;
+	font-weight: bold;
 }
 
 .mainContent {
@@ -148,6 +157,7 @@ body {
     overflow-y: auto !important;
     padding: 0 15px 5px 5px;
     z-index: 1101;
+	display: none;
 }
 
 .searchTermHighlight {
@@ -164,13 +174,48 @@ body {
 	width: 936px;
 	min-height: 90px;
 	background: #FFFFFF;
-	padding: 5px 10px;
+	padding: 5px 10px 15px 10px;
 	border: 2px solid #333;
 	border-radius: 0 0 10px 10px; 
 	-moz-border-radius: 0 0 10px 10px; 
 	-webkit-border-radius: 0 0 10px 10px; 
 	clear: both;
 	font-size: 14px;
+}
+
+.breakDownSmart {
+	width: 956px;
+	min-height: 90px;
+	background: url("../images/subject-bg2.png") repeat-y scroll 0 0 #ffffff;
+	padding: 0 0 5px 0;
+	border: 2px solid #333;
+	border-radius: 0 0 10px 10px; 
+	-moz-border-radius: 0 0 10px 10px; 
+	-webkit-border-radius: 0 0 10px 10px; 
+	clear: both;
+	font-size: 12px;
+}
+
+.breakDownSummary {
+	width: 936px;
+	min-height: 90px;
+	background: #FFFFFF;
+	padding: 5px 10px 15px 10px;
+	border: 2px solid #333;
+	clear: both;
+	font-size: 14px;
+	margin: 0 0 20px 0;
+}
+
+.patientSelection {
+	width: 936px;
+	min-height: 90px;
+	background: #FFFFFF;
+	padding: 0 10px;
+	border: 2px solid #333;
+	clear: both;
+	font-size: 14px;
+	margin: 0 0 20px 0;
 }
 
 .querySentence {
@@ -239,9 +284,11 @@ body {
 }
 
 .smallButton {
-	width: 160px;
+	min-width: 160px;
+	max-width: 240px;
 	height: 30px;
-	font-size: 14px;
+	font-size: 16px;
+	font-weight: bold;
 	display:inline-block;
 	border-radius: 5px; 
 	-moz-border-radius: 5px; 
@@ -269,8 +316,43 @@ body {
 	cursor: pointer;
 }
 
+.breakDownDemographics {
+	line-height: 24px;
+	min-height: 20px;
+    width: 670px;
+	display:block;
+	float:left;
+	margin: 0 0 0 20px;
+}
+
+.demographic {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 45px;
+    max-width: 700px;
+    min-width: 150px;
+	padding: 0;
+}
+
+.demographicLeft {
+	margin: 0 30px 0 0;
+}
+
+.breakDownDemographics img {
+	margin: 0 30px 0 0;
+}
+
+.breakDownInstitution {
+	line-height: 24px;
+	width: 240px;
+	display:block;
+	float:left;
+}
+
 .breakDownUpper {
 	line-height: 24px;
+	width: 200px;
 }
 
 .breakDownTop {
@@ -286,8 +368,16 @@ body {
 	font-weight: bold;
 }
 
-.breakDownTopLeft .title {
-	font-size: 24px;
+.breakDownTopLeft .title, .breakDownSmart .title {
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.breakDownSmart .title {
+	height: 30px;
+	padding: 5px;
+	background: #046698;
+	color: #FFF;
 }
 
 .breakDownTopRight {
@@ -329,6 +419,7 @@ body {
 	overflow: auto;
 	float:left;
 	background: #FFFFFF;
+	display:none;
 }
 
 .dataDictionary .title {
@@ -645,7 +736,22 @@ body {
 .resultInstitutionsTitle {
 	font-weight: bold;
 	font-size: 24px;
-	padding: 25px 0 0 0;
+	padding: 10px 0;
+	height: 30px;
+}
+
+.resultLink {
+    font-size: 70%;
+    float: right;
+	text-align: center;
+	line-height: 15px;
+}
+
+.resultDescription {
+    font-size: 80%;
+    line-height: 14px;
+    padding: 10px 0;
+	clear: both;
 }
 
 .resultInstitutions {
@@ -655,9 +761,40 @@ body {
 }
 
 .resultInstitution {
-	width: 234px;
+	width: 200px;
 	float: left;
 	font-size: 115%;
+	padding: 0 40px 10px 0;
+	margin: 0 0 15px 0;
+	cursor: pointer;
+}
+
+.resultInstitutionName {
+	border: solid #ddd;
+	border-width: 0 0 1px 5px;
+	padding: 0 0 0 5px;
+	font-weight:bold;
+	font-size: 80%;
+}
+
+.resultInstitutionNameSelected {
+	background: url("../images/arrow5r.png") no-repeat scroll right 15px transparent;
+}
+
+.resultInstitutionData {
+	padding: 5px 0 0 10px;
+	font-size: 150%;
+}
+
+.resultInstitutionQuantity {
+	display: inline-block;
+	width: 140px;
+	font-weight: bold;
+}
+
+.resultInstitutionLink {
+	display: inline-block;
+	font-size: 90%;
 }
 
 .queryRowFiltersInner {
@@ -865,7 +1002,7 @@ body {
 }
 
 .loadTable {
-	width: 580px;
+	width: 740px;
 }
 
 .loadHeader {
@@ -878,13 +1015,19 @@ body {
 .loadHeaderName {
 	width: 400px;
 	display: inline-block;
-	text-align: center;
+	text-align: left;
 }
 
 .loadHeaderDate {
 	width: 135px;
 	display: inline-block;
-	text-align: center;
+	text-align: left;
+}
+
+.loadHeaderStatus {
+	width: 165px;
+	display: inline-block;
+	text-align: left;
 }
 
 .loadRow {
@@ -902,11 +1045,211 @@ body {
 }
 
 .loadDateColumn {
-	width: 150px;
+	width: 135px;
+	display: inline-block;
+}
+
+.loadStatusColumn {
+	width: 165px;
 	display: inline-block;
 }
 
 .loadDeleteColumn {
 	width: 20px;
 	display: inline-block;
+}
+
+.patientCheckBox {
+	width: 30px !important;
+}
+
+.patientList ul li {
+	list-style: none;
+	padding: 7px 0;
+	border: dashed #333333;
+	border-width: 0 0 1px 0;
+}
+
+.patientList ul li div {
+/*	width: 180px;*/
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.patientList ul li div img {
+}
+
+.patientName {
+    font-size: 120%;
+    font-weight: bold;
+    width: 208px !important;
+}
+
+.patientClose {
+	width: 16px; 
+	display: inline-block;
+	padding: 5px 0 5px 5px;
+}
+
+.patientTimeline {
+	margin: 10px 0 0 0;
+}
+
+.backLink {
+    font-size: 130%;
+    font-weight: bold;
+    height: 35px;
+    margin: 0 0 10px;
+    position: relative !important;
+    width: 100%;
+}
+
+.patientLinks {
+	text-align: left;
+	padding: 10px 0;
+}
+
+.patientLinksText {
+	display:inline-block;
+	width: 730px;
+	text-align: left;
+	vertical-align: top;
+}
+
+.patientLinksButtons {
+	display:inline-block;
+	width: 200px;
+	text-align: right;
+	vertical-align: top;
+}
+
+.patientList {
+	clear: both;
+	padding: 10px 0;
+}
+
+
+
+.smartIcons {
+	max-width: 710px;
+	height: 80px;
+	display: inline-block;
+	vertical-align: top;
+	overflow-y: hidden;
+	overflow-x: scroll;
+	white-space:nowrap;
+}
+
+.patientBox {
+    font-size: 100%;
+    padding: 5px 10px;
+    text-align: center;
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.patientQuantityBox {
+	width: 20px; 
+	height: 28px; 
+	font: bold 28px Verdana,Geneva,sans-serif; 
+	color: #777777;
+	text-align: right;
+    width: 80px;
+	border: 1px solid #AAAAAA;
+	background: none repeat scroll 0 0 #EAF4F9;
+	padding: 2px 0 3px 0;
+}
+
+.icon {
+    font-size: 100%;
+    padding: 10px 10px 20px 10px;
+    text-align: center;
+	display: inline-block;
+	white-space: nowrap;
+}
+
+.selectedIcon {
+	background: url("../images/arrow6c.png") no-repeat scroll center bottom transparent;
+}
+
+.smartContainer {
+	width: 690px;
+	padding: 10px;
+/*	height: 560px;
+	overflow-y: scroll;*/
+	overflow-x: hidden;
+	display: inline-block;
+	vertical-align: top;
+}
+
+
+
+.patientListNarrow {
+	width: 245px;
+	float: left;
+}
+
+.patientListInner {
+	min-height: 300px;
+/*	max-height: 600px;
+	overflow-y: scroll;*/
+	overflow-x: hidden;
+	width: 245px;
+}
+
+.patientListInner ul {
+	padding: 0 5px 0 0;
+	margin: 0 0 0 5px;
+	width: 234px;
+	border: solid #cccccc;
+	border-width: 0 1px 0 0;
+}
+
+.patientListInner ul li {
+	list-style: none;
+	padding: 5px 0;
+	border: dashed #aaaaaa;
+	border-width: 0 0 1px 0;
+}
+
+.patientListInner ul li div {
+/*	width: 220px;*/
+	display: inline-block;
+	vertical-align: top;
+}
+
+.patientListInner ul li div img {
+}
+
+.patientSelectionPanel {
+	min-height: 10px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.patientSelectionPanel .patientName {
+	font-size: 150%;
+}
+
+.personPanel {
+	width: 240px;
+	background: url(../images/dropdown.png) no-repeat scroll right 0 #FFFFFF;
+    padding: 0px 16px 2px 5px;
+	margin: 0 20px 0 0;
+	border: 1px solid #CCCCCC;
+	cursor: pointer;
+}
+
+.patientSelectionPanel {
+	text-align: left;
+}
+
+.patientQuantity {
+    color: #777777;
+    font-size: 200%;
+	text-align: left;
+}
+
+.addButton {
+	margin: 0;
 }
