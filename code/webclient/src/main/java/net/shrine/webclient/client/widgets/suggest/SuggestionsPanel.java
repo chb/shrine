@@ -6,7 +6,6 @@ import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**

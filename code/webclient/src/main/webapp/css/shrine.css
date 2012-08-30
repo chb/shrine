@@ -421,7 +421,8 @@ a:link, a:hover, a:visited, a:active {
 	overflow: auto;
 	float:left;
 	background: #FFFFFF;
-	display:none;
+	/* TODO: HACK ALERT */
+	/* display:none; */
 }
 
 .dataDictionary .title {
