@@ -6,6 +6,7 @@ import net.shrine.webclient.client.util.ReadOnlyObservable;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -26,7 +27,7 @@ public final class SuggestionsPanel extends FlowPanel implements Observer {
 		this.highlightedRow.observedBy(this);
 		
 		//TODO: HACK ALERT
-		this.addStyleName("searchBoxPopup");
+		this.addStyleName("autosuggest");
 		
 		this.inform();
 	}

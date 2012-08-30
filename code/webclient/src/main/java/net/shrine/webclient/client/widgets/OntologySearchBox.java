@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class OntologySearchBox extends RichSuggestBox<TermSuggestion> {
 
-	public static final String ID = "ontSearchInput";
+	public static final String ID = "searchbox";
 
 	public OntologySearchBox(final EventBus eventBus, final Controllers controllers) {
 		super(new OntologySuggestOracle(), NullWidgetMaker);
@@ -40,9 +40,7 @@ public final class OntologySearchBox extends RichSuggestBox<TermSuggestion> {
 		});
 		
 		//TODO: Very hackish
-		for(final String styleName : Arrays.asList("searchInput")) {
-			this.addStyleName(styleName);
-		}
+		this.addStyleName("searchInput");
 		
 		this.setWidgetMaker(AutoSuggestRow.autoSuggestRowWidgetMaker(eventBus, this));
 		

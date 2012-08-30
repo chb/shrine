@@ -17,6 +17,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -63,7 +64,9 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		initTextBox();
 
 		initPopup();
-
+		
+		hidePopup();
+		
 		initWidget(textBox);
 	}
 
@@ -115,6 +118,8 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		// NB: Use keyUp instead of keyPress so that suggestions are presented
 		// after each keypress based on the entire contents of the TextBox
 		textBox.addKeyUpHandler(new SuggestBoxKeyUpHandler());
+		
+		textBox.removeStyleName("gwt-TextBox");
 	}
 
 	final void setHighlightedRow(final int r) {
@@ -189,21 +194,18 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 
 	private void initPopup() {
 		suggestionPopup.setAnimationEnabled(false);
+		
+		//TODO: HACK ALERT (Match Seth's HTML)
+		suggestionPopup.setStyleName("searchBoxPopup");
+		suggestionPopup.getElement().setId("searchBoxPopup");
 	}
 
 	private void positionPopup() {
 		final Element textBoxElement = textBox.getElement();
 
-		// TODO: HACK ALERT: 2 is completely arbitrary; used to make sure
-		// suggest popup
-		// lines up properly horizontally
 		final int left = textBoxElement.getAbsoluteLeft();
 
-		// TODO: HACK ALERT: "- textBoxElement.getClientHeight() - 7" is totally
-		// arbitrary.
-		// Needed to place suggest popup right under text box. :( :(
-		final int hackOffset = 7;
-		final int bottom = textBoxElement.getAbsoluteBottom() - textBoxElement.getClientHeight() - hackOffset;
+		final int bottom = textBoxElement.getAbsoluteBottom();
 
 		suggestionPopup.setPopupPosition(left, bottom);
 	}
@@ -217,8 +219,10 @@ public class RichSuggestBox<S extends IsSerializable> extends Composite implemen
 		for (final S suggestion : response.getSuggestions()) {
 			final Widget widget = widgetMaker.makeWidget(suggestion);
 
-			suggestionsPanel.add(rowFromWidget(i, suggestion, widget));
-
+			final RichSuggestionRow row = rowFromWidget(i, suggestion, widget);
+			
+            suggestionsPanel.add(row);
+			
 			++i;
 		}
 	}

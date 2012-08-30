@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @date Apr 10, 2012
  */
 public final class RichSuggestionRow extends SimplePanel implements HasMouseOutHandlers, HasMouseOverHandlers, HasClickHandlers {
-
 	/**
 	 * 
 	 * @author clint

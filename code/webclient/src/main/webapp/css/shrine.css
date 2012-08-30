@@ -157,7 +157,8 @@ a:link, a:hover, a:visited, a:active {
     overflow-y: auto !important;
     padding: 0 15px 5px 5px;
     z-index: 1101;
-	display: none;
+    /* TODO: HACK ALERT */
+	/* display: none; */
 }
 
 .searchTermHighlight {
@@ -402,7 +403,8 @@ a:link, a:hover, a:visited, a:active {
 }
 
 .dataDictionary #collapse {
-	display: none;
+	/* TODO: HACK ALERT */
+	/*display: none;*/
 	width: 16px;
 	float: right;
 }
@@ -879,6 +881,10 @@ a:link, a:hover, a:visited, a:active {
 	margin: 5px 0 0 0;
 }
 
+.autoSuggestRow {
+	margin: 5px 0 2px 0;
+}
+
 .autosuggest li {
 	list-style: none;
 	padding: 4px 0;
@@ -898,14 +904,14 @@ a:link, a:hover, a:visited, a:active {
 }
 
 .autosuggest .synonym {
-	display:inline-block;
+	display:block;
 	font-weight: 90%;
 	color: #096;
 	font-style: italic;
 }
 
 .autosuggest .browse {
-	float: right;
+	display: inline-block;
 	padding: 0 5px 0 25px;
 	font-size: 80%;
 	cursor: pointer;
@@ -914,8 +920,9 @@ a:link, a:hover, a:visited, a:active {
 }
 
 .autosuggest .terms {
-	max-width: 570px;
-	display: block;
+	width: 670px;
+	display: inline-block;
+	vertical-align: top;
 }
 
 .autosuggest .leaf {
@@ -928,8 +935,9 @@ a:link, a:hover, a:visited, a:active {
 
 .autosuggest .icon {
 	width: 24px;
-	float: right;
+	display: inline-block;
 	cursor: pointer;
+	vertical-align: top;
 }
 
 .disabled {
@@ -1162,7 +1170,7 @@ a:link, a:hover, a:visited, a:active {
 
 .icon {
     font-size: 100%;
-    padding: 10px 10px 20px 10px;
+    padding: 0 10px;
     text-align: center;
 	display: inline-block;
 	white-space: nowrap;
