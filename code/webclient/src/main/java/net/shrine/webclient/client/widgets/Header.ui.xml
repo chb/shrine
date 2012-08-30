@@ -7,9 +7,9 @@
         <shrine:LoggedInUserPanel styleName="headerLinks"/>
 		<div class="headerLinks topMenu">
 			<span class="buttonPanel">
-				<g:Anchor ui:field="queryHistoryLink" text="Load Project" />
+				<g:Anchor ui:field="queryHistoryLink" href="#" text="Load Project" />
                 |
-				<g:Anchor ui:field="dataDictionaryLink" text="Data Dictionary" />
+				<g:Anchor ui:field="dataDictionaryLink" href="#" text="Data Dictionary" />
 			</span>
 		</div>
 		<shrine:ShrineLogo />
