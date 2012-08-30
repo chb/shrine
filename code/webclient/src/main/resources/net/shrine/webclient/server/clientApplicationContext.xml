@@ -40,11 +40,15 @@
         <constructor-arg ref="pmEndpoint"/>
     </bean>
 
+    <bean name="logoutHandler" class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler">
+        <property name="targetUrlParameter" value="target"/>
+    </bean>
+
     <sec:http auto-config="false" entry-point-ref="authenticationProcessingFilterEntryPoint">
         <sec:custom-filter ref="authFilter" position="FORM_LOGIN_FILTER"/>
         <sec:intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <sec:intercept-url pattern="/**" access="ROLE_USER"/>
-        <sec:logout logout-success-url="/Webclient.html"/>
+        <sec:logout success-handler-ref="logoutHandler"/>
     </sec:http>
 
     <bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">

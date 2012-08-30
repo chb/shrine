@@ -24,7 +24,7 @@ public class LoggedInUserPanel extends Composite {
 
     private static LoggedInUserPanelUiBinder uiBinder = GWT.create(LoggedInUserPanelUiBinder.class);
 
-    private static final String logoutUrlBase = "j_spring_security_logout";
+    private static final String logoutUrlBase = "j_spring_security_logout?target=/Webclient.html";
     
     @UiField
     SpanElement username;
@@ -36,7 +36,7 @@ public class LoggedInUserPanel extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         username.setInnerText("Seth Paine");
-        
+
         logoutLink.setHref(logoutUrlBase + Window.Location.getQueryString());
     }
 }
