@@ -2,6 +2,7 @@ package net.shrine.webclient.client.widgets;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -24,7 +25,7 @@ public class LoggedInUserPanel extends Composite {
 
     private static LoggedInUserPanelUiBinder uiBinder = GWT.create(LoggedInUserPanelUiBinder.class);
 
-    private static final String logoutUrlBase = "j_spring_security_logout?target=/Webclient.html";
+    private static final String logoutUrlBase = "j_spring_security_logout?target=";
     
     @UiField
     SpanElement username;
@@ -37,6 +38,8 @@ public class LoggedInUserPanel extends Composite {
 
         username.setInnerText("Seth Paine");
 
-        logoutLink.setHref(logoutUrlBase + Window.Location.getQueryString());
+        String queryParams = URL.encodeQueryString("/Webclient.html" + Window.Location.getQueryString());
+
+        logoutLink.setHref(logoutUrlBase + queryParams);
     }
 }
