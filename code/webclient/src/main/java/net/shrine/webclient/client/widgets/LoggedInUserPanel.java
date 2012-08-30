@@ -38,7 +38,7 @@ public class LoggedInUserPanel extends Composite {
 
         username.setInnerText("Seth Paine");
 
-        String queryParams = URL.encodeQueryString("/Webclient.html" + Window.Location.getQueryString());
+        final String queryParams = URL.encodeQueryString("/Webclient.html" + Window.Location.getQueryString());
 
         logoutLink.setHref(logoutUrlBase + queryParams);
     }
