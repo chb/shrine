@@ -98,7 +98,7 @@ final class LuceneOntologyIndex(ontologyDao: OntologyDAO, dirBuilder: OntologyDA
 
     val mungedQueryString = munge(queryString)
 
-    val query = parser.parse(mungedQueryString)
+    val query = parser.synchronized(parser.parse(mungedQueryString))
 
     val topDocs = searcher.search(query, 1000)
 
