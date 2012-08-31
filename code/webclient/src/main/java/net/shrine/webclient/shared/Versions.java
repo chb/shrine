@@ -37,7 +37,7 @@ public final class Versions {
         return appVersion + delim + revision + delim + branch + delim + buildDate;
     }
     
-    /*private static String stripQuotes(final String s) {
+    private static String stripQuotes(final String s) {
         final String withoutFirstQuote = s.replaceFirst("\"", "");
         
         if(withoutFirstQuote.endsWith("\"")) {
@@ -45,10 +45,11 @@ public final class Versions {
         }
         
         return withoutFirstQuote;
-    }*/
+    }
     
     public static Versions fromString(final String serialized) {
-        final String[] parts = serialized.split(delim);
+        //TODO: Why does the cookie value come wrapped in quotes?
+        final String[] parts = stripQuotes(serialized).split(delim);
         
         return new Versions(parts[0], parts[1], parts[2], parts[3]);
     }
