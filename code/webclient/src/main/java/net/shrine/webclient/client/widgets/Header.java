@@ -20,51 +20,51 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class Header extends Composite {
 
-	private static HeaderUiBinder uiBinder = GWT.create(HeaderUiBinder.class);
+    private static HeaderUiBinder uiBinder = GWT.create(HeaderUiBinder.class);
 
-	interface HeaderUiBinder extends UiBinder<Widget, Header> { }
+    interface HeaderUiBinder extends UiBinder<Widget, Header> { }
 
-	@UiField
-	Anchor queryHistoryLink;
-	
-	@UiField
-	Anchor dataDictionaryLink;
-	
-	private final PopupPanel queryHistoryPopup = new PopupPanel(true, false);
-	
-	private final PreviousQueriesPanel previousQueriesPanel = new PreviousQueriesPanel();
-	
-	private EventBus eventBus;
-	
-	public Header() {
-		initWidget(uiBinder.createAndBindUi(this));
-		
-		queryHistoryPopup.hide();
-		
-		queryHistoryLink.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				if(queryHistoryPopup.isShowing()) {
-					queryHistoryPopup.hide();
-				} else {
-					queryHistoryPopup.setWidget(previousQueriesPanel);
-					
-					queryHistoryPopup.show();
-				}
-			}
-		});
-	}
-	
-	public void wireUp(final EventBus eventBus) {
-		Util.requireNotNull(eventBus);
-		
-		this.eventBus = eventBus;
-		
-		dataDictionaryLink.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				Header.this.eventBus.fireEvent(new ShowDataDictionaryPanelEvent(null));
-			}
-		});
-	}
+    @UiField
+    Anchor queryHistoryLink;
+
+    @UiField
+    Anchor dataDictionaryLink;
+
+    private final PopupPanel queryHistoryPopup = new PopupPanel(true, false);
+
+    private final PreviousQueriesPanel previousQueriesPanel = new PreviousQueriesPanel();
+
+    private EventBus eventBus;
+
+    public Header() {
+        initWidget(uiBinder.createAndBindUi(this));
+
+        queryHistoryPopup.hide();
+
+        queryHistoryLink.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(final ClickEvent event) {
+                if (queryHistoryPopup.isShowing()) {
+                    queryHistoryPopup.hide();
+                } else {
+                    queryHistoryPopup.setWidget(previousQueriesPanel);
+
+                    queryHistoryPopup.show();
+                }
+            }
+        });
+    }
+
+    public void wireUp(final EventBus eventBus) {
+        Util.requireNotNull(eventBus);
+
+        this.eventBus = eventBus;
+
+        dataDictionaryLink.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(final ClickEvent event) {
+                Header.this.eventBus.fireEvent(new ShowDataDictionaryPanelEvent(null));
+            }
+        });
+    }
 }

@@ -18,25 +18,29 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class WebClientWrapper extends Composite {
 
-	private static final WebClientWrapperUiBinder uiBinder = GWT.create(WebClientWrapperUiBinder.class);
+    private static final WebClientWrapperUiBinder uiBinder = GWT.create(WebClientWrapperUiBinder.class);
 
-	interface WebClientWrapperUiBinder extends UiBinder<Widget, WebClientWrapper> { }
+    interface WebClientWrapperUiBinder extends UiBinder<Widget, WebClientWrapper> {
+    }
 
-	@UiField
-	WebClientContent content;
-	
-	@UiField
-	Header header;
-	
-	public WebClientWrapper() {
-		super();
-		
-		initWidget(uiBinder.createAndBindUi(this));
-	}
-	
-	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox, final PickupDragController dragController) {
-		this.content.wireUp(eventBus, state, controllers, ontSearchBox, dragController);
-		
-		this.header.wireUp(eventBus);
-	}
+    @UiField
+    WebClientContent content;
+
+    @UiField
+    Header header;
+
+    @UiField
+    VersionsPanel versions;
+
+    public WebClientWrapper() {
+        super();
+
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox, final PickupDragController dragController) {
+        this.content.wireUp(eventBus, state, controllers, ontSearchBox, dragController);
+
+        this.header.wireUp(eventBus);
+    }
 }

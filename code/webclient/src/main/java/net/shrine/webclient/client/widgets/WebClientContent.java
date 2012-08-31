@@ -7,7 +7,6 @@ import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -48,8 +47,6 @@ public final class WebClientContent extends Composite {
 	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox, final PickupDragController dragController) {
 		Util.requireNotNull(eventBus);
 		Util.requireNotNull(ontSearchBox);
-		
-		Log.info("Wiring up WebClientContent");
 		
 		searchBoxHolder.setWidget(ontSearchBox);
 		

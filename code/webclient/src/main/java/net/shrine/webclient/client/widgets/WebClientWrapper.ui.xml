@@ -6,5 +6,8 @@
 	<g:HTMLPanel addStyleNames="wrapper">
   	  <shrine:Header ui:field="header"/>
       <shrine:WebClientContent addStyleNames="mainContent" ui:field="content" />
+      <div class="footer">
+        <shrine:VersionsPanel ui:field="versions"/>
+      </div>
     </g:HTMLPanel>
-</ui:UiBinder> 
+</ui:UiBinder>
