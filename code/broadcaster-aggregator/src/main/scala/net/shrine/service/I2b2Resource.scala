@@ -26,22 +26,27 @@ import net.shrine.util.Loggable
 @Scope("singleton")
 class I2b2Resource @Autowired()(private val shrineRequestHandler: ShrineRequestHandler) extends Loggable {
 
-  @POST @Path("request")
+  @POST 
+  @Path("request")
   def doRequest(i2b2Request: String): Response = {
     processI2b2Message(i2b2Request)
   }
 
-  @POST @Path("pdorequest")
+  @POST 
+  @Path("pdorequest")
   def doPDORequest(i2b2Request: String): Response = {
     processI2b2Message(i2b2Request)
   }
 
   def processI2b2Message(i2b2Request: String): Response = {
-    val shrineRequest = ShrineRequest.fromI2b2(XML.loadString(i2b2Request))
+    val shrineRequest = ShrineRequest.fromI2b2(i2b2Request)
+    
     info("Running request from user: %s of type %s".format(shrineRequest.authn.username,shrineRequest.requestType.toString))
+    
     val shrineResponse = shrineRequest.handle(shrineRequestHandler)
-    val responseString = shrineResponse.toI2b2.toString
-    Response.ok().entity(responseString).build()
+    
+    val responseString = shrineResponse.toI2b2String
+    
+    Response.ok.entity(responseString).build()
   }
-
 }
