@@ -11,8 +11,8 @@
 		  <shrine:DataDictionaryRow ui:field="dataDictionaryRow"/>
         </g:HTMLPanel>  
 		<!-- Query groups -->
-		<shrine:QueryColumn ui:field="queryColumn" />
+		<shrine:QueryPanel ui:field="queryPanel" />
 		<!-- Breakdown Row -->
-		<shrine:AllResultsRow ui:field="allResultColumn" />
+		<shrine:ResultsPanel ui:field="resultsPanel" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

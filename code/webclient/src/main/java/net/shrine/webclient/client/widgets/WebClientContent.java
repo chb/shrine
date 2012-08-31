@@ -7,6 +7,7 @@ import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.util.Util;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -33,10 +34,10 @@ public final class WebClientContent extends Composite {
 	DataDictionaryRow dataDictionaryRow;
 	
 	@UiField
-	QueryColumn queryColumn;
+	QueryPanel queryPanel;
 	
 	@UiField
-	AllResultsRow allResultColumn;
+	ResultsPanel resultsPanel;
 	
 	public WebClientContent() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -48,13 +49,15 @@ public final class WebClientContent extends Composite {
 		Util.requireNotNull(eventBus);
 		Util.requireNotNull(ontSearchBox);
 		
+		Log.info("Wiring up WebClientContent");
+		
 		searchBoxHolder.setWidget(ontSearchBox);
 		
 		dataDictionaryRow.wireUp(eventBus, controllers);
 		
-		queryColumn.wireUp(controllers, state.getQueries(), dragController);
+		queryPanel.wireUp(controllers, state.getQueries(), dragController);
 		
-		allResultColumn.wireUp(eventBus, controllers, state.getAllResult());
+		resultsPanel.wireUp(eventBus, controllers, state.getAllResult());
 		
 		eventBus.addHandler(QueryGroupsChangedEvent.getType(), new QueryGroupsChangedEventHandler() {
 			@Override
@@ -67,8 +70,8 @@ public final class WebClientContent extends Composite {
 	}
 	
 	void setQueryGroupsAndResultsPanelVisibility(final boolean showQueryGroupsAndResultsPanels) {
-		queryColumn.setVisible(showQueryGroupsAndResultsPanels);
+	    queryPanel.setVisible(showQueryGroupsAndResultsPanels);
 		
-		allResultColumn.setVisible(showQueryGroupsAndResultsPanels);
+	    resultsPanel.setVisible(showQueryGroupsAndResultsPanels);
 	}
 }

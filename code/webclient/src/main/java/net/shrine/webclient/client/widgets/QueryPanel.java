@@ -21,11 +21,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author clint
  * @date Mar 26, 2012
  */
-public final class QueryColumn extends Composite implements Observer {
+public final class QueryPanel extends Composite implements Observer {
 
 	private static final QueryColumnUiBinder uiBinder = GWT.create(QueryColumnUiBinder.class);
 
-	interface QueryColumnUiBinder extends UiBinder<Widget, QueryColumn> { }
+	interface QueryColumnUiBinder extends UiBinder<Widget, QueryPanel> { }
 
 	@UiField
 	CloseButton clearButton;
@@ -39,7 +39,7 @@ public final class QueryColumn extends Composite implements Observer {
 	
 	private PickupDragController dragController;
 	
-	public QueryColumn() {
+	public QueryPanel() {
 		super();
 
 		initWidget(uiBinder.createAndBindUi(this));

@@ -32,11 +32,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author clint
  * @date Mar 27, 2012
  */
-public final class AllResultsRow extends Composite implements Observer {
+public final class ResultsPanel extends Composite implements Observer {
 
-	private static final AllResultsRowUiBinder uiBinder = GWT.create(AllResultsRowUiBinder.class);
+	private static final ResultsPanelUiBinder uiBinder = GWT.create(ResultsPanelUiBinder.class);
 
-	interface AllResultsRowUiBinder extends UiBinder<Widget, AllResultsRow> { }
+	interface ResultsPanelUiBinder extends UiBinder<Widget, ResultsPanel> { }
 
 	private ReadOnlyObservable<Map<String, Integer>> allResults;
 	
@@ -52,7 +52,7 @@ public final class AllResultsRow extends Composite implements Observer {
 	@UiField
 	HTMLPanel resultsWrapper;
 	
-	public AllResultsRow() {
+	public ResultsPanel() {
 		super();
 		
 		initWidget(uiBinder.createAndBindUi(this));
