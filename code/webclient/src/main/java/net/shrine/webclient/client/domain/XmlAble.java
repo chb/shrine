@@ -6,5 +6,5 @@ package net.shrine.webclient.client.domain;
  * @date Mar 27, 2012
  */
 public interface XmlAble {
-	String toXmlString();
+    String toXmlString();
 }

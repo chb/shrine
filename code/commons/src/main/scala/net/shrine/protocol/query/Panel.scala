@@ -5,10 +5,11 @@ import scala.xml.NodeSeq
 import net.shrine.util.XmlUtil
 import org.spin.tools.NetworkTime
 import net.liftweb.json.JsonDSL._
-import net.shrine.serialization.{JsonUnmarshaller, I2b2Marshaller}
+import net.shrine.serialization.{ JsonUnmarshaller, I2b2Marshaller }
 import net.liftweb.json.JsonAST._
 import scala.None
 import net.liftweb.json.DefaultFormats
+import net.shrine.util.Try
 
 /**
  *
@@ -22,12 +23,12 @@ import net.liftweb.json.DefaultFormats
  *
  */
 final case class Panel(
-    number: Int,
-    inverted: Boolean,
-    minOccurrences: Int,
-    start: Option[XMLGregorianCalendar],
-    end: Option[XMLGregorianCalendar],
-    terms: Seq[Term]) extends I2b2Marshaller {
+  number: Int,
+  inverted: Boolean,
+  minOccurrences: Int,
+  start: Option[XMLGregorianCalendar],
+  end: Option[XMLGregorianCalendar],
+  terms: Seq[Term]) extends I2b2Marshaller {
 
   require(!terms.isEmpty)
 
@@ -50,12 +51,12 @@ final case class Panel(
       <panel_number>{ number }</panel_number>
       { start.map(s => <panel_date_from>{ s.toString }</panel_date_from>).getOrElse(Nil) }
       { end.map(e => <panel_date_to>{ e.toString }</panel_date_to>).getOrElse(Nil) }
-      <invert>{ if(inverted) 1 else 0 }</invert>
+      <invert>{ if (inverted) 1 else 0 }</invert>
       <total_item_occurrences>{ minOccurrences }</total_item_occurrences>
       {
-        terms.map {term =>
+        terms.map { term =>
           <item>
-            <hlevel>{ computeHLevel(term) }</hlevel>
+            <hlevel>{ computeHLevel(term).getOrElse(0) }</hlevel>
             <item_name>{ term.value }</item_name>
             <item_key>{ term.value }</item_key>
             <tooltip>{ term.value }</tooltip>
@@ -72,38 +73,40 @@ final case class Panel(
     </panel>)
 
   def toExpression: Expression = {
-    def limit(expr: Expression) = if(minOccurrences != 0) OccuranceLimited(minOccurrences, expr) else expr
+    def limit(expr: Expression) = if (minOccurrences != 0) OccuranceLimited(minOccurrences, expr) else expr
 
     def dateBound(expr: Expression): Expression = {
-      if(start.isDefined || end.isDefined) DateBounded(start, end, expr) else expr
+      if (start.isDefined || end.isDefined) DateBounded(start, end, expr) else expr
     }
 
-    def negate(expr: Expression) = if(inverted) Not(expr) else expr
+    def negate(expr: Expression) = if (inverted) Not(expr) else expr
 
     limit(dateBound(negate(Or(terms: _*)))).normalize
   }
 }
 
 object Panel {
-  def fromI2b2(nodeSeq: NodeSeq): Panel = {
+  def fromI2b2(nodeSeq: NodeSeq): Try[Panel] = {
     def toXmlGc(lexicalRep: String) = NetworkTime.makeXMLGregorianCalendar(lexicalRep)
 
     def toXmlGcOption(xml: NodeSeq) = xml.headOption.view.map(_.text).map(toXmlGc).headOption
 
-    val outerTag = nodeSeq.head
+    Try {
+      val outerTag = nodeSeq.head
 
-    val number = (outerTag \ "panel_number").text.toInt
-    val inverted = (outerTag \ "invert").text.toInt == 1
-    val minOccurrences = (outerTag \ "total_item_occurrences").text.toInt
-    val start = toXmlGcOption(outerTag \ "panel_date_from")
-    val end = toXmlGcOption(outerTag \ "panel_date_to")
-    val terms = (outerTag \ "item").view.map(_ \ "item_key").map(_.text).map(Term).force
+      val number = (outerTag \ "panel_number").text.toInt
+      val inverted = (outerTag \ "invert").text.toInt == 1
+      val minOccurrences = (outerTag \ "total_item_occurrences").text.toInt
+      val start = toXmlGcOption(outerTag \ "panel_date_from")
+      val end = toXmlGcOption(outerTag \ "panel_date_to")
+      val terms = (outerTag \ "item").view.map(_ \ "item_key").map(_.text).map(Term).force
 
-    Panel(number, inverted, minOccurrences, start, end, terms)
+      Panel(number, inverted, minOccurrences, start, end, terms)
+    }
   }
 
-  def computeHLevel(term: Term): Int = {
+  def computeHLevel(term: Term): Try[Int] = {
     //Super-dumb way: calculate nesting level by dropping prefix and counting \'s
-    term.value.drop("\\\\SHRINE\\SHRINE\\".length).count(_ == '\\')
+    Try(term.value.drop("\\\\SHRINE\\SHRINE\\".length).count(_ == '\\'))
   }
 }

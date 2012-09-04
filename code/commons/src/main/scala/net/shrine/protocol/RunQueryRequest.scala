@@ -108,7 +108,7 @@ object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequ
       i2b2AuthenticationInfo(nodeSeq),
       (nodeSeq \ "message_body" \ "shrine" \ "queryTopicID").text,
       determineI2b2OutputTypes(nodeSeq \ "message_body" \ "request" \ "result_output_list"),
-      QueryDefinition.fromI2b2(queryDefXml))
+      QueryDefinition.fromI2b2(queryDefXml).get) //TODO: Remove unsafe get call
   }
 
   private def determineI2b2OutputTypes(nodeSeq: NodeSeq): Set[ResultOutputType] = {
@@ -137,6 +137,6 @@ object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequ
       shrineAuthenticationInfo(nodeSeq),
       (nodeSeq \ "topicId").text,
       determineShrineOutputTypes(nodeSeq \ "outputTypes"),
-      QueryDefinition.fromXml(nodeSeq \ "queryDefinition"))
+      QueryDefinition.fromXml(nodeSeq \ "queryDefinition").get) //TODO: Remove unsafe get call
   }
 }

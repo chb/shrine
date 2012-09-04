@@ -8,6 +8,8 @@ import org.spin.tools.NetworkTime
 import java.util.GregorianCalendar
 import java.util.TimeZone
 import javax.xml.datatype.XMLGregorianCalendar
+import org.junit.Test
+import net.shrine.util.Try
 
 /**
  *
@@ -48,19 +50,23 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     assert(withNewExpr.expr === term)
   }
 
+  @Test
   def testNotWithExpr = doTestWithExpr(Not(t1))
 
+  @Test
   def testDateBoundedWithExpr = doTestWithExpr(DateBounded(Some(now), Some(now), t1))
 
+  @Test
   def testOccuranceLimitedWithExpr = doTestWithExpr(OccuranceLimited(1, t1))
 
+  private def roundTrip[T](expr: Expression, serialize: Expression => T, deserialize: T => Try[Expression]) {
+    assert(deserialize(serialize(expr)).get === expr)
+  }
+  
+  @Test
   def testExpressionFromXml {
-    def roundTrip(expr: Expression) {
-      val xml = expr.toXml
-
-      val unmarshalled = Expression.fromXml(xml)
-
-      assert(unmarshalled === expr)
+    def xmlRoundTrip(expr: Expression) {
+      roundTrip(expr, _.toXml, Expression.fromXml)
     }
 
     val expr = OccuranceLimited(99, And(Not(t1), Or(t2, t3, And(t4, t5), DateBounded(Some(now), Some(now), t6))))
@@ -70,24 +76,26 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     val db3 = DateBounded(None, Some(now), Or(t1, t2, t3))
     val db4 = DateBounded(Some(now), Some(now), Or(t1, t2, t3))
 
-    roundTrip(expr)
-    roundTrip(db1)
-    roundTrip(db2)
-    roundTrip(db3)
-    roundTrip(db4)
-    roundTrip(Or())
-    roundTrip(And())
-    roundTrip(t1)
-    roundTrip(Not(t1))
-    roundTrip(OccuranceLimited(99, t1))
+    xmlRoundTrip(expr)
+    xmlRoundTrip(db1)
+    xmlRoundTrip(db2)
+    xmlRoundTrip(db3)
+    xmlRoundTrip(db4)
+    xmlRoundTrip(Or())
+    xmlRoundTrip(And())
+    xmlRoundTrip(t1)
+    xmlRoundTrip(Not(t1))
+    xmlRoundTrip(OccuranceLimited(99, t1))
   }
 
+  @Test
   def testNormalizeTerm {
     val t1 = Term("foo")
 
     t1 should be(t1.normalize)
   }
 
+  @Test
   def testNormalizeNot {
     val simple = Not(t1)
 
@@ -98,14 +106,17 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     assert(t1 === Not(Not(t1)).normalize)
   }
 
+  @Test
   def testNormalizeAnd {
     doTestNormalizeComposeable(And)
   }
 
+  @Test
   def testNormalizeOr {
     doTestNormalizeComposeable(Or)
   }
 
+  @Test
   def testNormalizeMixedComposeable {
     val mixed1 = And(Or(t1, t2), Or(t3, t4))
 
@@ -124,6 +135,7 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     assert(And(Or(t1, t2), t3, t4) === mixed4.normalize)
   }
 
+  @Test
   def testDateBoundedTimeZonesAreNormalized {
     val db = DateBounded(Some(now), Some(now), And(And(t1))).normalize.asInstanceOf[DateBounded]
 
@@ -142,6 +154,7 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     isUTC(db2.end) should be(true)
   }
 
+  @Test
   def testNormalizeDateBounded {
 
     assert(t1 === DateBounded(None, None, t1).normalize)
@@ -173,12 +186,14 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     assert(DateBounded(db6.start, db6.end, t1) === db6.normalize)
   }
 
+  @Test
   def testOccuranceLimited {
     intercept[IllegalArgumentException] {
       OccuranceLimited(-1, t1)
     }
   }
 
+  @Test
   def testNormalizeOccuranceLimited {
     assert(t1 === OccuranceLimited(1, t1).normalize)
 
@@ -193,26 +208,31 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     assert(OccuranceLimited(99, t1) === o2.normalize)
   }
 
+  @Test
   def testTermToXml {
     assert(<term>{ t1.value }</term>.toString === t1.toXml.toString)
   }
 
+  @Test
   def testNotToXml {
     assert(<not><term>{ t1.value }</term></not>.toString === Not(t1).toXml.toString)
   }
 
+  @Test
   def testAndToXml {
     assert(<and/>.toString === And().toXml.toString)
     assert(<and><term>{ t1.value }</term></and>.toString === And(t1).toXml.toString)
     assert(<and><term>{ t1.value }</term><term>{ t2.value }</term></and>.toString === And(t1, t2).toXml.toString)
   }
 
+  @Test
   def testOrToXml {
     assert(<or/>.toString === Or().toXml.toString)
     assert(<or><term>{ t1.value }</term></or>.toString === Or(t1).toXml.toString)
     assert(<or><term>{ t1.value }</term><term>{ t2.value }</term></or>.toString === Or(t1, t2).toXml.toString)
   }
 
+  @Test
   def testDateBoundedToXml {
     assert(<dateBounded><start/><end/><term>{ t1.value }</term></dateBounded>.toString === DateBounded(None, None, t1).toXml.toString)
 
@@ -223,6 +243,7 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     assert(<dateBounded><start>{ time.toString }</start><end>{ time.toString }</end><term>{ t1.value }</term></dateBounded>.toString === DateBounded(Some(time), Some(time), t1).toXml.toString)
   }
 
+  @Test
   def testOccuranceLimitedToXml {
     assert(<occurs><min>99</min><term>{ t1.value }</term></occurs>.toString === OccuranceLimited(99, t1).toXml.toString)
   }
@@ -277,34 +298,32 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     assert(Op(t1, t2) === deeplyNested2.normalize)
   }
 
+  private def jsonRoundTrip(expr: Expression) {
+    roundTrip(expr, _.toJson, Expression.fromJson)
+  }
+  
+  @Test
   def testNotFromJson {
-    val not = Not(Term("hello expression"))
-    val unmarshalled = Expression.fromJson(not.toJson)
-    unmarshalled should equal(not)
+    jsonRoundTrip(Not(Term("hello expression")))
   }
 
+  @Test
   def testAndFromJson {
-    val and = And(Term("a"), Term("hello expression"))
-    val unmarshalled = Expression.fromJson(and.toJson)
-    unmarshalled should equal(and)
+    jsonRoundTrip(And(Term("a"), Term("hello expression")))
   }
 
+  @Test
   def testOrFromJson {
-    val or = Or(Term("a"), Term("hello expression"))
-    val unmarshalled = Expression.fromJson(or.toJson)
-    unmarshalled should equal(or)
+    jsonRoundTrip(Or(Term("a"), Term("hello expression")))
   }
 
+  @Test
   def testDateBoundedFromJson {
-    val db = DateBounded(None, Some(new NetworkTime().getXMLGregorianCalendar), Term("hello"))
-    val unmarshalled = Expression.fromJson(db.toJson)
-    unmarshalled should equal(db)
+    jsonRoundTrip(DateBounded(None, Some(new NetworkTime().getXMLGregorianCalendar), Term("hello")))
   }
 
+  @Test
   def testOccurenceLimitedFromJson {
-    val min = OccuranceLimited(2, Term("hello"))
-    val unmarshalled = Expression.fromJson(min.toJson)
-    unmarshalled should equal(min)
+    jsonRoundTrip(OccuranceLimited(2, Term("hello")))
   }
-
 }

@@ -42,7 +42,7 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
     for(panel <- Seq(p1, p2, p3)) {
       val i2b2Xml = panel.toI2b2
       
-      val unmarshalled = Panel.fromI2b2(i2b2Xml)
+      val unmarshalled = Panel.fromI2b2(i2b2Xml).get
       
       assert((panel eq unmarshalled) === false)
       assert(unmarshalled === panel)
@@ -67,12 +67,12 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
   def testComputeHLevel {
     import Panel.computeHLevel
     
-    computeHLevel(term1) should be(5)
-    computeHLevel(term2) should be(3)
-    computeHLevel(term3) should be(3)
+    computeHLevel(term1).get should be(5)
+    computeHLevel(term2).get should be(3)
+    computeHLevel(term3).get should be(3)
     
-    computeHLevel(Term("foo")) should be(0)
-    computeHLevel(Term("")) should be(0)
+    computeHLevel(Term("foo")).get should be(0)
+    computeHLevel(Term("")).get should be(0)
   }
   
   def testWithStart {

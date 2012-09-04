@@ -8,12 +8,24 @@ import net.shrine.webclient.client.domain.Term
 import net.shrine.webclient.client.domain.OntNode
 import net.shrine.webclient.client.domain.TermSuggestion
 import net.shrine.webclient.server.MultiInstitutionQueryResult
+import net.shrine.webclient.client.domain.BootstrapInfo
 
 /**
  * @author clint
  * @date Aug 7, 2012
  */
 final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
+  @Test
+  def testBootstrapInfoIsJsonable {
+    val username = "aksldksalfjklasfjklasfjkl"
+      
+    val bootstrapInfo = new BootstrapInfo(username)
+    
+    doRoundTrip(bootstrapInfo)()
+    
+    toJson(bootstrapInfo) should equal("""{"loggedInUsername":"""" + username + """"}""")
+  }
+  
   @Test
   def testTermIsJsonable {
     val path = """\\SHRINE\SHRINE\Foo\Bar\"""

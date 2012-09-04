@@ -89,7 +89,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       //outputTypes will be constructed by JAXRS using the String value of the 'outputTypes' header
       @HeaderParam("outputTypes") outputTypes: OutputTypeSet,
       queryDefinitionXml: String): String = {
-    val queryDef = QueryDefinition.fromXml(queryDefinitionXml)
+    val queryDef = QueryDefinition.fromXml(queryDefinitionXml).get //TODO: remove fragile .get call
     performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, topicId, outputTypes.toSet, queryDef)))
   }
   

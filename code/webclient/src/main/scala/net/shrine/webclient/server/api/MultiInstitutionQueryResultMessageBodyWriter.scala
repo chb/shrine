@@ -17,35 +17,4 @@ import javax.ws.rs.ext.Provider
  * 
  */
 @Provider
-final class MultiInstitutionQueryResultMessageBodyWriter extends UnknownSizeMessageBodyWriter[MultiInstitutionQueryResult] {
-
-  override def isWriteable(
-    clazz: Class[_],
-    genericType: Type,
-    annotations: Array[JAnnotation],
-    mediaType: MediaType): Boolean = {
-    
-    val isRightType = classOf[MultiInstitutionQueryResult].isAssignableFrom(clazz)
-    
-    isRightType && isJson(mediaType)
-  }
-  
-  override def writeTo(
-    items: MultiInstitutionQueryResult,
-    clazz: Class[_],
-    genericType: Type,
-    annotations: Array[JAnnotation],
-    mediaType: MediaType,
-    map: MultivaluedMap[String, Object],
-    out: OutputStream) {
-    
-    val toJson = Jsonable.multiInstitutionQueryResultIsJsonable.toJson _
-
-    import net.liftweb.json._
-    import net.liftweb.json.JsonDSL._
-    
-    val jsonString = compact(render(toJson(items)))
-    
-    writeTo(out)(jsonString)
-  }
-}
+final class MultiInstitutionQueryResultMessageBodyWriter extends SingleObjectJsonMessageBodyWriter[MultiInstitutionQueryResult]

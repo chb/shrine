@@ -16,6 +16,8 @@ import net.shrine.webclient.server.QueryServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.context.annotation.Scope
+import net.shrine.webclient.server.BootstrapInfoSource
+import net.shrine.webclient.client.domain.BootstrapInfo
 
 
 /**
@@ -27,7 +29,9 @@ import org.springframework.context.annotation.Scope
 @Produces(Array(MediaType.APPLICATION_JSON))
 @Component
 @Scope("singleton")
-final class ClientApiResource @Autowired()(@Injectable queryService: QueryService, @Injectable ontologyService: OntologyService) {
+final class ClientApiResource @Autowired()(@Injectable queryService: QueryService, 
+                                            @Injectable ontologyService: OntologyService,
+                                            @Injectable bootstrapInfoSource: BootstrapInfoSource) {
 
   @GET
   @Path("ontology/suggestions")
@@ -46,4 +50,8 @@ final class ClientApiResource @Autowired()(@Injectable queryService: QueryServic
   @POST
   @Path("query/submit")
   def queryForBreakdown(expr: String): MultiInstitutionQueryResult = queryService.queryForBreakdown(expr)
+  
+  @GET
+  @Path("bootstrap")
+  def getBootstrapInfo: BootstrapInfo = bootstrapInfoSource.bootstrapInfo
 }

@@ -8,6 +8,8 @@ import net.shrine.util.XmlUtil
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
 import net.shrine.serialization.{JsonMarshaller, I2b2Marshaller, XmlMarshaller, XmlUnmarshaller}
+import net.shrine.util.Try
+import net.shrine.util.Success
 
 
 /**
@@ -54,9 +56,9 @@ final case class QueryDefinition(name: String, expr: Expression) extends I2b2Mar
   }
 }
 
-object QueryDefinition extends XmlUnmarshaller[QueryDefinition] {
+object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
 
-  override def fromXml(nodeSeq: NodeSeq): QueryDefinition = {
+  override def fromXml(nodeSeq: NodeSeq): Try[QueryDefinition] = Try {
     val outerTag = nodeSeq.head
 
     val name = (outerTag \ "name").text
@@ -65,32 +67,28 @@ object QueryDefinition extends XmlUnmarshaller[QueryDefinition] {
     
     val innerExprXml = exprXml.child.head
     
-    QueryDefinition(name, Expression.fromXml(innerExprXml))
-  }
+    Expression.fromXml(innerExprXml).map(QueryDefinition(name, _))
+  }.flatten
 
-  def fromI2b2(i2b2Xml: String): QueryDefinition = {
-    try {
-      fromI2b2(scala.xml.XML.loadString(i2b2Xml))
-    } catch {
-      case e: Exception => throw new Exception("Couldn't parse query def string: '" + i2b2Xml + "'")
-    }
+  def fromI2b2(i2b2Xml: String): Try[QueryDefinition] = {
+    Try(scala.xml.XML.loadString(i2b2Xml)).flatMap(fromI2b2)
   }
 
   //I2b2 query definition XML => Expression
-  def fromI2b2(nodeSeq: NodeSeq): QueryDefinition = {
+  def fromI2b2(nodeSeq: NodeSeq): Try[QueryDefinition] = {
     val outerTag = nodeSeq.head
     
     val name = (outerTag \ "query_name").text
 
     val panelsXml = outerTag \ "panel"
     
-    val panels = panelsXml.map(Panel.fromI2b2)
+    val panels = Try.sequence(panelsXml.map(Panel.fromI2b2))
 
-    val exprs = panels.map(_.toExpression)
+    val exprs = panels.map(ps => ps.map(_.toExpression))
+    
+    val consolidatedExpr = exprs.map(es => if(es.size == 1) es.head else And(es: _*))
 
-    val consolidatedExpr = if(exprs.size == 1) exprs.head else And(exprs: _*)
-
-    QueryDefinition(name, consolidatedExpr.normalize)
+    consolidatedExpr.map(consolidated => QueryDefinition(name, consolidated.normalize))
   }
 
   private[query] def isAllTerms(exprs: Seq[Expression]) = !exprs.isEmpty && exprs.forall(_.isInstanceOf[Term])

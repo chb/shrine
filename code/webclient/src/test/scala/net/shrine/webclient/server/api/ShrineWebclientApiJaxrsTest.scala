@@ -16,12 +16,18 @@ import net.shrine.webclient.server.OntologyService
 import net.shrine.webclient.server.OntologyServiceImplTest
 import net.shrine.webclient.server.OntologyServiceImpl
 import com.sun.jersey.test.framework.LowLevelAppDescriptor.Builder
+import net.shrine.webclient.server.BootstrapInfoSource
+import net.shrine.webclient.client.domain.BootstrapInfo
 
 trait ShrineWebclientApiJaxrsTest extends AssertionsForJUnit with ShouldMatchers { self: JerseyTest =>
+
+  def queryService: QueryService = null
+
+  def ontologyService: OntologyService = null
+
+  def loggedInUser = "some-user"
   
-  def queryService: QueryService
-  
-  def ontologyService: OntologyService
+  def bootstrapInfoSource: BootstrapInfoSource = new MockBootstrapInfoSource(loggedInUser)
   
   /**
    * We invoked the no-arg superclass constructor, so we must override configure() to provide an AppDescriptor
@@ -30,10 +36,12 @@ trait ShrineWebclientApiJaxrsTest extends AssertionsForJUnit with ShouldMatchers
   override def configure: AppDescriptor = {
     //Make a ResourceConfig that describes the one class - ClientApiResource - we want Jersey to instantiate and expose.
     //Also reference needed MessageBodyWriters
-    val resourceConfig: ResourceConfig = new ClassNamesResourceConfig(classOf[ClientApiResource],
-        															   classOf[MultiInstitutionQueryResultMessageBodyWriter],
-        															   classOf[OntNodeSeqMessageBodyWriter],
-        															   classOf[SuggestionSeqMessageBodyWriter])
+    val resourceConfig: ResourceConfig = new ClassNamesResourceConfig(
+      classOf[ClientApiResource],
+      classOf[BootstrapInfoMessageBodyWriter],
+      classOf[MultiInstitutionQueryResultMessageBodyWriter],
+      classOf[OntNodeSeqMessageBodyWriter],
+      classOf[SuggestionSeqMessageBodyWriter])
 
     //Register an InjectableProvider that produces mock QueryServices and OntologyServices
     //that will be provided to the ClientApiResource instantiated by Jersey.  For this to work, 
@@ -48,6 +56,7 @@ trait ShrineWebclientApiJaxrsTest extends AssertionsForJUnit with ShouldMatchers
         def getValue: AnyRef = t match {
           case _ if t == classOf[QueryService] => queryService
           case _ if t == classOf[OntologyService] => ontologyService
+          case _ if t == classOf[BootstrapInfoSource] => bootstrapInfoSource
           case _ => sys.error("Unknown type: " + t)
         }
       }
@@ -56,29 +65,29 @@ trait ShrineWebclientApiJaxrsTest extends AssertionsForJUnit with ShouldMatchers
     //Make an AppDescriptor from the ResourceConfig
     new Builder(resourceConfig).build
   }
-  
+
   import net.liftweb.json._
-  
+
   protected def asJsonArray(rawJson: String): Option[JArray] = Option(parse(rawJson)) collect { case a: JArray => a }
-  
-  protected def unmarshalSeq[T : Jsonable](rawJson: String): Seq[T] = {
+
+  protected def unmarshalSeq[T: Jsonable](rawJson: String): Seq[T] = {
     val items = asJsonArray(rawJson).map(_.children).flatten
-    
+
     items.flatMap(unmarshal[T](_)).toSeq
   }
-  
-  protected def unmarshal[T : Jsonable](json: String): Option[T] = unmarshal[T](parse(json))
-  
-  protected def unmarshal[T : Jsonable](json: JValue): Option[T] = implicitly[Jsonable[T]].fromJson(json)
-  
+
+  protected def unmarshal[T: Jsonable](json: String): Option[T] = unmarshal[T](parse(json))
+
+  protected def unmarshal[T: Jsonable](json: JValue): Option[T] = implicitly[Jsonable[T]].fromJson(json)
+
   protected def ontResource = resource.path("api/ontology")
-  
+
   protected def queryResource = resource.path("api/query")
-  
+
   import OntologyServiceImpl.toConcept
-  
+
   protected val gender = toConcept("""\\SHRINE\SHRINE\Demographics\Gender\""")
-  
+
   protected val male = toConcept("""\\SHRINE\SHRINE\Demographics\Gender\Male\""")
   protected val female = toConcept("""\\SHRINE\SHRINE\Demographics\Gender\Female\""")
   protected val undifferentiated = toConcept("""\\SHRINE\SHRINE\Demographics\Gender\Undifferentiated\""")

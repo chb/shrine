@@ -20,8 +20,6 @@ final class OntologyServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJ
   
   override def ontologyService: OntologyService = new OntologyServiceImpl(getClass.getClassLoader.getResourceAsStream("testShrineWithSyns.sql"))
   
-  override def queryService: QueryService = null
-  
   @Test
   def testSuggestions {
     

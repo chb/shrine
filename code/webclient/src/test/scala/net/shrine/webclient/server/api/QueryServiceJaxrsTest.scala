@@ -25,8 +25,6 @@ final class QueryServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJaxr
   
   override def queryService: QueryService = new QueryServiceImpl(mockClient)
   
-  override def ontologyService: OntologyService = null
-  
   @Test
   def testSubmit {
     def queryForBreakdown(query: String): Map[String, Int] = {

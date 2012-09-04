@@ -36,7 +36,8 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
   import Expression.fromXml
   import QueryServiceImpl._
 
-  private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr)))
+  //TODO: remove fragile .get call
+  private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr).get))
 
   override def queryForBreakdown(expr: String): MultiInstitutionQueryResult = {
     val response: RunQueryResponse = doQuery(expr)

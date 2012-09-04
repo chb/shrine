@@ -7,6 +7,7 @@ import net.shrine.webclient.client.domain.OntNode
 import net.liftweb.json.JValue
 import net.liftweb.json.JInt
 import net.shrine.webclient.server.MultiInstitutionQueryResult
+import net.shrine.webclient.client.domain.BootstrapInfo
 
 /**
  * @author clint
@@ -112,11 +113,28 @@ object Jsonable {
     }
   }
   
+  implicit val bootstrapInfoIsJsonable: Jsonable[BootstrapInfo] = new Jsonable[BootstrapInfo] {
+    import FieldNames.BootstrapInfo._
+    
+    override def toJson(bootstrapInfo: BootstrapInfo): JValue = {
+      (LoggedInUsername -> bootstrapInfo.loggedInUsername)
+    }
+    
+    override def fromJson(json: JValue): Option[BootstrapInfo] = json match {
+      case JObject(List(JField(LoggedInUsername, JString(username)))) => Some(new BootstrapInfo(username))
+      case _ => None
+    }
+  }
+  
   private def marshal(json: JValue): String = compact(render(json))
 
   private def unmarshal(jsonString: String): JValue = parse(jsonString)
   
   private object FieldNames {
+    object BootstrapInfo {
+      val LoggedInUsername = "loggedInUsername"
+    }
+    
     object TermSuggestion {
       val Path = "path"
       val SimpleName = "simpleName"

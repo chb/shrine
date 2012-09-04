@@ -135,10 +135,18 @@ sealed abstract class Try[+T] {
 }
 
 object Try {
-
   def apply[T](r: => T): Try[T] = {
     try { Success(r) } catch {
       case NonFatal(e) => Failure(e)
+    }
+  }
+
+  def sequence[T](tries: Seq[Try[T]]): Try[Seq[T]] = {
+    val firstFailure: Option[Try[T]] = tries.find(_.isFailure)
+
+    firstFailure match {
+      case Some(failure) => failure.map(Seq(_))
+      case _ => Try(tries.map(_.get))
     }
   }
 }

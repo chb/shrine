@@ -12,8 +12,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *       Stupid tag iface :(
  */
 public interface Expression extends IsSerializable, XmlAble {
-	//TODO: this has a bad smell; not all expressions are collections of terms,
-	//and it's not necessarily right to collapse subexpressions into one big list
-	//of terms.
-	Collection<Term> getTerms();
+    // TODO: this has a bad smell; not all expressions are collections of terms,
+    // and it's not necessarily right to collapse subexpressions into one big
+    // list
+    // of terms.
+    Collection<Term> getTerms();
 }

@@ -5,8 +5,10 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.spin.tools.NetworkTime
 import net.shrine.util.XmlUtil
 import net.liftweb.json.JsonDSL._
-import net.shrine.serialization.{JsonUnmarshaller, JsonMarshaller, XmlMarshaller, XmlUnmarshaller}
+import net.shrine.serialization.{ JsonUnmarshaller, JsonMarshaller, XmlMarshaller, XmlUnmarshaller }
 import net.liftweb.json.JsonAST._
+import net.shrine.util.Try
+import net.shrine.util.Failure
 
 /**
  *
@@ -26,41 +28,53 @@ sealed trait Expression extends XmlMarshaller with JsonMarshaller {
   def normalize: Expression = this
 }
 
-object Expression extends XmlUnmarshaller[Expression] with JsonUnmarshaller[Expression] {
+object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller[Try[Expression]] {
 
-  def fromJson(json: JValue): Expression = {
-    def dateFromJson(json: JValue) = {
+  private def to[C <: ComposeableExpression[C]](make: (Expression*) => C): Seq[Expression] => C = make(_: _*)
+
+  private val toOr = to(Or)
+  private val toAnd = to(And)
+  
+  import Try.sequence
+  
+  def fromJson(json: JValue): Try[Expression] = {
+    def dateFromJson(json: JValue): Try[XMLGregorianCalendar] = Try {
       json match {
-        case JString(value) => Some(NetworkTime.makeXMLGregorianCalendar(value))
-        case JNothing => None
+        case JString(value) => NetworkTime.makeXMLGregorianCalendar(value)
         case _ => throw new Exception("Cannot parse json date" + json) //TODO some sort of unmarshalling exception
       }
     }
 
     json.children.head match {
-      case JField("term", JString(value)) => Term(value)
-      case JField("not", value) => Not(fromJson(value))
-      case JField("and", value) => And(value.children.map(fromJson): _*)
-      case JField("or", value) => Or(value.children.map(fromJson): _*)
+      case JField("term", JString(value)) => Try(Term(value))
+      case JField("not", value) => fromJson(value).map(Not)
+      case JField("and", value) => sequence(value.children.map(fromJson)).map(toAnd)
+      case JField("or", value) => sequence(value.children.map(fromJson)).map(toOr)
       case JField("dateBounded", value) => {
-        val start = dateFromJson(value \ "start")
-        val end = dateFromJson(value \ "end")
-        DateBounded(start, end, fromJson(value \ "expression"))
+        for {
+          expr <- fromJson(value \ "expression")
+          start = dateFromJson(value \ "start").toOption
+          end = dateFromJson(value \ "end").toOption
+        } yield DateBounded(start, end, expr)
       }
       case JField("occurs", value) => {
-        val min = (value \ "min") match {
-          case JInt(x) => x.intValue()
+        val min = Try((value \ "min") match {
+          case JInt(x) => x.intValue
           case _ => throw new Exception("Cannot parse json") //TODO some sort of unmarshalling exception
-        }
-        OccuranceLimited(min, fromJson(value \ "expression"))
+        })
+
+        for {
+          expr <- fromJson(value \ "expression")
+          m <- min
+        } yield OccuranceLimited(m, expr)
       }
-      case x => throw new Exception("Cannot parse json" + x.toString) //TODO some sort of unmarshalling exception
+      case x => Failure(new Exception("Cannot parse json" + x.toString)) //TODO some sort of unmarshalling exception
     }
   }
 
-  def fromXml(nodeSeq: NodeSeq): Expression = {
+  def fromXml(nodeSeq: NodeSeq): Try[Expression] = {
     def dateFromXml(dateString: String) = {
-      if(dateString.trim.isEmpty) {
+      if (dateString.trim.isEmpty) {
         None
       } else {
         Option(NetworkTime.makeXMLGregorianCalendar(dateString))
@@ -70,34 +84,36 @@ object Expression extends XmlUnmarshaller[Expression] with JsonUnmarshaller[Expr
     val outerTag = nodeSeq.head
 
     nodeSeq.size match {
-      case 0 => Or()
+      case 0 => Try(Or())
       case _ => {
         val childTags = outerTag.child
 
         outerTag.label match {
-          case "term" => Term(outerTag.text)
+          case "term" => Try(Term(outerTag.text))
           //childTags.head because only one child expr of <not> is allowed
-          case "not" => Not(fromXml(childTags.head))
+          case "not" => fromXml(childTags.head).map(Not)
           case "and" => {
-            And(childTags.map(fromXml): _*)
+            sequence(childTags.map(fromXml)).map(toAnd)
           }
           case "or" => {
-            Or(childTags.map(fromXml): _*)
+            sequence(childTags.map(fromXml)).map(toOr)
           }
           case "dateBounded" => {
-            val start = dateFromXml((nodeSeq \ "start").text)
-            val end = dateFromXml((nodeSeq \ "end").text)
-
-            //drop(2) to lose <start> and <end>
-            //childTags.drop(2).head because only one child expr of <dateBounded> is allowed
-            DateBounded(start, end, fromXml(childTags.drop(2).head))
+            for {
+              //drop(2) to lose <start> and <end>
+              //childTags.drop(2).head because only one child expr of <dateBounded> is allowed
+              expr <- fromXml(childTags.drop(2).head)
+              start = dateFromXml((nodeSeq \ "start").text)
+              end = dateFromXml((nodeSeq \ "end").text)
+            } yield DateBounded(start, end, expr)
           }
           case "occurs" => {
-            val min = (nodeSeq \ "min").text.toInt
-
-            //drop(1) to lose <min>
-            //childTags.drop(2).head because only one child expr of <occurs> is allowed
-            OccuranceLimited(min, fromXml(childTags.drop(1).head))
+            for {
+              min <- Try((nodeSeq \ "min").text.toInt)
+              //drop(1) to lose <min>
+              //childTags.drop(2).head because only one child expr of <occurs> is allowed
+              expr <-fromXml(childTags.drop(1).head)
+            } yield OccuranceLimited(min, expr)
           }
         }
       }
@@ -113,7 +129,7 @@ final case class Term(value: String) extends Expression {
 }
 
 final case class Not(expr: Expression) extends Expression {
-  def withExpr(newExpr: Expression) = if(newExpr eq expr) this else this.copy(expr = newExpr)
+  def withExpr(newExpr: Expression) = if (newExpr eq expr) this else this.copy(expr = newExpr)
 
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<not>{ expr.toXml }</not>)
 
@@ -132,7 +148,7 @@ trait HasSubExpressions extends Expression {
   val exprs: Seq[Expression]
 }
 
-abstract class ComposeableExpression[T <: HasSubExpressions : Manifest](Op: (Expression *) => T, override val exprs: Expression*) extends HasSubExpressions {
+abstract class ComposeableExpression[T <: HasSubExpressions: Manifest](Op: (Expression*) => T, override val exprs: Expression*) extends HasSubExpressions {
   private def isT(x: AnyRef) = manifest[T].erasure.isAssignableFrom(x.getClass)
 
   override def normalize = exprs match {
@@ -161,23 +177,23 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
 
 final case class DateBounded(start: Option[XMLGregorianCalendar], end: Option[XMLGregorianCalendar], expr: Expression) extends Expression {
 
-  def withExpr(newExpr: Expression) = if(newExpr eq expr) this else this.copy(expr = newExpr)
+  def withExpr(newExpr: Expression) = if (newExpr eq expr) this else this.copy(expr = newExpr)
 
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<dateBounded>
-                                       { start.map(x => <start>{ x }</start>).getOrElse(<start/>) }
-                                       { end.map(x => <end>{ x }</end>).getOrElse(<end/>) }
-                                       { expr.toXml }
-                                     </dateBounded>)
+                                                          { start.map(x => <start>{ x }</start>).getOrElse(<start/>) }
+                                                          { end.map(x => <end>{ x }</end>).getOrElse(<end/>) }
+                                                          { expr.toXml }
+                                                        </dateBounded>)
 
   override def toJson: JValue = ("dateBounded" ->
-      ("start" -> start.map(_.toString)) ~
-          ("end" -> end.map(_.toString)) ~
-          ("expression" -> expr.toJson))
+    ("start" -> start.map(_.toString)) ~
+    ("end" -> end.map(_.toString)) ~
+    ("expression" -> expr.toJson))
 
   override def normalize = {
     def normalize(date: Option[XMLGregorianCalendar]) = date.map(_.normalize)
 
-    if(start.isEmpty && end.isEmpty) {
+    if (start.isEmpty && end.isEmpty) {
       expr.normalize
     } else {
       //NB: Dates are normalized to UTC.  I don't know if this is right, but it's what the existing webclient seems to do.
@@ -193,16 +209,16 @@ final case class DateBounded(start: Option[XMLGregorianCalendar], end: Option[XM
 final case class OccuranceLimited(min: Int, expr: Expression) extends Expression {
   require(min >= 1)
 
-  def withExpr(newExpr: Expression) = if(newExpr eq expr) this else this.copy(expr = newExpr)
+  def withExpr(newExpr: Expression) = if (newExpr eq expr) this else this.copy(expr = newExpr)
 
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<occurs>
-                                       <min>{ min }</min>
-                                       { expr.toXml }
-                                     </occurs>)
+                                                          <min>{ min }</min>
+                                                          { expr.toXml }
+                                                        </occurs>)
 
   override def toJson: JValue = ("occurs" ->
-      ("min" -> min) ~
-          ("expression" -> expr.toJson))
+    ("min" -> min) ~
+    ("expression" -> expr.toJson))
 
-  override def normalize = if(min == 1) expr.normalize else this.withExpr(expr.normalize)
+  override def normalize = if (min == 1) expr.normalize else this.withExpr(expr.normalize)
 }

@@ -108,7 +108,8 @@ object RunQueryResponse extends I2b2Unmarshaller[RunQueryResponse] with XmlUnmar
     
     val queryInstanceId = (nodeSeq \ "message_body" \ "response" \ "query_instance" \ "query_instance_id").text.toLong
     
-    new RunQueryResponse(queryId, makeXMLGregorianCalendar(createDate), userId, groupId, requestXml, queryInstanceId, results)
+    //TODO: Remove unsafe requestXml.get call
+    new RunQueryResponse(queryId, makeXMLGregorianCalendar(createDate), userId, groupId, requestXml.get, queryInstanceId, results)
   }
 
   def fromXml(nodeSeq: NodeSeq) = {
@@ -119,7 +120,7 @@ object RunQueryResponse extends I2b2Unmarshaller[RunQueryResponse] with XmlUnmar
       makeXMLGregorianCalendar((nodeSeq \ "createDate").text),
       (nodeSeq \ "userId").text,
       (nodeSeq \ "groupId").text,
-      QueryDefinition.fromXml(nodeSeq \ "requestXml" \ "queryDefinition"),
+      QueryDefinition.fromXml(nodeSeq \ "requestXml" \ "queryDefinition").get, //TODO: Remove unsafe get call
       (nodeSeq \ "instanceId").text.toLong,
       results)
   }
