@@ -72,7 +72,7 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
   }
 
   override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition) = {
-    post[RunQueryResponse] { 
+    post[RunQueryResponse] {
       webResource.path("/shrine/queries").header("outputTypes", OutputTypeSet(outputTypes).serialized).header("topicId", topicId).entity(queryDefinition.toXmlString, MediaType.APPLICATION_XML)
     }
   }
@@ -123,7 +123,7 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
   private def delete[T: Deserializer](webResource: => WebResourceLike): T = perform[T](webResource, _.delete(classOf[String]))
 
   private[service] def perform[T: Deserializer](webResource: WebResourceLike, httpVerb: UniformInterface => String): T = {
-    
+
     val withNeededHeaders = webResource.header("Authorization", authorization.toHeader).header("projectId", projectId)
 
     val xml = XML.load(new StringReader(httpVerb(withNeededHeaders)))
@@ -146,23 +146,29 @@ object JerseyShrineClient {
     }
   }
 
-  private type Deserializer[T] = NodeSeq => T
+  private[service] trait Deserializer[T] extends (NodeSeq => T)
 
-  private[service] implicit val runQueryResponseDeserializer: Deserializer[RunQueryResponse] = RunQueryResponse.fromXml
+  private[service] object Deserializer {
+    private def toDeserializer[T](f: NodeSeq => T) = new Deserializer[T] {
+      override def apply(xml: NodeSeq): T = f(xml) 
+    }
+    
+    private[service] implicit val runQueryResponseDeserializer: Deserializer[RunQueryResponse] = toDeserializer(RunQueryResponse.fromXml)
 
-  private[service] implicit val readPreviousQueriesResponseDeserializer: Deserializer[ReadPreviousQueriesResponse] = ReadPreviousQueriesResponse.fromXml
+    private[service] implicit val readPreviousQueriesResponseDeserializer: Deserializer[ReadPreviousQueriesResponse] = toDeserializer(ReadPreviousQueriesResponse.fromXml)
 
-  private[service] implicit val readApprovedQueryTopicsResponseDeserializer: Deserializer[ReadApprovedQueryTopicsResponse] = ReadApprovedQueryTopicsResponse.fromXml
+    private[service] implicit val readApprovedQueryTopicsResponseDeserializer: Deserializer[ReadApprovedQueryTopicsResponse] = toDeserializer(ReadApprovedQueryTopicsResponse.fromXml)
 
-  private[service] implicit val readQueryInstancesResponseDeserializer: Deserializer[ReadQueryInstancesResponse] = ReadQueryInstancesResponse.fromXml
+    private[service] implicit val readQueryInstancesResponseDeserializer: Deserializer[ReadQueryInstancesResponse] = toDeserializer(ReadQueryInstancesResponse.fromXml)
 
-  private[service] implicit val readInstanceResultsResponseDeserializer: Deserializer[ReadInstanceResultsResponse] = ReadInstanceResultsResponse.fromXml
+    private[service] implicit val readInstanceResultsResponseDeserializer: Deserializer[ReadInstanceResultsResponse] = toDeserializer(ReadInstanceResultsResponse.fromXml)
 
-  private[service] implicit val readPdoResponseDeserializer: Deserializer[ReadPdoResponse] = ReadPdoResponse.fromXml
+    private[service] implicit val readPdoResponseDeserializer: Deserializer[ReadPdoResponse] = toDeserializer(ReadPdoResponse.fromXml)
 
-  private[service] implicit val readQueryDefinitionResponseDeserializer: Deserializer[ReadQueryDefinitionResponse] = ReadQueryDefinitionResponse.fromXml
+    private[service] implicit val readQueryDefinitionResponseDeserializer: Deserializer[ReadQueryDefinitionResponse] = toDeserializer(ReadQueryDefinitionResponse.fromXml)
 
-  private[service] implicit val deleteQueryResponseDeserializer: Deserializer[DeleteQueryResponse] = DeleteQueryResponse.fromXml
+    private[service] implicit val deleteQueryResponseDeserializer: Deserializer[DeleteQueryResponse] = toDeserializer(DeleteQueryResponse.fromXml)
 
-  private[service] implicit val renameQueryResponseDeserializer: Deserializer[RenameQueryResponse] = RenameQueryResponse.fromXml
+    private[service] implicit val renameQueryResponseDeserializer: Deserializer[RenameQueryResponse] = toDeserializer(RenameQueryResponse.fromXml)
+  }
 }
