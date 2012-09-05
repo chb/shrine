@@ -27,6 +27,8 @@
 
     <!--FIXME - figure out if we can do this with component scanning-->
     <bean name="ontService" class="net.shrine.webclient.server.OntologyServiceImpl"/>
+    <bean name="boostrapInfoSource" class="net.shrine.webclient.server.SpringSecurityBootstrapInfoSource"/>
+
 
     <sec:authentication-manager alias="authenticationManager">
         <sec:authentication-provider ref="pmAuthProvider"/>
