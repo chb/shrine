@@ -21,7 +21,6 @@ public final class Term implements Andable {
     public String simpleName;
 
     // NB: For RestyGWT serialization
-    @SuppressWarnings("unused")
     public Term() {
         super();
     }

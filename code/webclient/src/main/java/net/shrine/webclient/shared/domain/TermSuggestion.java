@@ -25,7 +25,6 @@ public final class TermSuggestion {
     public boolean isLeaf;
 
     // NB: For RestyGWT
-    @SuppressWarnings("unused")
     public TermSuggestion() {
         super();
     }
