@@ -1,9 +1,7 @@
-package net.shrine.webclient.client.domain;
+package net.shrine.webclient.shared.domain;
 
 import java.util.Collection;
 import java.util.Collections;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 import net.shrine.webclient.client.util.Util;
 
@@ -12,7 +10,7 @@ import net.shrine.webclient.client.util.Util;
  * @author clint
  * @date Mar 23, 2012
  */
-public final class Term implements Andable, IsSerializable {
+public final class Term implements Andable {
     // NB: Field must be public for RestyGWT to serialize it
     public String path;
 

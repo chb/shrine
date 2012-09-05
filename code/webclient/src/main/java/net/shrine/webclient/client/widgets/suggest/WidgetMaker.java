@@ -1,6 +1,5 @@
 package net.shrine.webclient.client.widgets.suggest;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -10,6 +9,6 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * Basically a function S => Widget 
  */
-public interface WidgetMaker<S extends IsSerializable> {
+public interface WidgetMaker<S> {
 	Widget makeWidget(final S suggestionInput);
 }

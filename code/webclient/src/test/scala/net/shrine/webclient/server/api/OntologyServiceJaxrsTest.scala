@@ -1,16 +1,15 @@
 package net.shrine.webclient.server.api
 
-import org.scalatest.junit.AssertionsForJUnit
-import org.scalatest.matchers.ShouldMatchers
-import com.sun.jersey.test.framework.JerseyTest
-import net.liftweb.json.JsonDSL._
-import net.liftweb.json._
-import net.shrine.webclient.client.domain.TermSuggestion
 import org.junit.Test
-import net.shrine.webclient.server.OntologyServiceImpl
+
+import com.sun.jersey.test.framework.JerseyTest
+
 import net.shrine.webclient.server.OntologyService
-import net.shrine.webclient.server.QueryService
-import net.shrine.webclient.client.domain.OntNode
+import net.shrine.webclient.server.OntologyServiceImpl
+import net.shrine.webclient.server.OntologyServiceImpl.toConcept
+import net.shrine.webclient.server.OntologyServiceImpl.toTerm
+import net.shrine.webclient.shared.domain.OntNode
+import net.shrine.webclient.shared.domain.TermSuggestion
 
 /**
  * @author clint

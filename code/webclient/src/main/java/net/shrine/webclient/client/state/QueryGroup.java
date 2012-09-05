@@ -2,14 +2,14 @@ package net.shrine.webclient.client.state;
 
 import java.util.Date;
 
-import net.shrine.webclient.client.domain.Expression;
-import net.shrine.webclient.client.domain.Or;
-import net.shrine.webclient.client.domain.Term;
-import net.shrine.webclient.client.domain.XmlAble;
 import net.shrine.webclient.client.util.EventCreator;
 import net.shrine.webclient.client.util.FiresEventsObservable;
 import net.shrine.webclient.client.util.Formats;
 import net.shrine.webclient.client.util.Util;
+import net.shrine.webclient.shared.domain.Expression;
+import net.shrine.webclient.shared.domain.Or;
+import net.shrine.webclient.shared.domain.Term;
+import net.shrine.webclient.shared.domain.XmlAble;
 
 import com.google.gwt.event.shared.EventBus;
 

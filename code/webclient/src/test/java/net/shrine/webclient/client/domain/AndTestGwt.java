@@ -7,6 +7,10 @@ import java.util.Collections;
 import java.util.List;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
+import net.shrine.webclient.shared.domain.And;
+import net.shrine.webclient.shared.domain.Andable;
+import net.shrine.webclient.shared.domain.Or;
+import net.shrine.webclient.shared.domain.Term;
 
 import org.junit.Test;
 

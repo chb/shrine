@@ -7,10 +7,10 @@ import java.util.Iterator;
 import net.shrine.webclient.client.AbstractWebclientTest;
 import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.controllers.MockQueryServiceAsync;
-import net.shrine.webclient.client.domain.And;
-import net.shrine.webclient.client.domain.Or;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.state.QueryGroup;
+import net.shrine.webclient.shared.domain.And;
+import net.shrine.webclient.shared.domain.Or;
+import net.shrine.webclient.shared.domain.Term;
 
 import org.junit.Test;
 

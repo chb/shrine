@@ -15,7 +15,6 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -27,350 +26,350 @@ import com.google.gwt.user.client.ui.Widget;
  * @author clint
  * @date Apr 5, 2012
  */
-public class RichSuggestBox<S extends IsSerializable> extends Composite implements SuggestRowContainer<S>, HasText {
+public class RichSuggestBox<S> extends Composite implements SuggestRowContainer<S>, HasText {
 
-	private final TextBox textBox = new TextBox();
+    private final TextBox textBox = new TextBox();
 
-	private RichSuggestOracle<S> oracle;
+    private RichSuggestOracle<S> oracle;
 
-	private WidgetMaker<S> widgetMaker;
+    private WidgetMaker<S> widgetMaker;
 
-	private final PopupPanel suggestionPopup = new PopupPanel(true, false);
+    private final PopupPanel suggestionPopup = new PopupPanel(true, false);
 
-	private SuggestionsPanel suggestionsPanel;
+    private SuggestionsPanel suggestionsPanel;
 
-	private final Observable<Integer> highlightedPopupRow = Observable.empty();
+    private final Observable<Integer> highlightedPopupRow = Observable.empty();
 
-	private final int maxSuggestions;
+    private final int maxSuggestions;
 
-	private static final int DefaultMaxSuggestions = 20;
+    private static final int DefaultMaxSuggestions = 20;
 
-	public RichSuggestBox(final RichSuggestOracle<S> oracle, final WidgetMaker<S> widgetMaker) {
-		this(oracle, widgetMaker, DefaultMaxSuggestions);
-	}
+    public RichSuggestBox(final RichSuggestOracle<S> oracle, final WidgetMaker<S> widgetMaker) {
+        this(oracle, widgetMaker, DefaultMaxSuggestions);
+    }
 
-	public RichSuggestBox(final RichSuggestOracle<S> oracle, final WidgetMaker<S> widgetMaker, final int maxSuggestions) {
-		super();
+    public RichSuggestBox(final RichSuggestOracle<S> oracle, final WidgetMaker<S> widgetMaker, final int maxSuggestions) {
+        super();
 
-		Util.requireNotNull(oracle);
-		Util.requireNotNull(widgetMaker);
-		Util.require(maxSuggestions >= 0);
+        Util.requireNotNull(oracle);
+        Util.requireNotNull(widgetMaker);
+        Util.require(maxSuggestions >= 0);
 
-		this.oracle = oracle;
-		this.widgetMaker = widgetMaker;
-		this.maxSuggestions = maxSuggestions;
+        this.oracle = oracle;
+        this.widgetMaker = widgetMaker;
+        this.maxSuggestions = maxSuggestions;
 
-		initTextBox();
+        initTextBox();
 
-		initPopup();
-		
-		hidePopup();
-		
-		initWidget(textBox);
-	}
+        initPopup();
 
-	final void clampHighlightedPopupRow() {
-		if (highlightedPopupRow.isDefined()) {
-			if (highlightedPopupRow.get() < 0) {
-				highlightedPopupRow.set(0);
-			} else if (highlightedPopupRow.get() >= suggestionsPanel.getWidgetCount()) {
-				highlightedPopupRow.set(suggestionsPanel.getWidgetCount() - 1);
-			}
-		}
-	}
+        hidePopup();
 
-	@Override
-	public final String getText() {
-		return textBox.getText();
-	}
+        initWidget(textBox);
+    }
 
-	@Override
-	public final void setText(final String text) {
-		textBox.setText(text);
-	}
-	
-	final boolean isEmpty() {
-		return getText().length() == 0;
-	}
+    final void clampHighlightedPopupRow() {
+        if (highlightedPopupRow.isDefined()) {
+            if (highlightedPopupRow.get() < 0) {
+                highlightedPopupRow.set(0);
+            } else if (highlightedPopupRow.get() >= suggestionsPanel.getWidgetCount()) {
+                highlightedPopupRow.set(suggestionsPanel.getWidgetCount() - 1);
+            }
+        }
+    }
 
-	@Override
-	public final void fireSuggestionEvent(final RichSuggestionEvent<S> event) {
-		fireEvent(event);
+    @Override
+    public final String getText() {
+        return textBox.getText();
+    }
 
-		hidePopup();
-	}
+    @Override
+    public final void setText(final String text) {
+        textBox.setText(text);
+    }
 
-	public final HandlerRegistration addSelectionHandler(final RichSuggestionEventHandler<S> handler) {
-		Util.requireNotNull(handler);
+    final boolean isEmpty() {
+        return getText().length() == 0;
+    }
 
-		return this.addHandler(handler, RichSuggestionEvent.<S> getType());
-	}
+    @Override
+    public final void fireSuggestionEvent(final RichSuggestionEvent<S> event) {
+        fireEvent(event);
 
-	private void initTextBox() {
-		textBox.addFocusHandler(new FocusHandler() {
-			@Override
-			public void onFocus(final FocusEvent event) {
-				clearTextBox();
-			}
-		});
+        hidePopup();
+    }
 
-		// NB: Use keyUp instead of keyPress so that suggestions are presented
-		// after each keypress based on the entire contents of the TextBox
-		textBox.addKeyUpHandler(new SuggestBoxKeyUpHandler());
-		
-		textBox.removeStyleName("gwt-TextBox");
-	}
+    public final HandlerRegistration addSelectionHandler(final RichSuggestionEventHandler<S> handler) {
+        Util.requireNotNull(handler);
 
-	final void setHighlightedRow(final int r) {
-		highlightedPopupRow.set(r);
+        return this.addHandler(handler, RichSuggestionEvent.<S> getType());
+    }
 
-		clampHighlightedPopupRow();
+    private void initTextBox() {
+        textBox.addFocusHandler(new FocusHandler() {
+            @Override
+            public void onFocus(final FocusEvent event) {
+                clearTextBox();
+            }
+        });
 
-		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
-	}
+        // NB: Use keyUp instead of keyPress so that suggestions are presented
+        // after each keypress based on the entire contents of the TextBox
+        textBox.addKeyUpHandler(new SuggestBoxKeyUpHandler());
 
-	final void zeroHighlightedRow() {
-		highlightedPopupRow.set(0);
+        textBox.removeStyleName("gwt-TextBox");
+    }
 
-		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
-	}
+    final void setHighlightedRow(final int r) {
+        highlightedPopupRow.set(r);
 
-	final void decrementHighlightedRow() {
-		if (highlightedPopupRow.isDefined()) {
-			highlightedPopupRow.set(highlightedPopupRow.get() - 1);
+        clampHighlightedPopupRow();
 
-			clampHighlightedPopupRow();
-		} else {
-			zeroHighlightedRow();
-		}
+        Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
+    }
 
-		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
-	}
+    final void zeroHighlightedRow() {
+        highlightedPopupRow.set(0);
 
-	final void incrementHighlightedRow() {
-		if (highlightedPopupRow.isDefined()) {
-			highlightedPopupRow.set(highlightedPopupRow.get() + 1);
+        Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
+    }
 
-			clampHighlightedPopupRow();
-		} else {
-			zeroHighlightedRow();
-		}
+    final void decrementHighlightedRow() {
+        if (highlightedPopupRow.isDefined()) {
+            highlightedPopupRow.set(highlightedPopupRow.get() - 1);
 
-		Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
-	}
+            clampHighlightedPopupRow();
+        } else {
+            zeroHighlightedRow();
+        }
 
-	public final RichSuggestOracle<S> getOracle() {
-		return oracle;
-	}
+        Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
+    }
 
-	public final void setOracle(final RichSuggestOracle<S> oracle) {
-		Util.requireNotNull(oracle);
+    final void incrementHighlightedRow() {
+        if (highlightedPopupRow.isDefined()) {
+            highlightedPopupRow.set(highlightedPopupRow.get() + 1);
 
-		this.oracle = oracle;
-	}
+            clampHighlightedPopupRow();
+        } else {
+            zeroHighlightedRow();
+        }
 
-	public final WidgetMaker<S> getWidgetMaker() {
-		return widgetMaker;
-	}
+        Log.trace("highlightedPopupRow: " + highlightedPopupRow.getOrElse(-1));
+    }
 
-	public final void setWidgetMaker(final WidgetMaker<S> widgetMaker) {
-		Util.requireNotNull(widgetMaker);
+    public final RichSuggestOracle<S> getOracle() {
+        return oracle;
+    }
 
-		this.widgetMaker = widgetMaker;
-	}
+    public final void setOracle(final RichSuggestOracle<S> oracle) {
+        Util.requireNotNull(oracle);
 
-	final Observable<Integer> getHighlightedPopupRow() {
-		return highlightedPopupRow;
-	}
+        this.oracle = oracle;
+    }
 
-	final int getMaxSuggestions() {
-		return maxSuggestions;
-	}
+    public final WidgetMaker<S> getWidgetMaker() {
+        return widgetMaker;
+    }
 
-	final TextBox getTextBox() {
-		return textBox;
-	}
+    public final void setWidgetMaker(final WidgetMaker<S> widgetMaker) {
+        Util.requireNotNull(widgetMaker);
 
-	private void initPopup() {
-		suggestionPopup.setAnimationEnabled(false);
-		
-		//TODO: HACK ALERT (Match Seth's HTML)
-		suggestionPopup.setStyleName("searchBoxPopup");
-		suggestionPopup.getElement().setId("searchBoxPopup");
-	}
+        this.widgetMaker = widgetMaker;
+    }
 
-	private void positionPopup() {
-		final Element textBoxElement = textBox.getElement();
+    final Observable<Integer> getHighlightedPopupRow() {
+        return highlightedPopupRow;
+    }
 
-		final int left = textBoxElement.getAbsoluteLeft();
+    final int getMaxSuggestions() {
+        return maxSuggestions;
+    }
 
-		final int bottom = textBoxElement.getAbsoluteBottom();
+    final TextBox getTextBox() {
+        return textBox;
+    }
 
-		suggestionPopup.setPopupPosition(left, bottom);
-	}
+    private void initPopup() {
+        suggestionPopup.setAnimationEnabled(false);
 
-	// NB: Exposed for testing
-	public final void fillSuggestionPanel(final RichSuggestResponse<S> response) {
-		refreshSuggestionPanel();
+        // TODO: HACK ALERT (Match Seth's HTML)
+        suggestionPopup.setStyleName("searchBoxPopup");
+        suggestionPopup.getElement().setId("searchBoxPopup");
+    }
 
-		int i = 0;
+    private void positionPopup() {
+        final Element textBoxElement = textBox.getElement();
 
-		for (final S suggestion : response.getSuggestions()) {
-			final Widget widget = widgetMaker.makeWidget(suggestion);
+        final int left = textBoxElement.getAbsoluteLeft();
 
-			final RichSuggestionRow row = rowFromWidget(i, suggestion, widget);
-			
+        final int bottom = textBoxElement.getAbsoluteBottom();
+
+        suggestionPopup.setPopupPosition(left, bottom);
+    }
+
+    // NB: Exposed for testing
+    public final void fillSuggestionPanel(final RichSuggestResponse<S> response) {
+        refreshSuggestionPanel();
+
+        int i = 0;
+
+        for (final S suggestion : response.getSuggestions()) {
+            final Widget widget = widgetMaker.makeWidget(suggestion);
+
+            final RichSuggestionRow row = rowFromWidget(i, suggestion, widget);
+
             suggestionsPanel.add(row);
-			
-			++i;
-		}
-	}
 
-	final void refreshSuggestionPanel() {
-		highlightedPopupRow.clear();
+            ++i;
+        }
+    }
 
-		if (suggestionsPanel != null) {
-			suggestionsPanel.stopObserving();
-			suggestionsPanel.clear();
-		}
+    final void refreshSuggestionPanel() {
+        highlightedPopupRow.clear();
 
-		suggestionsPanel = new SuggestionsPanel(highlightedPopupRow);
+        if (suggestionsPanel != null) {
+            suggestionsPanel.stopObserving();
+            suggestionsPanel.clear();
+        }
 
-		suggestionPopup.setWidget(suggestionsPanel);
-	}
+        suggestionsPanel = new SuggestionsPanel(highlightedPopupRow);
 
-	final RichSuggestionRow rowFromWidget(final int index, final S suggestion, final Widget widget) {
-		final RichSuggestionRow richSuggestionRow = new RichSuggestionRow(this, widget, new Runnable() {
-			@Override
-			public void run() {
-				fireSuggestionEvent(RichSuggestionEvent.from(suggestion));
-			}
-		});
+        suggestionPopup.setWidget(suggestionsPanel);
+    }
 
-		richSuggestionRow.addMouseOverHandler(new MouseOverHandler() {
-			@Override
-			public void onMouseOver(final MouseOverEvent event) {
-				setHighlightedRow(index);
-			}
-		});
+    final RichSuggestionRow rowFromWidget(final int index, final S suggestion, final Widget widget) {
+        final RichSuggestionRow richSuggestionRow = new RichSuggestionRow(this, widget, new Runnable() {
+            @Override
+            public void run() {
+                fireSuggestionEvent(RichSuggestionEvent.from(suggestion));
+            }
+        });
 
-		richSuggestionRow.addMouseOutHandler(new MouseOutHandler() {
-			@Override
-			public void onMouseOut(MouseOutEvent event) {
-				highlightedPopupRow.clear();
-			}
-		});
+        richSuggestionRow.addMouseOverHandler(new MouseOverHandler() {
+            @Override
+            public void onMouseOver(final MouseOverEvent event) {
+                setHighlightedRow(index);
+            }
+        });
 
-		return richSuggestionRow;
-	}
+        richSuggestionRow.addMouseOutHandler(new MouseOutHandler() {
+            @Override
+            public void onMouseOut(MouseOutEvent event) {
+                highlightedPopupRow.clear();
+            }
+        });
 
-	private void positionAndShowPopup() {
-		if (!suggestionPopup.isShowing()) {
-			positionPopup();
+        return richSuggestionRow;
+    }
 
-			suggestionPopup.show();
-		}
-	}
+    private void positionAndShowPopup() {
+        if (!suggestionPopup.isShowing()) {
+            positionPopup();
 
-	@Override
-	public final void hidePopup() {
-		Log.debug("Hiding popup");
+            suggestionPopup.show();
+        }
+    }
 
-		suggestionPopup.hide();
-	}
+    @Override
+    public final void hidePopup() {
+        Log.debug("Hiding popup");
 
-	// NB: For testing
-	final PopupPanel getSuggestionPopup() {
-		return suggestionPopup;
-	}
+        suggestionPopup.hide();
+    }
 
-	// NB: For testing
-	final SuggestionsPanel getSuggestionsPanel() {
-		return suggestionsPanel;
-	}
+    // NB: For testing
+    final PopupPanel getSuggestionPopup() {
+        return suggestionPopup;
+    }
 
-	final void selectHighlightedRow() {
-		final RichSuggestionRow highlightedRow = (RichSuggestionRow) suggestionsPanel.getWidget(highlightedPopupRow.get());
+    // NB: For testing
+    final SuggestionsPanel getSuggestionsPanel() {
+        return suggestionsPanel;
+    }
 
-		highlightedRow.select();
+    final void selectHighlightedRow() {
+        final RichSuggestionRow highlightedRow = (RichSuggestionRow) suggestionsPanel.getWidget(highlightedPopupRow.get());
 
-		hidePopup();
+        highlightedRow.select();
 
-		clearTextBox();
-	}
+        hidePopup();
 
-	@Override
-	public final void clearTextBox() {
-		textBox.setText("");
-	}
+        clearTextBox();
+    }
 
-	private static boolean isKeyThatTriggersSuggestRequest(final KeyUpEvent event) {
-		final int keyCode = event.getNativeKeyCode();
+    @Override
+    public final void clearTextBox() {
+        textBox.setText("");
+    }
 
-		return isSpace(keyCode) || isLetterOrNumber(keyCode) || isBackspace(keyCode) || isDelete(keyCode);
-	}
+    private static boolean isKeyThatTriggersSuggestRequest(final KeyUpEvent event) {
+        final int keyCode = event.getNativeKeyCode();
 
-	private static boolean isSpace(final int keyCode) {
-		return keyCode == ' ';
-	}
+        return isSpace(keyCode) || isLetterOrNumber(keyCode) || isBackspace(keyCode) || isDelete(keyCode);
+    }
 
-	private static boolean isDelete(final int keyCode) {
-		return keyCode == KeyCodes.KEY_DELETE;
-	}
+    private static boolean isSpace(final int keyCode) {
+        return keyCode == ' ';
+    }
 
-	private static boolean isBackspace(final int keyCode) {
-		return keyCode == KeyCodes.KEY_BACKSPACE;
-	}
+    private static boolean isDelete(final int keyCode) {
+        return keyCode == KeyCodes.KEY_DELETE;
+    }
 
-	private static boolean isLetterOrNumber(final int keyCode) {
-		return isLetter(keyCode) || isNumber(keyCode);
-	}
+    private static boolean isBackspace(final int keyCode) {
+        return keyCode == KeyCodes.KEY_BACKSPACE;
+    }
 
-	private static boolean isNumber(final int keyCode) {
-		return (keyCode >= '0' && keyCode <= '9');
-	}
+    private static boolean isLetterOrNumber(final int keyCode) {
+        return isLetter(keyCode) || isNumber(keyCode);
+    }
 
-	private static boolean isLetter(final int keyCode) {
-		return (keyCode >= 'A' && keyCode <= 'Z') || (keyCode >= 'a' && keyCode <= 'z');
-	}
+    private static boolean isNumber(final int keyCode) {
+        return (keyCode >= '0' && keyCode <= '9');
+    }
 
-	private static boolean isEnter(final KeyUpEvent event) {
-		return event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
-	}
+    private static boolean isLetter(final int keyCode) {
+        return (keyCode >= 'A' && keyCode <= 'Z') || (keyCode >= 'a' && keyCode <= 'z');
+    }
 
-	private final class SuggestBoxKeyUpHandler implements KeyUpHandler {
-		@Override
-		public void onKeyUp(final KeyUpEvent event) {
-			if (event.isUpArrow()) {
-				decrementHighlightedRow();
-			} else if (event.isDownArrow()) {
-				incrementHighlightedRow();
-			} else if (isEnter(event)) {
-				if (highlightedPopupRow.isDefined()) {
-					selectHighlightedRow();
-				}
-			} else if (isKeyThatTriggersSuggestRequest(event)) {
-				if(!isEmpty()) {
-					requestSuggestions();
-				} else {
-					hidePopup();
-				}
-			}
-		}
-	}
-	
-	final void requestSuggestions() {
-		oracle.requestSuggestions(new RichSuggestRequest(maxSuggestions, textBox.getText()), new RichSuggestCallback<S>() {
-			@Override
-			public void onSuggestionsReady(final RichSuggestRequest request, final RichSuggestResponse<S> response) {
-				if (response.hasSuggestions()) {
-					fillSuggestionPanel(response);
+    private static boolean isEnter(final KeyUpEvent event) {
+        return event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
+    }
 
-					positionAndShowPopup();
-				} else {
-					hidePopup();
-				}
-			}
-		});
-	}
+    private final class SuggestBoxKeyUpHandler implements KeyUpHandler {
+        @Override
+        public void onKeyUp(final KeyUpEvent event) {
+            if (event.isUpArrow()) {
+                decrementHighlightedRow();
+            } else if (event.isDownArrow()) {
+                incrementHighlightedRow();
+            } else if (isEnter(event)) {
+                if (highlightedPopupRow.isDefined()) {
+                    selectHighlightedRow();
+                }
+            } else if (isKeyThatTriggersSuggestRequest(event)) {
+                if (!isEmpty()) {
+                    requestSuggestions();
+                } else {
+                    hidePopup();
+                }
+            }
+        }
+    }
+
+    final void requestSuggestions() {
+        oracle.requestSuggestions(new RichSuggestRequest(maxSuggestions, textBox.getText()), new RichSuggestCallback<S>() {
+            @Override
+            public void onSuggestionsReady(final RichSuggestRequest request, final RichSuggestResponse<S> response) {
+                if (response.hasSuggestions()) {
+                    fillSuggestionPanel(response);
+
+                    positionAndShowPopup();
+                } else {
+                    hidePopup();
+                }
+            }
+        });
+    }
 }

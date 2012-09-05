@@ -1,7 +1,7 @@
 package net.shrine.webclient.client.widgets;
 
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.EventUtil;
+import net.shrine.webclient.shared.domain.Term;
 
 import com.google.gwt.event.shared.GwtEvent;
 

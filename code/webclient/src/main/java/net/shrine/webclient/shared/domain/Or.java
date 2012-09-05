@@ -1,4 +1,4 @@
-package net.shrine.webclient.client.domain;
+package net.shrine.webclient.shared.domain;
 
 import static java.util.Arrays.asList;
 

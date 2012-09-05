@@ -1,9 +1,9 @@
 package net.shrine.webclient.client.controllers;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
-import net.shrine.webclient.client.domain.And;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.state.State;
+import net.shrine.webclient.shared.domain.And;
+import net.shrine.webclient.shared.domain.Term;
 
 import org.junit.Test;
 

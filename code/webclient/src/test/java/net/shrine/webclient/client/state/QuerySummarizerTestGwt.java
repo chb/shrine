@@ -9,13 +9,13 @@ import java.util.Collections;
 import java.util.Date;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
-import net.shrine.webclient.client.domain.And;
-import net.shrine.webclient.client.domain.Expression;
-import net.shrine.webclient.client.domain.Or;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.state.QuerySummarizer;
 import net.shrine.webclient.client.state.ReadOnlyQueryGroup;
 import net.shrine.webclient.client.util.Observer;
+import net.shrine.webclient.shared.domain.And;
+import net.shrine.webclient.shared.domain.Expression;
+import net.shrine.webclient.shared.domain.Or;
+import net.shrine.webclient.shared.domain.Term;
 
 import org.junit.Test;
 

@@ -1,6 +1,6 @@
 package net.shrine.webclient.server.api
 
-import net.shrine.webclient.client.domain.BootstrapInfo
+import net.shrine.webclient.shared.domain.BootstrapInfo
 import net.shrine.webclient.server.BootstrapInfoSource
 
 /**

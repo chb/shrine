@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import net.shrine.webclient.client.controllers.Controllers;
-import net.shrine.webclient.client.domain.OntNode;
 import net.shrine.webclient.client.services.OntologyService;
 import net.shrine.webclient.client.services.Services;
 import net.shrine.webclient.client.util.Util;
+import net.shrine.webclient.shared.domain.OntNode;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;

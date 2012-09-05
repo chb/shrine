@@ -1,17 +1,15 @@
-package net.shrine.webclient.client.domain;
+package net.shrine.webclient.shared.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * 
  * @author clint
  * @date Apr 2, 2012
  */
-public final class OntNode implements IsSerializable {
+public final class OntNode {
     // NB: Field must be public for RestyGWT to serialize it
     public Term term;
 

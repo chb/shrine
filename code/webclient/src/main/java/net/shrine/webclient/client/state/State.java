@@ -4,13 +4,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.util.Observable;
 import net.shrine.webclient.client.util.ObservableList;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.QueryNameIterator;
 import net.shrine.webclient.client.util.SimpleObserver;
 import net.shrine.webclient.client.util.Util;
+import net.shrine.webclient.shared.domain.Expression;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;

@@ -3,6 +3,7 @@ package net.shrine.webclient.client.domain;
 import java.util.Collection;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
+import net.shrine.webclient.shared.domain.Term;
 
 import org.junit.Test;
 

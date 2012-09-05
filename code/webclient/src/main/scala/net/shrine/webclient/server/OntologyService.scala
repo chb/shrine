@@ -1,7 +1,7 @@
 package net.shrine.webclient.server
 
-import net.shrine.webclient.client.domain.TermSuggestion
-import net.shrine.webclient.client.domain.OntNode
+import net.shrine.webclient.shared.domain.TermSuggestion
+import net.shrine.webclient.shared.domain.OntNode
 
 /**
  * @author Clint

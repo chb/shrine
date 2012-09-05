@@ -1,6 +1,6 @@
 package net.shrine.webclient.server.api
 
-import net.shrine.webclient.client.domain.OntNode
+import net.shrine.webclient.shared.domain.OntNode
 import javax.ws.rs.ext.Provider
 import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType

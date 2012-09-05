@@ -3,10 +3,10 @@ package net.shrine.webclient.client.widgets;
 import java.util.List;
 
 import net.shrine.webclient.client.controllers.Controllers;
-import net.shrine.webclient.client.domain.OntNode;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.services.OntologyService;
 import net.shrine.webclient.client.services.Services;
+import net.shrine.webclient.shared.domain.OntNode;
+import net.shrine.webclient.shared.domain.Term;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;

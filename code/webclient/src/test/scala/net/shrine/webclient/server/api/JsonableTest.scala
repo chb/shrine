@@ -4,11 +4,11 @@ import junit.framework.TestCase
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.matchers.ShouldMatchers
 import org.junit.Test
-import net.shrine.webclient.client.domain.Term
-import net.shrine.webclient.client.domain.OntNode
-import net.shrine.webclient.client.domain.TermSuggestion
+import net.shrine.webclient.shared.domain.Term
+import net.shrine.webclient.shared.domain.OntNode
+import net.shrine.webclient.shared.domain.TermSuggestion
 import net.shrine.webclient.server.MultiInstitutionQueryResult
-import net.shrine.webclient.client.domain.BootstrapInfo
+import net.shrine.webclient.shared.domain.BootstrapInfo
 
 /**
  * @author clint

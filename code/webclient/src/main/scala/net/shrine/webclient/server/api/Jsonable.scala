@@ -1,13 +1,13 @@
 package net.shrine.webclient.server.api
 
-import net.shrine.webclient.client.domain.TermSuggestion
+import net.shrine.webclient.shared.domain.BootstrapInfo
+import net.shrine.webclient.shared.domain.TermSuggestion
+import net.shrine.webclient.shared.domain.OntNode
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
-import net.shrine.webclient.client.domain.OntNode
 import net.liftweb.json.JValue
 import net.liftweb.json.JInt
 import net.shrine.webclient.server.MultiInstitutionQueryResult
-import net.shrine.webclient.client.domain.BootstrapInfo
 
 /**
  * @author clint
@@ -93,7 +93,7 @@ object Jsonable {
     }
   }
   
-  import net.shrine.webclient.client.domain.Term
+  import net.shrine.webclient.shared.domain.Term
   
   implicit val termIsJsonable: Jsonable[Term] = new Jsonable[Term] {
     import FieldNames.Term._

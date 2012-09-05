@@ -6,8 +6,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
-import net.shrine.webclient.client.domain.OntNode;
-import net.shrine.webclient.client.domain.TermSuggestion;
+import net.shrine.webclient.shared.domain.OntNode;
+import net.shrine.webclient.shared.domain.TermSuggestion;
 
 import org.fusesource.restygwt.client.MethodCallback;
 import org.fusesource.restygwt.client.RestService;

@@ -6,7 +6,7 @@ import com.sun.jersey.test.framework.JerseyTest
 import org.junit.Test
 import net.shrine.webclient.server.QueryService
 import net.shrine.webclient.server.OntologyService
-import net.shrine.webclient.client.domain.BootstrapInfo
+import net.shrine.webclient.shared.domain.BootstrapInfo
 
 /**
  * @author clint

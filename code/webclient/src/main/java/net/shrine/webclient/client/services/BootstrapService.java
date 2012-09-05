@@ -1,6 +1,7 @@
 package net.shrine.webclient.client.services;
 
-import net.shrine.webclient.client.domain.BootstrapInfo;
+import net.shrine.webclient.shared.domain.BootstrapInfo;
+
 import org.fusesource.restygwt.client.MethodCallback;
 import org.fusesource.restygwt.client.RestService;
 

@@ -5,7 +5,7 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
-import net.shrine.webclient.client.domain.TermSuggestion;
+import net.shrine.webclient.shared.domain.TermSuggestion;
 
 /**
  * 

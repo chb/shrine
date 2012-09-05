@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.shrine.webclient.client.domain.Expression;
-import net.shrine.webclient.client.domain.Or;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Util;
+import net.shrine.webclient.shared.domain.Expression;
+import net.shrine.webclient.shared.domain.Or;
+import net.shrine.webclient.shared.domain.Term;
 
 import com.allen_sauer.gwt.log.client.Log;
 

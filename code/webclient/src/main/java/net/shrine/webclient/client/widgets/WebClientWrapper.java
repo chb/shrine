@@ -2,9 +2,9 @@ package net.shrine.webclient.client.widgets;
 
 import com.allen_sauer.gwt.log.client.Log;
 import net.shrine.webclient.client.controllers.Controllers;
-import net.shrine.webclient.client.domain.BootstrapInfo;
 import net.shrine.webclient.client.services.BootstrapService;
 import net.shrine.webclient.client.state.State;
+import net.shrine.webclient.shared.domain.BootstrapInfo;
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.GWT;

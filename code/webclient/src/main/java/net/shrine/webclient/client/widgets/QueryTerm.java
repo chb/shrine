@@ -1,8 +1,8 @@
 package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.controllers.QueryBuildingController;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.util.Util;
+import net.shrine.webclient.shared.domain.Term;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;

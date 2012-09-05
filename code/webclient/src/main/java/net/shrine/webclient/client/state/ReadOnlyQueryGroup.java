@@ -2,8 +2,8 @@ package net.shrine.webclient.client.state;
 
 import java.util.Date;
 
-import net.shrine.webclient.client.domain.Expression;
 import net.shrine.webclient.client.util.IObservable;
+import net.shrine.webclient.shared.domain.Expression;
 
 /**
  * 

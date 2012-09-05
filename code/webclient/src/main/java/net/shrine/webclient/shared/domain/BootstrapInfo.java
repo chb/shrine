@@ -1,4 +1,4 @@
-package net.shrine.webclient.client.domain;
+package net.shrine.webclient.shared.domain;
 
 /**
  * 
@@ -6,12 +6,12 @@ package net.shrine.webclient.client.domain;
  * @date Sep 4, 2012
  */
 public final class BootstrapInfo {
-    //RestyGWT requires fields be public and mutable :(
+    // RestyGWT requires fields be public and mutable :(
     public String loggedInUsername;
 
     public BootstrapInfo(final String loggedInUsername) {
         super();
-        
+
         this.loggedInUsername = loggedInUsername;
     }
 

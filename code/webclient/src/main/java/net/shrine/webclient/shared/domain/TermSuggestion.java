@@ -1,13 +1,11 @@
-package net.shrine.webclient.client.domain;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
+package net.shrine.webclient.shared.domain;
 
 /**
  * 
  * @author clint
  * @date Mar 29, 2012
  */
-public final class TermSuggestion implements IsSerializable {
+public final class TermSuggestion {
     // NB: Field must be public for RestyGWT to serialize it
     public String path;
 

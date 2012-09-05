@@ -1,15 +1,13 @@
-package net.shrine.webclient.client.domain;
+package net.shrine.webclient.shared.domain;
 
 import java.util.Date;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * 
  * @author clint
  * @date Apr 27, 2012
  */
-public final class PreviousQuery implements IsSerializable, Comparable<PreviousQuery> {
+public final class PreviousQuery implements Comparable<PreviousQuery> {
 
     private final String queryId;
 

@@ -8,8 +8,8 @@ import net.shrine.webclient.client.widgets.OntologyTree
 import net.shrine.ont.data.ShrineSqlOntologyDAO
 import net.shrine.ont.index.OntologyTrie
 import net.shrine.ont.messaging.Concept
-import net.shrine.webclient.client.domain.TermSuggestion
-import net.shrine.webclient.client.domain.OntNode
+import net.shrine.webclient.shared.domain.TermSuggestion
+import net.shrine.webclient.shared.domain.OntNode
 
 /**
  * @author clint
@@ -116,7 +116,7 @@ final class OntologyServiceImplTest extends TestCase with AssertionsForJUnit wit
   def testGetSuggestions {
     val ontService = new OntologyServiceImpl(shrineSqlStream)
     
-    val suggestions = ontService.getSuggestions("male", 10)
+    val suggestions: Seq[TermSuggestion] = ontService.getSuggestions("male", 10)
     
     val maleSuggestion = new TermSuggestion(male.path, "Male", "male", "Male", "Demographics", true)
     
@@ -194,7 +194,7 @@ final class OntologyServiceImplTest extends TestCase with AssertionsForJUnit wit
     
     demoOntNodeOption.isDefined should be(true)
     
-    demoOntNodeOption.foreach { demoOntNode =>
+    demoOntNodeOption.foreach { demoOntNode => 
       demoOntNode.getChildren.isEmpty should be(true)
       demoOntNode.getSimpleName should equal("Demographics")
       demoOntNode.getValue should equal(demoPath)

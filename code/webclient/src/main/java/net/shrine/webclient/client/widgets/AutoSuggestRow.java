@@ -1,11 +1,11 @@
 package net.shrine.webclient.client.widgets;
 
 import static java.util.Arrays.asList;
-import net.shrine.webclient.client.domain.TermSuggestion;
 import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestionEvent;
 import net.shrine.webclient.client.widgets.suggest.SuggestRowContainer;
 import net.shrine.webclient.client.widgets.suggest.WidgetMaker;
+import net.shrine.webclient.shared.domain.TermSuggestion;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -30,111 +30,112 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class AutoSuggestRow extends Composite {
 
-	private static AutoSuggestRowUiBinder uiBinder = GWT.create(AutoSuggestRowUiBinder.class);
+    private static AutoSuggestRowUiBinder uiBinder = GWT.create(AutoSuggestRowUiBinder.class);
 
-	interface AutoSuggestRowUiBinder extends UiBinder<Widget, AutoSuggestRow> { }
+    interface AutoSuggestRowUiBinder extends UiBinder<Widget, AutoSuggestRow> {
+    }
 
-	@UiField
-	Anchor browseLink;
-	
-	@UiField
-	ImageElement iconImage;
+    @UiField
+    Anchor browseLink;
 
-	@UiField
-	Label simpleName;
+    @UiField
+    ImageElement iconImage;
 
-	@UiField
-	Label synonym;
+    @UiField
+    Label simpleName;
 
-	public AutoSuggestRow(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> container, final TermSuggestion termSuggestion) {
-		initWidget(uiBinder.createAndBindUi(this));
+    @UiField
+    Label synonym;
 
-		Util.requireNotNull(container);
-		Util.requireNotNull(termSuggestion);
-		
-		initIconImage(termSuggestion);
+    public AutoSuggestRow(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> container, final TermSuggestion termSuggestion) {
+        initWidget(uiBinder.createAndBindUi(this));
 
-		final RegExp replaceHighlightRegex = RegExp.compile("(" + termSuggestion.getHighlight() + ")", "ig");
+        Util.requireNotNull(container);
+        Util.requireNotNull(termSuggestion);
 
-		initSimpleNameSpan(termSuggestion, replaceHighlightRegex);
+        initIconImage(termSuggestion);
 
-		initSynonymSpan(termSuggestion, replaceHighlightRegex);
+        final RegExp replaceHighlightRegex = RegExp.compile("(" + termSuggestion.getHighlight() + ")", "ig");
 
-		// Make full path appear when mouse hovers
-		this.setTitle(termSuggestion.getPath());
+        initSimpleNameSpan(termSuggestion, replaceHighlightRegex);
 
-		initClickHandlers(container, termSuggestion);
+        initSynonymSpan(termSuggestion, replaceHighlightRegex);
 
-		browseLink.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				container.hidePopup();
-				
-				container.clearTextBox();
-				
-				eventBus.fireEvent(new ShowDataDictionaryPanelEvent(termSuggestion.toTerm()));
-			}
-		});
-	}
+        // Make full path appear when mouse hovers
+        this.setTitle(termSuggestion.getPath());
 
-	void initIconImage(final TermSuggestion termSuggestion) {
-		iconImage.setAlt("tree");
-		iconImage.setSrc("images/" + (termSuggestion.isLeaf() ? "document.png" : "folder.gif"));
-	}
+        initClickHandlers(container, termSuggestion);
 
-	public static WidgetMaker<TermSuggestion> autoSuggestRowWidgetMaker(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> suggestionEventSink) {
-		return new WidgetMaker<TermSuggestion>() {
-			@Override
-			public Widget makeWidget(final TermSuggestion termSuggestion) {
-				return new AutoSuggestRow(eventBus, suggestionEventSink, termSuggestion);
-			}
-		};
-	}
+        browseLink.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(final ClickEvent event) {
+                container.hidePopup();
 
-	void initClickHandlers(final SuggestRowContainer<TermSuggestion> suggestionEventSink, final TermSuggestion termSuggestion) {
-		final ClickHandler clickHandler = makeHandlerThatFiresSuggestionEvent(suggestionEventSink, termSuggestion);
+                container.clearTextBox();
 
-		for (final Label clickable : asList(simpleName, synonym)) {
-			clickable.addClickHandler(clickHandler);
-		}
-	}
+                eventBus.fireEvent(new ShowDataDictionaryPanelEvent(termSuggestion.toTerm()));
+            }
+        });
+    }
 
-	ClickHandler makeHandlerThatFiresSuggestionEvent(final SuggestRowContainer<TermSuggestion> eventSink, final TermSuggestion termSuggestion) {
-		return new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				Log.debug("Term Suggestion clicked: '" + termSuggestion.getPath() + "'");
+    void initIconImage(final TermSuggestion termSuggestion) {
+        iconImage.setAlt("tree");
+        iconImage.setSrc("images/" + (termSuggestion.isLeaf() ? "document.png" : "folder.gif"));
+    }
 
-				fireSuggestionEvent(eventSink, RichSuggestionEvent.from(termSuggestion));
-			}
-		};
-	}
+    public static WidgetMaker<TermSuggestion> autoSuggestRowWidgetMaker(final EventBus eventBus, final SuggestRowContainer<TermSuggestion> suggestionEventSink) {
+        return new WidgetMaker<TermSuggestion>() {
+            @Override
+            public Widget makeWidget(final TermSuggestion termSuggestion) {
+                return new AutoSuggestRow(eventBus, suggestionEventSink, termSuggestion);
+            }
+        };
+    }
 
-	void initSimpleNameSpan(final TermSuggestion termSuggestion, final RegExp replaceHighlightRegex) {
-		simpleName.getElement().setInnerHTML(makeHighlightedText(termSuggestion.getSimpleName().trim(), replaceHighlightRegex));
-	}
+    void initClickHandlers(final SuggestRowContainer<TermSuggestion> suggestionEventSink, final TermSuggestion termSuggestion) {
+        final ClickHandler clickHandler = makeHandlerThatFiresSuggestionEvent(suggestionEventSink, termSuggestion);
 
-	void initSynonymSpan(final TermSuggestion termSuggestion, final RegExp replaceHighlightRegex) {
-		final String synonymText = termSuggestion.getSynonym();
+        for (final Label clickable : asList(simpleName, synonym)) {
+            clickable.addClickHandler(clickHandler);
+        }
+    }
 
-		final boolean shouldShowSynonym = synonymText != null && !synonymText.equalsIgnoreCase(termSuggestion.getSimpleName());
+    ClickHandler makeHandlerThatFiresSuggestionEvent(final SuggestRowContainer<TermSuggestion> eventSink, final TermSuggestion termSuggestion) {
+        return new ClickHandler() {
+            @Override
+            public void onClick(final ClickEvent event) {
+                Log.debug("Term Suggestion clicked: '" + termSuggestion.getPath() + "'");
 
-		this.synonym.setVisible(shouldShowSynonym);
+                fireSuggestionEvent(eventSink, RichSuggestionEvent.from(termSuggestion));
+            }
+        };
+    }
 
-		if (shouldShowSynonym) {
-			final String wrapppedSynonymText = synonymText != null ? ("(synonym: " + synonymText + ")") : "";
+    void initSimpleNameSpan(final TermSuggestion termSuggestion, final RegExp replaceHighlightRegex) {
+        simpleName.getElement().setInnerHTML(makeHighlightedText(termSuggestion.getSimpleName().trim(), replaceHighlightRegex));
+    }
 
-			this.synonym.getElement().setInnerHTML(makeHighlightedText(wrapppedSynonymText, replaceHighlightRegex));
-		}
-	}
+    void initSynonymSpan(final TermSuggestion termSuggestion, final RegExp replaceHighlightRegex) {
+        final String synonymText = termSuggestion.getSynonym();
 
-	String makeHighlightedText(final String original, final RegExp highlightRegex) {
-		return highlightRegex.replace(original, "<strong>$1</strong>");
-	}
+        final boolean shouldShowSynonym = synonymText != null && !synonymText.equalsIgnoreCase(termSuggestion.getSimpleName());
 
-	void fireSuggestionEvent(final SuggestRowContainer<TermSuggestion> eventSink, final RichSuggestionEvent<TermSuggestion> suggestionEvent) {
-		Log.debug("Firing suggestion event: " + suggestionEvent);
+        this.synonym.setVisible(shouldShowSynonym);
 
-		eventSink.fireSuggestionEvent(suggestionEvent);
-	}
+        if (shouldShowSynonym) {
+            final String wrapppedSynonymText = synonymText != null ? ("(synonym: " + synonymText + ")") : "";
+
+            this.synonym.getElement().setInnerHTML(makeHighlightedText(wrapppedSynonymText, replaceHighlightRegex));
+        }
+    }
+
+    String makeHighlightedText(final String original, final RegExp highlightRegex) {
+        return highlightRegex.replace(original, "<strong>$1</strong>");
+    }
+
+    void fireSuggestionEvent(final SuggestRowContainer<TermSuggestion> eventSink, final RichSuggestionEvent<TermSuggestion> suggestionEvent) {
+        Log.debug("Firing suggestion event: " + suggestionEvent);
+
+        eventSink.fireSuggestionEvent(suggestionEvent);
+    }
 }

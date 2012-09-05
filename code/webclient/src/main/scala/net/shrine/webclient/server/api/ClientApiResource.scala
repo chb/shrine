@@ -6,8 +6,9 @@ import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
-import net.shrine.webclient.client.domain.OntNode
-import net.shrine.webclient.client.domain.TermSuggestion
+import net.shrine.webclient.shared.domain.BootstrapInfo
+import net.shrine.webclient.shared.domain.OntNode
+import net.shrine.webclient.shared.domain.TermSuggestion
 import net.shrine.webclient.server.MultiInstitutionQueryResult
 import net.shrine.webclient.server.OntologyService
 import net.shrine.webclient.server.OntologyServiceImpl
@@ -17,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.context.annotation.Scope
 import net.shrine.webclient.server.BootstrapInfoSource
-import net.shrine.webclient.client.domain.BootstrapInfo
-
 
 /**
  * 

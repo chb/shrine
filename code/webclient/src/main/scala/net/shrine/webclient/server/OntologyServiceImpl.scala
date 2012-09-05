@@ -15,9 +15,9 @@ import net.shrine.ont.index.OntologyTrie.addSlashesIfNeeded
 import net.shrine.ont.index.OntologyTrie.split
 import net.shrine.ont.index.OntologyTrie.unSplit
 import net.shrine.ont.messaging.Concept
-import net.shrine.webclient.client.domain.OntNode
-import net.shrine.webclient.client.domain.Term
-import net.shrine.webclient.client.domain.TermSuggestion
+import net.shrine.webclient.shared.domain.OntNode
+import net.shrine.webclient.shared.domain.Term
+import net.shrine.webclient.shared.domain.TermSuggestion
 
 /**
  * @author clint

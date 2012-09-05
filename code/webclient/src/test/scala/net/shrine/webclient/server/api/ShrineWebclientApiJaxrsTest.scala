@@ -1,24 +1,30 @@
 package net.shrine.webclient.server.api
 
-import com.sun.jersey.test.framework.JerseyTest
+import java.lang.reflect.Type
+import scala.Option.option2Iterable
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.matchers.ShouldMatchers
-import com.sun.jersey.test.framework.AppDescriptor
-import com.sun.jersey.api.core.ResourceConfig
 import com.sun.jersey.api.core.ClassNamesResourceConfig
-import com.sun.jersey.spi.inject.InjectableProvider
-import java.lang.reflect.Type
-import com.sun.jersey.core.spi.component.ComponentScope
+import com.sun.jersey.api.core.ResourceConfig
 import com.sun.jersey.core.spi.component.ComponentContext
-import net.shrine.webclient.server.QueryService
-import net.shrine.webclient.server.QueryServiceImpl
-import net.shrine.webclient.server.OntologyService
-import net.shrine.webclient.server.OntologyServiceImplTest
-import net.shrine.webclient.server.OntologyServiceImpl
+import com.sun.jersey.core.spi.component.ComponentScope
+import com.sun.jersey.spi.inject.InjectableProvider
+import com.sun.jersey.test.framework.AppDescriptor
+import com.sun.jersey.test.framework.JerseyTest
 import com.sun.jersey.test.framework.LowLevelAppDescriptor.Builder
+import net.liftweb.json.JArray
+import net.liftweb.json.JValue
+import net.liftweb.json.parse
 import net.shrine.webclient.server.BootstrapInfoSource
-import net.shrine.webclient.client.domain.BootstrapInfo
+import net.shrine.webclient.server.OntologyService
+import net.shrine.webclient.server.OntologyServiceImpl.toConcept
+import net.shrine.webclient.server.QueryService
+import net.shrine.webclient.server.OntologyServiceImpl
 
+/**
+ * @author clint
+ * @date Aug, 2012
+ */
 trait ShrineWebclientApiJaxrsTest extends AssertionsForJUnit with ShouldMatchers { self: JerseyTest =>
 
   def queryService: QueryService = null

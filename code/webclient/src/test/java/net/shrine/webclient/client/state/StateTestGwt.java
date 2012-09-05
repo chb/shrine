@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
-import net.shrine.webclient.client.domain.And;
-import net.shrine.webclient.client.domain.Term;
+import net.shrine.webclient.shared.domain.And;
+import net.shrine.webclient.shared.domain.Term;
 
 import org.junit.Test;
 

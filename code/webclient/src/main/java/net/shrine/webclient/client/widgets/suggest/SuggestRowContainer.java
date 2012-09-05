@@ -1,6 +1,5 @@
 package net.shrine.webclient.client.widgets.suggest;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * 
@@ -8,8 +7,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @date Apr 11, 2012
  * @param <S>
  * 
- * basically a side-effecting function RichSuggestionEvent<S> => void
+ *            basically a side-effecting function RichSuggestionEvent<S> => void
  */
-public interface SuggestRowContainer<S extends IsSerializable> extends HasHideablePopup {
-	void fireSuggestionEvent(final RichSuggestionEvent<S> event);
+public interface SuggestRowContainer<S> extends HasHideablePopup {
+    void fireSuggestionEvent(final RichSuggestionEvent<S> event);
 }

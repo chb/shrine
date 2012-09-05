@@ -3,8 +3,8 @@ package net.shrine.webclient.client.widgets;
 import net.shrine.webclient.client.AbstractWebclientTest;
 import net.shrine.webclient.client.Events;
 import net.shrine.webclient.client.controllers.QueryBuildingController;
-import net.shrine.webclient.client.domain.Term;
 import net.shrine.webclient.client.state.State;
+import net.shrine.webclient.shared.domain.Term;
 
 import org.junit.Test;
 

@@ -1,8 +1,8 @@
 package net.shrine.webclient.client.widgets;
 
 import net.shrine.webclient.client.controllers.Controllers;
-import net.shrine.webclient.client.domain.OntNode;
 import net.shrine.webclient.client.util.Util;
+import net.shrine.webclient.shared.domain.OntNode;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
