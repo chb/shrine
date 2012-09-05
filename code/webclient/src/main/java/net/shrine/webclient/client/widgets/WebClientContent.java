@@ -22,53 +22,54 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class WebClientContent extends Composite {
 
-	private static final WebclientUiBinder uiBinder = GWT.create(WebclientUiBinder.class);
+    private static final WebClientContentUiBinder uiBinder = GWT.create(WebClientContentUiBinder.class);
 
-	interface WebclientUiBinder extends UiBinder<Widget, WebClientContent> { }
+    interface WebClientContentUiBinder extends UiBinder<Widget, WebClientContent> {
+    }
 
-	@UiField
-	SimplePanel searchBoxHolder;
-	
-	@UiField
-	DataDictionaryRow dataDictionaryRow;
-	
-	@UiField
-	QueryPanel queryPanel;
-	
-	@UiField
-	ResultsPanel resultsPanel;
-	
-	public WebClientContent() {
-		initWidget(uiBinder.createAndBindUi(this));
-		
-		setQueryGroupsAndResultsPanelVisibility(false);
-	}
+    @UiField
+    SimplePanel searchBoxHolder;
 
-	public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox, final PickupDragController dragController) {
-		Util.requireNotNull(eventBus);
-		Util.requireNotNull(ontSearchBox);
-		
-		searchBoxHolder.setWidget(ontSearchBox);
-		
-		dataDictionaryRow.wireUp(eventBus, controllers);
-		
-		queryPanel.wireUp(controllers, state.getQueries(), dragController);
-		
-		resultsPanel.wireUp(eventBus, controllers, state.getAllResult());
-		
-		eventBus.addHandler(QueryGroupsChangedEvent.getType(), new QueryGroupsChangedEventHandler() {
-			@Override
-			public void handle(final QueryGroupsChangedEvent event) {
-				final boolean showQueryGroupsAndResultsPanels = !event.getQueryGroups().isEmpty();
-				
-				setQueryGroupsAndResultsPanelVisibility(showQueryGroupsAndResultsPanels);
-			}
-		});
-	}
-	
-	void setQueryGroupsAndResultsPanelVisibility(final boolean showQueryGroupsAndResultsPanels) {
-	    queryPanel.setVisible(showQueryGroupsAndResultsPanels);
-		
-	    resultsPanel.setVisible(showQueryGroupsAndResultsPanels);
-	}
+    @UiField
+    DataDictionaryRow dataDictionaryRow;
+
+    @UiField
+    QueryPanel queryPanel;
+
+    @UiField
+    SummaryPanel summaryPanel;
+
+    public WebClientContent() {
+        initWidget(uiBinder.createAndBindUi(this));
+
+        setQueryGroupsAndResultsPanelVisibility(false);
+    }
+
+    public void wireUp(final EventBus eventBus, final State state, final Controllers controllers, final OntologySearchBox ontSearchBox, final PickupDragController dragController) {
+        Util.requireNotNull(eventBus);
+        Util.requireNotNull(ontSearchBox);
+
+        searchBoxHolder.setWidget(ontSearchBox);
+
+        dataDictionaryRow.wireUp(eventBus, controllers);
+
+        queryPanel.wireUp(controllers, state.getQueries(), dragController);
+
+        summaryPanel.wireUp(eventBus, controllers);
+
+        eventBus.addHandler(QueryGroupsChangedEvent.getType(), new QueryGroupsChangedEventHandler() {
+            @Override
+            public void handle(final QueryGroupsChangedEvent event) {
+                final boolean showQueryGroupsAndResultsPanels = !event.getQueryGroups().isEmpty();
+
+                setQueryGroupsAndResultsPanelVisibility(showQueryGroupsAndResultsPanels);
+            }
+        });
+    }
+
+    void setQueryGroupsAndResultsPanelVisibility(final boolean showQueryGroupsAndResultsPanels) {
+        queryPanel.setVisible(showQueryGroupsAndResultsPanels);
+
+        summaryPanel.setVisible(showQueryGroupsAndResultsPanels);
+    }
 }

@@ -13,6 +13,6 @@
 		<!-- Query groups -->
 		<shrine:QueryPanel ui:field="queryPanel" />
 		<!-- Breakdown Row -->
-		<shrine:ResultsPanel ui:field="resultsPanel" />
+		<shrine:SummaryPanel ui:field="summaryPanel" />
 	</g:HTMLPanel>
 </ui:UiBinder> 

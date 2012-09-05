@@ -18,7 +18,6 @@
 				</div>
 			</div>
 			<g:HTMLPanel styleName="breakDownUpper" ui:field="resultsWrapper">
-				<div class="resultInstitutionsTitle">Institution Results</div>
 				<g:FlowPanel styleName="resultInstitutions" ui:field="resultsPanel" />
 			</g:HTMLPanel>
 		</div>
