@@ -1,6 +1,7 @@
 package net.shrine.webclient.client;
 
 import net.shrine.webclient.client.controllers.Controllers;
+import net.shrine.webclient.client.services.BootstrapService;
 import net.shrine.webclient.client.services.Services;
 import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.widgets.OntologySearchBox;
@@ -39,8 +40,10 @@ public final class Webclient implements EntryPoint {
 		final PickupDragController dragController = new QueryTermDragController(RootPanel.get(), false);
 		
 		configureDragController(dragController);
-		
-		wrapper.wireUp(eventBus, state, controllers, ontSearchBox, dragController);
+
+        final BootstrapService bootstrapService = Services.makeBootstrapService();
+
+		wrapper.wireUp(eventBus, state, controllers, ontSearchBox, dragController, bootstrapService);
 
 		RootPanel.get().add(wrapper);
 		

@@ -33,10 +33,10 @@ public class LoggedInUserPanel extends Composite {
     @UiField
     Anchor logoutLink;
     
-    public LoggedInUserPanel() {
+    public LoggedInUserPanel(String username) {
         initWidget(uiBinder.createAndBindUi(this));
 
-        username.setInnerText("Seth Paine");
+        this.username.setInnerText(username);
 
         final String queryParams = URL.encodeQueryString("/Webclient.html" + Window.Location.getQueryString());
 

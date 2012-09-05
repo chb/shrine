@@ -1,5 +1,6 @@
 package net.shrine.webclient.client.widgets;
 
+import com.google.gwt.user.client.ui.SimplePanel;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -30,6 +31,9 @@ public final class Header extends Composite {
     @UiField
     Anchor dataDictionaryLink;
 
+    @UiField
+    SimplePanel infoPlaceholder;
+
     private final PopupPanel queryHistoryPopup = new PopupPanel(true, false);
 
     private final PreviousQueriesPanel previousQueriesPanel = new PreviousQueriesPanel();
@@ -55,7 +59,7 @@ public final class Header extends Composite {
         });
     }
 
-    public void wireUp(final EventBus eventBus) {
+    public void wireUp(final EventBus eventBus, String username) {
         Util.requireNotNull(eventBus);
 
         this.eventBus = eventBus;
@@ -66,5 +70,8 @@ public final class Header extends Composite {
                 Header.this.eventBus.fireEvent(new ShowDataDictionaryPanelEvent(null));
             }
         });
+
+        infoPlaceholder.setWidget(new LoggedInUserPanel(username));
+
     }
 }

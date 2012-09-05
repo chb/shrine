@@ -4,7 +4,7 @@
 			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
 
 	<g:HTMLPanel styleName="header">
-        <shrine:LoggedInUserPanel styleName="headerLinks"/>
+        <g:SimplePanel ui:field="infoPlaceholder" styleName="headerLinks"/>
 		<div class="headerLinks topMenu">
 			<span class="buttonPanel">
 				<g:Anchor ui:field="queryHistoryLink" href="#" text="Load Project" />
