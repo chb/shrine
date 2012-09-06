@@ -11,7 +11,7 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
     <context:component-scan base-package="net.shrine.webclient.server"/>
-    <context:property-override location="classpath:webclient.properties"/>
+    <context:property-override ignore-resource-not-found="false" location="classpath:webclient.properties"/>
 
     <jee:jndi-lookup id="pmEndpoint" jndi-name="java:comp/env/shrine/pmEndpoint"
             default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
