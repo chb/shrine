@@ -9,18 +9,22 @@ import org.spin.tools.config.NodeConfig;
 import org.spin.tools.config.RoutingTableConfig;
 
 /**
- * ShrineConfig provides configuration details for broadcaster-aggregator and adapter configurations.
- * ShrineConfig is the "minimal describes the amount of information necessary to configure a shrine server" in one convenient location.
- * ShrineConfig is intended to be used in combination with I2B2HiveCredentials on startup to minimize duplicating configuration settings.
- *
+ * ShrineConfig provides configuration details for broadcaster-aggregator and
+ * adapter configurations. ShrineConfig is the
+ * "minimal describes the amount of information necessary to configure a shrine server"
+ * in one convenient location. ShrineConfig is intended to be used in
+ * combination with I2B2HiveCredentials on startup to minimize duplicating
+ * configuration settings.
+ * 
  * @author Andrew McMurry, MS
  * @date Jan 6, 2010 (REFACTORED)
  * @link http://cbmi.med.harvard.edu
  * @link http://chip.org
- * <p/>
- * NOTICE: This software comes with NO guarantees whatsoever and is licensed as Lgpl Open Source
- * @link http://www.gnu.org/licenses/lgpl.html
- *      Under the hood, ShrineConfig can be used to populate configuration objects as needed
+ *       <p/>
+ *       NOTICE: This software comes with NO guarantees whatsoever and is
+ *       licensed as Lgpl Open Source
+ * @link http://www.gnu.org/licenses/lgpl.html Under the hood, ShrineConfig can
+ *       be used to populate configuration objects as needed
  * @see AgentConfig
  * @see NodeConfig
  * @see KeyStoreConfig
@@ -28,16 +32,16 @@ import org.spin.tools.config.RoutingTableConfig;
 @XmlRootElement(name = "shrineConfig")
 public class ShrineConfig {
     /**
-     * Human readable name shown to actual users, NOT a servername!
-     * remove "hostnames.properties" from existence and fix this in SPIN base.
-     * TODO http://jira.open.med.harvard.edu/browse/BASE-373
+     * Human readable name shown to actual users, NOT a servername! remove
+     * "hostnames.properties" from existence and fix this in SPIN base. TODO
+     * http://jira.open.med.harvard.edu/browse/BASE-373
      */
     protected String humanReadableNodeName;
 
     /**
-     * Behave as a broadcaster-Aggregator.
-     * Read architecture specification to learn more about this behavior.
-     *
+     * Behave as a broadcaster-Aggregator. Read architecture specification to
+     * learn more about this behavior.
+     * 
      * @see #broadcasterPeerGroupToQuery
      * @see #queryTTL
      * @see #cacheTTL
@@ -46,38 +50,40 @@ public class ShrineConfig {
     protected boolean isBroadcasterAggregator = true;
 
     /**
-     * Many routing tables can be configured for a single node.
-     * This is the peer group to query by default.
-     *
+     * Many routing tables can be configured for a single node. This is the peer
+     * group to query by default.
+     * 
      * @see RoutingTableConfig
      * @deprecated TODO http://jira.open.med.harvard.edu/browse/SHRINE-456
      */
+    @Deprecated
     protected String broadcasterPeerGroupToQuery;
 
     /**
-     * Client (spin agent) Query TTL when calling agent.receive(...)
-     * Defaults to 3 minutes to conincide with the i2b2 default.
-     * This is an int to conform to RequestHeaderType.setResultWaittimeMs
-     * Ignored when isBroadcasterAggregator=false
+     * Client (spin agent) Query TTL when calling agent.receive(...) Defaults to
+     * 3 minutes to conincide with the i2b2 default. This is an int to conform
+     * to RequestHeaderType.setResultWaittimeMs Ignored when
+     * isBroadcasterAggregator=false
      */
     protected int queryTTL = 180 * 1000;
 
     /**
-     * Broadcaster-Aggregator Cache TTL. The cache is actually backed by the MemoryResidentCache in the SPIN library.
-     * The default is 1 hour to coincide with a maximum reasonable single user session.
-     * this property is ignored when isBroadcasterAggregator=false
+     * Broadcaster-Aggregator Cache TTL. The cache is actually backed by the
+     * MemoryResidentCache in the SPIN library. The default is 1 hour to
+     * coincide with a maximum reasonable single user session. this property is
+     * ignored when isBroadcasterAggregator=false
      */
     protected long cacheTTL = 60 * 60 * 1000;
 
     /**
-     * The default is 1 hour to coincide with a maximum reasonable single user session.
-     * This property is used by both the Adapter and Broadcaster.
+     * The default is 1 hour to coincide with a maximum reasonable single user
+     * session. This property is used by both the Adapter and Broadcaster.
      */
     protected long certificationTTL = 60 * 60 * 1000;
 
     /**
      * Behave as an Adapter
-     *
+     * 
      * @see #adapterLockoutAttemptsThreshold
      * @see #adapterRequireExplicitMappings
      */
@@ -85,35 +91,38 @@ public class ShrineConfig {
 
     /**
      * Lockout a #specific# user after numerous attempts at the same query
-     * default 7 attempts returning the same exact number of patients
-     * this property is ignored when isAdapter=false
+     * default 7 attempts returning the same exact number of patients this
+     * property is ignored when isAdapter=false
      */
     protected Integer adapterLockoutAttemptsThreshold = 7;
 
     protected boolean setSizeObfuscationEnabled = true;
 
     /**
-     * Require adapter mappings to exist for each-and-every item Such as \\SHRINE\Demographics\Age\0\
-     * Default to TRUE (fail fast on queries that we dont have answers for).
-     * this property is ignored when isAdapter=false
+     * Require adapter mappings to exist for each-and-every item Such as
+     * \\SHRINE\Demographics\Age\0\ Default to TRUE (fail fast on queries that
+     * we dont have answers for). this property is ignored when isAdapter=false
      */
     protected boolean adapterRequireExplicitMappings = true;
 
     /**
-     * The implementation fo the identity service that decouples the broadcaster-aggregator from PM specific details.
-     * Furthermore, this could refer to any implementation such as the 60 site CarraNet which may have different PM setup.
+     * The implementation fo the identity service that decouples the
+     * broadcaster-aggregator from PM specific details. Furthermore, this could
+     * refer to any implementation such as the 60 site CarraNet which may have
+     * different PM setup.
      */
-    //TODO remove me - this should be handled by spring now
+    // TODO remove me - this should be handled by spring now
     protected String identityServiceClass = null;
 
     /**
-     * Properties file to bootstrap Ibatis configuration, see jdbc-derby.properties
+     * Properties file to bootstrap Ibatis configuration, see
+     * jdbc-derby.properties
      */
     protected String databasePropertiesFile;
 
     /**
-     * The endpoint of the real CRC.  This is consumed by the Adapter, which actually needs to talk to
-     * i2b2 to fetch data.
+     * The endpoint of the real CRC. This is consumed by the Adapter, which
+     * actually needs to talk to i2b2 to fetch data.
      * <p/>
      * Url should look something like "http://host:port/path"
      */
@@ -124,13 +133,12 @@ public class ShrineConfig {
      */
     protected String shrineEndpoint;
 
-
     protected String aggregatorEndpoint;
     protected String pmEndpoint;
     protected String ontEndpoint;
     protected String sheriffEndpoint;
 
-    //TODO remove me - this should be handled by spring now
+    // TODO remove me - this should be handled by spring now
     protected String translatorClass;
     private String queryActionMapClassName;
 
@@ -138,11 +146,43 @@ public class ShrineConfig {
 
     private Boolean includeAggregateResult;
 
+    //NB: For JAXB
+    @SuppressWarnings("unused")
+    private ShrineConfig() {
+        super();
+    }
+    
+    ShrineConfig(final String humanReadableNodeName, final boolean isBroadcasterAggregator, final String broadcasterPeerGroupToQuery, final int queryTTL, final long cacheTTL, final long certificationTTL, final boolean isAdapter, final Integer adapterLockoutAttemptsThreshold, final boolean setSizeObfuscationEnabled, final boolean adapterRequireExplicitMappings, final String identityServiceClass, final String databasePropertiesFile, final String realCRCEndpoint, final String shrineEndpoint, final String aggregatorEndpoint, final String pmEndpoint, final String ontEndpoint, final String sheriffEndpoint, final String translatorClass, final String queryActionMapClassName, final String adapterStatusQuery, final Boolean includeAggregateResult) {
+        super();
+        this.humanReadableNodeName = humanReadableNodeName;
+        this.isBroadcasterAggregator = isBroadcasterAggregator;
+        this.broadcasterPeerGroupToQuery = broadcasterPeerGroupToQuery;
+        this.queryTTL = queryTTL;
+        this.cacheTTL = cacheTTL;
+        this.certificationTTL = certificationTTL;
+        this.isAdapter = isAdapter;
+        this.adapterLockoutAttemptsThreshold = adapterLockoutAttemptsThreshold;
+        this.setSizeObfuscationEnabled = setSizeObfuscationEnabled;
+        this.adapterRequireExplicitMappings = adapterRequireExplicitMappings;
+        this.identityServiceClass = identityServiceClass;
+        this.databasePropertiesFile = databasePropertiesFile;
+        this.realCRCEndpoint = realCRCEndpoint;
+        this.shrineEndpoint = shrineEndpoint;
+        this.aggregatorEndpoint = aggregatorEndpoint;
+        this.pmEndpoint = pmEndpoint;
+        this.ontEndpoint = ontEndpoint;
+        this.sheriffEndpoint = sheriffEndpoint;
+        this.translatorClass = translatorClass;
+        this.queryActionMapClassName = queryActionMapClassName;
+        this.adapterStatusQuery = adapterStatusQuery;
+        this.includeAggregateResult = includeAggregateResult;
+    }
+
     public Boolean isIncludeAggregateResult() {
         return includeAggregateResult;
     }
 
-    public void setIncludeAggregateResult(Boolean includeAggregateResult) {
+    public void setIncludeAggregateResult(final Boolean includeAggregateResult) {
         this.includeAggregateResult = includeAggregateResult;
     }
 
@@ -150,7 +190,7 @@ public class ShrineConfig {
         return adapterStatusQuery;
     }
 
-    public void setAdapterStatusQuery(String adapterStatusQuery) {
+    public void setAdapterStatusQuery(final String adapterStatusQuery) {
         this.adapterStatusQuery = adapterStatusQuery;
     }
 
@@ -158,7 +198,7 @@ public class ShrineConfig {
         return setSizeObfuscationEnabled;
     }
 
-    public void setSetSizeObfuscationEnabled(boolean setSizeObfuscationEnabled) {
+    public void setSetSizeObfuscationEnabled(final boolean setSizeObfuscationEnabled) {
         this.setSizeObfuscationEnabled = setSizeObfuscationEnabled;
     }
 
@@ -166,7 +206,7 @@ public class ShrineConfig {
         return shrineEndpoint;
     }
 
-    public void setShrineEndpoint(String shrineEndpoint) {
+    public void setShrineEndpoint(final String shrineEndpoint) {
         this.shrineEndpoint = shrineEndpoint;
     }
 
@@ -174,7 +214,7 @@ public class ShrineConfig {
         return aggregatorEndpoint;
     }
 
-    public void setAggregatorEndpoint(String aggregatorEndpoint) {
+    public void setAggregatorEndpoint(final String aggregatorEndpoint) {
         this.aggregatorEndpoint = aggregatorEndpoint;
     }
 
@@ -182,7 +222,7 @@ public class ShrineConfig {
         return pmEndpoint;
     }
 
-    public void setPmEndpoint(String pmEndpoint) {
+    public void setPmEndpoint(final String pmEndpoint) {
         this.pmEndpoint = pmEndpoint;
     }
 
@@ -190,7 +230,7 @@ public class ShrineConfig {
         return ontEndpoint;
     }
 
-    public void setOntEndpoint(String ontEndpoint) {
+    public void setOntEndpoint(final String ontEndpoint) {
         this.ontEndpoint = ontEndpoint;
     }
 
@@ -198,7 +238,7 @@ public class ShrineConfig {
         return sheriffEndpoint;
     }
 
-    public void setSheriffEndpoint(String sheriffEndpoint) {
+    public void setSheriffEndpoint(final String sheriffEndpoint) {
         this.sheriffEndpoint = sheriffEndpoint;
     }
 
@@ -206,12 +246,11 @@ public class ShrineConfig {
         return databasePropertiesFile;
     }
 
-    public void setDatabasePropertiesFile(String databasePropertiesFile) {
+    public void setDatabasePropertiesFile(final String databasePropertiesFile) {
         this.databasePropertiesFile = databasePropertiesFile;
     }
 
-    public void setAdapterLockoutAttemptsThreshold(
-            Integer adapterLockoutAttemptsThreshold) {
+    public void setAdapterLockoutAttemptsThreshold(final Integer adapterLockoutAttemptsThreshold) {
         this.adapterLockoutAttemptsThreshold = adapterLockoutAttemptsThreshold;
     }
 
@@ -219,7 +258,7 @@ public class ShrineConfig {
         return humanReadableNodeName;
     }
 
-    public void setHumanReadableNodeName(String humanReadableNodeName) {
+    public void setHumanReadableNodeName(final String humanReadableNodeName) {
         this.humanReadableNodeName = humanReadableNodeName;
     }
 
@@ -227,7 +266,7 @@ public class ShrineConfig {
         return isBroadcasterAggregator;
     }
 
-    public void setBroadcasterAggregator(boolean broadcasterAggregator) {
+    public void setBroadcasterAggregator(final boolean broadcasterAggregator) {
         isBroadcasterAggregator = broadcasterAggregator;
     }
 
@@ -235,7 +274,7 @@ public class ShrineConfig {
         return broadcasterPeerGroupToQuery;
     }
 
-    public void setBroadcasterPeerGroupToQuery(String broadcasterPeerGroupToQuery) {
+    public void setBroadcasterPeerGroupToQuery(final String broadcasterPeerGroupToQuery) {
         this.broadcasterPeerGroupToQuery = broadcasterPeerGroupToQuery;
     }
 
@@ -243,7 +282,7 @@ public class ShrineConfig {
         return isAdapter;
     }
 
-    public void setAdapter(boolean adapter) {
+    public void setAdapter(final boolean adapter) {
         isAdapter = adapter;
     }
 
@@ -251,7 +290,7 @@ public class ShrineConfig {
         return queryTTL;
     }
 
-    public void setQueryTTL(int queryTTL) {
+    public void setQueryTTL(final int queryTTL) {
         this.queryTTL = queryTTL;
     }
 
@@ -259,7 +298,7 @@ public class ShrineConfig {
         return cacheTTL;
     }
 
-    public void setCacheTTL(long cacheTTL) {
+    public void setCacheTTL(final long cacheTTL) {
         this.cacheTTL = cacheTTL;
     }
 
@@ -267,7 +306,7 @@ public class ShrineConfig {
         return certificationTTL;
     }
 
-    public void setCertificationTTL(long certificationTTL) {
+    public void setCertificationTTL(final long certificationTTL) {
         this.certificationTTL = certificationTTL;
     }
 
@@ -275,7 +314,7 @@ public class ShrineConfig {
         return adapterLockoutAttemptsThreshold;
     }
 
-    public void setAdapterLockoutAttemptsThreshold(int adapterLockoutAttemptsThreshold) {
+    public void setAdapterLockoutAttemptsThreshold(final int adapterLockoutAttemptsThreshold) {
         this.adapterLockoutAttemptsThreshold = adapterLockoutAttemptsThreshold;
     }
 
@@ -283,7 +322,7 @@ public class ShrineConfig {
         return adapterRequireExplicitMappings;
     }
 
-    public void setAdapterRequireExplicitMappings(boolean adapterRequireExplicitMappings) {
+    public void setAdapterRequireExplicitMappings(final boolean adapterRequireExplicitMappings) {
         this.adapterRequireExplicitMappings = adapterRequireExplicitMappings;
     }
 
@@ -291,7 +330,7 @@ public class ShrineConfig {
         return identityServiceClass;
     }
 
-    public void setIdentityServiceClass(String identityServiceClass) {
+    public void setIdentityServiceClass(final String identityServiceClass) {
         this.identityServiceClass = identityServiceClass;
     }
 
@@ -299,7 +338,7 @@ public class ShrineConfig {
         return realCRCEndpoint;
     }
 
-    public void setRealCRCEndpoint(String realCRCEndpoint) {
+    public void setRealCRCEndpoint(final String realCRCEndpoint) {
         this.realCRCEndpoint = realCRCEndpoint;
     }
 
@@ -307,7 +346,7 @@ public class ShrineConfig {
         return translatorClass;
     }
 
-    public void setTranslatorClass(String translatorClass) {
+    public void setTranslatorClass(final String translatorClass) {
         this.translatorClass = translatorClass;
     }
 
@@ -315,12 +354,12 @@ public class ShrineConfig {
         return queryActionMapClassName;
     }
 
-    public void setQueryActionMapClassName(String queryActionMapClassName) {
+    public void setQueryActionMapClassName(final String queryActionMapClassName) {
         this.queryActionMapClassName = queryActionMapClassName;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -328,7 +367,7 @@ public class ShrineConfig {
             return false;
         }
 
-        ShrineConfig that = (ShrineConfig) o;
+        final ShrineConfig that = (ShrineConfig) o;
 
         if (adapterRequireExplicitMappings != that.adapterRequireExplicitMappings) {
             return false;
@@ -394,8 +433,8 @@ public class ShrineConfig {
         result = 31 * result + (isBroadcasterAggregator ? 1 : 0);
         result = 31 * result + (broadcasterPeerGroupToQuery != null ? broadcasterPeerGroupToQuery.hashCode() : 0);
         result = 31 * result + queryTTL;
-        result = 31 * result + (int) (cacheTTL ^ (cacheTTL >>> 32));
-        result = 31 * result + (int) (certificationTTL ^ (certificationTTL >>> 32));
+        result = 31 * result + (int) (cacheTTL ^ cacheTTL >>> 32);
+        result = 31 * result + (int) (certificationTTL ^ certificationTTL >>> 32);
         result = 31 * result + (isAdapter ? 1 : 0);
         result = 31 * result + (adapterLockoutAttemptsThreshold != null ? adapterLockoutAttemptsThreshold.hashCode() : 0);
         result = 31 * result + (adapterRequireExplicitMappings ? 1 : 0);
@@ -413,38 +452,16 @@ public class ShrineConfig {
 
     @Override
     public String toString() {
-        return "ShrineConfig{" +
-                "humanReadableNodeName='" + humanReadableNodeName + '\'' +
-                ", isBroadcasterAggregator=" + isBroadcasterAggregator +
-                ", broadcasterPeerGroupToQuery='" + broadcasterPeerGroupToQuery + '\'' +
-                ", queryTTL=" + queryTTL +
-                ", cacheTTL=" + cacheTTL +
-                ", certificationTTL=" + certificationTTL +
-                ", isAdapter=" + isAdapter +
-                ", adapterLockoutAttemptsThreshold=" + adapterLockoutAttemptsThreshold +
-                ", adapterRequireExplicitMappings=" + adapterRequireExplicitMappings +
-                ", translatorClass=" + translatorClass +
-                '}';
+        return "ShrineConfig{" + "humanReadableNodeName='" + humanReadableNodeName + '\'' + ", isBroadcasterAggregator=" + isBroadcasterAggregator + ", broadcasterPeerGroupToQuery='" + broadcasterPeerGroupToQuery + '\'' + ", queryTTL=" + queryTTL + ", cacheTTL=" + cacheTTL + ", certificationTTL=" + certificationTTL + ", isAdapter=" + isAdapter + ", adapterLockoutAttemptsThreshold=" + adapterLockoutAttemptsThreshold + ", adapterRequireExplicitMappings=" + adapterRequireExplicitMappings + ", translatorClass=" + translatorClass + '}';
     }
 
     public AgentConfig generateAgentConfig() {
         final EndpointConfig endpointConfig = EndpointConfig.soap(aggregatorEndpoint);
-        
-        return new AgentConfig(endpointConfig, endpointConfig,
-                broadcasterPeerGroupToQuery, null, new Long(queryTTL), 1.0f);
+
+        return new AgentConfig(endpointConfig, endpointConfig, broadcasterPeerGroupToQuery, null, new Long(queryTTL), 1.0f);
     }
 
     public NodeConfig generateNodeConfig() {
-        return new NodeConfig(this.getHumanReadableNodeName(),
-                false,
-                this.isBroadcasterAggregator(),
-                this.isBroadcasterAggregator(),
-                this.isAdapter,
-                this.getIdentityServiceClass(),
-                this.getCertificationTTL(),
-                this.getCacheTTL(),
-                NodeConfig.defaultBroadcastTimeoutPeriod,
-                queryActionMapClassName,
-                null);
+        return new NodeConfig(getHumanReadableNodeName(), false, isBroadcasterAggregator(), isBroadcasterAggregator(), isAdapter, getIdentityServiceClass(), getCertificationTTL(), getCacheTTL(), NodeConfig.defaultBroadcastTimeoutPeriod, queryActionMapClassName, null);
     }
 }
