@@ -146,12 +146,11 @@ public class ShrineConfig {
 
     private Boolean includeAggregateResult;
 
-    //NB: For JAXB
-    @SuppressWarnings("unused")
-    private ShrineConfig() {
+    public ShrineConfig() {
         super();
     }
-    
+
+    //NB: For tests
     ShrineConfig(final String humanReadableNodeName, final boolean isBroadcasterAggregator, final String broadcasterPeerGroupToQuery, final int queryTTL, final long cacheTTL, final long certificationTTL, final boolean isAdapter, final Integer adapterLockoutAttemptsThreshold, final boolean setSizeObfuscationEnabled, final boolean adapterRequireExplicitMappings, final String identityServiceClass, final String databasePropertiesFile, final String realCRCEndpoint, final String shrineEndpoint, final String aggregatorEndpoint, final String pmEndpoint, final String ontEndpoint, final String sheriffEndpoint, final String translatorClass, final String queryActionMapClassName, final String adapterStatusQuery, final Boolean includeAggregateResult) {
         super();
         this.humanReadableNodeName = humanReadableNodeName;
