@@ -127,7 +127,7 @@ class ShrineService(
   }
 
   protected def executeRequest(identity: Identity, message: BroadcastMessage, aggregator: Aggregator): ShrineResponse = {
-    val queryInfo = new QueryInfo(determinePeergroup(message.request.projectId), identity, message.request.requestType.name, null.asInstanceOf[EndpointConfig])
+    val queryInfo = new QueryInfo(determinePeergroup(message.request.projectId), identity, message.request.requestType.name, aggregatorEndpointConfig)
     
     val ackNack = broadcastMessage(message, queryInfo)
     
