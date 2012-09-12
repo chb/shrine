@@ -39,7 +39,7 @@ final case class I2b2ResultEnvelope(resultType: ResultOutputType, columns: Seq[C
     this + Column(name, value)
   }
 
-  def ++(columns: Seq[(String, Int)]): I2b2ResultEnvelope = {
+  def ++(columns: Iterable[(String, Int)]): I2b2ResultEnvelope = {
     columns.foldLeft(this)(_ + _)
   }
   

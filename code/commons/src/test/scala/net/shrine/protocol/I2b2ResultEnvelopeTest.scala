@@ -11,14 +11,38 @@ import net.shrine.protocol.I2b2ResultEnvelope.Column
  * @date Aug 15, 2012
  */
 final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
+  private val tuples = Seq("x" -> 1, "y" -> 2, "z" -> 3)
+  
   @Test
   def testPlusPlus {
-    fail("TODO")
+    val resultType = ResultOutputType.PATIENT_RACE_COUNT_XML
+    
+    val env = new I2b2ResultEnvelope(resultType)
+    
+    val envWithData = env ++ tuples
+    
+    (env eq envWithData) should not be(true)
+    
+    env.toMap should equal(Map.empty)
+    
+    envWithData.toMap should equal(Map(tuples: _*))
+    
+    val anotherEnvWithData = env ++ Map(tuples: _*)
+    
+    env.toMap should equal(Map.empty)
+    
+    anotherEnvWithData.toMap should equal(Map(tuples: _*))
   }
   
   @Test
   def testConstructorTupleVarargs {
-    fail("TODO")
+    val resultType = ResultOutputType.PATIENT_GENDER_COUNT_XML
+    
+    val env = new I2b2ResultEnvelope(resultType, tuples: _*)
+    
+    env.resultType should equal(resultType)
+    
+    env.toMap should equal(Map(tuples: _*))
   }
   
   @Test

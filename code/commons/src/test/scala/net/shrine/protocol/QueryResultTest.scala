@@ -54,12 +54,10 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
       <resultEnvelope>
         <resultType>{ PATIENT_AGE_COUNT_XML }</resultType>
         <column>
-          <type>int</type>
           <name>foo</name>
           <value>1</value>
         </column>
         <column>
-          <type>int</type>
           <name>bar</name>
           <value>2</value>
         </column>
@@ -67,12 +65,10 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
       <resultEnvelope>
         <resultType>{ PATIENT_RACE_COUNT_XML }</resultType>
         <column>
-          <type>int</type>
           <name>nuh</name>
           <value>3</value>
         </column>
         <column>
-          <type>int</type>
           <name>zuh</name>
           <value>4</value>
         </column>
@@ -80,12 +76,10 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
       <resultEnvelope>
         <resultType>{ PATIENT_VITALSTATUS_COUNT_XML }</resultType>
         <column>
-          <type>int</type>
           <name>blarg</name>
           <value>5</value>
         </column>
         <column>
-          <type>int</type>
           <name>glarg</name>
           <value>6</value>
         </column>
@@ -93,12 +87,10 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
       <resultEnvelope>
         <resultType>{ PATIENT_GENDER_COUNT_XML }</resultType>
         <column>
-          <type>int</type>
           <name>huh</name>
           <value>7</value>
         </column>
         <column>
-          <type>int</type>
           <name>yeah</name>
           <value>8</value>
         </column>
