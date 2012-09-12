@@ -8,10 +8,12 @@ import org.junit.Test
 import net.shrine.webclient.server.QueryService
 import net.shrine.webclient.server.OntologyService
 import net.shrine.webclient.server.QueryServiceImpl
-import net.shrine.webclient.server.MultiInstitutionQueryResult
 import net.shrine.protocol.query.And
 import net.shrine.protocol.query.Term
 import net.shrine.protocol.query.Or
+import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
+import net.shrine.webclient.shared.domain.MultiInstitutionQueryResult
+import scala.collection.JavaConverters._
 
 /**
  * @author clint
@@ -19,7 +21,7 @@ import net.shrine.protocol.query.Or
  */
 final class QueryServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJaxrsTest {
   
-  private lazy val toReturn = Map("fooInst" -> 123, "barInst" -> 42)
+  private lazy val toReturn = Map("fooInst" -> new SingleInstitutionQueryResult(123, Map.empty.asJava), "barInst" -> new SingleInstitutionQueryResult(42, Map.empty.asJava))
 
   private lazy val mockClient = new MockShrineClient(toReturn)
   
@@ -27,8 +29,8 @@ final class QueryServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJaxr
   
   @Test
   def testSubmit {
-    def queryForBreakdown(query: String): Map[String, Int] = {
-      unmarshal[MultiInstitutionQueryResult](queryResource.path("submit").entity(query).post(classOf[String])).get.toMap
+    def queryForBreakdown(query: String): Map[String, SingleInstitutionQueryResult] = {
+      unmarshal[MultiInstitutionQueryResult](queryResource.path("submit").entity(query).post(classOf[String])).get.asScala.toMap
     }
     
     val queryExpr = And(Term("nuh"), Or(Term("foo"), Term("Bar")))
@@ -39,9 +41,10 @@ final class QueryServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJaxr
     
     queryResult.size should equal(toReturn.size)
     
-    toReturn.map { case (instName, count) =>
+    toReturn.map { case (instName, instResult) =>
       queryResult.contains(instName) should be(true)
-      queryResult.get(instName).get should equal(count)
+      queryResult.get(instName).get.count should equal(instResult.count)
+      //TODO: BREAKDOWNS OMITTED
     }
   }
 }

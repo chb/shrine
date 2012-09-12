@@ -1,9 +1,9 @@
 package net.shrine.webclient.client.services;
 
-import java.util.Map;
-
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+
+import net.shrine.webclient.shared.domain.MultiInstitutionQueryResult;
 
 import org.fusesource.restygwt.client.MethodCallback;
 import org.fusesource.restygwt.client.RestService;
@@ -17,6 +17,6 @@ import org.fusesource.restygwt.client.RestService;
 public interface QueryService extends RestService {
 	@POST
 	@Path("rest/api/query/submit")
-	void queryForBreakdown(final String expr, final MethodCallback<Map<String, Integer>> callback);
+	void performQuery(final String expr, final MethodCallback<MultiInstitutionQueryResult> callback);
 }
 

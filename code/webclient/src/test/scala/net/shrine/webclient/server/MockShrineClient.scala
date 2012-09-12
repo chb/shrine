@@ -16,12 +16,13 @@ import net.shrine.protocol.ReadPreviousQueriesResponse
 import scala.xml.NodeSeq
 import net.shrine.protocol.QueryResult
 import java.util.Date
+import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
 
 /**
  * @author clint
  * @date May 22, 2012
  */
-final case class MockShrineClient(toReturn: Map[String, Int]) extends ShrineClient {
+final case class MockShrineClient(toReturn: Map[String, SingleInstitutionQueryResult]) extends ShrineClient {
   var queryDefinition: QueryDefinition = _
 
   def readApprovedQueryTopics(userId: String): ReadApprovedQueryTopicsResponse = null
@@ -33,8 +34,8 @@ final case class MockShrineClient(toReturn: Map[String, Int]) extends ShrineClie
 
     val now = NetworkTime.makeXMLGregorianCalendar(new Date)
 
-    val queryResults = toReturn.map { case (instName, count) =>
-      QueryResult(123L, 456L, Option(ResultOutputType.PATIENT_COUNT_XML), count.toLong, Some(now), Some(now), Some(instName), "some-status-type", None)
+    val queryResults = toReturn.map { case (instName, instResult) =>
+      QueryResult(123L, 456L, Option(ResultOutputType.PATIENT_COUNT_XML), instResult.count, Some(now), Some(now), Some(instName), "some-status-type", None)
     }
 
     RunQueryResponse(987L, now, "some-user-id", "some-group-id", queryDefinition, 42L, queryResults.toSeq)

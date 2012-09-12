@@ -1,12 +1,15 @@
 package net.shrine.webclient.server.api
 
-import javax.ws.rs.ext.MessageBodyWriter
-import java.lang.reflect.Type
-import java.lang.annotation.{ Annotation => JAnnotation }
-import javax.ws.rs.core.MediaType
-import java.lang.reflect.ParameterizedType
-import javax.ws.rs.core.MultivaluedMap
 import java.io.OutputStream
+import java.lang.annotation.{Annotation => JAnnotation}
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
+
+import javax.ws.rs.core.MediaType
+import javax.ws.rs.core.MultivaluedMap
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json.compact
+import net.liftweb.json.render
 
 /**
  * @author clint

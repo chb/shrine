@@ -23,6 +23,7 @@ import net.shrine.protocol.QueryResult
 import net.shrine.protocol.query.Or
 import net.shrine.protocol.query.Term
 import net.shrine.protocol.query.And
+import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
 
 /**
  * @author clint
@@ -31,22 +32,27 @@ import net.shrine.protocol.query.And
 final class QueryServiceImplTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
   @Test
   def testQueryForBreakdown {
-    val toReturn = Map("fooInst" -> 123, "barInst" -> 42)
+    import scala.collection.JavaConverters._
+    
+    val toReturn = Map("fooInst" -> new SingleInstitutionQueryResult(123, Map.empty.asJava), "barInst" -> new SingleInstitutionQueryResult(42, Map.empty.asJava))
     
     val mockClient = new MockShrineClient(toReturn)
     
     val queryService = new QueryServiceImpl(mockClient)
+    
     val queryExpr = And(Term("nuh"), Or(Term("foo"), Term("Bar")))
     
-    val queryResult = queryService.queryForBreakdown(queryExpr.toXmlString)
+    import scala.collection.JavaConverters._
+    
+    val queryResult = queryService.performQuery(queryExpr.toXmlString).asScala
     
     mockClient.queryDefinition.expr should equal(queryExpr)
     
     queryResult.size should equal(toReturn.size)
     
-    toReturn.map { case (instName, count) =>
+    toReturn.foreach { case (instName, instResult) =>
       queryResult.contains(instName) should be(true)
-      queryResult.get(instName).get should equal(count)
+      queryResult.get(instName).get.count should equal(instResult.count)
     }
   }
 }

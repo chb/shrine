@@ -7,8 +7,13 @@ import org.junit.Test
 import net.shrine.webclient.shared.domain.Term
 import net.shrine.webclient.shared.domain.OntNode
 import net.shrine.webclient.shared.domain.TermSuggestion
-import net.shrine.webclient.server.MultiInstitutionQueryResult
 import net.shrine.webclient.shared.domain.BootstrapInfo
+import net.shrine.protocol.I2b2ResultEnvelope
+import net.shrine.protocol.ResultOutputType
+import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
+import net.shrine.webclient.shared.domain.MultiInstitutionQueryResult
+import net.shrine.webclient.server.Helpers
+import net.shrine.webclient.shared.domain.Breakdown
 
 /**
  * @author clint
@@ -80,17 +85,37 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
     toJson(suggestion) should equal(expectedJson)
   }
 
+  import Helpers._
+  
+  import scala.collection.JavaConverters._
+  
   @Test
-  def testMultiInstitutionQueryResultIsJsonable {
-    val result = MultiInstitutionQueryResult(Map("foo" -> 123, "bar" -> 987654))
+  def testSingleInstitutionResultIsJsonable {
+    val breakdownData = new Breakdown((0 to 4).map(i => ("column_" + i, java.lang.Long.valueOf(i))).toMap.asJava)
+    
+    val result = new SingleInstitutionQueryResult(999, Map("PATIENT_GENDER_COUNT_XML" -> breakdownData,
+                                                            "PATIENT_RACE_COUNT_XML" -> breakdownData).asJava)
     
     doRoundTrip(result)()
     
-    val expectedJson = """{"foo":123,"bar":987654}"""
-      
-    toJson(result) should equal(expectedJson)
+    toJson(new SingleInstitutionQueryResult(1234, Map.empty.asJava)) should equal("""{"count":1234,"breakdowns":{}}""")
+  }
+  
+  @Test
+  def testMultiInstitutionQueryResultIsJsonable {
+    def singleInstResult(count: Long): SingleInstitutionQueryResult = {
+      new SingleInstitutionQueryResult(count, makeBreakdownsByTypeMap(ResultOutputType.values.map { resultType =>
+        I2b2ResultEnvelope(resultType, (0 to 4).map { i =>
+          I2b2ResultEnvelope.Column("column_" + i, i)
+        })
+      }))
+    }
     
-    val empty = MultiInstitutionQueryResult(Map.empty)
+    val result = new MultiInstitutionQueryResult(Map("foo" -> singleInstResult(123), "bar" -> singleInstResult(987654)).asJava)
+    
+    doRoundTrip(result)()
+    
+    val empty = new MultiInstitutionQueryResult(Map.empty.asJava)
     
     doRoundTrip(empty)()
     
@@ -109,7 +134,7 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
 
   private def doRoundTrip[T: Jsonable](thing: T)(equalityChecker: (T, T) => Unit = (expected: T, actual: T) => actual should equal(expected)) {
     val serializer = implicitly[Jsonable[T]]
-
+    
     val json = serializer.toJsonString(thing)
 
     val unmarshalled = serializer.fromJsonString(json).get

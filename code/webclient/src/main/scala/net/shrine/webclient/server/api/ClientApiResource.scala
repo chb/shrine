@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType
 import net.shrine.webclient.shared.domain.BootstrapInfo
 import net.shrine.webclient.shared.domain.OntNode
 import net.shrine.webclient.shared.domain.TermSuggestion
-import net.shrine.webclient.server.MultiInstitutionQueryResult
+import net.shrine.webclient.shared.domain.MultiInstitutionQueryResult
 import net.shrine.webclient.server.OntologyService
 import net.shrine.webclient.server.OntologyServiceImpl
 import net.shrine.webclient.server.QueryService
@@ -48,7 +48,7 @@ final class ClientApiResource @Autowired()(@Injectable queryService: QueryServic
   
   @POST
   @Path("query/submit")
-  def queryForBreakdown(expr: String): MultiInstitutionQueryResult = queryService.queryForBreakdown(expr)
+  def performQuery(expr: String): MultiInstitutionQueryResult = queryService.performQuery(expr)
   
   @GET
   @Path("bootstrap")

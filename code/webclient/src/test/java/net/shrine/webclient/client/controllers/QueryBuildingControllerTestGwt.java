@@ -19,321 +19,323 @@ import org.junit.Test;
  */
 public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
-	@Test
-	public void testMoveTerm() {
-		// moving to same group shouldn't delete term
-		{
-			final State state = state();
-
-			final QueryBuildingController controller = new QueryBuildingController(state);
-
-			final Term t1 = term("foo");
-			final Term t2 = term("bar");
-
-			final int id1 = state.registerNewQuery(t1).getId();
-			
-			assertEquals(t1, state.getQuery(id1).getExpression());
-			assertEquals(1, state.numQueryGroups());
-			
-			controller.moveTerm(t1, id1, id1);
-			
-			assertEquals(t1, state.getQuery(id1).getExpression());
-			assertEquals(1, state.numQueryGroups());
-			
-			controller.removeAllQueryGroups();
-			
-			assertEquals(0, state.numQueryGroups());
-			
-			final Or or = new Or(t1, t2);
-			
-			final int id2 = state.registerNewQuery(or).getId();
-			
-			assertEquals(or, state.getQuery(id2).getExpression());
-			assertEquals(1, state.numQueryGroups());
-			
-			controller.moveTerm(t1, id2, id2);
-			
-			assertEquals(or, state.getQuery(id2).getExpression());
-			assertEquals(1, state.numQueryGroups());
-			
-			controller.moveTerm(t2, id2, id2);
-			
-			assertEquals(or, state.getQuery(id2).getExpression());
-			assertEquals(1, state.numQueryGroups());
-		}
-		
-		// to new query, from query only contains 1 term
-		{
-			final State state = state();
+    @Test
+    public void testMoveTerm() {
+        // moving to same group shouldn't delete term
+        {
+            final State state = state();
 
-			final QueryBuildingController controller = new QueryBuildingController(state);
+            final QueryBuildingController controller = new QueryBuildingController(state);
 
-			final Term t1 = term("foo");
+            final Term t1 = term("foo");
+            final Term t2 = term("bar");
 
-			final int id = state.registerNewQuery(t1).getId();
+            final int id1 = state.registerNewQuery(t1).getId();
 
-			final MockObserver observer = new MockObserver(state.getQueries());
+            assertEquals(t1, state.getQuery(id1).getExpression());
+            assertEquals(1, state.numQueryGroups());
 
-			assertEquals(1, state.numQueryGroups());
-			assertEquals(t1, state.getQuery(id).getExpression());
-			assertFalse(observer.informed);
+            controller.moveTerm(t1, id1, id1);
 
-			controller.moveTerm(t1, id, QueryGroup.NullId);
+            assertEquals(t1, state.getQuery(id1).getExpression());
+            assertEquals(1, state.numQueryGroups());
 
-			assertEquals(1, state.numQueryGroups());
-			assertEquals(t1, state.getQuery(id).getExpression());
-			assertTrue(observer.informed);
-		}
+            controller.removeAllQueryGroups();
 
-		// to new query, from query contains > 1 term
-		{
-			final State state = state();
+            assertEquals(0, state.numQueryGroups());
 
-			final QueryBuildingController controller = new QueryBuildingController(state);
+            final Or or = new Or(t1, t2);
 
-			final Term t1 = term("foo");
-			final Term t2 = term("bar");
-			final Term t3 = term("nuh");
+            final int id2 = state.registerNewQuery(or).getId();
 
-			final Or or = new Or(t1, t2, t3);
+            assertEquals(or, state.getQuery(id2).getExpression());
+            assertEquals(1, state.numQueryGroups());
 
-			final int id = state.registerNewQuery(or).getId();
+            controller.moveTerm(t1, id2, id2);
 
-			final MockObserver observer = new MockObserver(state.getQueries());
+            assertEquals(or, state.getQuery(id2).getExpression());
+            assertEquals(1, state.numQueryGroups());
 
-			assertEquals(1, state.numQueryGroups());
-			assertEquals(or, state.getQuery(id).getExpression());
-			assertFalse(observer.informed);
+            controller.moveTerm(t2, id2, id2);
 
-			controller.moveTerm(t1, id, QueryGroup.NullId);
+            assertEquals(or, state.getQuery(id2).getExpression());
+            assertEquals(1, state.numQueryGroups());
+        }
 
-			assertTrue(observer.informed);
+        // to new query, from query only contains 1 term
+        {
+            final State state = state();
 
-			assertEquals(2, state.numQueryGroups());
+            final QueryBuildingController controller = new QueryBuildingController(state);
 
-			final List<QueryGroup> queries = Util.sorted(state.getQueries());
+            final Term t1 = term("foo");
 
-			assertEquals(or.without(t1), queries.get(0).getExpression());
-			assertEquals(t1, queries.get(1).getExpression());
-		}
+            final int id = state.registerNewQuery(t1).getId();
 
-		// to existing query
-		{
-			final State state = state();
+            final MockObserver observer = new MockObserver(state.getQueries());
 
-			final QueryBuildingController controller = new QueryBuildingController(state);
+            assertEquals(1, state.numQueryGroups());
+            assertEquals(t1, state.getQuery(id).getExpression());
+            assertFalse(observer.informed);
 
-			final Term t1 = term("foo");
-			final Term t2 = term("bar");
-			final Term t3 = term("nuh");
-			final Term t4 = term("zuh");
+            controller.moveTerm(t1, id, QueryGroup.NullId);
 
-			final Or or1 = new Or(t1, t2);
-			final Or or2 = new Or(t3, t4);
+            assertEquals(1, state.numQueryGroups());
+            assertEquals(t1, state.getQuery(id).getExpression());
+            assertTrue(observer.informed);
+        }
 
-			final int id1 = state.registerNewQuery(or1).getId();
-			final int id2 = state.registerNewQuery(or2).getId();
+        // to new query, from query contains > 1 term
+        {
+            final State state = state();
 
-			final MockObserver observer = new MockObserver(state.getQueries());
+            final QueryBuildingController controller = new QueryBuildingController(state);
 
-			assertEquals(2, state.numQueryGroups());
-			assertEquals(or1, state.getQuery(id1).getExpression());
-			assertEquals(or2, state.getQuery(id2).getExpression());
-			assertFalse(observer.informed);
+            final Term t1 = term("foo");
+            final Term t2 = term("bar");
+            final Term t3 = term("nuh");
 
-			controller.moveTerm(t1, id1, id2);
+            final Or or = new Or(t1, t2, t3);
 
-			assertFalse(observer.informed);
+            final int id = state.registerNewQuery(or).getId();
 
-			assertEquals(2, state.numQueryGroups());
+            final MockObserver observer = new MockObserver(state.getQueries());
 
-			{
-				final List<QueryGroup> queries = Util.sorted(state.getQueries());
+            assertEquals(1, state.numQueryGroups());
+            assertEquals(or, state.getQuery(id).getExpression());
+            assertFalse(observer.informed);
 
-				assertEquals(t2, queries.get(0).getExpression());
-				assertEquals(or2.with(t1), queries.get(1).getExpression());
-			}
+            controller.moveTerm(t1, id, QueryGroup.NullId);
 
-			controller.moveTerm(t2, id1, id2);
+            assertTrue(observer.informed);
 
-			assertTrue(observer.informed);
+            assertEquals(2, state.numQueryGroups());
 
-			assertEquals(1, state.numQueryGroups());
+            final List<QueryGroup> queries = Util.sorted(state.getQueries());
 
-			assertEquals(or2.with(t1).with(t2), state.getQuery(id2).getExpression());
-		}
+            assertEquals(or.without(t1), queries.get(0).getExpression());
+            assertEquals(t1, queries.get(1).getExpression());
+        }
 
-		// to existing 1-term query
-		{
-			final State state = state();
+        // to existing query
+        {
+            final State state = state();
 
-			final QueryBuildingController controller = new QueryBuildingController(state);
+            final QueryBuildingController controller = new QueryBuildingController(state);
 
-			final Term t1 = term("foo");
-			final Term t2 = term("bar");
-			final Term t3 = term("nuh");
+            final Term t1 = term("foo");
+            final Term t2 = term("bar");
+            final Term t3 = term("nuh");
+            final Term t4 = term("zuh");
 
-			final Or or = new Or(t1, t2);
+            final Or or1 = new Or(t1, t2);
+            final Or or2 = new Or(t3, t4);
 
-			final int id1 = state.registerNewQuery(or).getId();
-			final int id2 = state.registerNewQuery(t3).getId();
+            final int id1 = state.registerNewQuery(or1).getId();
+            final int id2 = state.registerNewQuery(or2).getId();
 
-			final MockObserver observer = new MockObserver(state.getQueries());
+            final MockObserver observer = new MockObserver(state.getQueries());
 
-			assertEquals(2, state.numQueryGroups());
-			assertEquals(or, state.getQuery(id1).getExpression());
-			assertEquals(t3, state.getQuery(id2).getExpression());
-			assertFalse(observer.informed);
+            assertEquals(2, state.numQueryGroups());
+            assertEquals(or1, state.getQuery(id1).getExpression());
+            assertEquals(or2, state.getQuery(id2).getExpression());
+            assertFalse(observer.informed);
 
-			controller.moveTerm(t1, id1, id2);
+            controller.moveTerm(t1, id1, id2);
 
-			assertFalse(observer.informed);
+            assertFalse(observer.informed);
 
-			assertEquals(2, state.numQueryGroups());
+            assertEquals(2, state.numQueryGroups());
 
-			final List<QueryGroup> queries = Util.sorted(state.getQueries());
+            {
+                final List<QueryGroup> queries = Util.sorted(state.getQueries());
 
-			assertEquals(t2, queries.get(0).getExpression());
-			assertEquals(new Or(t3, t1), queries.get(1).getExpression());
-		}
-	}
+                assertEquals(t2, queries.get(0).getExpression());
+                assertEquals(or2.with(t1), queries.get(1).getExpression());
+            }
 
-	@Test
-	public void testAddNewTerm() {
-		final State state = state();
+            controller.moveTerm(t2, id1, id2);
 
-		final QueryBuildingController controller = new QueryBuildingController(state);
+            assertTrue(observer.informed);
 
-		final Term term1 = term("foo");
-		final Term term2 = term("bar");
+            assertEquals(1, state.numQueryGroups());
 
-		assertEquals(0, state.numQueryGroups());
+            assertEquals(or2.with(t1).with(t2), state.getQuery(id2).getExpression());
+        }
 
-		final int t1id = controller.addNewTerm(term1).getId();
+        // to existing 1-term query
+        {
+            final State state = state();
 
-		assertEquals(1, state.numQueryGroups());
+            final QueryBuildingController controller = new QueryBuildingController(state);
 
-		final QueryGroup group = state.getQuery(t1id);
+            final Term t1 = term("foo");
+            final Term t2 = term("bar");
+            final Term t3 = term("nuh");
 
-		assertEquals(term1, group.getExpression());
+            final Or or = new Or(t1, t2);
 
-		final int t2id = controller.addNewTerm(term2).getId();
+            final int id1 = state.registerNewQuery(or).getId();
+            final int id2 = state.registerNewQuery(t3).getId();
 
-		assertEquals(2, state.numQueryGroups());
+            final MockObserver observer = new MockObserver(state.getQueries());
 
-		assertEquals(term1, state.getQuery(t1id).getExpression());
-		assertEquals(term2, state.getQuery(t2id).getExpression());
-	}
+            assertEquals(2, state.numQueryGroups());
+            assertEquals(or, state.getQuery(id1).getExpression());
+            assertEquals(t3, state.getQuery(id2).getExpression());
+            assertFalse(observer.informed);
 
-	public void testRemoveAllQueryGroups() {
-		final State state = state();
+            controller.moveTerm(t1, id1, id2);
 
-		final QueryBuildingController controller = new QueryBuildingController(state);
+            assertFalse(observer.informed);
 
-		assertEquals(0, state.numQueryGroups());
+            assertEquals(2, state.numQueryGroups());
 
-		controller.removeAllQueryGroups();
+            final List<QueryGroup> queries = Util.sorted(state.getQueries());
 
-		assertEquals(0, state.numQueryGroups());
+            assertEquals(t2, queries.get(0).getExpression());
+            assertEquals(new Or(t3, t1), queries.get(1).getExpression());
+        }
+    }
 
-		state.registerNewQuery(term("foo"));
-		state.registerNewQuery(term("blah"));
+    @Test
+    public void testAddNewTerm() {
+        final State state = state();
 
-		assertEquals(2, state.numQueryGroups());
+        final QueryBuildingController controller = new QueryBuildingController(state);
 
-		controller.removeAllQueryGroups();
+        final Term term1 = term("foo");
+        final Term term2 = term("bar");
 
-		assertEquals(0, state.numQueryGroups());
-	}
+        assertEquals(0, state.numQueryGroups());
 
-	public void testRemoveQueryGroup() {
-		final State state = state();
+        final int t1id = controller.addNewTerm(term1).getId();
 
-		final QueryBuildingController controller = new QueryBuildingController(state);
+        assertEquals(1, state.numQueryGroups());
 
-		final int fooId = state.registerNewQuery(term("foo")).getId();
-		final int barId = state.registerNewQuery(term("blah")).getId();
+        final QueryGroup group = state.getQuery(t1id);
 
-		assertEquals(2, state.numQueryGroups());
+        assertEquals(term1, group.getExpression());
 
-		try {
-			controller.removeQueryGroup(9483);
+        final int t2id = controller.addNewTerm(term2).getId();
 
-			fail("should have thrown");
-		} catch (IllegalArgumentException expected) { }
+        assertEquals(2, state.numQueryGroups());
 
-		controller.removeQueryGroup(fooId);
+        assertEquals(term1, state.getQuery(t1id).getExpression());
+        assertEquals(term2, state.getQuery(t2id).getExpression());
+    }
 
-		assertEquals(1, state.numQueryGroups());
+    public void testRemoveAllQueryGroups() {
+        final State state = state();
 
-		try {
-			state.guardQueryIsPresent(fooId);
+        final QueryBuildingController controller = new QueryBuildingController(state);
 
-			fail("should have thrown");
-		} catch (IllegalArgumentException expected) { }
+        assertEquals(0, state.numQueryGroups());
 
-		state.guardQueryIsPresent(barId);
+        controller.removeAllQueryGroups();
 
-		controller.removeQueryGroup(barId);
+        assertEquals(0, state.numQueryGroups());
 
-		assertEquals(0, state.numQueryGroups());
-	}
+        state.registerNewQuery(term("foo"));
+        state.registerNewQuery(term("blah"));
 
-	public void testRemoveTerm() {
-		final State state = state();
+        assertEquals(2, state.numQueryGroups());
 
-		final QueryBuildingController controller = new QueryBuildingController(state);
+        controller.removeAllQueryGroups();
 
-		final Term t1 = term("foo");
-		final Term t2 = term("blah");
-		final Term t3 = term("nuh");
-		final Term t4 = term("zuh");
-		final Or or = new Or(t2, t3, t4);
+        assertEquals(0, state.numQueryGroups());
+    }
 
-		final int t1Id = state.registerNewQuery(t1).getId();
+    public void testRemoveQueryGroup() {
+        final State state = state();
 
-		final int orId = state.registerNewQuery(or).getId();
+        final QueryBuildingController controller = new QueryBuildingController(state);
 
-		assertEquals(2, state.numQueryGroups());
+        final int fooId = state.registerNewQuery(term("foo")).getId();
+        final int barId = state.registerNewQuery(term("blah")).getId();
 
-		try {
-			controller.removeTerm(12345, t1);
+        assertEquals(2, state.numQueryGroups());
 
-			fail("should have thrown on unknown query group");
-		} catch (IllegalArgumentException expected) {
-		}
+        try {
+            controller.removeQueryGroup(9483);
 
-		// Try to remove term that's not part of this query group - shouldn't do
-		// anything
-		controller.removeTerm(t1Id, t2);
+            fail("should have thrown");
+        } catch (IllegalArgumentException expected) {
+        }
 
-		assertEquals(2, state.numQueryGroups());
+        controller.removeQueryGroup(fooId);
 
-		assertEquals(t1, state.getQuery(t1Id).getExpression());
-		assertEquals(or, state.getQuery(orId).getExpression());
+        assertEquals(1, state.numQueryGroups());
 
-		// Remove term that's actually present
+        try {
+            state.guardQueryIsPresent(fooId);
 
-		// Single-term expressions should be removed
-		controller.removeTerm(t1Id, t1);
+            fail("should have thrown");
+        } catch (IllegalArgumentException expected) {
+        }
 
-		assertEquals(1, state.numQueryGroups());
-		assertEquals(or, state.getQuery(orId).getExpression());
+        state.guardQueryIsPresent(barId);
 
-		// remove single terms from multi-term expressions
+        controller.removeQueryGroup(barId);
 
-		controller.removeTerm(orId, t3);
+        assertEquals(0, state.numQueryGroups());
+    }
 
-		assertEquals(1, state.numQueryGroups());
-		assertEquals(new Or(t2, t4), state.getQuery(orId).getExpression());
+    public void testRemoveTerm() {
+        final State state = state();
 
-		controller.removeTerm(orId, t4);
+        final QueryBuildingController controller = new QueryBuildingController(state);
 
-		assertEquals(1, state.numQueryGroups());
-		assertEquals(t2, state.getQuery(orId).getExpression());
+        final Term t1 = term("foo");
+        final Term t2 = term("blah");
+        final Term t3 = term("nuh");
+        final Term t4 = term("zuh");
+        final Or or = new Or(t2, t3, t4);
 
-		controller.removeTerm(orId, t2);
+        final int t1Id = state.registerNewQuery(t1).getId();
 
-		assertEquals(0, state.numQueryGroups());
-	}
+        final int orId = state.registerNewQuery(or).getId();
+
+        assertEquals(2, state.numQueryGroups());
+
+        try {
+            controller.removeTerm(12345, t1);
+
+            fail("should have thrown on unknown query group");
+        } catch (IllegalArgumentException expected) {
+        }
+
+        // Try to remove term that's not part of this query group - shouldn't do
+        // anything
+        controller.removeTerm(t1Id, t2);
+
+        assertEquals(2, state.numQueryGroups());
+
+        assertEquals(t1, state.getQuery(t1Id).getExpression());
+        assertEquals(or, state.getQuery(orId).getExpression());
+
+        // Remove term that's actually present
+
+        // Single-term expressions should be removed
+        controller.removeTerm(t1Id, t1);
+
+        assertEquals(1, state.numQueryGroups());
+        assertEquals(or, state.getQuery(orId).getExpression());
+
+        // remove single terms from multi-term expressions
+
+        controller.removeTerm(orId, t3);
+
+        assertEquals(1, state.numQueryGroups());
+        assertEquals(new Or(t2, t4), state.getQuery(orId).getExpression());
+
+        controller.removeTerm(orId, t4);
+
+        assertEquals(1, state.numQueryGroups());
+        assertEquals(t2, state.getQuery(orId).getExpression());
+
+        controller.removeTerm(orId, t2);
+
+        assertEquals(0, state.numQueryGroups());
+    }
 }

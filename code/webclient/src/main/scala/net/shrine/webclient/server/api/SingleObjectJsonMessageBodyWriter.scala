@@ -1,10 +1,13 @@
 package net.shrine.webclient.server.api
 
+import java.io.OutputStream
 import java.lang.annotation.{Annotation => JAnnotation}
 import java.lang.reflect.Type
+
 import javax.ws.rs.core.MediaType
 import javax.ws.rs.core.MultivaluedMap
-import java.io.OutputStream
+import net.liftweb.json.compact
+import net.liftweb.json.render
 
 /**
  * @author clint
