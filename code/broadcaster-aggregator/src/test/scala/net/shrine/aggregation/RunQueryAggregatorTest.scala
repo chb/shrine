@@ -98,12 +98,14 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
 
   @Test
   def testAggregateResponsesWithBreakdowns {
+    def toColumn(i: Int) = Column("x" + i, i)
+    
     val breakdowns1 = Map.empty ++ ResultOutputType.breakdownTypes.map { resultType =>
-      resultType -> I2b2ResultEnvelope(resultType, (1 to 10).map(i => Column("int", "x" + i, i)))
+      resultType -> I2b2ResultEnvelope(resultType, (1 to 10).map(toColumn))
     }
     
     val breakdowns2 = Map.empty ++ ResultOutputType.breakdownTypes.map { resultType =>
-      resultType -> I2b2ResultEnvelope(resultType, (11 to 20).map(i => Column("int", "x" + i, i)))
+      resultType -> I2b2ResultEnvelope(resultType, (11 to 20).map(toColumn))
     }
     
     val qr1 = new QueryResult(1L, queryInstanceId, Some(PATIENT_COUNT_XML), 10L, Some(now), Some(now), Some("Desc"), "FINISHED", None, breakdowns1)
