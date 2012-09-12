@@ -3,6 +3,9 @@ package net.shrine.webclient.shared.domain;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import net.shrine.webclient.client.util.Util;
 
 /**
@@ -11,25 +14,21 @@ import net.shrine.webclient.client.util.Util;
  * @date Mar 23, 2012
  */
 public final class Term implements Andable {
-    // NB: Field must be public for RestyGWT to serialize it
-    public String path;
+    @JsonProperty
+    private final String path;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public String category;
+    @JsonProperty
+    private final String category;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public String simpleName;
-
-    // NB: For RestyGWT serialization
-    public Term() {
-        super();
-    }
+    @JsonProperty
+    private final String simpleName;
 
     public Term(final String value, final String category) {
         this(value, category, "");
     }
 
-    public Term(final String value, final String category, final String simpleName) {
+    @JsonCreator
+    public Term(@JsonProperty("value") final String value, @JsonProperty("category") final String category, @JsonProperty("simpleName") final String simpleName) {
         super();
 
         Util.requireNotNull(value);

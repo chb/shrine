@@ -44,7 +44,7 @@ final class QueryServiceImplTest extends TestCase with AssertionsForJUnit with S
     
     import scala.collection.JavaConverters._
     
-    val queryResult = queryService.performQuery(queryExpr.toXmlString).asScala
+    val queryResult = queryService.performQuery(queryExpr.toXmlString).asMap.asScala
     
     mockClient.queryDefinition.expr should equal(queryExpr)
     
@@ -52,7 +52,7 @@ final class QueryServiceImplTest extends TestCase with AssertionsForJUnit with S
     
     toReturn.foreach { case (instName, instResult) =>
       queryResult.contains(instName) should be(true)
-      queryResult.get(instName).get.count should equal(instResult.count)
+      queryResult.get(instName).get.getCount should equal(instResult.getCount)
     }
   }
 }

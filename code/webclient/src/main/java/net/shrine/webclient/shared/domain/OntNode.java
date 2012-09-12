@@ -1,8 +1,10 @@
 package net.shrine.webclient.shared.domain;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * 
@@ -10,25 +12,23 @@ import java.util.List;
  * @date Apr 2, 2012
  */
 public final class OntNode {
-    // NB: Field must be public for RestyGWT to serialize it
-    public Term term;
+    //Must be default-access, not private, to appease RestyGWT
+    @JsonProperty
+    final Term term;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public boolean isLeaf;
+    //Must be default-access, not private, to appease RestyGWT
+    @JsonProperty
+    final boolean isLeaf;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public List<OntNode> children;
-
-    // For RestyGWT
-    public OntNode() {
-        this(null, new ArrayList<OntNode>(), false);
-    }
+    @JsonProperty
+    private final List<OntNode> children;
 
     public OntNode(final Term term, final boolean isLeaf) {
         this(term, Collections.<OntNode> emptyList(), isLeaf);
     }
 
-    public OntNode(final Term term, final List<OntNode> children, final boolean isLeaf) {
+    @JsonCreator
+    public OntNode(@JsonProperty("term") final Term term, @JsonProperty("children") final List<OntNode> children, @JsonProperty("isLeaf") final boolean isLeaf) {
         super();
 
         this.term = term;
@@ -48,20 +48,12 @@ public final class OntNode {
         return children;
     }
 
-    public void setChildren(final List<OntNode> children) {
-        this.children = children;
-    }
-
     public String getSimpleName() {
         return term.getSimpleName();
     }
 
     public boolean isLeaf() {
         return isLeaf;
-    }
-
-    public void setLeaf(final boolean isLeaf) {
-        this.isLeaf = isLeaf;
     }
 
     @Override

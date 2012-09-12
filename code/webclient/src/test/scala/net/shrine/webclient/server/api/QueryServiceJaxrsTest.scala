@@ -30,7 +30,7 @@ final class QueryServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJaxr
   @Test
   def testSubmit {
     def queryForBreakdown(query: String): Map[String, SingleInstitutionQueryResult] = {
-      unmarshal[MultiInstitutionQueryResult](queryResource.path("submit").entity(query).post(classOf[String])).get.asScala.toMap
+      unmarshal[MultiInstitutionQueryResult](queryResource.path("submit").entity(query).post(classOf[String])).get.asMap.asScala.toMap
     }
     
     val queryExpr = And(Term("nuh"), Or(Term("foo"), Term("Bar")))
@@ -43,7 +43,7 @@ final class QueryServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJaxr
     
     toReturn.map { case (instName, instResult) =>
       queryResult.contains(instName) should be(true)
-      queryResult.get(instName).get.count should equal(instResult.count)
+      queryResult.get(instName).get.getCount should equal(instResult.getCount)
       //TODO: BREAKDOWNS OMITTED
     }
   }

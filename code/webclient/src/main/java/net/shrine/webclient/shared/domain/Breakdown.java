@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * 
  * @author clint
  * @author Bill Simons
  * @date Sep 10, 2012
  */
+@JsonSerialize(as = Map.class)
 public final class Breakdown implements Map<String, Long> {
 
     private final Map<String, Long> delegate = new HashMap<String, Long>();

@@ -1,35 +1,42 @@
 package net.shrine.webclient.shared.domain;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * 
  * @author clint
  * @date Mar 29, 2012
  */
+@JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY/*, value = JsonMethod.FIELD*/)
 public final class TermSuggestion {
-    // NB: Field must be public for RestyGWT to serialize it
-    public String path;
+    @JsonProperty
+    private final String path;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public String simpleName;
+    @JsonProperty
+    private final String simpleName;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public String highlight;
+    @JsonProperty
+    private final String highlight;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public String synonym;
+    @JsonProperty
+    private final String synonym;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public String category;
+    @JsonProperty
+    private final String category;
 
-    // NB: Field must be public for RestyGWT to serialize it
-    public boolean isLeaf;
+    //NB: Must be default access, not private, to appease RestyGWT
+    @JsonProperty
+    final boolean isLeaf;
 
-    // NB: For RestyGWT
-    public TermSuggestion() {
-        super();
-    }
-
-    public TermSuggestion(final String path, final String simpleName, final String highlight, final String synonym, final String category, final boolean isLeaf) {
+    @JsonCreator
+    public TermSuggestion(@JsonProperty("path") final String path, 
+                           @JsonProperty("simpleName") final String simpleName, 
+                           @JsonProperty("highlight") final String highlight, 
+                           @JsonProperty("synonym") final String synonym, 
+                           @JsonProperty("category") final String category, 
+                           @JsonProperty("isLeaf") final boolean isLeaf) {
         super();
 
         this.path = path;
@@ -48,48 +55,24 @@ public final class TermSuggestion {
         return path;
     }
 
-    public void setPath(final String path) {
-        this.path = path;
-    }
-
     public String getSimpleName() {
         return simpleName;
-    }
-
-    public void setSimpleName(final String simpleName) {
-        this.simpleName = simpleName;
     }
 
     public String getHighlight() {
         return highlight;
     }
 
-    public void setHighlight(final String highlight) {
-        this.highlight = highlight;
-    }
-
     public String getSynonym() {
         return synonym;
-    }
-
-    public void setSynonym(final String synonym) {
-        this.synonym = synonym;
     }
 
     public String getCategory() {
         return category;
     }
 
-    public void setCategory(final String category) {
-        this.category = category;
-    }
-
     public boolean isLeaf() {
         return isLeaf;
-    }
-
-    public void setLeaf(final boolean isLeaf) {
-        this.isLeaf = isLeaf;
     }
 
     @Override

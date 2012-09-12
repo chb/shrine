@@ -1,31 +1,26 @@
 package net.shrine.webclient.shared.domain;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * 
  * @author clint
  * @date Sep 4, 2012
  */
 public final class BootstrapInfo {
-    // RestyGWT requires fields be public and mutable :(
-    public String loggedInUsername;
+    @JsonProperty
+    private final String loggedInUsername;
 
-    public BootstrapInfo(final String loggedInUsername) {
+    @JsonCreator
+    public BootstrapInfo(@JsonProperty("loggedInUsername") final String loggedInUsername) {
         super();
 
         this.loggedInUsername = loggedInUsername;
     }
 
-    // For RestyGWT
-    public BootstrapInfo() {
-        this(null);
-    }
-
     public String getLoggedInUsername() {
         return loggedInUsername;
-    }
-
-    public void setLoggedInUsername(final String loggedInUsername) {
-        this.loggedInUsername = loggedInUsername;
     }
 
     @Override

@@ -20,6 +20,6 @@ final class GetBootstrapInfoJaxrsTest extends JerseyTest with ShrineWebclientApi
   def testSubmit {
     val bootstrapInfo = unmarshal[BootstrapInfo](resource.path("api/bootstrap").get(classOf[String])).get
     
-    bootstrapInfo.loggedInUsername should equal(loggedInUser)
+    bootstrapInfo.getLoggedInUsername should equal(loggedInUser)
   }
 }

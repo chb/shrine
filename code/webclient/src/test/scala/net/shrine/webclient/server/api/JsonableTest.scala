@@ -125,9 +125,9 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
   private def toJson[T : Jsonable](thing: T): String = implicitly[Jsonable[T]].toJsonString(thing)
   
   private def checkTermEquality(expected: Term, actual: Term) {
-    expected.path should equal(actual.path)
-    expected.category should equal(actual.category)
-    expected.simpleName should equal(actual.simpleName)
+    expected.getPath should equal(actual.getPath)
+    expected.getCategory should equal(actual.getCategory)
+    expected.getSimpleName should equal(actual.getSimpleName)
   }
 
   private def escapeSlashes(s: String) = s.replaceAll("""\\""", """\\\\""")

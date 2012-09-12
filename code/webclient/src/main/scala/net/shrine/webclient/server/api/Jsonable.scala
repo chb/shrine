@@ -92,11 +92,11 @@ object Jsonable {
     import FieldNames.SingleInstitutionQueryResult._
 
     override def toJson(results: SingleInstitutionQueryResult): JValue = {
-      val breakdowns = results.breakdowns.asScala.toMap.mapValues { breakdown =>
+      val breakdowns = results.getBreakdowns.asScala.toMap.mapValues { breakdown =>
         breakdown.asScala.toMap.mapValues(colValue => JInt(colValue.toLong))
       }
 
-      (Count -> JInt(results.count)) ~ (Breakdowns -> breakdowns.toMap)
+      (Count -> JInt(results.getCount)) ~ (Breakdowns -> breakdowns.toMap)
     }
 
     import I2b2ResultEnvelope.Column
@@ -129,7 +129,7 @@ object Jsonable {
 
     val singleInstFromJson = implicitly[Jsonable[SingleInstitutionQueryResult]].fromJson _
 
-    override def toJson(results: MultiInstitutionQueryResult): JValue = results.asScala.toMap.mapValues(singleInstToJson)
+    override def toJson(results: MultiInstitutionQueryResult): JValue = results.asMap.asScala.toMap.mapValues(singleInstToJson)
 
     override def fromJson(json: JValue): Option[MultiInstitutionQueryResult] = json match {
       case JObject(List(insts @ _*)) => {
@@ -168,7 +168,7 @@ object Jsonable {
     import FieldNames.BootstrapInfo._
 
     override def toJson(bootstrapInfo: BootstrapInfo): JValue = {
-      (LoggedInUsername -> bootstrapInfo.loggedInUsername)
+      (LoggedInUsername -> bootstrapInfo.getLoggedInUsername)
     }
 
     override def fromJson(json: JValue): Option[BootstrapInfo] = json match {

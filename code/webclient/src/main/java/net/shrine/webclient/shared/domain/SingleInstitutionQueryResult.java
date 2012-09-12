@@ -3,6 +3,9 @@ package net.shrine.webclient.shared.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * 
  * @author clint
@@ -10,18 +13,14 @@ import java.util.Map;
  * @date Sep 10, 2012
  */
 public final class SingleInstitutionQueryResult {
-    // Must be public for RestyGWt
-    public long count;
+    @JsonProperty
+    private final long count;
 
-    // Must be public for RestyGWt
-    public HashMap<String, Breakdown> breakdowns;
+    @JsonProperty
+    private final Map<String, Breakdown> breakdowns;
 
-    public SingleInstitutionQueryResult() {
-        super();
-    }
-
-    // For tests
-    public SingleInstitutionQueryResult(final long count, final Map<String, Breakdown> breakdowns) {
+    @JsonCreator
+    public SingleInstitutionQueryResult(@JsonProperty("count") final long count, @JsonProperty("breakdowns") final Map<String, Breakdown> breakdowns) {
         super();
         this.count = count;
         this.breakdowns = new HashMap<String, Breakdown>(breakdowns);
@@ -31,20 +30,8 @@ public final class SingleInstitutionQueryResult {
         return count;
     }
 
-    public void setCount(final long count) {
-        this.count = count;
-    }
-
     public Map<String, Breakdown> getBreakdowns() {
         return breakdowns;
-    }
-
-    public void setBreakdowns(final Map<String, Breakdown> breakdowns) {
-        this.breakdowns.clear();
-      
-        if (breakdowns != null) {
-            this.breakdowns.putAll(breakdowns);
-        }
     }
 
     @Override
