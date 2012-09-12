@@ -61,9 +61,7 @@ final case class I2b2ResultEnvelope(resultType: ResultOutputType, columns: Seq[C
     </resultEnvelope>)
     
   override def toJson: JValue = {
-    (resultType.name -> Map.empty ++ columns.map { column =>
-      column.toTuple
-    })
+    (resultType.name -> columns.map(_.toTuple).toMap)
   } 
 }
 
