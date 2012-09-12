@@ -32,15 +32,13 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
   private val statusMessage = "lakjdalsjd"
   private val queryResult = new QueryResult(resultId, instanceId, Some(resultType), setSize, Option(date), Option(date), Option(description), statusType, Option(statusMessage))
 
-  private def intColumn(name: String, value: Int) = Column("int", name, value)
-
   import ResultOutputType._
 
   private val resultWithBreakDowns = queryResult.copy(breakdowns =
-    Map(PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Seq(intColumn("foo", 1), intColumn("bar", 2))),
-      PATIENT_RACE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_RACE_COUNT_XML, Seq(intColumn("nuh", 3), intColumn("zuh", 4))),
-      PATIENT_VITALSTATUS_COUNT_XML -> I2b2ResultEnvelope(PATIENT_VITALSTATUS_COUNT_XML, Seq(intColumn("blarg", 5), intColumn("glarg", 6))),
-      PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Seq(intColumn("huh", 7), intColumn("yeah", 8)))))
+    Map(PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Seq(Column("foo", 1), Column("bar", 2))),
+      PATIENT_RACE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_RACE_COUNT_XML, Seq(Column("nuh", 3), Column("zuh", 4))),
+      PATIENT_VITALSTATUS_COUNT_XML -> I2b2ResultEnvelope(PATIENT_VITALSTATUS_COUNT_XML, Seq(Column("blarg", 5), Column("glarg", 6))),
+      PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Seq(Column("huh", 7), Column("yeah", 8)))))
 
   private val expectedWhenBreakdownsArePresent = XmlUtil.stripWhitespace(
     <queryResult>

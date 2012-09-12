@@ -12,6 +12,16 @@ import net.shrine.protocol.I2b2ResultEnvelope.Column
  */
 final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
   @Test
+  def testPlusPlus {
+    fail("TODO")
+  }
+  
+  @Test
+  def testConstructorTupleVarargs {
+    fail("TODO")
+  }
+  
+  @Test
   def testFromI2b2 {
     val xml = I2b2Workarounds.unescape("""&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 &lt;ns10:i2b2_result_envelope xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
@@ -36,22 +46,19 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
     
     env.resultType should be(ResultOutputType.PATIENT_AGE_COUNT_XML)
     
-    def column(name: String, value: Int) = Column("int", name, value)
-    
-    val expected = Seq(column("  0-9 years old", 0),
-                       column("  10-17 years old", 11),
-                       column("  18-34 years old", 26),
-                       column("  35-44 years old", 26),
-                       column("  45-54 years old", 8),
-                       column("  55-64 years old", 6),
-                       column("  65-74 years old", 5),
-                       column("  75-84 years old", 0),
-                       column(">= 65 years old", 5),
-                       column(">= 85 years old", 0),
-                       column("Not recorded", 0))
+    val expected = Seq(Column("  0-9 years old", 0),
+                       Column("  10-17 years old", 11),
+                       Column("  18-34 years old", 26),
+                       Column("  35-44 years old", 26),
+                       Column("  45-54 years old", 8),
+                       Column("  55-64 years old", 6),
+                       Column("  65-74 years old", 5),
+                       Column("  75-84 years old", 0),
+                       Column(">= 65 years old", 5),
+                       Column(">= 85 years old", 0),
+                       Column("Not recorded", 0))
                        
     env.columns.zip(expected).foreach { case (actual, expected) =>
-      actual.columnType should equal(expected.columnType)
       actual.name should equal(expected.name)
       actual.value should equal(expected.value)
     }
@@ -95,7 +102,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
 
     val empty = I2b2ResultEnvelope.empty(resultType)
 
-    val column1 = Column("int", "foo", 123)
+    val column1 = Column("foo", 123)
 
     val env1 = empty + column1
 
@@ -105,7 +112,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
 
     env1.columns should equal(Seq(column1))
 
-    val column2 = Column("int", "nuh", 123)
+    val column2 = Column("nuh", 123)
 
     val env2 = env1 + column2
 
@@ -127,7 +134,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
 
     env.resultType should be(resultType)
 
-    env.columns should equal(Seq(Column("int", "foo", 123)))
+    env.columns should equal(Seq(Column("foo", 123)))
   }
 
   @Test
@@ -149,7 +156,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
   def testToMap {
     val resultType = ResultOutputType.PATIENT_COUNT_XML
     
-    val env = I2b2ResultEnvelope(resultType, Seq(Column("int", "foo", 123), Column("int", "bar", 99)))
+    val env = I2b2ResultEnvelope(resultType, Seq(Column("foo", 123), Column("bar", 99)))
     
     env.toMap should equal(Map("foo" -> 123, "bar" -> 99))
   }
