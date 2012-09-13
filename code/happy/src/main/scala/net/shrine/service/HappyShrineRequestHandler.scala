@@ -11,23 +11,23 @@ package net.shrine.service
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 trait HappyShrineRequestHandler {
-    def keystoreReport: String
+  def keystoreReport: String
 
-    def shrineConfigReport: String
+  def shrineConfigReport: String
 
-    def routingReport: String
+  def routingReport: String
 
-    def hiveReport: String
+  def hiveReport: String
 
-    def spinReport: String
+  def spinReport: String
 
-    def adapterReport: String
+  def adapterReport: String
 
-    def auditReport: String
+  def auditReport: String
 
-    def queryReport: String
+  def queryReport: String
 
-    def versionReport: String
-    
-    def all: String
+  def versionReport: String
+
+  def all: String
 }
