@@ -30,7 +30,7 @@ public final class Breakdown implements Map<String, Long> {
     public Breakdown(final Map<String, Long> values) {
         delegate.putAll(values);
     }
-    
+
     @Override
     public int size() {
         return delegate.size();
@@ -92,12 +92,32 @@ public final class Breakdown implements Map<String, Long> {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        return delegate.equals(o);
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (delegate == null ? 0 : delegate.hashCode());
+        return result;
     }
 
     @Override
-    public int hashCode() {
-        return delegate.hashCode();
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Breakdown other = (Breakdown) obj;
+        if (delegate == null) {
+            if (other.delegate != null) {
+                return false;
+            }
+        } else if (!delegate.equals(other.delegate)) {
+            return false;
+        }
+        return true;
     }
 }
