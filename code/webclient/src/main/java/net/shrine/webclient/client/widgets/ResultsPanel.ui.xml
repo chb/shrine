@@ -4,48 +4,40 @@
     <g:HTMLPanel styleName="breakDown">
         <div class="resultInstitutionsTitle">
             <div class="resultLink">
-                <a href="patient-list2b.php">
-                    <img width="30" height="30" align="absmiddle"
-                        border="0" alt="Get Patient Set" src="images/download.png" />
+                <a href="#">
+                    <img width="30" height="30" align="absmiddle" border="0" alt="Get Patient Set" src="images/download.png" />
                 </a>
-                <a href="patient-list2b.php">Request Patient Set</a>
+                <a href="#">Request Patient Set</a>
             </div>
             Institution Results
         </div>
 
         <div class="breakDownInstitution">
-            <div class="resultDescription">Click each institution below to view the
-                breakdown for that institution.</div>
+            <div class="resultDescription">Click each institution below to view the breakdown for that institution.</div>
             <div class="resultInstitutions">
                 <div class="resultInstitution resultInstitutionNameSelected">
                     <div class="resultInstitutionName">Children's Hospital</div>
                     <div class="resultInstitutionData">
-                        <div class="resultInstitutionQuantity">
-                            2,120
-                    </div>
+                        <div class="resultInstitutionQuantity">2,120</div>
                     </div>
                 </div>
                 <div class="resultInstitution">
                     <div class="resultInstitutionName">Beth Israel Deaconess Medical Center</div>
                     <div class="resultInstitutionData">
-                        <div class="resultInstitutionQuantity">
-                            3,253
-                    </div>
+                        <div class="resultInstitutionQuantity">3,253</div>
                     </div>
                 </div>
                 <div class="resultInstitution">
                     <div class="resultInstitutionName">Dana Farber Cancer Institute</div>
                     <div class="resultInstitutionData">
-                        <div class="resultInstitutionQuantity">
-                            1,145
-                    </div>
+                        <div class="resultInstitutionQuantity">1,145</div>
                     </div>
                 </div>
 
                 <div class="resultInstitution">
                     <div class="resultInstitutionName">Brigham and Women's Hospital</div>
                     <div class="resultInstitutionData">
-                        <div class="resultInstitutionQuantity">1,562 </div>
+                        <div class="resultInstitutionQuantity">1,562</div>
                     </div>
                 </div>
 
@@ -53,21 +45,16 @@
                 <div class="resultInstitution">
                     <div class="resultInstitutionName">Mass General Hospital</div>
                     <div class="resultInstitutionData">
-                        <div class="resultInstitutionQuantity">
-                            796
-                    </div>
+                        <div class="resultInstitutionQuantity">796</div>
                     </div>
                 </div>
             </div>
-            <div style="display: none;" class="queryResultsTotals"> 25,870 </div>
         </div>
-
 
         <div class="breakDownDemographics">
             <div class="demographic">
                 Gender
-                <div style="width: 660px; height: 270px; position: relative;"
-                    id="genderchart">
+                <div style="width: 660px; height: 270px; position: relative;" id="genderchart">
                     <iframe width="660" scrolling="no" height="270"
                         frameborder="0" name="Drawing_Frame_37486" id="Drawing_Frame_37486"
                         marginheight="0" marginwidth="0"></iframe>
@@ -76,8 +63,7 @@
             </div>
             <div class="demographic">
                 Age
-                <div style="width: 660px; height: 270px; position: relative;"
-                    id="agechart">
+                <div style="width: 660px; height: 270px; position: relative;" id="agechart">
                     <iframe width="660" scrolling="no" height="270"
                         frameborder="0" name="Drawing_Frame_8638" id="Drawing_Frame_8638"
                         marginheight="0" marginwidth="0"></iframe>
@@ -86,8 +72,7 @@
             </div>
             <div class="demographic">
                 Race
-                <div style="width: 660px; height: 270px; position: relative;"
-                    id="racechart">
+                <div style="width: 660px; height: 270px; position: relative;" id="racechart">
                     <iframe width="660" scrolling="no" height="270"
                         frameborder="0" name="Drawing_Frame_28892" id="Drawing_Frame_28892"
                         marginheight="0" marginwidth="0"></iframe>
@@ -96,8 +81,7 @@
             </div>
             <div class="demographic">
                 Language
-                <div style="width: 660px; height: 270px; position: relative;"
-                    id="languagechart">
+                <div style="width: 660px; height: 270px; position: relative;" id="languagechart">
                     <iframe width="660" scrolling="no" height="270"
                         frameborder="0" name="Drawing_Frame_3071" id="Drawing_Frame_3071"
                         marginheight="0" marginwidth="0"></iframe>
@@ -106,8 +90,7 @@
             </div>
             <div class="demographic">
                 Religion
-                <div style="width: 660px; height: 270px; position: relative;"
-                    id="religionchart">
+                <div style="width: 660px; height: 270px; position: relative;" id="religionchart">
                     <iframe width="660" scrolling="no" height="270"
                         frameborder="0" name="Drawing_Frame_69411" id="Drawing_Frame_69411"
                         marginheight="0" marginwidth="0"></iframe>
