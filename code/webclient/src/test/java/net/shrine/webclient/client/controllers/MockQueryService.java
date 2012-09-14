@@ -1,8 +1,6 @@
 package net.shrine.webclient.client.controllers;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.shrine.webclient.client.services.QueryService;
 import net.shrine.webclient.shared.domain.Breakdown;
@@ -25,12 +23,10 @@ public final class MockQueryService implements QueryService {
 
     static final Integer total = 99;
 
-    static final MultiInstitutionQueryResult multiNodeResults = new MultiInstitutionQueryResult() {
-        {
-            this.put("foo", new SingleInstitutionQueryResult(123L, Collections.<String, Breakdown> emptyMap()));
-            this.put("bar", new SingleInstitutionQueryResult(9876L, Collections.<String, Breakdown> emptyMap()));
-        }
-    };
+    static final MultiInstitutionQueryResult multiNodeResults = new MultiInstitutionQueryResult() {{
+        this.put("foo", new SingleInstitutionQueryResult(123L, Collections.<String, Breakdown>emptyMap()));
+        this.put("bar", new SingleInstitutionQueryResult(9876L, Collections.<String, Breakdown>emptyMap()));
+    }};
 
     @Override
     public void performQuery(final String expr, final MethodCallback<MultiInstitutionQueryResult> callback) {
