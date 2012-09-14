@@ -111,4 +111,17 @@ final class OutputTypeSetTest extends TestCase with AssertionsForJUnit with Shou
     deserialize("PATIENT_COUNT_XML%2CPATIENTSET") should equal(someOutputTypes)
     deserialize("PATIENTSET%2CPATIENT_COUNT_XML") should equal(someOutputTypes)
   }
+  
+  @Test
+  def testDeserializeAllPermutations {
+    import OutputTypeSet.{deserialize, encode}
+    
+    val allResultOutputTypes = ResultOutputType.values.toSet
+    
+    ResultOutputType.values.permutations.foreach { resultTypes =>
+      val serialized = encode(resultTypes.map(_.name).mkString(","))
+      
+      deserialize(serialized) should equal(allResultOutputTypes)
+    }
+  }
 }
