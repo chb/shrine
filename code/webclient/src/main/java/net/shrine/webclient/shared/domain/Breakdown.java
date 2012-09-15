@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -14,88 +16,98 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @date Sep 10, 2012
  */
 @JsonSerialize(as = Map.class)
-public final class Breakdown implements Map<String, Long> {
+public final class Breakdown {
 
-    private final Map<String, Long> delegate = new HashMap<String, Long>();
+    //NB: Must have default access, and not be private, to appease RestyGWT
+    final Map<String, Long> breakdown = new HashMap<String, Long>();
 
     public Breakdown() {
         super();
     }
 
+    @JsonCreator
+    public Breakdown(@JsonProperty("breakdown") final Map<String, Long> breakdown) {
+        super();
+        
+        if(breakdown != null) {
+            this.breakdown.putAll(breakdown);
+        }
+    }
+    
+    public Map<String, Long> asMap() {
+        return breakdown;
+    }
+    
     @Override
     public String toString() {
-        return delegate.toString();
+        return "Breakdown [breakdown=" + breakdown + "]";
     }
 
-    public Breakdown(final Map<String, Long> values) {
-        delegate.putAll(values);
-    }
-
-    @Override
+    //@Override
     public int size() {
-        return delegate.size();
+        return breakdown.size();
     }
 
-    @Override
+    //@Override
     public boolean isEmpty() {
-        return delegate.isEmpty();
+        return breakdown.isEmpty();
     }
 
-    @Override
+    //@Override
     public boolean containsKey(final Object key) {
-        return delegate.containsKey(key);
+        return breakdown.containsKey(key);
     }
 
-    @Override
+    //@Override
     public boolean containsValue(final Object value) {
-        return delegate.containsValue(value);
+        return breakdown.containsValue(value);
     }
 
-    @Override
+    //@Override
     public Long get(final Object key) {
-        return delegate.get(key);
+        return breakdown.get(key);
     }
 
-    @Override
+    //@Override
     public Long put(final String key, final Long value) {
-        return delegate.put(key, value);
+        return breakdown.put(key, value);
     }
 
-    @Override
+    //@Override
     public Long remove(final Object key) {
-        return delegate.remove(key);
+        return breakdown.remove(key);
     }
 
-    @Override
+    //@Override
     public void putAll(final Map<? extends String, ? extends Long> m) {
-        delegate.putAll(m);
+        breakdown.putAll(m);
     }
 
-    @Override
+    //@Override
     public void clear() {
-        delegate.clear();
+        breakdown.clear();
     }
 
-    @Override
+    //@Override
     public Set<String> keySet() {
-        return delegate.keySet();
+        return breakdown.keySet();
     }
 
-    @Override
+    //@Override
     public Collection<Long> values() {
-        return delegate.values();
+        return breakdown.values();
     }
 
-    @Override
+    //@Override
     public Set<java.util.Map.Entry<String, Long>> entrySet() {
-        return delegate.entrySet();
+        return breakdown.entrySet();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (delegate == null ? 0 : delegate.hashCode());
+        result = prime * result + (breakdown == null ? 0 : breakdown.hashCode());
         return result;
     }
 
@@ -111,11 +123,11 @@ public final class Breakdown implements Map<String, Long> {
             return false;
         }
         final Breakdown other = (Breakdown) obj;
-        if (delegate == null) {
-            if (other.delegate != null) {
+        if (breakdown == null) {
+            if (other.breakdown != null) {
                 return false;
             }
-        } else if (!delegate.equals(other.delegate)) {
+        } else if (!breakdown.equals(other.breakdown)) {
             return false;
         }
         return true;

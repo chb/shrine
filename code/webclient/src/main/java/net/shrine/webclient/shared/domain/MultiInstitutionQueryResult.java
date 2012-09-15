@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
@@ -14,97 +16,98 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @date Sep 10, 2012
  */
 @JsonSerialize(as = Map.class)
-public class MultiInstitutionQueryResult /*
-                                          * implements Map<String,
-                                          * SingleInstitutionQueryResult>
-                                          */{
-    private final HashMap<String, SingleInstitutionQueryResult> delegate = new HashMap<String, SingleInstitutionQueryResult>();
+public class MultiInstitutionQueryResult {
+    
+    //NB: Must have default access, and not be private, to appease RestyGWT
+    final Map<String, SingleInstitutionQueryResult> results = new HashMap<String, SingleInstitutionQueryResult>();
 
     public MultiInstitutionQueryResult() {
         super();
     }
 
-    // For tests
-    public MultiInstitutionQueryResult(final Map<String, SingleInstitutionQueryResult> results) {
+    @JsonCreator
+    public MultiInstitutionQueryResult(@JsonProperty("results") final Map<String, SingleInstitutionQueryResult> results) {
         super();
 
-        delegate.putAll(results);
+        if(results != null) {
+            this.results.putAll(results);
+        }
     }
 
     public Map<String, SingleInstitutionQueryResult> asMap() {
-        return delegate;
+        return results;
     }
 
     @Override
     public String toString() {
-        return delegate.toString();
+        return results.toString();
     }
 
     // @Override
     public int size() {
-        return delegate.size();
+        return results.size();
     }
 
     // @Override
     public boolean isEmpty() {
-        return delegate.isEmpty();
+        return results.isEmpty();
     }
 
     // @Override
     public boolean containsKey(final Object key) {
-        return delegate.containsKey(key);
+        return results.containsKey(key);
     }
 
     // @Override
     public boolean containsValue(final Object value) {
-        return delegate.containsValue(value);
+        return results.containsValue(value);
     }
 
     // @Override
     public SingleInstitutionQueryResult get(final Object key) {
-        return delegate.get(key);
+        return results.get(key);
     }
 
     // @Override
     public SingleInstitutionQueryResult put(final String key, final SingleInstitutionQueryResult value) {
-        return delegate.put(key, value);
+        return results.put(key, value);
     }
 
     // @Override
     public SingleInstitutionQueryResult remove(final Object key) {
-        return delegate.remove(key);
+        return results.remove(key);
     }
 
     // @Override
     public void putAll(final Map<? extends String, ? extends SingleInstitutionQueryResult> m) {
-        delegate.putAll(m);
+        results.putAll(m);
     }
 
     // @Override
     public void clear() {
-        delegate.clear();
+        results.clear();
     }
 
     // @Override
     public Set<String> keySet() {
-        return delegate.keySet();
+        return results.keySet();
     }
 
     // @Override
     public Collection<SingleInstitutionQueryResult> values() {
-        return delegate.values();
+        return results.values();
     }
 
     // @Override
     public Set<java.util.Map.Entry<String, SingleInstitutionQueryResult>> entrySet() {
-        return delegate.entrySet();
+        return results.entrySet();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (delegate == null ? 0 : delegate.hashCode());
+        result = prime * result + (results == null ? 0 : results.hashCode());
         return result;
     }
 
@@ -120,11 +123,11 @@ public class MultiInstitutionQueryResult /*
             return false;
         }
         final MultiInstitutionQueryResult other = (MultiInstitutionQueryResult) obj;
-        if (delegate == null) {
-            if (other.delegate != null) {
+        if (results == null) {
+            if (other.results != null) {
                 return false;
             }
-        } else if (!delegate.equals(other.delegate)) {
+        } else if (!results.equals(other.results)) {
             return false;
         }
         return true;

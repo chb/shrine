@@ -38,11 +38,11 @@ object Jsonable {
 
     override def toJson(suggestion: TermSuggestion): JValue = {
       (Path -> suggestion.getPath) ~
-        (SimpleName -> suggestion.getSimpleName) ~
-        (Highlight -> suggestion.getHighlight) ~
-        (Synonym -> suggestion.getSynonym) ~
-        (Category -> suggestion.getCategory) ~
-        (IsLeaf -> suggestion.isLeaf)
+      (SimpleName -> suggestion.getSimpleName) ~
+      (Highlight -> suggestion.getHighlight) ~
+      (Synonym -> suggestion.getSynonym) ~
+      (Category -> suggestion.getCategory) ~
+      (IsLeaf -> suggestion.isLeaf)
     }
 
     override def fromJson(json: JValue): Option[TermSuggestion] = json match {
@@ -64,8 +64,8 @@ object Jsonable {
       import scala.collection.JavaConverters._
 
       (Term -> termIsJsonable.toJson(ontNode.toTerm)) ~
-        (IsLeaf -> ontNode.isLeaf) ~
-        (Children -> ontNode.getChildren.asScala.map(toJson))
+      (IsLeaf -> ontNode.isLeaf) ~
+      (Children -> ontNode.getChildren.asScala.map(toJson))
     }
 
     override def fromJson(json: JValue): Option[OntNode] = json match {
@@ -76,11 +76,7 @@ object Jsonable {
 
         import scala.collection.JavaConverters._
 
-        for {
-          term <- termIsJsonable.fromJson(termJson)
-        } yield {
-          new OntNode(term, children.flatMap(fromJson).asJava, isLeaf)
-        }
+        for(term <- termIsJsonable.fromJson(termJson)) yield new OntNode(term, children.flatMap(fromJson).asJava, isLeaf)
       }
       case _ => None
     }
@@ -91,27 +87,36 @@ object Jsonable {
   implicit val singleInstitutionQueryResultIsJsonable: Jsonable[SingleInstitutionQueryResult] = new Jsonable[SingleInstitutionQueryResult] {
     import FieldNames.SingleInstitutionQueryResult._
 
+    import FieldNames.Breakdown.Results
+    
+    //HACK ALERT: Wrap breakdowns in bogus object with single "results" field, to appease RestyGWT
     override def toJson(results: SingleInstitutionQueryResult): JValue = {
       val breakdowns = results.getBreakdowns.asScala.toMap.mapValues { breakdown =>
-        breakdown.asScala.toMap.mapValues(colValue => JInt(colValue.toLong))
+        breakdown.asMap.asScala.toMap.mapValues(colValue => JInt(colValue.toLong))
       }
 
-      (Count -> JInt(results.getCount)) ~ (Breakdowns -> breakdowns.toMap)
+      (Count -> JInt(results.getCount)) ~ (Breakdowns -> (Results -> breakdowns.toMap))
     }
 
     import I2b2ResultEnvelope.Column
 
     override def fromJson(json: JValue): Option[SingleInstitutionQueryResult] = {
       def breakdownFromJson(breakdownJson: JValue): Option[Breakdown] = breakdownJson match {
-        case JObject(List(columns @ _*)) => Some(new Breakdown(columns.collect {
-          case JField(name, JInt(value)) => (name, java.lang.Long.valueOf(value.toLong))
-        }.toMap.asJava))
-        
+        case JObject(List(columns @ _*)) => {
+          val breakdownData = columns.collect {
+            case JField(name, JInt(value)) => (name, java.lang.Long.valueOf(value.toLong))
+          }.toMap
+          
+          Some(new Breakdown(breakdownData.asJava))
+        }
         case _ => None
       }
 
       json match {
-        case JObject(List(JField(Count, JInt(count)), JField(Breakdowns, JObject(List(breakdownFields @ _*))))) => {
+        case JObject(List(
+            JField(Count, JInt(count)), 
+            JField(Breakdowns, JObject(List(JField(Results, JObject(List(breakdownFields @ _*)))))))) => {
+              
           val unmarshalledBreakdowns = Map.empty ++ (for {
             JField(resultType, breakdownJson) <- breakdownFields
             breakdown <- breakdownFromJson(breakdownJson)
@@ -129,10 +134,13 @@ object Jsonable {
 
     val singleInstFromJson = implicitly[Jsonable[SingleInstitutionQueryResult]].fromJson _
 
-    override def toJson(results: MultiInstitutionQueryResult): JValue = results.asMap.asScala.toMap.mapValues(singleInstToJson)
+    import FieldNames.MultiInstitutionQueryResult._
+    
+    //HACK ALERT: Wrap in bogus object with single "results" field, to appease RestyGWT
+    override def toJson(results: MultiInstitutionQueryResult): JValue = (Results -> results.asMap.asScala.toMap.mapValues(singleInstToJson))
 
     override def fromJson(json: JValue): Option[MultiInstitutionQueryResult] = json match {
-      case JObject(List(insts @ _*)) => {
+      case JObject(List(JField(Results, JObject(List(insts @ _*))))) => {
         val resultMap = Map.empty ++ (for {
           JField(instName, instResultJson) <- insts
           instResult <- singleInstFromJson(instResultJson)
@@ -182,6 +190,14 @@ object Jsonable {
   private def unmarshal(jsonString: String): JValue = parse(jsonString)
 
   private object FieldNames {
+    object MultiInstitutionQueryResult {
+      val Results = "results"
+    }
+    
+    object Breakdown {
+      val Results = "results"
+    }
+    
     object SingleInstitutionQueryResult {
       val Count = "count"
       val Breakdowns = "breakdowns"

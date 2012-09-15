@@ -93,12 +93,14 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
   def testSingleInstitutionResultIsJsonable {
     val breakdownData = new Breakdown((0 to 4).map(i => ("column_" + i, java.lang.Long.valueOf(i))).toMap.asJava)
     
-    val result = new SingleInstitutionQueryResult(999, Map("PATIENT_GENDER_COUNT_XML" -> breakdownData,
-                                                            "PATIENT_RACE_COUNT_XML" -> breakdownData).asJava)
+    import ResultOutputType._
+    
+    val result = new SingleInstitutionQueryResult(999, Map(PATIENT_GENDER_COUNT_XML.name -> breakdownData,
+                                                            PATIENT_RACE_COUNT_XML.name -> breakdownData).asJava)
     
     doRoundTrip(result)()
     
-    toJson(new SingleInstitutionQueryResult(1234, Map.empty.asJava)) should equal("""{"count":1234,"breakdowns":{}}""")
+    toJson(new SingleInstitutionQueryResult(1234, Map.empty.asJava)) should equal("""{"count":1234,"breakdowns":{"results":{}}}""")
   }
   
   @Test
@@ -119,7 +121,7 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
     
     doRoundTrip(empty)()
     
-    toJson(empty) should equal("{}")
+    toJson(empty) should equal("""{"results":{}}""")
   }
   
   private def toJson[T : Jsonable](thing: T): String = implicitly[Jsonable[T]].toJsonString(thing)

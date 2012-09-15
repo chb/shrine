@@ -65,6 +65,9 @@ public final class QueryController extends StatefulController {
             @Override
             public void onSuccess(final Method method, final MultiInstitutionQueryResult result) {
                 //TODO: Breakdowns omitted
+                
+                Log.debug("Got query result: " + result);
+                
                 state.completeAllQuery(toCountMap(result));
             }
 
