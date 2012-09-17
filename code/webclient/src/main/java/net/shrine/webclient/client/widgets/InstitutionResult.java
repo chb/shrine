@@ -1,6 +1,11 @@
 package net.shrine.webclient.client.widgets;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import net.shrine.webclient.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -26,6 +31,10 @@ public final class InstitutionResult extends Composite {
     @UiField
     SpanElement quantity;
 
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+        return addDomHandler(handler, ClickEvent.getType());
+    }
+
     interface InstitutionResultUiBinder extends UiBinder<Widget, InstitutionResult> { }
 
 
@@ -38,6 +47,15 @@ public final class InstitutionResult extends Composite {
 
         name.setInnerText(instName);
         quantity.setInnerText(asString(resultSetSize));
+
+        addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Log.debug("Institution result " + instName + " clicked");
+                //send InstitutionResultClickedEvent
+            }
+        });
+
 	}
 
 	String asString(final int resultSetSize) {
