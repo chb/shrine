@@ -22,147 +22,148 @@ import com.google.gwt.event.shared.EventBus;
  */
 public final class State {
 
-	private final EventBus eventBus;
-	
-	private String allExpressionXml = null;
+    private final EventBus eventBus;
 
-	private final Observable<Map<String, Integer>> allResult = Observable.empty();
-	
-	// Query group name => QueryGroup (Expression, integer result (patient set
-	// size), negated (t/f), start date, end date, min occurrances )
-	private final ObservableList<QueryGroup> queries = ObservableList.empty();
+    private String allExpressionXml = null;
 
-	//React to changes in query list by renaming queries (to preserve A ... Z naming)
-	@SuppressWarnings("unused")
-	private final Observer queryRenamer = new SimpleObserver(queries) {
-		@Override
-		public void inform() {
-			reNameQueries();
-		}
-	};
-	
-	//React to changes in query list by firing events
-	@SuppressWarnings("unused")
-	private final Observer queryGroupListChangeEventForwarder = new SimpleObserver(queries) {
-		@Override
-		public void inform() {
-			fireQueryGroupsChangedEvent();
-		}
-	};
-	
-	public State(final EventBus eventBus) {
-		super();
-		
-		Util.requireNotNull(eventBus);
-		
-		this.eventBus = eventBus;
-		
-		this.eventBus.addHandler(SingleQueryGroupChangedEvent.getType(), new SingleQueryGroupChangedEventHandler() {
-			@Override
-			public void handle(final SingleQueryGroupChangedEvent event) {
-				fireQueryGroupsChangedEvent();
-			}
-		});
-	}
+    private final Observable<Map<String, Integer>> allResult = Observable.empty();
 
-	public void guardQueryIsPresent(final int id) {
-		Util.require(isQueryIdPresent(id));
-	}
+    // Query group name => QueryGroup (Expression, integer result (patient set
+    // size), negated (t/f), start date, end date, min occurrances )
+    private final ObservableList<QueryGroup> queries = ObservableList.empty();
 
-	public void guardQueryIsNotPresent(final int id) {
-		Util.require(!isQueryIdPresent(id));
-	}
+    // React to changes in query list by renaming queries (to preserve A ... Z
+    // naming)
+    @SuppressWarnings("unused")
+    private final Observer queryRenamer = new SimpleObserver(queries) {
+        @Override
+        public void inform() {
+            reNameQueries();
+        }
+    };
 
-	public boolean isQueryIdPresent(final int id) {
-		for (final QueryGroup group : queries) {
-			if (id == group.getId()) {
-				return true;
-			}
-		}
+    // React to changes in query list by firing events
+    @SuppressWarnings("unused")
+    private final Observer queryGroupListChangeEventForwarder = new SimpleObserver(queries) {
+        @Override
+        public void inform() {
+            fireQueryGroupsChangedEvent();
+        }
+    };
 
-		return false;
-	}
+    public State(final EventBus eventBus) {
+        super();
 
-	// Make sure queries are named A,B,C,... Z, in that order, with no gaps,
-	// always starting from 'A'
-	private void reNameQueries() {
-		final Iterator<String> newIdIter = new QueryNameIterator();
+        Util.requireNotNull(eventBus);
 
-		for(final QueryGroup group : queries) {
-			group.setName(newIdIter.next());
-		}
-	}
-	
-	public void removeQuery(final int id) {
-		guardQueryIsPresent(id);
+        this.eventBus = eventBus;
 
-		final QueryGroup query = getQuery(id);
+        this.eventBus.addHandler(SingleQueryGroupChangedEvent.getType(), new SingleQueryGroupChangedEventHandler() {
+            @Override
+            public void handle(final SingleQueryGroupChangedEvent event) {
+                fireQueryGroupsChangedEvent();
+            }
+        });
+    }
 
-		queries.remove(query);
-	}
+    public void guardQueryIsPresent(final int id) {
+        Util.require(isQueryIdPresent(id));
+    }
 
-	public int numQueryGroups() {
-		return queries.size();
-	}
+    public void guardQueryIsNotPresent(final int id) {
+        Util.require(!isQueryIdPresent(id));
+    }
 
-	public void completeAllQuery(final Map<String, Integer> resultsByInstitution) {
-		if (Log.isInfoEnabled()) {
-			Log.info("Completing query 'All' with: '" + resultsByInstitution + "'");
+    public boolean isQueryIdPresent(final int id) {
+        for (final QueryGroup group : queries) {
+            if (id == group.getId()) {
+                return true;
+            }
+        }
 
-			for (final Entry<String, Integer> entry : resultsByInstitution.entrySet()) {
-				Log.info(entry.getKey() + ": " + entry.getValue());
-			}
-		}
+        return false;
+    }
 
-		allResult.set(resultsByInstitution);
-	}
+    // Make sure queries are named A,B,C,... Z, in that order, with no gaps,
+    // always starting from 'A'
+    private void reNameQueries() {
+        final Iterator<String> newIdIter = new QueryNameIterator();
 
-	public QueryGroup getQuery(final int id) {
-		for (final QueryGroup query : queries) {
-			if (id == query.getId()) {
-				return query;
-			}
-		}
+        for (final QueryGroup group : queries) {
+            group.setName(newIdIter.next());
+        }
+    }
 
-		throw new IllegalArgumentException("No query with id '" + id + "' exists");
-	}
+    public void removeQuery(final int id) {
+        guardQueryIsPresent(id);
 
-	private QueryGroup addNewQuery(final Expression expr) {
-		final QueryGroup newQuery = new QueryGroup(eventBus, "NULL", expr);
-	
-		queries.add(newQuery);
-		
-		Log.info("Added query group '" + newQuery.getName() + "' (" + newQuery.getId() + "): " + newQuery.getExpression());
+        final QueryGroup query = getQuery(id);
 
-		return newQuery;
-	}
+        queries.remove(query);
+    }
 
-	public QueryGroup registerNewQuery(final Expression expr) {
+    public int numQueryGroups() {
+        return queries.size();
+    }
 
-		final QueryGroup newQuery = addNewQuery(expr);
+    public void completeAllQuery(final Map<String, Integer> resultsByInstitution) {
+        if (Log.isInfoEnabled()) {
+            Log.info("Completing query 'All' with: '" + resultsByInstitution + "'");
 
-		updateAllExpression();
+            for (final Entry<String, Integer> entry : resultsByInstitution.entrySet()) {
+                Log.info(entry.getKey() + ": " + entry.getValue());
+            }
+        }
 
-		return newQuery;
-	}
+        allResult.set(resultsByInstitution);
+    }
 
-	public void updateAllExpression() {
-		allExpressionXml = ExpressionXml.fromQueryGroups(queries);
-	}
+    public QueryGroup getQuery(final int id) {
+        for (final QueryGroup query : queries) {
+            if (id == query.getId()) {
+                return query;
+            }
+        }
 
-	public ObservableList<QueryGroup> getQueries() {
-		return queries;
-	}
+        throw new IllegalArgumentException("No query with id '" + id + "' exists");
+    }
 
-	public String getAllExpression() {
-		return allExpressionXml;
-	}
+    private QueryGroup addNewQuery(final Expression expr) {
+        final QueryGroup newQuery = new QueryGroup(eventBus, "NULL", expr);
 
-	public Observable<Map<String, Integer>> getAllResult() {
-		return allResult;
-	}
+        queries.add(newQuery);
 
-	void fireQueryGroupsChangedEvent() {
-		State.this.eventBus.fireEvent(new QueryGroupsChangedEvent(queries));
-	}
+        Log.info("Added query group '" + newQuery.getName() + "' (" + newQuery.getId() + "): " + newQuery.getExpression());
+
+        return newQuery;
+    }
+
+    public QueryGroup registerNewQuery(final Expression expr) {
+
+        final QueryGroup newQuery = addNewQuery(expr);
+
+        updateAllExpression();
+
+        return newQuery;
+    }
+
+    public void updateAllExpression() {
+        allExpressionXml = ExpressionXml.fromQueryGroups(queries);
+    }
+
+    public ObservableList<QueryGroup> getQueries() {
+        return queries;
+    }
+
+    public String getAllExpression() {
+        return allExpressionXml;
+    }
+
+    public Observable<Map<String, Integer>> getAllResult() {
+        return allResult;
+    }
+
+    void fireQueryGroupsChangedEvent() {
+        State.this.eventBus.fireEvent(new QueryGroupsChangedEvent(queries));
+    }
 }
