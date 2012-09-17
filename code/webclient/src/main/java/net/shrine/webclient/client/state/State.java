@@ -11,6 +11,7 @@ import net.shrine.webclient.client.util.QueryNameIterator;
 import net.shrine.webclient.client.util.SimpleObserver;
 import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.shared.domain.Expression;
+import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
@@ -26,14 +27,13 @@ public final class State {
 
     private String allExpressionXml = null;
 
-    private final Observable<Map<String, Integer>> allResult = Observable.empty();
+    private final Observable<Map<String, SingleInstitutionQueryResult>> allResult = Observable.empty();
 
     // Query group name => QueryGroup (Expression, integer result (patient set
     // size), negated (t/f), start date, end date, min occurrances )
     private final ObservableList<QueryGroup> queries = ObservableList.empty();
 
-    // React to changes in query list by renaming queries (to preserve A ... Z
-    // naming)
+    // React to changes in query list by renaming queries (to preserve A ... Z naming)
     @SuppressWarnings("unused")
     private final Observer queryRenamer = new SimpleObserver(queries) {
         @Override
@@ -106,11 +106,11 @@ public final class State {
         return queries.size();
     }
 
-    public void completeAllQuery(final Map<String, Integer> resultsByInstitution) {
+    public void completeAllQuery(final Map<String, SingleInstitutionQueryResult> resultsByInstitution) {
         if (Log.isInfoEnabled()) {
             Log.info("Completing query 'All' with: '" + resultsByInstitution + "'");
 
-            for (final Entry<String, Integer> entry : resultsByInstitution.entrySet()) {
+            for (final Entry<String, SingleInstitutionQueryResult> entry : resultsByInstitution.entrySet()) {
                 Log.info(entry.getKey() + ": " + entry.getValue());
             }
         }
@@ -159,7 +159,7 @@ public final class State {
         return allExpressionXml;
     }
 
-    public Observable<Map<String, Integer>> getAllResult() {
+    public Observable<Map<String, SingleInstitutionQueryResult>> getAllResult() {
         return allResult;
     }
 

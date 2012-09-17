@@ -59,7 +59,7 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
         assertEquals(t1.toXmlString(), state.getAllExpression());
         assertEquals(t1.toXmlString(), state.getQuery(t1Id).getExpression().toXmlString());
 
-        assertEquals(QueryController.toCountMap(queryService.multiNodeResultsToReturn), state.getAllResult().get());
+        assertEquals(queryService.multiNodeResultsToReturn.asMap(), state.getAllResult().get());
 
         final Term t2 = term("zuh");
 
@@ -73,6 +73,6 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
         assertEquals(t1.toXmlString(), state.getQuery(t1Id).getExpression().toXmlString());
         assertEquals(t2.toXmlString(), state.getQuery(t2Id).getExpression().toXmlString());
 
-        assertEquals(QueryController.toCountMap(queryService.multiNodeResultsToReturn), state.getAllResult().get());
+        assertEquals(queryService.multiNodeResultsToReturn.asMap(), state.getAllResult().get());
     }
 }

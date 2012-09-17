@@ -2,7 +2,6 @@ package net.shrine.webclient.client.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.shrine.webclient.client.services.QueryService;
 import net.shrine.webclient.client.state.State;
@@ -39,36 +38,20 @@ public final class QueryController extends StatefulController {
 
         runAllQuery();
     }
-
-    @Deprecated
-    public static Map<String, Integer> toCountMap(final MultiInstitutionQueryResult multiInstResults) {
-        final Map<String, Integer> results = new HashMap<String, Integer>();
-        
-        for(final Entry<String, SingleInstitutionQueryResult> entry : multiInstResults.entrySet()) {
-            final String instName = entry.getKey();
-            final SingleInstitutionQueryResult instResult = entry.getValue();
-            
-            results.put(instName, Long.valueOf(instResult.getCount()).intValue());
-        }
-        
-        return results;
-    }
     
     public void runAllQuery() {
         state.updateAllExpression();
 
         state.getAllResult().clear();
 
-        Log.debug("Query XML for 'All': " + state.getAllExpression());
+        Log.debug("Query XML: " + state.getAllExpression());
 
         queryService.performQuery(state.getAllExpression(), new MethodCallback<MultiInstitutionQueryResult>() {
             @Override
             public void onSuccess(final Method method, final MultiInstitutionQueryResult result) {
-                //TODO: Breakdowns omitted
-                
                 Log.debug("Got query result: " + result);
                 
-                state.completeAllQuery(toCountMap(result));
+                state.completeAllQuery(result.asMap());
             }
 
             @Override
@@ -84,7 +67,7 @@ public final class QueryController extends StatefulController {
         state.completeAllQuery(noResults());
     }
 
-    private static Map<String, Integer> noResults() {
-        return new HashMap<String, Integer>();
+    private static Map<String, SingleInstitutionQueryResult> noResults() {
+        return new HashMap<String, SingleInstitutionQueryResult>();
     }
 }

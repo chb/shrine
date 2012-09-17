@@ -1,14 +1,13 @@
 package net.shrine.webclient.client.widgets;
 
+import net.shrine.webclient.client.util.Util;
+
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerRegistration;
-import net.shrine.webclient.client.util.Util;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -21,9 +20,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public final class InstitutionResult extends Composite {
 
-	private static final int MinimumSetSizeToDisplay = 10;
-	
-	private static InstitutionResultUiBinder uiBinder = GWT.create(InstitutionResultUiBinder.class);
+    private static final long MinimumSetSizeToDisplay = 10;
+
+    private static InstitutionResultUiBinder uiBinder = GWT.create(InstitutionResultUiBinder.class);
 
     @UiField
     SpanElement name;
@@ -35,15 +34,15 @@ public final class InstitutionResult extends Composite {
         return addDomHandler(handler, ClickEvent.getType());
     }
 
-    interface InstitutionResultUiBinder extends UiBinder<Widget, InstitutionResult> { }
+    interface InstitutionResultUiBinder extends UiBinder<Widget, InstitutionResult> {
+    }
 
+    public InstitutionResult(final String instName, final long resultSetSize) {
+        super();
 
-	public InstitutionResult(final String instName, final int resultSetSize) {
-		super();
-		
-		Util.requireNotNull(instName);
-		
-		initWidget(uiBinder.createAndBindUi(this));
+        Util.requireNotNull(instName);
+
+        initWidget(uiBinder.createAndBindUi(this));
 
         name.setInnerText(instName);
         quantity.setInnerText(asString(resultSetSize));
@@ -52,17 +51,17 @@ public final class InstitutionResult extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 Log.debug("Institution result " + instName + " clicked");
-                //send InstitutionResultClickedEvent
+                // send InstitutionResultClickedEvent
             }
         });
 
-	}
+    }
 
-	String asString(final int resultSetSize) {
-		if(resultSetSize < MinimumSetSizeToDisplay) {
-			return "< " + MinimumSetSizeToDisplay;
-		}
-		
-		return String.valueOf(resultSetSize);
-	}
+    String asString(final long resultSetSize) {
+        if (resultSetSize < MinimumSetSizeToDisplay) {
+            return "< " + MinimumSetSizeToDisplay;
+        }
+
+        return String.valueOf(resultSetSize);
+    }
 }
