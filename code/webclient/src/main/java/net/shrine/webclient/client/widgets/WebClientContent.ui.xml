@@ -14,5 +14,6 @@
 		<shrine:QueryPanel ui:field="queryPanel" />
 		<!-- Breakdown Row -->
 		<shrine:SummaryPanel ui:field="summaryPanel" />
+		<shrine:ResultsPanel ui:field="resultsPanel" />
 	</g:HTMLPanel>
 </ui:UiBinder> 
