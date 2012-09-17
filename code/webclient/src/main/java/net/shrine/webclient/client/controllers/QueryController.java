@@ -34,24 +34,24 @@ public final class QueryController extends StatefulController {
 
     public void runEveryQuery() {
 
-        state.getAllResult().clear();
+        state.getQueryResult().clear();
 
         runAllQuery();
     }
     
     public void runAllQuery() {
-        state.updateAllExpression();
+        state.updateQueryExpression();
 
-        state.getAllResult().clear();
+        state.getQueryResult().clear();
 
-        Log.debug("Query XML: " + state.getAllExpression());
+        Log.debug("Query XML: " + state.getQueryExpression());
 
-        queryService.performQuery(state.getAllExpression(), new MethodCallback<MultiInstitutionQueryResult>() {
+        queryService.performQuery(state.getQueryExpression(), new MethodCallback<MultiInstitutionQueryResult>() {
             @Override
             public void onSuccess(final Method method, final MultiInstitutionQueryResult result) {
                 Log.debug("Got query result: " + result);
                 
-                state.completeAllQuery(result.asMap());
+                state.completeQuery(result.asMap());
             }
 
             @Override
@@ -64,7 +64,7 @@ public final class QueryController extends StatefulController {
     }
 
     public void completeAllQueryWithNoResults() {
-        state.completeAllQuery(noResults());
+        state.completeQuery(noResults());
     }
 
     private static Map<String, SingleInstitutionQueryResult> noResults() {

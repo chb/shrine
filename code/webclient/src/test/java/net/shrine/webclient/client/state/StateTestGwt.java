@@ -59,13 +59,13 @@ public class StateTestGwt extends AbstractWebclientTest {
             this.put("bar", new SingleInstitutionQueryResult(99L, Collections.<String, Breakdown>emptyMap()));
         }};
 
-        assertTrue(state.getAllResult().isEmpty());
+        assertTrue(state.getQueryResult().isEmpty());
 
-        state.completeAllQuery(results);
+        state.completeQuery(results);
 
-        assertTrue(state.getAllResult().isDefined());
+        assertTrue(state.getQueryResult().isDefined());
 
-        assertEquals(results, state.getAllResult().get());
+        assertEquals(results, state.getQueryResult().get());
     }
 
     @Test
@@ -97,7 +97,7 @@ public class StateTestGwt extends AbstractWebclientTest {
         final Term t2 = term("bar");
 
         try {
-            state.updateAllExpression();
+            state.updateQueryExpression();
 
             fail("Should have thrown with no query groups");
         } catch (IllegalArgumentException expected) {
@@ -105,14 +105,14 @@ public class StateTestGwt extends AbstractWebclientTest {
 
         state.registerNewQuery(t1);
 
-        state.updateAllExpression();
+        state.updateQueryExpression();
 
-        assertEquals(t1.toXmlString(), state.getAllExpression());
+        assertEquals(t1.toXmlString(), state.getQueryExpression());
 
         state.registerNewQuery(t2);
 
-        state.updateAllExpression();
+        state.updateQueryExpression();
 
-        assertEquals(new And(t1, t2).toXmlString(), state.getAllExpression());
+        assertEquals(new And(t1, t2).toXmlString(), state.getQueryExpression());
     }
 }

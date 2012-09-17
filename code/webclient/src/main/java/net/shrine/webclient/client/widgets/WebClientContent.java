@@ -61,11 +61,11 @@ public final class WebClientContent extends Composite {
 
         dataDictionaryRow.wireUp(eventBus, controllers);
 
-        queryPanel.wireUp(controllers, state.getQueries(), dragController);
+        queryPanel.wireUp(controllers, state.getQueryGroups(), dragController);
 
         summaryPanel.wireUp(eventBus, controllers);
 
-        resultsPanel.wireUp(state.getAllResult());
+        resultsPanel.wireUp(state.getQueryResult());
 
         eventBus.addHandler(QueryGroupsChangedEvent.getType(), new QueryGroupsChangedEventHandler() {
             @Override

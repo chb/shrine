@@ -72,7 +72,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
             final int id = state.registerNewQuery(t1).getId();
 
-            final MockObserver observer = new MockObserver(state.getQueries());
+            final MockObserver observer = new MockObserver(state.getQueryGroups());
 
             assertEquals(1, state.numQueryGroups());
             assertEquals(t1, state.getQuery(id).getExpression());
@@ -99,7 +99,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
             final int id = state.registerNewQuery(or).getId();
 
-            final MockObserver observer = new MockObserver(state.getQueries());
+            final MockObserver observer = new MockObserver(state.getQueryGroups());
 
             assertEquals(1, state.numQueryGroups());
             assertEquals(or, state.getQuery(id).getExpression());
@@ -111,7 +111,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
             assertEquals(2, state.numQueryGroups());
 
-            final List<QueryGroup> queries = Util.sorted(state.getQueries());
+            final List<QueryGroup> queries = Util.sorted(state.getQueryGroups());
 
             assertEquals(or.without(t1), queries.get(0).getExpression());
             assertEquals(t1, queries.get(1).getExpression());
@@ -134,7 +134,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
             final int id1 = state.registerNewQuery(or1).getId();
             final int id2 = state.registerNewQuery(or2).getId();
 
-            final MockObserver observer = new MockObserver(state.getQueries());
+            final MockObserver observer = new MockObserver(state.getQueryGroups());
 
             assertEquals(2, state.numQueryGroups());
             assertEquals(or1, state.getQuery(id1).getExpression());
@@ -148,7 +148,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
             assertEquals(2, state.numQueryGroups());
 
             {
-                final List<QueryGroup> queries = Util.sorted(state.getQueries());
+                final List<QueryGroup> queries = Util.sorted(state.getQueryGroups());
 
                 assertEquals(t2, queries.get(0).getExpression());
                 assertEquals(or2.with(t1), queries.get(1).getExpression());
@@ -178,7 +178,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
             final int id1 = state.registerNewQuery(or).getId();
             final int id2 = state.registerNewQuery(t3).getId();
 
-            final MockObserver observer = new MockObserver(state.getQueries());
+            final MockObserver observer = new MockObserver(state.getQueryGroups());
 
             assertEquals(2, state.numQueryGroups());
             assertEquals(or, state.getQuery(id1).getExpression());
@@ -191,7 +191,7 @@ public class QueryBuildingControllerTestGwt extends AbstractWebclientTest {
 
             assertEquals(2, state.numQueryGroups());
 
-            final List<QueryGroup> queries = Util.sorted(state.getQueries());
+            final List<QueryGroup> queries = Util.sorted(state.getQueryGroups());
 
             assertEquals(t2, queries.get(0).getExpression());
             assertEquals(new Or(t3, t1), queries.get(1).getExpression());

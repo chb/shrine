@@ -38,7 +38,7 @@ public final class QueryBuildingController extends StatefulController {
 			//TODO: HACK, needed to redraw widget if it's dropped on the group it already belongs to;
 			//this would normally be done by gwt-dnd, but it's UI restoration mechanism doesn't kick in 
 			//when something is dropped on a legitimate drop target.
-			state.getQueries().notifyObservers();
+			state.getQueryGroups().notifyObservers();
 			
 			return;
 		}
@@ -57,7 +57,7 @@ public final class QueryBuildingController extends StatefulController {
 				
 				removeTerm(fromQueryId, term);
 			} else {
-				state.getQueries().notifyObservers();
+				state.getQueryGroups().notifyObservers();
 			}
 		}
 	}
@@ -91,7 +91,7 @@ public final class QueryBuildingController extends StatefulController {
 	}
 	
 	public void removeAllQueryGroups() {
-		state.getQueries().clear();
+		state.getQueryGroups().clear();
 	}
 	
 	public void removeQueryGroup(final int id) {
@@ -103,7 +103,7 @@ public final class QueryBuildingController extends StatefulController {
 	public void removeTerm(final int queryId, final Term term) {
 		state.guardQueryIsPresent(queryId);
 		
-		Log.debug("Removing term from query " + queryId + " known queries are: " + state.getQueries());
+		Log.debug("Removing term from query " + queryId + " known queries are: " + state.getQueryGroups());
 		
 		final QueryGroup queryGroup = state.getQuery(queryId);
 		

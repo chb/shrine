@@ -25,17 +25,17 @@ public final class State {
 
     private final EventBus eventBus;
 
-    private String allExpressionXml = null;
+    private String queryExpressionXml = null;
 
-    private final Observable<Map<String, SingleInstitutionQueryResult>> allResult = Observable.empty();
+    private final Observable<Map<String, SingleInstitutionQueryResult>> queryResult = Observable.empty();
 
     // Query group name => QueryGroup (Expression, integer result (patient set
     // size), negated (t/f), start date, end date, min occurrances )
-    private final ObservableList<QueryGroup> queries = ObservableList.empty();
+    private final ObservableList<QueryGroup> queryGroups = ObservableList.empty();
 
     // React to changes in query list by renaming queries (to preserve A ... Z naming)
     @SuppressWarnings("unused")
-    private final Observer queryRenamer = new SimpleObserver(queries) {
+    private final Observer queryRenamer = new SimpleObserver(queryGroups) {
         @Override
         public void inform() {
             reNameQueries();
@@ -44,7 +44,7 @@ public final class State {
 
     // React to changes in query list by firing events
     @SuppressWarnings("unused")
-    private final Observer queryGroupListChangeEventForwarder = new SimpleObserver(queries) {
+    private final Observer queryGroupListChangeEventForwarder = new SimpleObserver(queryGroups) {
         @Override
         public void inform() {
             fireQueryGroupsChangedEvent();
@@ -75,7 +75,7 @@ public final class State {
     }
 
     public boolean isQueryIdPresent(final int id) {
-        for (final QueryGroup group : queries) {
+        for (final QueryGroup group : queryGroups) {
             if (id == group.getId()) {
                 return true;
             }
@@ -89,7 +89,7 @@ public final class State {
     private void reNameQueries() {
         final Iterator<String> newIdIter = new QueryNameIterator();
 
-        for (final QueryGroup group : queries) {
+        for (final QueryGroup group : queryGroups) {
             group.setName(newIdIter.next());
         }
     }
@@ -99,14 +99,14 @@ public final class State {
 
         final QueryGroup query = getQuery(id);
 
-        queries.remove(query);
+        queryGroups.remove(query);
     }
 
     public int numQueryGroups() {
-        return queries.size();
+        return queryGroups.size();
     }
 
-    public void completeAllQuery(final Map<String, SingleInstitutionQueryResult> resultsByInstitution) {
+    public void completeQuery(final Map<String, SingleInstitutionQueryResult> resultsByInstitution) {
         if (Log.isInfoEnabled()) {
             Log.info("Completing query 'All' with: '" + resultsByInstitution + "'");
 
@@ -115,11 +115,11 @@ public final class State {
             }
         }
 
-        allResult.set(resultsByInstitution);
+        queryResult.set(resultsByInstitution);
     }
 
     public QueryGroup getQuery(final int id) {
-        for (final QueryGroup query : queries) {
+        for (final QueryGroup query : queryGroups) {
             if (id == query.getId()) {
                 return query;
             }
@@ -131,7 +131,7 @@ public final class State {
     private QueryGroup addNewQuery(final Expression expr) {
         final QueryGroup newQuery = new QueryGroup(eventBus, "NULL", expr);
 
-        queries.add(newQuery);
+        queryGroups.add(newQuery);
 
         Log.info("Added query group '" + newQuery.getName() + "' (" + newQuery.getId() + "): " + newQuery.getExpression());
 
@@ -142,28 +142,28 @@ public final class State {
 
         final QueryGroup newQuery = addNewQuery(expr);
 
-        updateAllExpression();
+        updateQueryExpression();
 
         return newQuery;
     }
 
-    public void updateAllExpression() {
-        allExpressionXml = ExpressionXml.fromQueryGroups(queries);
+    public void updateQueryExpression() {
+        queryExpressionXml = ExpressionXml.fromQueryGroups(queryGroups);
     }
 
-    public ObservableList<QueryGroup> getQueries() {
-        return queries;
+    public ObservableList<QueryGroup> getQueryGroups() {
+        return queryGroups;
     }
 
-    public String getAllExpression() {
-        return allExpressionXml;
+    public String getQueryExpression() {
+        return queryExpressionXml;
     }
 
-    public Observable<Map<String, SingleInstitutionQueryResult>> getAllResult() {
-        return allResult;
+    public Observable<Map<String, SingleInstitutionQueryResult>> getQueryResult() {
+        return queryResult;
     }
 
     void fireQueryGroupsChangedEvent() {
-        State.this.eventBus.fireEvent(new QueryGroupsChangedEvent(queries));
+        State.this.eventBus.fireEvent(new QueryGroupsChangedEvent(queryGroups));
     }
 }
