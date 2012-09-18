@@ -108,7 +108,7 @@ public final class State {
 
     public void completeQuery(final Map<String, SingleInstitutionQueryResult> resultsByInstitution) {
         if (Log.isInfoEnabled()) {
-            Log.info("Completing query 'All' with: '" + resultsByInstitution + "'");
+            Log.info("Completing query with: '" + resultsByInstitution + "'");
 
             for (final Entry<String, SingleInstitutionQueryResult> entry : resultsByInstitution.entrySet()) {
                 Log.info(entry.getKey() + ": " + entry.getValue());
