@@ -87,22 +87,26 @@ object Jsonable {
   implicit val singleInstitutionQueryResultIsJsonable: Jsonable[SingleInstitutionQueryResult] = new Jsonable[SingleInstitutionQueryResult] {
     import FieldNames.SingleInstitutionQueryResult._
 
-    import FieldNames.Breakdown.Results
+    import FieldNames.Breakdown.Breakdown
     
-    //HACK ALERT: Wrap breakdowns in bogus object with single "results" field, to appease RestyGWT
+    //HACK ALERT: Wrap breakdowns in bogus object with single "breakdown" field, to appease RestyGWT
     override def toJson(results: SingleInstitutionQueryResult): JValue = {
-      val breakdowns = results.getBreakdowns.asScala.toMap.mapValues { breakdown =>
-        breakdown.asMap.asScala.toMap.mapValues(colValue => JInt(colValue.toLong))
+      def breakdownToJson(b: Breakdown): JObject = {
+        val data = b.asMap.asScala.toMap.map { case (colName, colValue) => (colName, colValue.toLong) }
+        
+        (Breakdown -> data)
       }
+      
+      val breakdowns = results.getBreakdowns.asScala.toMap.mapValues(breakdownToJson)
 
-      (Count -> JInt(results.getCount)) ~ (Breakdowns -> (Results -> breakdowns.toMap))
+      (Count -> JInt(results.getCount)) ~ (Breakdowns -> breakdowns)
     }
 
     import I2b2ResultEnvelope.Column
 
     override def fromJson(json: JValue): Option[SingleInstitutionQueryResult] = {
       def breakdownFromJson(breakdownJson: JValue): Option[Breakdown] = breakdownJson match {
-        case JObject(List(columns @ _*)) => {
+        case JObject(List(JField(Breakdown, JObject(List(columns @ _*))))) => {
           val breakdownData = columns.collect {
             case JField(name, JInt(value)) => (name, java.lang.Long.valueOf(value.toLong))
           }.toMap
@@ -115,10 +119,10 @@ object Jsonable {
       json match {
         case JObject(List(
             JField(Count, JInt(count)), 
-            JField(Breakdowns, JObject(List(JField(Results, JObject(List(breakdownFields @ _*)))))))) => {
+            JField(Breakdowns, JObject(List(breakdownObjects @ _*))))) => {
               
           val unmarshalledBreakdowns = Map.empty ++ (for {
-            JField(resultType, breakdownJson) <- breakdownFields
+            JField(resultType, breakdownJson) <- breakdownObjects
             breakdown <- breakdownFromJson(breakdownJson)
           } yield (resultType, breakdown))
 
@@ -195,7 +199,7 @@ object Jsonable {
     }
     
     object Breakdown {
-      val Results = "results"
+      val Breakdown = "breakdown"
     }
     
     object SingleInstitutionQueryResult {

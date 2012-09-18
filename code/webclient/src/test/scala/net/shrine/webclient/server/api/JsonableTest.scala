@@ -100,7 +100,7 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
     
     doRoundTrip(result)()
     
-    toJson(new SingleInstitutionQueryResult(1234, Map.empty.asJava)) should equal("""{"count":1234,"breakdowns":{"results":{}}}""")
+    toJson(new SingleInstitutionQueryResult(1234, Map.empty.asJava)) should equal("""{"count":1234,"breakdowns":{}}""")
   }
   
   @Test
