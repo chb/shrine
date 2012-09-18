@@ -27,7 +27,7 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
   private val instanceId = 2L
   private val resultType = ResultOutputType.PATIENTSET
   private val setSize = 12L
-  private val statusType = "FINISHED"
+  private val statusType = QueryResult.StatusType.Finished
   private val description = "description"
   private val statusMessage = "lakjdalsjd"
   private val queryResult = new QueryResult(resultId, instanceId, Some(resultType), setSize, Option(date), Option(date), Option(description), statusType, Option(statusMessage))
@@ -130,6 +130,15 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
       </query_status_type>
     </query_result_instance>).toString
 
+  @Test
+  def testIsError {
+    queryResult.isError should be(false)
+    
+    queryResult.copy(statusType = QueryResult.StatusType.Processing).isError should be(false)
+    
+    queryResult.copy(statusType = QueryResult.StatusType.Error).isError should be(true)
+  }
+    
   @Test
   def testToXml {
     val expectedWhenNoBreakdowns = XmlUtil.stripWhitespace(

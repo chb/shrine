@@ -42,7 +42,11 @@ final case class QueryResult(
     case Some(rt) => rt == testedResultType
     case _ => false
   }
-  
+
+  import QueryResult._
+
+  def isError = statusType == StatusType.Error
+
   def toI2b2 = {
     import ResultOutputType._
 
@@ -73,10 +77,12 @@ final case class QueryResult(
         <query_status_type>
           <name>{ statusType }</name>
           {
+            import StatusType._
+            
             statusType match {
-              case "FINISHED" => <status_type_id>3</status_type_id><description>FINISHED</description>
-              case "PROCESSING" => <status_type_id>2</status_type_id><description>PROCESSING</description>
-              case "ERROR" => statusMessage.map(x => <description>{ x }</description>).orNull
+              case Finished => <status_type_id>3</status_type_id><description>{ Finished }</description>
+              case Processing => <status_type_id>2</status_type_id><description>{ Processing }</description>
+              case Error => statusMessage.map(x => <description>{ x }</description>).orNull
             }
           }
         </query_status_type>
@@ -128,6 +134,12 @@ final case class QueryResult(
 }
 
 object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[QueryResult] {
+  object StatusType {
+    val Error = "ERROR"
+    val Finished = "FINISHED"
+    val Processing = "PROCESSING"
+  }
+
   def extractLong(nodeSeq: NodeSeq)(elemName: String): Long = (nodeSeq \ elemName).text.toLong
 
   def fromXml(nodeSeq: NodeSeq) = {
@@ -157,7 +169,7 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
       extract("statusMessage"),
       extractBreakdowns("resultEnvelope"))
   }
-  
+
   private def tryOrNone[T](f: => T): Option[T] = {
     try {
       Option(f)
