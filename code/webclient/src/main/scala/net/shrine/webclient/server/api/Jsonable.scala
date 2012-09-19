@@ -141,16 +141,22 @@ object Jsonable {
     import FieldNames.MultiInstitutionQueryResult._
     
     //HACK ALERT: Wrap in bogus object with single "results" field, to appease RestyGWT
-    override def toJson(results: MultiInstitutionQueryResult): JValue = (Results -> results.asMap.asScala.toMap.mapValues(singleInstToJson))
+    override def toJson(results: MultiInstitutionQueryResult): JValue = {
+      (Results -> results.asMap.asScala.toMap.mapValues(singleInstToJson)) ~
+      (ErrorInstitutions -> results.getErrorInstitutions.asScala)
+    }
 
     override def fromJson(json: JValue): Option[MultiInstitutionQueryResult] = json match {
-      case JObject(List(JField(Results, JObject(List(insts @ _*))))) => {
+      case JObject(List(JField(Results, JObject(List(insts @ _*))),
+                        JField(ErrorInstitutions, JArray(List(errors @_*))))) => {
         val resultMap = Map.empty ++ (for {
           JField(instName, instResultJson) <- insts
           instResult <- singleInstFromJson(instResultJson)
         } yield (instName, instResult))
 
-        Some(new MultiInstitutionQueryResult(resultMap.asJava))
+        val errorInstNames = errors.collect { case JString(instName) => instName }
+        
+        Some(new MultiInstitutionQueryResult(resultMap.asJava, errorInstNames.asJava))
       }
       case _ => None
     }
@@ -196,6 +202,7 @@ object Jsonable {
   private object FieldNames {
     object MultiInstitutionQueryResult {
       val Results = "results"
+      val ErrorInstitutions = "errorInstitutions"
     }
     
     object Breakdown {

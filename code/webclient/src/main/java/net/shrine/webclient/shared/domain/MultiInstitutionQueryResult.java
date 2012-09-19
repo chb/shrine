@@ -1,13 +1,12 @@
 package net.shrine.webclient.shared.domain;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import net.shrine.webclient.client.util.Util;
 
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * 
@@ -15,98 +14,53 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  * @author Bill Simons
  * @date Sep 10, 2012
  */
-@JsonSerialize(as = Map.class)
 public class MultiInstitutionQueryResult {
-    
-    //NB: Must have default access, and not be private, to appease RestyGWT
-    final Map<String, SingleInstitutionQueryResult> results = new HashMap<String, SingleInstitutionQueryResult>();
+
+    // NB: Must have default access, and not be private, to appease RestyGWT
+    final Map<String, SingleInstitutionQueryResult> results = Util.makeHashMap();
+
+    // NB: Must have default access, and not be private, to appease RestyGWT
+    final List<String> errorInstitutions = Util.makeArrayList();
 
     public MultiInstitutionQueryResult() {
         super();
     }
 
     @JsonCreator
-    public MultiInstitutionQueryResult(@JsonProperty("results") final Map<String, SingleInstitutionQueryResult> results) {
+    public MultiInstitutionQueryResult(@JsonProperty("results") final Map<String, SingleInstitutionQueryResult> results, @JsonProperty("errorInstitutions") final List<String> errorInstitutions) {
         super();
 
-        if(results != null) {
+        if (results != null) {
             this.results.putAll(results);
+        }
+
+        if (errorInstitutions != null) {
+            this.errorInstitutions.addAll(errorInstitutions);
         }
     }
 
     public Map<String, SingleInstitutionQueryResult> asMap() {
+        return getResults();
+    }
+
+    public Map<String, SingleInstitutionQueryResult> getResults() {
         return results;
+    }
+
+    public List<String> getErrorInstitutions() {
+        return errorInstitutions;
     }
 
     @Override
     public String toString() {
-        return results.toString();
-    }
-
-    // @Override
-    public int size() {
-        return results.size();
-    }
-
-    // @Override
-    public boolean isEmpty() {
-        return results.isEmpty();
-    }
-
-    // @Override
-    public boolean containsKey(final Object key) {
-        return results.containsKey(key);
-    }
-
-    // @Override
-    public boolean containsValue(final Object value) {
-        return results.containsValue(value);
-    }
-
-    // @Override
-    public SingleInstitutionQueryResult get(final Object key) {
-        return results.get(key);
-    }
-
-    // @Override
-    public SingleInstitutionQueryResult put(final String key, final SingleInstitutionQueryResult value) {
-        return results.put(key, value);
-    }
-
-    // @Override
-    public SingleInstitutionQueryResult remove(final Object key) {
-        return results.remove(key);
-    }
-
-    // @Override
-    public void putAll(final Map<? extends String, ? extends SingleInstitutionQueryResult> m) {
-        results.putAll(m);
-    }
-
-    // @Override
-    public void clear() {
-        results.clear();
-    }
-
-    // @Override
-    public Set<String> keySet() {
-        return results.keySet();
-    }
-
-    // @Override
-    public Collection<SingleInstitutionQueryResult> values() {
-        return results.values();
-    }
-
-    // @Override
-    public Set<java.util.Map.Entry<String, SingleInstitutionQueryResult>> entrySet() {
-        return results.entrySet();
+        return "MultiInstitutionQueryResult [results=" + results + ", errorInstitutions=" + errorInstitutions + "]";
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + (errorInstitutions == null ? 0 : errorInstitutions.hashCode());
         result = prime * result + (results == null ? 0 : results.hashCode());
         return result;
     }
@@ -123,6 +77,13 @@ public class MultiInstitutionQueryResult {
             return false;
         }
         final MultiInstitutionQueryResult other = (MultiInstitutionQueryResult) obj;
+        if (errorInstitutions == null) {
+            if (other.errorInstitutions != null) {
+                return false;
+            }
+        } else if (!errorInstitutions.equals(other.errorInstitutions)) {
+            return false;
+        }
         if (results == null) {
             if (other.results != null) {
                 return false;

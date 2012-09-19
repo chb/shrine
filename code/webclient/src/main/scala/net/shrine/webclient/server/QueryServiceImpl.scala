@@ -45,9 +45,15 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
   private def doQuery(expr: String) = client.runQuery(Defaults.topicId, Defaults.outputTypes, QueryDefinition(uuid, fromXml(expr).get))
 
   override def performQuery(expr: String): MultiInstitutionQueryResult = {
+    def toInstName(description: Option[String]) = description.getOrElse("Unknown Institution")
+    
     import Helpers._
     
-    def toNamedResult(result: QueryResult) = (result.description.getOrElse("Unknown Institution"), makeSingleInstitutionQueryResult(result))
+    def toNamedResult(result: QueryResult) = {
+      println("QueryResult: setSize: " + result.setSize)
+      
+      (toInstName(result.description), makeSingleInstitutionQueryResult(result))
+    }
 
     import ResultOutputType._
     
@@ -60,7 +66,9 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
     
     val response: RunQueryResponse = doQuery(expr)
     
-    val results = response.results.map(toNamedResult).toMap
+    val (notErrors, errors) = response.resultsPartitioned
+    
+    val results = notErrors.map(toNamedResult).toMap
     
     //MultiInstitutionQueryResult(results)
     
@@ -68,6 +76,8 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
 
     import scala.collection.JavaConverters._
     
-    new MultiInstitutionQueryResult(results.mapValues(addDummyBreakdowns).asJava)
+    val errorInsts = errors.map(e => toInstName(e.description))
+    
+    new MultiInstitutionQueryResult(results.mapValues(addDummyBreakdowns).asJava, errorInsts.asJava)
   }
 }

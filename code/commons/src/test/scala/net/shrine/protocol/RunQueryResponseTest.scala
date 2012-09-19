@@ -242,6 +242,47 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
   }
 
   @Test
+  def testResultsPartitioned {
+    val actual = RunQueryResponse.fromXml(runQueryResponse)
+    
+    {
+      val (nonErrors, errors) = actual.resultsPartitioned
+      
+      nonErrors should equal(Seq(qr1, qr2))
+      errors.size should equal(0)
+    }
+    
+    def error = QueryResult.errorResult(None, "something broke")
+    
+    {
+      val withOnlyErrors = actual.withResults(Seq(error, error))
+      
+      val (nonErrors, errors) = withOnlyErrors.resultsPartitioned
+      
+      nonErrors.size should equal(0)
+      errors should equal(Seq(error, error))
+    }
+    
+    {
+      val withErrorsAndSuccesses = actual.withResults(actual.results ++ Seq(error, error))
+      
+      val (nonErrors, errors) = withErrorsAndSuccesses.resultsPartitioned
+      
+      nonErrors should equal(Seq(qr1, qr2))
+      errors should equal(Seq(error, error))
+    }
+    
+    {
+      val withNoResults = actual.withResults(Nil)
+      
+      val (nonErrors, errors) = withNoResults.resultsPartitioned
+      
+      nonErrors.size should equal(0)
+      errors.size should equal(0)
+    }
+  }
+  
+  @Test
   def testToI2b2 {
     (new RunQueryResponse(queryId, createDate, userId, groupId, requestQueryDef, queryInstanceId, Seq(qr1, qr2)).toI2b2String) should equal(response.toString)
   }

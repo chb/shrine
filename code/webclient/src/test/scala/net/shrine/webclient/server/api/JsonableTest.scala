@@ -113,15 +113,15 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
       }))
     }
     
-    val result = new MultiInstitutionQueryResult(Map("foo" -> singleInstResult(123), "bar" -> singleInstResult(987654)).asJava)
+    val result = new MultiInstitutionQueryResult(Map("foo" -> singleInstResult(123), "bar" -> singleInstResult(987654)).asJava, Seq.empty.asJava)
     
     doRoundTrip(result)()
     
-    val empty = new MultiInstitutionQueryResult(Map.empty.asJava)
+    val empty = new MultiInstitutionQueryResult(Map.empty.asJava, Seq.empty.asJava)
     
     doRoundTrip(empty)()
     
-    toJson(empty) should equal("""{"results":{}}""")
+    toJson(empty) should equal("""{"results":{},"errorInstitutions":[]}""")
   }
   
   private def toJson[T : Jsonable](thing: T): String = implicitly[Jsonable[T]].toJsonString(thing)

@@ -82,6 +82,8 @@ final case class RunQueryResponse(
   def withResults(seq: Seq[QueryResult]): RunQueryResponse = this.copy(results = seq)
 
   def queryName = requestXml.name
+  
+  def resultsPartitioned = results.partition(!_.isError)
 }
 
 object RunQueryResponse extends I2b2Unmarshaller[RunQueryResponse] with XmlUnmarshaller[RunQueryResponse] {
