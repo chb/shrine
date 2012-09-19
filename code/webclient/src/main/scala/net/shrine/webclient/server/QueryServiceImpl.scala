@@ -49,11 +49,7 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
     
     import Helpers._
     
-    def toNamedResult(result: QueryResult) = {
-      println("QueryResult: setSize: " + result.setSize)
-      
-      (toInstName(result.description), makeSingleInstitutionQueryResult(result))
-    }
+    def toNamedResult(result: QueryResult) = (toInstName(result.description), makeSingleInstitutionQueryResult(result))
 
     import ResultOutputType._
     
@@ -61,14 +57,12 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
       val breakdowns = makeBreakdownsByTypeMap(Seq(new I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, "foo" -> 123, "bar" -> 42),
                                                    new I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, "blarg" -> 123, "baz" -> 9876)))
       
-      new SingleInstitutionQueryResult(instResult.getCount, breakdowns)
+      new SingleInstitutionQueryResult(instResult.getCount, breakdowns, instResult.isError)
     }
     
     val response: RunQueryResponse = doQuery(expr)
     
-    val (notErrors, errors) = response.resultsPartitioned
-    
-    val results = notErrors.map(toNamedResult).toMap
+    val results = response.results.map(toNamedResult).toMap
     
     //MultiInstitutionQueryResult(results)
     
@@ -76,8 +70,6 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
 
     import scala.collection.JavaConverters._
     
-    val errorInsts = errors.map(e => toInstName(e.description))
-    
-    new MultiInstitutionQueryResult(results.mapValues(addDummyBreakdowns).asJava, errorInsts.asJava)
+    new MultiInstitutionQueryResult(results.mapValues(addDummyBreakdowns).asJava)
   }
 }

@@ -99,7 +99,7 @@ object Jsonable {
       
       val breakdowns = results.getBreakdowns.asScala.toMap.mapValues(breakdownToJson)
 
-      (Count -> JInt(results.getCount)) ~ (Breakdowns -> breakdowns)
+      (Count -> JInt(results.getCount)) ~ (Breakdowns -> breakdowns) ~ (IsError -> results.isError)
     }
 
     import I2b2ResultEnvelope.Column
@@ -119,14 +119,15 @@ object Jsonable {
       json match {
         case JObject(List(
             JField(Count, JInt(count)), 
-            JField(Breakdowns, JObject(List(breakdownObjects @ _*))))) => {
+            JField(Breakdowns, JObject(List(breakdownObjects @ _*))),
+            JField(IsError, JBool(isError)))) => {
               
           val unmarshalledBreakdowns = Map.empty ++ (for {
             JField(resultType, breakdownJson) <- breakdownObjects
             breakdown <- breakdownFromJson(breakdownJson)
           } yield (resultType, breakdown))
 
-          Some(new SingleInstitutionQueryResult(count.toLong, unmarshalledBreakdowns.asJava))
+          Some(new SingleInstitutionQueryResult(count.toLong, unmarshalledBreakdowns.asJava, isError))
         }
         case _ => None
       }
@@ -142,21 +143,17 @@ object Jsonable {
     
     //HACK ALERT: Wrap in bogus object with single "results" field, to appease RestyGWT
     override def toJson(results: MultiInstitutionQueryResult): JValue = {
-      (Results -> results.asMap.asScala.toMap.mapValues(singleInstToJson)) ~
-      (ErrorInstitutions -> results.getErrorInstitutions.asScala)
+      (Results -> results.asMap.asScala.toMap.mapValues(singleInstToJson))
     }
 
     override def fromJson(json: JValue): Option[MultiInstitutionQueryResult] = json match {
-      case JObject(List(JField(Results, JObject(List(insts @ _*))),
-                        JField(ErrorInstitutions, JArray(List(errors @_*))))) => {
+      case JObject(List(JField(Results, JObject(List(insts @ _*))))) => {
         val resultMap = Map.empty ++ (for {
           JField(instName, instResultJson) <- insts
           instResult <- singleInstFromJson(instResultJson)
         } yield (instName, instResult))
 
-        val errorInstNames = errors.collect { case JString(instName) => instName }
-        
-        Some(new MultiInstitutionQueryResult(resultMap.asJava, errorInstNames.asJava))
+        Some(new MultiInstitutionQueryResult(resultMap.asJava))
       }
       case _ => None
     }
@@ -212,6 +209,7 @@ object Jsonable {
     object SingleInstitutionQueryResult {
       val Count = "count"
       val Breakdowns = "breakdowns"
+      val IsError = "isError"
     }
 
     object BootstrapInfo {

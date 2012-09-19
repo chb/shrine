@@ -19,11 +19,15 @@ public final class SingleInstitutionQueryResult {
     @JsonProperty
     private final Map<String, Breakdown> breakdowns;
 
+    @JsonProperty
+    final boolean isError; 
+    
     @JsonCreator
-    public SingleInstitutionQueryResult(@JsonProperty("count") final long count, @JsonProperty("breakdowns") final Map<String, Breakdown> breakdowns) {
+    public SingleInstitutionQueryResult(@JsonProperty("count") final long count, @JsonProperty("breakdowns") final Map<String, Breakdown> breakdowns, @JsonProperty("isError") final boolean isError) {
         super();
         this.count = count;
         this.breakdowns = new HashMap<String, Breakdown>(breakdowns);
+        this.isError = isError;
     }
 
     public long getCount() {
@@ -32,6 +36,10 @@ public final class SingleInstitutionQueryResult {
 
     public Map<String, Breakdown> getBreakdowns() {
         return breakdowns;
+    }
+    
+    public boolean isError() {
+        return isError;
     }
 
     @Override

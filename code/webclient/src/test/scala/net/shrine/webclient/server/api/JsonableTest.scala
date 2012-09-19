@@ -96,11 +96,11 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
     import ResultOutputType._
     
     val result = new SingleInstitutionQueryResult(999, Map(PATIENT_GENDER_COUNT_XML.name -> breakdownData,
-                                                            PATIENT_RACE_COUNT_XML.name -> breakdownData).asJava)
+                                                            PATIENT_RACE_COUNT_XML.name -> breakdownData).asJava, false)
     
     doRoundTrip(result)()
     
-    toJson(new SingleInstitutionQueryResult(1234, Map.empty.asJava)) should equal("""{"count":1234,"breakdowns":{}}""")
+    toJson(new SingleInstitutionQueryResult(1234, Map.empty.asJava, true)) should equal("""{"count":1234,"breakdowns":{},"isError":true}""")
   }
   
   @Test
@@ -110,18 +110,18 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
         I2b2ResultEnvelope(resultType, (0 to 4).map { i =>
           I2b2ResultEnvelope.Column("column_" + i, i)
         })
-      }))
+      }), false)
     }
     
-    val result = new MultiInstitutionQueryResult(Map("foo" -> singleInstResult(123), "bar" -> singleInstResult(987654)).asJava, Seq.empty.asJava)
+    val result = new MultiInstitutionQueryResult(Map("foo" -> singleInstResult(123), "bar" -> singleInstResult(987654)).asJava)
     
     doRoundTrip(result)()
     
-    val empty = new MultiInstitutionQueryResult(Map.empty.asJava, Seq.empty.asJava)
+    val empty = new MultiInstitutionQueryResult(Map.empty.asJava)
     
     doRoundTrip(empty)()
     
-    toJson(empty) should equal("""{"results":{},"errorInstitutions":[]}""")
+    toJson(empty) should equal("""{"results":{}}""")
   }
   
   private def toJson[T : Jsonable](thing: T): String = implicitly[Jsonable[T]].toJsonString(thing)

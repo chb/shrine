@@ -34,7 +34,7 @@ final class QueryServiceImplTest extends TestCase with AssertionsForJUnit with S
   def testQueryForBreakdown {
     import scala.collection.JavaConverters._
     
-    val toReturn = Map("fooInst" -> new SingleInstitutionQueryResult(123, Map.empty.asJava), "barInst" -> new SingleInstitutionQueryResult(42, Map.empty.asJava))
+    val toReturn = Map("fooInst" -> new SingleInstitutionQueryResult(123, Map.empty.asJava, true), "barInst" -> new SingleInstitutionQueryResult(42, Map.empty.asJava, false))
     
     val mockClient = new MockShrineClient(toReturn)
     
@@ -54,5 +54,8 @@ final class QueryServiceImplTest extends TestCase with AssertionsForJUnit with S
       queryResult.contains(instName) should be(true)
       queryResult.get(instName).get.getCount should equal(instResult.getCount)
     }
+    
+    queryResult("fooInst").isError should be(true)
+    queryResult("barInst").isError should be(false)
   }
 }

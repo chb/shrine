@@ -24,8 +24,8 @@ public final class MockQueryService implements QueryService {
     static final Integer total = 99;
 
     static final MultiInstitutionQueryResult multiNodeResults = new MultiInstitutionQueryResult() {{
-        this.asMap().put("foo", new SingleInstitutionQueryResult(123L, Collections.<String, Breakdown>emptyMap()));
-        this.asMap().put("bar", new SingleInstitutionQueryResult(9876L, Collections.<String, Breakdown>emptyMap()));
+        this.asMap().put("foo", new SingleInstitutionQueryResult(123L, Collections.<String, Breakdown>emptyMap(), true));
+        this.asMap().put("bar", new SingleInstitutionQueryResult(9876L, Collections.<String, Breakdown>emptyMap(), false));
     }};
 
     @Override

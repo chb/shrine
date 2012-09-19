@@ -1,6 +1,5 @@
 package net.shrine.webclient.shared.domain;
 
-import java.util.List;
 import java.util.Map;
 
 import net.shrine.webclient.client.util.Util;
@@ -19,23 +18,16 @@ public class MultiInstitutionQueryResult {
     // NB: Must have default access, and not be private, to appease RestyGWT
     final Map<String, SingleInstitutionQueryResult> results = Util.makeHashMap();
 
-    // NB: Must have default access, and not be private, to appease RestyGWT
-    final List<String> errorInstitutions = Util.makeArrayList();
-
     public MultiInstitutionQueryResult() {
         super();
     }
 
     @JsonCreator
-    public MultiInstitutionQueryResult(@JsonProperty("results") final Map<String, SingleInstitutionQueryResult> results, @JsonProperty("errorInstitutions") final List<String> errorInstitutions) {
+    public MultiInstitutionQueryResult(@JsonProperty("results") final Map<String, SingleInstitutionQueryResult> results) {
         super();
 
         if (results != null) {
             this.results.putAll(results);
-        }
-
-        if (errorInstitutions != null) {
-            this.errorInstitutions.addAll(errorInstitutions);
         }
     }
 
@@ -47,20 +39,15 @@ public class MultiInstitutionQueryResult {
         return results;
     }
 
-    public List<String> getErrorInstitutions() {
-        return errorInstitutions;
-    }
-
     @Override
     public String toString() {
-        return "MultiInstitutionQueryResult [results=" + results + ", errorInstitutions=" + errorInstitutions + "]";
+        return "MultiInstitutionQueryResult [results=" + results + "]";
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (errorInstitutions == null ? 0 : errorInstitutions.hashCode());
         result = prime * result + (results == null ? 0 : results.hashCode());
         return result;
     }
@@ -77,13 +64,6 @@ public class MultiInstitutionQueryResult {
             return false;
         }
         final MultiInstitutionQueryResult other = (MultiInstitutionQueryResult) obj;
-        if (errorInstitutions == null) {
-            if (other.errorInstitutions != null) {
-                return false;
-            }
-        } else if (!errorInstitutions.equals(other.errorInstitutions)) {
-            return false;
-        }
         if (results == null) {
             if (other.results != null) {
                 return false;

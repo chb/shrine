@@ -21,7 +21,7 @@ import scala.collection.JavaConverters._
  */
 final class QueryServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJaxrsTest {
   
-  private lazy val toReturn = Map("fooInst" -> new SingleInstitutionQueryResult(123, Map.empty.asJava), "barInst" -> new SingleInstitutionQueryResult(42, Map.empty.asJava))
+  private lazy val toReturn = Map("fooInst" -> new SingleInstitutionQueryResult(123, Map.empty.asJava, true), "barInst" -> new SingleInstitutionQueryResult(42, Map.empty.asJava, false))
 
   private lazy val mockClient = new MockShrineClient(toReturn)
   
@@ -46,5 +46,8 @@ final class QueryServiceJaxrsTest extends JerseyTest with ShrineWebclientApiJaxr
       queryResult.get(instName).get.getCount should equal(instResult.getCount)
       //TODO: BREAKDOWNS OMITTED
     }
+    
+    queryResult("fooInst").isError should be(true)
+    queryResult("barInst").isError should be(false)
   }
 }

@@ -24,7 +24,7 @@ object Helpers {
     
     val breakdownsByType = makeBreakdownsByTypeMap(result.breakdowns.values)
     
-    new SingleInstitutionQueryResult(setSize, breakdownsByType)
+    new SingleInstitutionQueryResult(setSize, breakdownsByType, result.isError)
   }
   
   def makeBreakdown(envelope: I2b2ResultEnvelope) = {

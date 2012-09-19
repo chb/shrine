@@ -55,8 +55,8 @@ public class StateTestGwt extends AbstractWebclientTest {
 
         @SuppressWarnings("serial")
         final Map<String, SingleInstitutionQueryResult> results = new HashMap<String, SingleInstitutionQueryResult>() {{
-            this.put("foo", new SingleInstitutionQueryResult(5L, Collections.<String, Breakdown>emptyMap()));
-            this.put("bar", new SingleInstitutionQueryResult(99L, Collections.<String, Breakdown>emptyMap()));
+            this.put("foo", new SingleInstitutionQueryResult(5L, Collections.<String, Breakdown>emptyMap(), true));
+            this.put("bar", new SingleInstitutionQueryResult(99L, Collections.<String, Breakdown>emptyMap(), false));
         }};
 
         assertTrue(state.getQueryResult().isEmpty());
