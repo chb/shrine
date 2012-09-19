@@ -27,7 +27,7 @@ object QueryServiceImpl {
 
     import ResultOutputType._
       
-    val outputTypes = Set(PATIENT_COUNT_XML) ++ ResultOutputType.values.filter(_.isBreakdown) 
+    val outputTypes = Set(PATIENT_COUNT_XML) //TODO - re-enable // ++ ResultOutputType.values.filter(_.isBreakdown)
   }
 }
 

@@ -118,7 +118,7 @@ class RunQueryAdapter(
     def readResultRequest(runQueryReq: RunQueryRequest, resultId: Long) = ReadResultRequest(runQueryReq.projectId, runQueryReq.waitTimeMs, runQueryReq.authn, resultId)
 
     val AsRunQueryRequest(runQueryReq) = message.request
-    
+
     val withBreakDownCounts = breakdownResults.map { breakdownResult =>
       val respXml = callCrc(readResultRequest(runQueryReq, breakdownResult.resultId))
 

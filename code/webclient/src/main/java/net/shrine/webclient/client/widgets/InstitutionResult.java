@@ -1,20 +1,20 @@
 package net.shrine.webclient.client.widgets;
 
-import net.shrine.webclient.client.util.Util;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import net.shrine.webclient.client.state.InstitutionResultClickedEvent;
+import net.shrine.webclient.client.util.Util;
 
 /**
- * 
  * @author clint
  * @date Apr 25, 2012
  */
@@ -37,10 +37,12 @@ public final class InstitutionResult extends Composite {
     interface InstitutionResultUiBinder extends UiBinder<Widget, InstitutionResult> {
     }
 
-    public InstitutionResult(final String instName, final long resultSetSize) {
+
+    public InstitutionResult(final EventBus eventBus,final int index, final String instName, final long resultSetSize) {
         super();
 
         Util.requireNotNull(instName);
+        Util.requireNotNull(eventBus);
 
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -51,17 +53,26 @@ public final class InstitutionResult extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 Log.debug("Institution result " + instName + " clicked");
-                // send InstitutionResultClickedEvent
+                eventBus.fireEvent(new InstitutionResultClickedEvent(index));
             }
         });
 
     }
 
     String asString(final long resultSetSize) {
-        if (resultSetSize < MinimumSetSizeToDisplay) {
+        if(resultSetSize < MinimumSetSizeToDisplay) {
             return "< " + MinimumSetSizeToDisplay;
         }
 
         return String.valueOf(resultSetSize);
+    }
+
+    void setSelected(boolean isSelected) {
+        if(isSelected) {
+            addStyleName("resultInstitutionNameSelected");
+        } else {
+            removeStyleName("resultInstitutionNameSelected");
+        }
+
     }
 }
