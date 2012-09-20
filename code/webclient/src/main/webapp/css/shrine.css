@@ -2,7 +2,7 @@
 
 body {
 	font: 12px Verdana, Geneva, sans-serif !important;
-	background: #fff;
+	background: none repeat scroll 0 0 #fff;
 }
 
 a:link, a:hover, a:visited, a:active {
@@ -35,6 +35,7 @@ a:link, a:hover, a:visited, a:active {
 
 .mainContent {
 	padding: 10px 0 0 0;
+	min-height: 550px;
 }
 
 .searchBox {
@@ -46,6 +47,16 @@ a:link, a:hover, a:visited, a:active {
 
 .footer {
 	clear: both;
+	margin: 20px 0 0 0;
+	background:#666;
+	padding: 5px 10px;
+	color: #FFF;
+	text-align: right;
+	font-size: 10px;
+	
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
 }
 
 /* Form Element */
@@ -255,6 +266,106 @@ a:link, a:hover, a:visited, a:active {
 }
 */
 
+.loginOuterContainer {
+	position: relative;
+	margin: 20px 0 0 0;
+}
+
+.loginContainer {
+	width: 230px; 
+	position: relative; 
+	display: inline-block; 
+	vertical-align:top; 
+	height: 30px;
+}
+
+.loginButtonContainer {
+	position: relative; 
+	display: inline-block; 
+	vertical-align:top; 
+	height: 30px;
+}
+
+.loginInput {
+	width: 204px;
+	height: 26px;
+	font-size: 16px;
+	font-weight: bold;
+	display:inline-block;
+	color: #7f7f80;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: solid #666666;
+	border-width: 1px;
+	margin: 0 5px 0 0;
+	padding: 1px 10px;
+	vertical-align: top;
+	background: transparent;
+	position: absolute;
+	z-index: 10;
+	top: 0;
+	left: 0;
+}
+
+.loginPlaceholder {
+	position:absolute; 
+	top: 0; 
+	left: 0; 
+	z-index: 0; 
+	padding: 5px 0 0 10px; 
+	font-weight: bold; 
+	color: #7f7f80;
+}
+
+.loginCheckbox {
+    display: inline-block;
+    margin: 0 10px 0 0;
+    padding: 0;
+	vertical-align: baseline;
+}
+
+.loginButton {
+	width: 120px;
+	height: 30px;
+	font-size: 16px;
+	font-weight: bold;
+	display:inline-block;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	border: solid #666666;
+	border-width: 1px;
+	margin: 0 0 0 5px;
+	vertical-align: top;
+}
+
+.agreeContainer {
+	padding: 10px 0 0 0; 
+	position: relative; 
+	display: inline-block;
+}
+
+.loginTerms {
+	height: 400px; 
+	overflow-x: hidden; 
+	overflow-y: auto; 
+	border: 1px solid #666; 
+	margin: 10px 0 0 0;
+	padding: 10px;
+	font-size: 12px;
+}
+
+.loginTermsHeader {
+	text-align: center;
+	line-height: 30px;
+	font-weight: bold;
+}
+
+.loginTerms li {
+	padding: 0 0 10px 0;
+}
+
 .buttonPanel {
 	width: 100%;
 	padding: 15px 0 5px 0;
@@ -420,7 +531,6 @@ a:link, a:hover, a:visited, a:active {
 	margin: 0 0 20px 0;
 	overflow: auto;
 	float:left;
-	background: #FFFFFF;
 	/* TODO: HACK ALERT */
 	/* display:none; */
 }
@@ -769,7 +879,7 @@ a:link, a:hover, a:visited, a:active {
 	font-size: 115%;
 	padding: 0 40px 10px 0;
 	margin: 0 0 15px 0;
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .resultInstitutionName {
