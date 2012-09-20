@@ -7,14 +7,15 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import net.shrine.webclient.client.state.InstitutionResultClickedEvent;
 import net.shrine.webclient.client.state.InstitutionResultClickedEventHandler;
 import net.shrine.webclient.client.util.Observer;
 import net.shrine.webclient.client.util.ReadOnlyObservable;
+import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +34,11 @@ public final class ResultsPanel extends Composite implements Observer {
     @UiField
     FlowPanel resultsInstitutionsDelegate;
 
+    @UiField
+    SimplePanel resultDetails;
+
     private ReadOnlyObservable<Map<String, SingleInstitutionQueryResult>> results;
-    private final List<InstitutionResult> institutionResults = new ArrayList<InstitutionResult>();
+    private final List<InstitutionResult> institutionResults = Util.makeArrayList();
     private int currentSelectIndex = -1;
 
     public ResultsPanel() {
@@ -76,13 +80,15 @@ public final class ResultsPanel extends Composite implements Observer {
         if(hasResults(results)) {
             int i = 0;
             for(Map.Entry<String, SingleInstitutionQueryResult> result : results.get().entrySet()) {
-                InstitutionResult institutionResult = new InstitutionResult(eventBus, i, result.getKey(), result.getValue().getCount());
+                InstitutionResult institutionResult = new InstitutionResult(eventBus, i, result.getKey(), result.getValue());
                 institutionResults.add(institutionResult);
                 resultsInstitutionsDelegate.add(institutionResult);
                 i++;
             }
             currentSelectIndex = 0;
-            institutionResults.get(currentSelectIndex).setSelected(true);
+            InstitutionResult currentResult = institutionResults.get(currentSelectIndex);
+            currentResult.setSelected(true);
+            resultDetails.setWidget(new ResultDetails(currentResult.getResult()));
         }
     }
 

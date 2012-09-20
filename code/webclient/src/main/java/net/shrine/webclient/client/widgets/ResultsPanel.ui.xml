@@ -15,57 +15,9 @@
         <div class="breakDownInstitution">
             <div class="resultDescription">Click each institution below to view the breakdown for that institution.</div>
             <g:FlowPanel ui:field="resultsInstitutionsDelegate" styleName="resultInstitutions"/>
-
-            <!--Select with resultInstitutionNameSelected-->
         </div>
+        <g:SimplePanel ui:field="resultDetails" styleName="breakDownDemographics"/>
 
-        <div class="breakDownDemographics">
-            <!--<div class="demographic">-->
-                <!--Gender-->
-                <!--<div style="width: 660px; height: 270px; position: relative;" id="genderchart">-->
-                    <!--<iframe width="660" scrolling="no" height="270"-->
-                        <!--frameborder="0" name="Drawing_Frame_37486" id="Drawing_Frame_37486"-->
-                        <!--marginheight="0" marginwidth="0"></iframe>-->
-                    <!--<div></div>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="demographic">-->
-                <!--Age-->
-                <!--<div style="width: 660px; height: 270px; position: relative;" id="agechart">-->
-                    <!--<iframe width="660" scrolling="no" height="270"-->
-                        <!--frameborder="0" name="Drawing_Frame_8638" id="Drawing_Frame_8638"-->
-                        <!--marginheight="0" marginwidth="0"></iframe>-->
-                    <!--<div></div>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="demographic">-->
-                <!--Race-->
-                <!--<div style="width: 660px; height: 270px; position: relative;" id="racechart">-->
-                    <!--<iframe width="660" scrolling="no" height="270"-->
-                        <!--frameborder="0" name="Drawing_Frame_28892" id="Drawing_Frame_28892"-->
-                        <!--marginheight="0" marginwidth="0"></iframe>-->
-                    <!--<div></div>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="demographic">-->
-                <!--Language-->
-                <!--<div style="width: 660px; height: 270px; position: relative;" id="languagechart">-->
-                    <!--<iframe width="660" scrolling="no" height="270"-->
-                        <!--frameborder="0" name="Drawing_Frame_3071" id="Drawing_Frame_3071"-->
-                        <!--marginheight="0" marginwidth="0"></iframe>-->
-                    <!--<div></div>-->
-                <!--</div>-->
-            <!--</div>-->
-            <!--<div class="demographic">-->
-                <!--Religion-->
-                <!--<div style="width: 660px; height: 270px; position: relative;" id="religionchart">-->
-                    <!--<iframe width="660" scrolling="no" height="270"-->
-                        <!--frameborder="0" name="Drawing_Frame_69411" id="Drawing_Frame_69411"-->
-                        <!--marginheight="0" marginwidth="0"></iframe>-->
-                    <!--<div></div>-->
-                <!--</div>-->
-            <!--</div>-->
-        </div>
         <div style="clear: both;"></div>
     </g:HTMLPanel>
 </ui:UiBinder> 

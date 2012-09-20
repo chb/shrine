@@ -3,6 +3,7 @@ package net.shrine.webclient.client.state;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.web.bindery.event.shared.Event;
 import net.shrine.webclient.client.util.EventUtil;
+import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult;
 
 /**
  * @author Bill Simons
@@ -17,10 +18,12 @@ import net.shrine.webclient.client.util.EventUtil;
 public class InstitutionResultClickedEvent extends GwtEvent<InstitutionResultClickedEventHandler> {
     private static final GwtEvent.Type<InstitutionResultClickedEventHandler> TYPE = EventUtil.eventType();
 
-    private int index;
+    private final int index;
+    private final SingleInstitutionQueryResult singleInstitutionResult;
 
-    public InstitutionResultClickedEvent(final int index) {
+    public InstitutionResultClickedEvent(final int index, final SingleInstitutionQueryResult singleInstitutionResult) {
         super();
+        this.singleInstitutionResult = singleInstitutionResult;
         this.index = index;
     }
 
@@ -40,5 +43,9 @@ public class InstitutionResultClickedEvent extends GwtEvent<InstitutionResultCli
 
     public int getIndex() {
         return index;
+    }
+
+    public SingleInstitutionQueryResult getSingleInstitutionResult() {
+        return singleInstitutionResult;
     }
 }

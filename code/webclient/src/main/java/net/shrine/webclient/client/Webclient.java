@@ -1,5 +1,7 @@
 package net.shrine.webclient.client;
 
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
 import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.services.BootstrapService;
 import net.shrine.webclient.client.services.Services;
@@ -46,7 +48,17 @@ public final class Webclient implements EntryPoint {
 		wrapper.wireUp(eventBus, state, controllers, ontSearchBox, dragController, bootstrapService);
 
 		RootPanel.get().add(wrapper);
-		
+
+        // Load the visualization api, passing the onLoadCallback to be called
+        // when loading is done.
+        Runnable onLoadCallback = new Runnable() {
+             public void run() {
+               Log.debug("Visualization API loaded");
+             }
+           };
+
+        VisualizationUtils.loadVisualizationApi(onLoadCallback, ColumnChart.PACKAGE);
+
 		Log.info("Shrine Webclient loaded");
 		
 		Log.debug("Base URL: " + GWT.getModuleBaseURL());
