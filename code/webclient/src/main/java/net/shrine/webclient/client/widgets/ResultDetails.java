@@ -33,17 +33,23 @@ public final class ResultDetails extends FlowPanel {
         this.setVisible(false);
         
         for (final Map.Entry<String, Breakdown> entry : result.getBreakdowns().entrySet()) {
-            final DataTable dataTable = getDataTable(entry.getValue());
+            final Breakdown breakdown = entry.getValue();
+            final String breakdownType = entry.getKey();
+            
+            final DataTable dataTable = getDataTable(breakdown);
+
             final Options options = CoreChart.createOptions();
             options.setHeight(167); //TODO: Factor out somehow
-            options.setTitle(entry.getKey());
             options.setWidth(465); //TODO: Factor out somehow
 
             final AxisOptions vAxisOptions = AxisOptions.create();
             vAxisOptions.setMinValue(0);
+            
             options.setVAxisOptions(vAxisOptions);
             
-            this.add(new ColumnChart(dataTable, options));
+            final ColumnChart chart = new ColumnChart(dataTable, options);
+            
+            this.add(new ChartPanel(breakdownType, chart));
         }
         
         this.setVisible(true);
@@ -51,14 +57,18 @@ public final class ResultDetails extends FlowPanel {
 
     private static DataTable getDataTable(final Breakdown value) {
         final DataTable data = DataTable.create();
+        
         data.addColumn(AbstractDataTable.ColumnType.STRING, "Demographics Category");
         data.addRows(1);
         data.setValue(0, 0, "# of Patients");
+        
         final List<Map.Entry<String, Long>> entries = Util.makeArrayList(value.entrySet());
+        
         for (int i = 0; i < entries.size(); i++) {
             data.addColumn(AbstractDataTable.ColumnType.NUMBER, entries.get(i).getKey());
             data.setValue(0, i + 1, entries.get(i).getValue());
         }
+        
         return data;
     }
 }
