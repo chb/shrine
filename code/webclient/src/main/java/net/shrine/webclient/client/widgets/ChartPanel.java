@@ -35,7 +35,10 @@ public final class ChartPanel extends Composite {
         
         this.chartNameSpan.setInnerText(getBreakdownName(breakdownType));
         
-        this.chartHolder.setWidget(chart);
+        //NB: Allow null here, for easier testing :/
+        if(chart != null) {  
+            this.chartHolder.setWidget(chart);
+        }
     }
 
     static String getBreakdownName(final String breakdownType) {

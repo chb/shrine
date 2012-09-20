@@ -12,16 +12,16 @@ import com.google.gwt.junit.client.GWTTestCase;
  * @date Apr 11, 2012
  */
 public abstract class AbstractWebclientTest extends GWTTestCase {
-	@Override
-	public String getModuleName() {
-		return "net.shrine.webclient.WebclientJUnit";
-	}
-	
-	protected Term term(final String path) {
-		return new Term(path, "some-bogus-category");
-	}
-	
-	protected State state() {
-		return new State(new SimpleEventBus());
-	}
+    @Override
+    public String getModuleName() {
+        return "net.shrine.webclient.WebclientJUnit";
+    }
+
+    protected Term term(final String path) {
+        return new Term(path, "some-bogus-category");
+    }
+
+    protected State state() {
+        return new State(new SimpleEventBus());
+    }
 }
