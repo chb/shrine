@@ -35,9 +35,9 @@ public final class ResultDetails extends FlowPanel {
         for (final Map.Entry<String, Breakdown> entry : result.getBreakdowns().entrySet()) {
             final DataTable dataTable = getDataTable(entry.getValue());
             final Options options = CoreChart.createOptions();
-            options.setHeight(167);
+            options.setHeight(167); //TODO: Factor out somehow
             options.setTitle(entry.getKey());
-            options.setWidth(465);
+            options.setWidth(465); //TODO: Factor out somehow
 
             final AxisOptions vAxisOptions = AxisOptions.create();
             vAxisOptions.setMinValue(0);
