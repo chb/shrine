@@ -14,345 +14,324 @@ import static org.spin.tools.Util.asSet;
  */
 public abstract class AdapterDAOTest extends AbstractRequestResponseDataTest {
 
-	public void testInsertAndFindUserThreshold() throws Exception {
-		final Identity testId = new Identity("testDomain", "testUsername");
-		final Integer testThreshold = 99;
-		
-		adapterDAO.insertUserThreshold(testId, testThreshold);
-		
-		assertEquals(testThreshold, adapterDAO.findUserThreshold(testId));
-	}
-	
-	//NB: isUserLockedOut is exercised by PrivilegedUserTest
-	
-	public void testFindLocalMasterID() throws Exception {
-		sanityCheckTestData();
+    public void testInsertAndFindUserThreshold() throws Exception {
+        final Identity testId = new Identity("testDomain", "testUsername");
+        final Integer testThreshold = 99;
 
-		{
-			final String localMasterID = adapterDAO
-					.findLocalMasterID(masterID1);
+        adapterDAO.insertUserThreshold(testId, testThreshold);
 
-			assertNotNull(localMasterID);
+        assertEquals(testThreshold, adapterDAO.findUserThreshold(testId));
+    }
 
-			assertEquals(localMasterID1, localMasterID);
-		}
+    // NB: isUserLockedOut is exercised by PrivilegedUserTest
 
-		{
-			final String localMasterID = adapterDAO
-					.findLocalMasterID(masterID2);
+    public void testFindLocalMasterID() throws Exception {
+        sanityCheckTestData();
 
-			assertNotNull(localMasterID);
+        {
+            final String localMasterID = adapterDAO.findLocalMasterID(masterID1);
 
-			assertEquals(localMasterID2, localMasterID);
-		}
+            assertNotNull(localMasterID);
 
-		{
-			// Look up bogus master ID
-			final String localMasterID = adapterDAO.findLocalMasterID(239582L);
+            assertEquals(localMasterID1, localMasterID);
+        }
 
-			assertNull("Should have been null, but was" + localMasterID, localMasterID);
-		}
-	}
+        {
+            final String localMasterID = adapterDAO.findLocalMasterID(masterID2);
 
-	public void testFindNetworkMasterID() throws Exception {
-		sanityCheckTestData();
+            assertNotNull(localMasterID);
 
-		{
-			final Long networkMasterID = (Long)adapterDAO.findNetworkMasterID(localMasterID1).get();
+            assertEquals(localMasterID2, localMasterID);
+        }
 
-			assertNotNull(networkMasterID);
+        {
+            // Look up bogus master ID
+            final String localMasterID = adapterDAO.findLocalMasterID(239582L);
 
-			assertEquals(Long.valueOf(masterID1), networkMasterID);
-		}
+            assertNull("Should have been null, but was" + localMasterID, localMasterID);
+        }
+    }
 
-		{
-			final Long networkMasterID = (Long)adapterDAO.findNetworkMasterID(localMasterID2).get();
+    public void testFindNetworkMasterID() throws Exception {
+        sanityCheckTestData();
 
-			assertNotNull(networkMasterID);
+        {
+            final Long networkMasterID = (Long) adapterDAO.findNetworkMasterID(localMasterID1).get();
 
-			assertEquals(Long.valueOf(masterID2), networkMasterID);
-		}
+            assertNotNull(networkMasterID);
 
-		{
-			// Look up bogus master ID
-			assertTrue(adapterDAO.findNetworkMasterID("239582asklfjlasfj").isEmpty());
-		}
-	}
+            assertEquals(Long.valueOf(masterID1), networkMasterID);
+        }
 
-	public void testFindLocalInstanceID() throws Exception {
-		sanityCheckTestData();
+        {
+            final Long networkMasterID = (Long) adapterDAO.findNetworkMasterID(localMasterID2).get();
 
-		{
-			final String localInstanceID = adapterDAO
-					.findLocalInstanceID(instanceID1);
+            assertNotNull(networkMasterID);
 
-			assertNotNull(localInstanceID);
+            assertEquals(Long.valueOf(masterID2), networkMasterID);
+        }
 
-			assertEquals(localInstanceID1, localInstanceID);
-		}
+        {
+            // Look up bogus master ID
+            assertTrue(adapterDAO.findNetworkMasterID("239582asklfjlasfj").isEmpty());
+        }
+    }
 
-		{
-			final String localInstanceID = adapterDAO
-					.findLocalInstanceID(instanceID2);
+    public void testFindLocalInstanceID() throws Exception {
+        sanityCheckTestData();
 
-			assertNotNull(localInstanceID);
+        {
+            final String localInstanceID = adapterDAO.findLocalInstanceID(instanceID1);
 
-			assertEquals(localInstanceID2, localInstanceID);
-		}
+            assertNotNull(localInstanceID);
 
-		{
-			// Look up bogus master and instance IDs
-			final String localInstanceID = adapterDAO
-					.findLocalInstanceID(3847398L);
+            assertEquals(localInstanceID1, localInstanceID);
+        }
 
-			assertNull(localInstanceID);
-		}
-	}
+        {
+            final String localInstanceID = adapterDAO.findLocalInstanceID(instanceID2);
 
-	public void testFindNetworkInstanceID() throws Exception {
-		sanityCheckTestData();
+            assertNotNull(localInstanceID);
 
-		{
-			final Long networkInstanceID = (Long)adapterDAO.findNetworkInstanceID(localInstanceID1).get();
+            assertEquals(localInstanceID2, localInstanceID);
+        }
 
-			assertNotNull(networkInstanceID);
+        {
+            // Look up bogus master and instance IDs
+            final String localInstanceID = adapterDAO.findLocalInstanceID(3847398L);
 
-			assertEquals(Long.valueOf(instanceID1), networkInstanceID);
-		}
+            assertNull(localInstanceID);
+        }
+    }
 
-		{
-			final Long networkInstanceID = (Long)adapterDAO.findNetworkInstanceID(localInstanceID2).get();
+    public void testFindNetworkInstanceID() throws Exception {
+        sanityCheckTestData();
 
-			assertNotNull(networkInstanceID);
+        {
+            final Long networkInstanceID = (Long) adapterDAO.findNetworkInstanceID(localInstanceID1).get();
 
-			assertEquals(Long.valueOf(instanceID2), networkInstanceID);
-		}
+            assertNotNull(networkInstanceID);
 
-		{
-			// Look up bogus master and instance IDs
-			assertTrue(adapterDAO.findNetworkInstanceID("3847398Lasdkllasdk").isEmpty());
-		}
-	}
+            assertEquals(Long.valueOf(instanceID1), networkInstanceID);
+        }
 
-	public void testFindNetworkInstanceIDNoMasterID() throws Exception {
-		sanityCheckTestData();
+        {
+            final Long networkInstanceID = (Long) adapterDAO.findNetworkInstanceID(localInstanceID2).get();
 
-		{
-			final Long networkInstanceID = (Long)adapterDAO.findNetworkInstanceID(localInstanceID1).get();
+            assertNotNull(networkInstanceID);
 
-			assertNotNull(networkInstanceID);
+            assertEquals(Long.valueOf(instanceID2), networkInstanceID);
+        }
 
-			assertEquals(Long.valueOf(instanceID1), networkInstanceID);
-		}
+        {
+            // Look up bogus master and instance IDs
+            assertTrue(adapterDAO.findNetworkInstanceID("3847398Lasdkllasdk").isEmpty());
+        }
+    }
 
-		{
-			final Long networkInstanceID = (Long)adapterDAO.findNetworkInstanceID(localInstanceID2).get();
+    public void testFindNetworkInstanceIDNoMasterID() throws Exception {
+        sanityCheckTestData();
 
-			assertNotNull(networkInstanceID);
+        {
+            final Long networkInstanceID = (Long) adapterDAO.findNetworkInstanceID(localInstanceID1).get();
 
-			assertEquals(Long.valueOf(instanceID2), networkInstanceID);
-		}
+            assertNotNull(networkInstanceID);
 
-		{
-			// Look up bogus master and instance IDs
-			assertTrue(adapterDAO.findNetworkInstanceID("3847398Lasdkllasdk").isEmpty());
-		}
-	}
+            assertEquals(Long.valueOf(instanceID1), networkInstanceID);
+        }
 
-	public void testFindLocalResultID() throws Exception {
-		sanityCheckTestData();
+        {
+            final Long networkInstanceID = (Long) adapterDAO.findNetworkInstanceID(localInstanceID2).get();
 
-		{
-			final String localResultID = adapterDAO
-					.findLocalResultID(resultID1a);
+            assertNotNull(networkInstanceID);
 
-			assertNotNull(localResultID);
+            assertEquals(Long.valueOf(instanceID2), networkInstanceID);
+        }
 
-			assertEquals(localResultID1a, localResultID);
-		}
+        {
+            // Look up bogus master and instance IDs
+            assertTrue(adapterDAO.findNetworkInstanceID("3847398Lasdkllasdk").isEmpty());
+        }
+    }
 
-		{
-			final String localResultID = adapterDAO
-					.findLocalResultID(resultID1b);
+    public void testFindLocalResultID() throws Exception {
+        sanityCheckTestData();
 
-			assertNotNull(localResultID);
+        {
+            final String localResultID = adapterDAO.findLocalResultID(resultID1a);
 
-			assertEquals(localResultID1b, localResultID);
-		}
+            assertNotNull(localResultID);
 
-		{
-			// Look up bogus master ID
-			final String localResultID = adapterDAO.findLocalResultID(384783L);
+            assertEquals(localResultID1a, localResultID);
+        }
 
-			assertNull(localResultID);
-		}
-	}
+        {
+            final String localResultID = adapterDAO.findLocalResultID(resultID1b);
 
-	public void testFindNetworkResultID() throws Exception {
-		sanityCheckTestData();
+            assertNotNull(localResultID);
 
-		{
-			final Long networkResultID = (Long)adapterDAO.findNetworkResultID(localResultID1a).get();
+            assertEquals(localResultID1b, localResultID);
+        }
 
-			assertNotNull(networkResultID);
+        {
+            // Look up bogus master ID
+            final String localResultID = adapterDAO.findLocalResultID(384783L);
 
-			assertEquals(Long.valueOf(resultID1a), networkResultID);
-		}
+            assertNull(localResultID);
+        }
+    }
 
-		{
-			final Long networkResultID = (Long)adapterDAO.findNetworkResultID(localResultID1b).get();
+    public void testFindNetworkResultID() throws Exception {
+        sanityCheckTestData();
 
-			assertNotNull(networkResultID);
+        {
+            final Long networkResultID = (Long) adapterDAO.findNetworkResultID(localResultID1a).get();
 
-			assertEquals(Long.valueOf(resultID1b), networkResultID);
-		}
+            assertNotNull(networkResultID);
 
-		{
-			// Look up bogus master, instance, and result IDs
-			assertTrue(adapterDAO.findNetworkResultID("384783Lsakjfha").isEmpty());
-		}
-	}
+            assertEquals(Long.valueOf(resultID1a), networkResultID);
+        }
 
-	public void testFindNetworkResultIDNoMasterID() throws Exception {
-		sanityCheckTestData();
+        {
+            final Long networkResultID = (Long) adapterDAO.findNetworkResultID(localResultID1b).get();
 
-		{
-			final Long networkResultID = (Long)adapterDAO.findNetworkResultID(localResultID1a).get();
+            assertNotNull(networkResultID);
 
-			assertNotNull(networkResultID);
+            assertEquals(Long.valueOf(resultID1b), networkResultID);
+        }
 
-			assertEquals(Long.valueOf(resultID1a), networkResultID);
-		}
+        {
+            // Look up bogus master, instance, and result IDs
+            assertTrue(adapterDAO.findNetworkResultID("384783Lsakjfha").isEmpty());
+        }
+    }
 
-		{
-			final Long networkResultID = (Long)adapterDAO.findNetworkResultID(localResultID1b).get();
+    public void testFindNetworkResultIDNoMasterID() throws Exception {
+        sanityCheckTestData();
 
-			assertNotNull(networkResultID);
+        {
+            final Long networkResultID = (Long) adapterDAO.findNetworkResultID(localResultID1a).get();
 
-			assertEquals(Long.valueOf(resultID1b), networkResultID);
-		}
+            assertNotNull(networkResultID);
 
-		{
-			// Look up bogus master, instance, and result IDs
-			assertTrue(adapterDAO.findNetworkResultID("384783Lsakjfha").isEmpty());
-		}
-	}
+            assertEquals(Long.valueOf(resultID1a), networkResultID);
+        }
 
-	private void sanityCheckTestData() throws DAOException {
-		// Sanity checks
-		assertEquals(3, adapterDAO.getAuditEntries(identity1).size());
-		assertEquals(1, adapterDAO.getAuditEntries(identity2).size());
-	}
-	
-	public void testHappyCase() throws Exception {
-		final int resultId = 999;
-		final RequestResponseData mapping = new RequestResponseData("domain",
-				"username", 1, 2, resultId, "ERROR", 10, 1000, "spin",
-				"<resultXml/>");
-		adapterDAO.insertRequestResponseData(mapping);
-		final RequestResponseData selected = adapterDAO.findRequestResponseDataByResultID(resultId).get();
-		assertEquals(mapping, selected);
-	}
+        {
+            final Long networkResultID = (Long) adapterDAO.findNetworkResultID(localResultID1b).get();
 
-	public void testFindNetworkMasterIDsForUser() throws Exception {
-		// Should be 2 master IDs
-		{
-			final List<Long> masterIDs = getMasterIDsFrom(adapterDAO
-					.findNetworkMasterDefinitions(domain, username));
+            assertNotNull(networkResultID);
 
-			assertNotNull(masterIDs);
+            assertEquals(Long.valueOf(resultID1b), networkResultID);
+        }
 
-			assertEquals(asSet(masterID1, masterID2, masterID3),
-					asSet(masterIDs));
-		}
+        {
+            // Look up bogus master, instance, and result IDs
+            assertTrue(adapterDAO.findNetworkResultID("384783Lsakjfha").isEmpty());
+        }
+    }
 
-		// Should be 1 master ID
-		{
-			final List<Long> masterIDs = getMasterIDsFrom(adapterDAO
-					.findNetworkMasterDefinitions(identity2.getDomain(),
-							identity2.getUsername()));
+    private void sanityCheckTestData() throws DAOException {
+        // Sanity checks
+        assertEquals(3, adapterDAO.getAuditEntries(identity1).size());
+        assertEquals(1, adapterDAO.getAuditEntries(identity2).size());
+    }
 
-			assertNotNull(masterIDs);
+    public void testHappyCase() throws Exception {
+        final int resultId = 999;
+        final RequestResponseData mapping = new RequestResponseData("domain", "username", 1, 2, resultId, "ERROR", 10, 1000, "spin", "<resultXml/>");
+        adapterDAO.insertRequestResponseData(mapping);
+        final RequestResponseData selected = adapterDAO.findRequestResponseDataByResultID(resultId).get();
+        assertEquals(mapping, selected);
+    }
 
-			assertEquals(asSet(masterID4), asSet(masterIDs));
-		}
+    public void testFindNetworkMasterIDsForUser() throws Exception {
+        // Should be 2 master IDs
+        {
+            final List<Long> masterIDs = getMasterIDsFrom(adapterDAO.findNetworkMasterDefinitions(domain, username));
 
-		// Bogus user should have no master IDs
-		{
-			final List<Long> masterIDs = getMasterIDsFrom(adapterDAO
-					.findNetworkMasterDefinitions("alskjdlaksjfhlkasfhlkajf",
-							"aslkfljkasjfklashflhaskjg"));
+            assertNotNull(masterIDs);
 
-			assertNotNull(masterIDs);
+            assertEquals(asSet(masterID1, masterID2, masterID3), asSet(masterIDs));
+        }
 
-			assertTrue("Master ID list should be empty, but was " + masterIDs,
-					masterIDs.isEmpty());
-		}
-	}
+        // Should be 1 master ID
+        {
+            final List<Long> masterIDs = getMasterIDsFrom(adapterDAO.findNetworkMasterDefinitions(identity2.getDomain(), identity2.getUsername()));
 
-	public void testFindMasterQueryDefinition() throws DAOException {
-		sanityCheckTestData();
+            assertNotNull(masterIDs);
 
-		{
-			final MasterQueryDefinition queryDefinition = adapterDAO
-					.findMasterQueryDefinition(masterID1);
+            assertEquals(asSet(masterID4), asSet(masterIDs));
+        }
 
-			assertNotNull(queryDefinition);
+        // Bogus user should have no master IDs
+        {
+            final List<Long> masterIDs = getMasterIDsFrom(adapterDAO.findNetworkMasterDefinitions("alskjdlaksjfhlkasfhlkajf", "aslkfljkasjfklashflhaskjg"));
 
-			assertEquals(master1.getQueryDefinition(),
-					queryDefinition.getRequestXml());
-		}
+            assertNotNull(masterIDs);
 
-		{
-			final MasterQueryDefinition queryDefinition = adapterDAO
-					.findMasterQueryDefinition(masterID2);
+            assertTrue("Master ID list should be empty, but was " + masterIDs, masterIDs.isEmpty());
+        }
+    }
 
-			assertNotNull(queryDefinition);
+    public void testFindMasterQueryDefinition() throws DAOException {
+        sanityCheckTestData();
 
-			assertEquals(master2.getQueryDefinition(),
-					queryDefinition.getRequestXml());
-		}
-	}
+        {
+            final MasterQueryDefinition queryDefinition = adapterDAO.findMasterQueryDefinition(masterID1);
 
-	static final List<Long> getMasterIDsFrom(final scala.collection.Seq<QueryMaster> masterDefinitions) {
-		if (masterDefinitions == null) {
-			return null;
-		}
+            assertNotNull(queryDefinition);
 
-		final List<Long> result = Util.makeArrayList(masterDefinitions.size());
+            assertEquals(master1.getQueryDefinition(), queryDefinition.getRequestXml());
+        }
 
-		for (final QueryMaster queryMaster : scala.collection.JavaConversions.asJavaIterable(masterDefinitions)) {
-			result.add(Long.valueOf(queryMaster.queryMasterId()));
-		}
+        {
+            final MasterQueryDefinition queryDefinition = adapterDAO.findMasterQueryDefinition(masterID2);
 
-		return result;
-	}
+            assertNotNull(queryDefinition);
 
-	public void testFindObfuscationAmount() throws DAOException {
-		sanityCheckTestData();
+            assertEquals(master2.getQueryDefinition(), queryDefinition.getRequestXml());
+        }
+    }
 
-		{
-			Integer actual = (Integer)adapterDAO.findObfuscationAmount(String.valueOf(resultID1a)).get();
-			assertEquals(result1aObfuscationAmount, actual);
-		}
-		{
-			Integer actual = (Integer)adapterDAO.findObfuscationAmount(String.valueOf(resultID1b)).get();
-			assertEquals(result1bObfuscationAmount, actual);
-		}
-	}
+    static final List<Long> getMasterIDsFrom(final scala.collection.Seq<QueryMaster> masterDefinitions) {
+        if (masterDefinitions == null) {
+            return null;
+        }
 
-	public void testUpdateObfuscationAmount() throws DAOException {
-		sanityCheckTestData();
+        final List<Long> result = Util.makeArrayList(masterDefinitions.size());
 
-		Integer actual = (Integer)adapterDAO.findObfuscationAmount(String.valueOf(resultID1a)).get();
-		assertEquals(result1aObfuscationAmount, actual);
+        for (final QueryMaster queryMaster : scala.collection.JavaConversions.asJavaIterable(masterDefinitions)) {
+            result.add(Long.valueOf(queryMaster.queryMasterId()));
+        }
 
-		int newAmount = 10;
-		assertTrue(result1aObfuscationAmount != newAmount);
-		adapterDAO.updateObfuscationAmount(String.valueOf(resultID1a),
-				newAmount);
+        return result;
+    }
 
-		actual = (Integer)adapterDAO.findObfuscationAmount(String.valueOf(resultID1a)).get();
-		assertEquals(newAmount, (int) actual);
-	}
+    public void testFindObfuscationAmount() throws DAOException {
+        sanityCheckTestData();
+
+        {
+            Integer actual = (Integer) adapterDAO.findObfuscationAmount(String.valueOf(resultID1a)).get();
+            assertEquals(result1aObfuscationAmount, actual);
+        }
+        {
+            Integer actual = (Integer) adapterDAO.findObfuscationAmount(String.valueOf(resultID1b)).get();
+            assertEquals(result1bObfuscationAmount, actual);
+        }
+    }
+
+    public void testUpdateObfuscationAmount() throws DAOException {
+        sanityCheckTestData();
+
+        Integer actual = (Integer) adapterDAO.findObfuscationAmount(String.valueOf(resultID1a)).get();
+        assertEquals(result1aObfuscationAmount, actual);
+
+        int newAmount = 10;
+        assertTrue(result1aObfuscationAmount != newAmount);
+        adapterDAO.updateObfuscationAmount(String.valueOf(resultID1a), newAmount);
+
+        actual = (Integer) adapterDAO.findObfuscationAmount(String.valueOf(resultID1a)).get();
+        assertEquals(newAmount, (int) actual);
+    }
 }

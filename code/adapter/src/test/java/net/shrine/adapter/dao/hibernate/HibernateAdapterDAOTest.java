@@ -9,14 +9,12 @@ import javax.sql.DataSource;
  * @author ???
  * @date ???
  */
-public final class HibernateAdapterDAOTest extends AdapterDAOTest
-{
+public final class HibernateAdapterDAOTest extends AdapterDAOTest {
     @Resource
     DataSource dataSource;
 
     @Override
-    protected void onSetUpInTransaction() throws Exception
-    {
+    protected void onSetUpInTransaction() throws Exception {
         insertRequestResponseDatas();
 
         insertMasterQuerys();
@@ -29,8 +27,7 @@ public final class HibernateAdapterDAOTest extends AdapterDAOTest
     }
 
     @Override
-    protected String getConfigPath()
-    {
+    protected String getConfigPath() {
         return "/testApplicationContext.xml";
     }
 }

@@ -20,9 +20,9 @@ import static java.util.Arrays.asList;
  * @date Nov 23, 2010
  * @link http://cbmi.med.harvard.edu
  * @link http://chip.org
- * <p/>
- * NOTICE: This software comes with NO guarantees whatsoever and is
- * licensed as Lgpl Open Source
+ *       <p/>
+ *       NOTICE: This software comes with NO guarantees whatsoever and is
+ *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 
@@ -61,7 +61,7 @@ public class PrivilegedUserTest extends AbstractTransactionalDataSourceSpringCon
         final Identity noThresholdId1 = new Identity(testDomain, username);
         final Identity noThresholdId2 = new Identity(domain, testUsername);
 
-        for(final Identity noThreshold : asList(noThresholdId1, noThresholdId2)) {
+        for (final Identity noThreshold : asList(noThresholdId1, noThresholdId2)) {
             assertFalse(adapterDAO.isUserLockedOut(noThreshold, defaultThreshold));
 
             lockoutUser(noThreshold, 42);
@@ -82,7 +82,7 @@ public class PrivilegedUserTest extends AbstractTransactionalDataSourceSpringCon
 
         assertTrue(adapterDAO.isUserLockedOut(testId, defaultThreshold));
 
-        //Make sure username + domain is how users are identified 
+        // Make sure username + domain is how users are identified
         assertFalse(adapterDAO.isUserLockedOut(new Identity(testDomain, "some-other-username"), defaultThreshold));
         assertFalse(adapterDAO.isUserLockedOut(new Identity("some-other-domain", testUsername), defaultThreshold));
     }
@@ -97,7 +97,7 @@ public class PrivilegedUserTest extends AbstractTransactionalDataSourceSpringCon
 
         lockoutUser(testId, 0);
 
-        //user should not be locked out
+        // user should not be locked out
         assertFalse(adapterDAO.isUserLockedOut(testId, defaultThreshold));
     }
 
@@ -119,13 +119,12 @@ public class PrivilegedUserTest extends AbstractTransactionalDataSourceSpringCon
     }
 
     private void lockoutUser(final Identity lockedOutId, final int resultSetSize) throws DAOException {
-        for(int i : Util.range(1, testThreshold + 2)) {
+        for (int i : Util.range(1, testThreshold + 2)) {
             insertRequestResponse(i, lockedOutId, resultSetSize);
         }
     }
 
-    private void insertRequestResponse(int queryId, final Identity lockedOutId, final int resultSetSize)
-            throws DAOException {
+    private void insertRequestResponse(int queryId, final Identity lockedOutId, final int resultSetSize) throws DAOException {
         RequestResponseData data = new RequestResponseData(lockedOutId.getDomain(), lockedOutId.getUsername(), queryId, queryId, queryId, "OK", resultSetSize, 12, String.valueOf(queryId), "<result_xml/>");
 
         adapterDAO.insertRequestResponseData(data);
