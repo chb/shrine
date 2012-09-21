@@ -28,14 +28,14 @@ public final class Term implements Andable {
     }
 
     @JsonCreator
-    public Term(@JsonProperty("value") final String value, @JsonProperty("category") final String category, @JsonProperty("simpleName") final String simpleName) {
+    public Term(@JsonProperty("path") final String path, @JsonProperty("category") final String category, @JsonProperty("simpleName") final String simpleName) {
         super();
 
-        Util.requireNotNull(value);
+        Util.requireNotNull(path);
         Util.requireNotNull(category);
         Util.requireNotNull(simpleName);
 
-        this.path = value;
+        this.path = path;
         this.category = category;
         this.simpleName = simpleName;
     }

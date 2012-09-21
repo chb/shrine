@@ -108,7 +108,7 @@ public final class OntologyTree extends Composite {
 		for(final List<OntTreeItem> pair : Util.pairWise(treeItems)) {
 			final OntTreeItem parent = first(pair);
 			final OntTreeItem child = last(pair);
-			
+
 			parent.addItem(child);
 		}
 		
