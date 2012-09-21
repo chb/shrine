@@ -58,7 +58,7 @@ public final class ResultsPanel extends Composite implements Observer {
                     institutionResults.get(currentSelectIndex).setSelected(false);
                 }
                 currentSelectIndex = event.getIndex();
-                institutionResults.get(currentSelectIndex).setSelected(true);
+                selectCurrentResult();
             }
         });
 
@@ -86,10 +86,14 @@ public final class ResultsPanel extends Composite implements Observer {
                 i++;
             }
             currentSelectIndex = 0;
-            InstitutionResult currentResult = institutionResults.get(currentSelectIndex);
-            currentResult.setSelected(true);
-            resultDetails.setWidget(new ResultDetails(currentResult.getResult()));
+            selectCurrentResult();
         }
+    }
+
+    private void selectCurrentResult() {
+        InstitutionResult currentResult = institutionResults.get(currentSelectIndex);
+        currentResult.setSelected(true);
+        resultDetails.setWidget(new ResultDetails(currentResult.getResult()));
     }
 
     private void clearResults() {

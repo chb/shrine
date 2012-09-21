@@ -34,7 +34,7 @@ public final class ChartPanel extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
         
         this.chartNameSpan.setInnerText(getBreakdownName(breakdownType));
-        
+
         //NB: Allow null here, for easier testing :/
         if(chart != null) {  
             this.chartHolder.setWidget(chart);
@@ -55,7 +55,7 @@ public final class ChartPanel extends Composite {
     private static final Map<String, String> breakdownTypesToNames = new HashMap<String, String>() {{
         this.put("PATIENT_AGE_COUNT_XML", "Age");  
         this.put("PATIENT_RACE_COUNT_XML", "Race");
-        this.put("PATIENT_VITALSTATUS_COUNT_XML", "Vital Status"); //TODO: verify, not present in mockup
+        this.put("PATIENT_VITALSTATUS_COUNT_XML", "Vital Status");
         this.put("PATIENT_GENDER_COUNT_XML", "Gender");
     }};
 }
