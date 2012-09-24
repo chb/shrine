@@ -18,8 +18,8 @@ import javax.ws.rs.core.MediaType
 /**
  * @author Bill Simons
  * @author clint
- * 
- * @date Aug 3, 2010
+ *
+ * @date Sep 20, 2012
  * @link http://cbmi.med.harvard.edu
  * @link http://chip.org
  * <p/>
@@ -27,11 +27,17 @@ import javax.ws.rs.core.MediaType
  * licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-object HTTPClient {
-  def post(input: String, url: String, acceptAllSslCerts: Boolean = false): String = {
-    createJerseyClient(acceptAllSslCerts).resource(url).entity(input, MediaType.TEXT_XML).post(classOf[String])
-  }
+final class JerseyHttpClient(acceptAllSslCerts: Boolean = false) extends HttpClient {
+  import JerseyHttpClient._
 
+  private lazy val client = createJerseyClient(acceptAllSslCerts)
+
+  override def post(input: String, url: String): String = {
+    client.resource(url).entity(input, MediaType.TEXT_XML).post(classOf[String])
+  }
+}
+
+object JerseyHttpClient {
   private[util] object TrustsAllCertsHostnameVerifier extends HostnameVerifier {
     override def verify(s: String, sslSession: SSLSession) = true
   }

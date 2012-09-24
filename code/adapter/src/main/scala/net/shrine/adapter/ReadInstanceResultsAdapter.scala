@@ -6,6 +6,7 @@ import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol.{BroadcastMessage, ReadInstanceResultsResponse, ReadInstanceResultsRequest}
 import net.shrine.adapter.Obfuscator.obfuscate
 import net.shrine.config.HiveCredentials
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -18,10 +19,11 @@ import net.shrine.config.HiveCredentials
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class ReadInstanceResultsAdapter(
-    override protected val crcUrl: String,
+    crcUrl: String,
+    httpClient: HttpClient,
     override protected val dao: AdapterDAO,
     override protected val hiveCredentials: HiveCredentials,
-    private val doObfuscation: Boolean ) extends CrcAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](crcUrl, dao, hiveCredentials) {
+    private val doObfuscation: Boolean ) extends CrcAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](crcUrl, httpClient, dao, hiveCredentials) {
 
   protected def parseShrineResponse(nodeSeq: NodeSeq) = ReadInstanceResultsResponse.fromI2b2(nodeSeq)
 

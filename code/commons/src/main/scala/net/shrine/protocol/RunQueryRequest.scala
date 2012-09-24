@@ -5,6 +5,7 @@ import xml._
 import net.shrine.util.XmlUtil
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.util.AsExtractor
 
 /**
  * @author Bill Simons
@@ -70,22 +71,6 @@ final case class RunQueryRequest(
   def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
   def withQueryDefinition(qDef: QueryDefinition) = this.copy(queryDefinition = qDef)
-}
-
-/**
- * @author clint
- * 
- * Extractor to allow pattern matching on a ShrineRequest and extracting a RunQueryRequest
- * 
- * Patterned after scala.util.control.NonFatal: 
- * http://www.scala-lang.org/archives/downloads/distrib/files/nightly/docs/library/index.html#scala.util.control.NonFatal$
- */
-object AsRunQueryRequest {
-  def apply(req: ShrineRequest) = req.isInstanceOf[RunQueryRequest]
-  
-  def unapply(req: ShrineRequest): Option[RunQueryRequest] = {
-    Option(req).collect { case runQueryReq: RunQueryRequest => runQueryReq }
-  }
 }
 
 object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequestUnmarshaller[RunQueryRequest] {

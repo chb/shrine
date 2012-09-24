@@ -1,16 +1,10 @@
 package net.shrine.protocol
 
 import scala.xml.NodeSeq
-import net.shrine.serialization.XmlUnmarshaller
+
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.serialization.XmlUnmarshaller
 import net.shrine.util.XmlUtil
-import scala.xml.XML
-import net.shrine.protocol.query.QueryDefinition
-import net.shrine.protocol.query.Term
-import net.shrine.util.HTTPClient
-import net.shrine.i2b2.protocol.pm.GetUserConfigurationRequest
-import net.shrine.i2b2.protocol.pm.User
-import java.util.concurrent.Executors
 
 /**
  * @author clint
@@ -27,8 +21,10 @@ final case class ReadResultResponse(xmlResultId: Long, metadata: QueryResult, da
         <xml_result_id>{ xmlResultId }</xml_result_id>
         <result_instance_id>{ metadata.resultId }</result_instance_id>
         <xml_value>
-          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          { I2b2Workarounds.escape(data.toI2b2String) }
+          { 
+            I2b2Workarounds.escape("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""") + 
+            I2b2Workarounds.escape(data.toI2b2String)
+          }
         </xml_value>
       </crc_xml_result>
     </ns4:response>)

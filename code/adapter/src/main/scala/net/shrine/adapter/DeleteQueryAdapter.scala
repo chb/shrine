@@ -5,6 +5,7 @@ import xml.NodeSeq
 import net.shrine.protocol._
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.config.HiveCredentials
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -17,9 +18,10 @@ import net.shrine.config.HiveCredentials
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class DeleteQueryAdapter(
-    override protected val crcUrl: String,
+    crcUrl: String,
+    httpClient: HttpClient,
     override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[DeleteQueryRequest, DeleteQueryResponse](crcUrl, dao, hiveCredentials) {
+    override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[DeleteQueryRequest, DeleteQueryResponse](crcUrl, httpClient, dao, hiveCredentials) {
 
   protected def parseShrineResponse(nodeSeq: NodeSeq) = DeleteQueryResponse.fromI2b2(nodeSeq)
 

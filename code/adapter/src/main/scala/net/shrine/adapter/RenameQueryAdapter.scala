@@ -5,6 +5,7 @@ import xml.NodeSeq
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -17,9 +18,10 @@ import net.shrine.config.HiveCredentials
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class RenameQueryAdapter(
-    override protected val crcUrl: String,
+    crcUrl: String,
+    httpClient: HttpClient,
     override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[RenameQueryRequest, RenameQueryResponse](crcUrl, dao, hiveCredentials) {
+    override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[RenameQueryRequest, RenameQueryResponse](crcUrl, httpClient, dao, hiveCredentials) {
 
   protected def parseShrineResponse(nodeSeq: NodeSeq) = RenameQueryResponse.fromI2b2(nodeSeq)
 

@@ -44,11 +44,8 @@ object ExpressionTranslator {
 
 //NB: Second param allows plugging in different behavior when no mapping is found for a term; default is to throw
 final class ExpressionTranslator(
-    _mappings: Map[String, Set[String]],
+    private[translators] val mappings: Map[String, Set[String]],
     onMissingMapping: Term => Expression = ExpressionTranslator.throwAdapterMappingException) {
-
-  //package-restricted getter, for tests
-  private[translators] def mappings = _mappings
 
   private[translators] def translateTerm(term: Term): Expression = {
 
@@ -65,8 +62,8 @@ final class ExpressionTranslator(
   }
 
   def translate(expr: Expression): Expression = expr match {
-    case And(exprs@_*) => And(exprs.map(translate): _*)
-    case Or(exprs@_*) => Or(exprs.map(translate): _*)
+    case And(exprs @ _*) => And(exprs.map(translate): _*)
+    case Or(exprs @ _*) => Or(exprs.map(translate): _*)
     case term: Term => translateTerm(term)
     case not: Not => not.withExpr(translate(not.expr))
     case db: DateBounded => db.withExpr(translate(db.expr))

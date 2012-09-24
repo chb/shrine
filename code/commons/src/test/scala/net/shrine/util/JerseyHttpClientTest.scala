@@ -11,10 +11,10 @@ import com.sun.jersey.client.urlconnection.HTTPSProperties
  * @author clint
  * @date Aug 2, 2012
  */
-final class HttpClientTest extends TestCase with AssertionsForJUnit with ShouldMatchers{
+final class JerseyHttpClientTest extends TestCase with AssertionsForJUnit with ShouldMatchers{
   @Test
   def testTrustsAllCertsHostnameVerifier {
-    import HTTPClient.TrustsAllCertsHostnameVerifier._
+    import JerseyHttpClient.TrustsAllCertsHostnameVerifier._
 
     //These assertions aren't great, but they're about the best we can do;
     //TrustsAllCertsHostnameVerifier should return true for all input
@@ -25,7 +25,7 @@ final class HttpClientTest extends TestCase with AssertionsForJUnit with ShouldM
 
   @Test
   def testTrustsAllCertsTrustManager {
-    import HTTPClient.TrustsAllCertsTrustManager._
+    import JerseyHttpClient.TrustsAllCertsTrustManager._
 
     getAcceptedIssuers should be(null)
 
@@ -36,7 +36,7 @@ final class HttpClientTest extends TestCase with AssertionsForJUnit with ShouldM
 
   @Test
   def testCreateClientAndWebResource {
-    import HTTPClient.createJerseyClient
+    import JerseyHttpClient.createJerseyClient
     import scala.collection.JavaConverters._
 
     val defaultClientConfig = new DefaultClientConfig
@@ -64,7 +64,7 @@ final class HttpClientTest extends TestCase with AssertionsForJUnit with ShouldM
       propertiesWithoutHttpsProperties should equal(defaultClientConfig.getProperties.asScala)
 
       httpsProperties should not be (null)
-      httpsProperties.getHostnameVerifier should be(HTTPClient.TrustsAllCertsHostnameVerifier)
+      httpsProperties.getHostnameVerifier should be(JerseyHttpClient.TrustsAllCertsHostnameVerifier)
       httpsProperties.getSSLContext should not be (null)
       httpsProperties.getSSLContext.getProtocol should equal("TLS")
       //Would be nice to test that the SSLContext correctly uses TrustsAllCertsTrustManager, but this doesn't seem possible

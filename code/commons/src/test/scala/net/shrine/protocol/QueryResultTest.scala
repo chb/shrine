@@ -35,10 +35,10 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
   import ResultOutputType._
 
   private val resultWithBreakDowns = queryResult.copy(breakdowns =
-    Map(PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Seq(Column("foo", 1), Column("bar", 2))),
-      PATIENT_RACE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_RACE_COUNT_XML, Seq(Column("nuh", 3), Column("zuh", 4))),
-      PATIENT_VITALSTATUS_COUNT_XML -> I2b2ResultEnvelope(PATIENT_VITALSTATUS_COUNT_XML, Seq(Column("blarg", 5), Column("glarg", 6))),
-      PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Seq(Column("huh", 7), Column("yeah", 8)))))
+    Map(PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Map("foo" -> 1L, "bar" -> 2L)),
+        PATIENT_RACE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_RACE_COUNT_XML, Map("nuh" -> 3L, "zuh" -> 4L)),
+        PATIENT_VITALSTATUS_COUNT_XML -> I2b2ResultEnvelope(PATIENT_VITALSTATUS_COUNT_XML, Map("blarg" -> 5L, "glarg" -> 6L)),
+        PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("huh" -> 7L, "yeah" -> 8))))
 
   private val expectedWhenBreakdownsArePresent = XmlUtil.stripWhitespace(
     <queryResult>

@@ -21,7 +21,6 @@ import org.spin.node.AbstractQueryAction
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 abstract class Adapter(
-    protected val crcUrl: String,
     protected val dao: AdapterDAO,
     protected val hiveCredentials: HiveCredentials) extends AbstractQueryAction[BroadcastMessage] with Loggable {
   

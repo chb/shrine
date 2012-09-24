@@ -1,14 +1,34 @@
 package net.shrine.adapter
 
-import org.scalatest.junit.{ShouldMatchersForJUnit, AssertionsForJUnit}
+import org.scalatest.junit.{ ShouldMatchersForJUnit, AssertionsForJUnit }
 import org.junit.Test
-import net.shrine.protocol.RunQueryRequest
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.OccuranceLimited
 import net.shrine.protocol.query.Term
 import net.shrine.adapter.translators.QueryDefinitionTranslator
 import net.shrine.protocol.query.Or
 import net.shrine.adapter.translators.ExpressionTranslator
+import net.shrine.protocol.BroadcastMessage
+import net.shrine.protocol.ResultOutputType
+import net.shrine.protocol.RunQueryRequest
+import net.shrine.protocol.RunQueryResponse
+import net.shrine.protocol.QueryResult
+import junit.framework.TestCase
+import net.shrine.config.ShrineConfig
+import net.shrine.adapter.dao.MockAdapterDao
+import net.shrine.config.HiveCredentials
+import org.spin.tools.NetworkTime
+import java.util.GregorianCalendar
+import org.spin.tools.crypto.signature.Identity
+import net.shrine.protocol.AuthenticationInfo
+import net.shrine.protocol.Credential
+import net.shrine.util.HttpClient
+import scala.xml.XML
+import net.shrine.protocol.ShrineResponse
+import net.shrine.protocol.ShrineRequest
+import net.shrine.protocol.ReadResultRequest
+import net.shrine.protocol.ReadResultResponse
+import net.shrine.protocol.I2b2ResultEnvelope
 
 /**
  * @author Bill Simons
@@ -20,23 +40,176 @@ import net.shrine.adapter.translators.ExpressionTranslator
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final class RunQueryAdapterTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
+final class RunQueryAdapterTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
+  private val queryDef = QueryDefinition("foo", Term("foo"))
+
+  private val broadcastMessageId = 1234563789L
+  private val queryId = 123L
+  private val masterId = 99L
+  private val instanceId = 456L
+  private val resultId = 42L
+  private val projectId = "projectId"
+  private val setSize = 17L
+  private val xmlResultId = 98765L
+  private val userId = "userId"
+  private val groupId = "groupId"
+
+  private val justCounts = Set(ResultOutputType.PATIENT_COUNT_XML)
+
+  private val now = NetworkTime.makeXMLGregorianCalendar(new GregorianCalendar)
+  
+  private val countQueryResult = QueryResult(resultId, instanceId, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, Some(now), Some(now), None, QueryResult.StatusType.Finished, None)
+  
+  private val dummyBreakdownData = Map("x" -> 1L, "y" -> 2L, "z" -> 3L)
+
   @Test
   def testTranslateQueryDefinitionXml {
     val localTerms = Set("local1a", "local1b")
-    
+
     val mappings = Map("network" -> localTerms)
-    
+
     val translator = new QueryDefinitionTranslator(new ExpressionTranslator(mappings))
-    
-    val adapter = new RunQueryAdapter("", null, null, translator, null, true)
-    
+
+    val adapter = new RunQueryAdapter("crc-url", MockHttpClient, null, null, translator, null, true)
+
     val queryDefinition = QueryDefinition("10-17 years old@14:39:20", OccuranceLimited(1, Term("network")))
-    
+
     val newDef = adapter.conceptTranslator.translate(queryDefinition)
 
     val expected = QueryDefinition("10-17 years old@14:39:20", OccuranceLimited(1, Or(Term("local1a"), Term("local1b"))))
 
-    newDef should equal(expected) 
+    newDef should equal(expected)
+  }
+
+  @Test
+  def testRegularCountQuery {
+    val outputTypes = justCounts
+
+    val resp = doQuery(outputTypes) {
+      RunQueryResponse(queryId, now, userId, groupId, queryDef, instanceId, Seq(countQueryResult)).toI2b2String
+    }
+
+    dobasicRunQueryResponseTest(resp)
+
+    val firstResult = resp.results.head
+
+    //TODO, NB: hard to compare QueryResults directly due to ID translation; use simpler test here once translation is no longer performed
+    firstResult.setSize should equal(countQueryResult.setSize)
+    firstResult.breakdowns.isEmpty should equal(true)
+    firstResult.resultType should equal(Some(ResultOutputType.PATIENT_COUNT_XML))
+    firstResult.description should equal(None)
+
+    resp.results.size should equal(1)
+  }
+
+  @Test
+  def testGetBreakdownsWithRegularCountQuery {
+    val breakdowns = ResultOutputType.breakdownTypes.map(breakdownFor).iterator
+    
+    val resp = doTestGetBreakdowns(breakdowns)
+
+    import ResultOutputType._
+
+    val firstResult = resp.results.head
+
+    //TODO, NB: hard to compare QueryResults directly due to ID translation; use simpler test here once translation is no longer performed
+    firstResult.resultType should equal(Some(PATIENT_COUNT_XML))
+    firstResult.setSize should equal(setSize)
+    firstResult.description should equal(None)
+    firstResult.breakdowns.keySet should equal(ResultOutputType.breakdownTypes.toSet)
+    firstResult.breakdowns.values.map(_.data).foreach(_ should equal(dummyBreakdownData))
+
+    resp.results.size should equal(1)
+  }
+
+  @Test
+  def testGetBreakdownsSomeFailures {
+    import ResultOutputType._
+    
+    val resultTypesExpectedToSucceed = Set(PATIENT_AGE_COUNT_XML, PATIENT_GENDER_COUNT_XML)
+    val resultTypesExpectedTofail = ResultOutputType.breakdownTypes.toSet -- resultTypesExpectedToSucceed
+    
+    val breakdowns = resultTypesExpectedToSucceed.toSeq.map(breakdownFor).iterator
+    
+    val resp = doTestGetBreakdowns(breakdowns)
+
+    val firstResult = resp.results.head
+
+    //TODO, NB: hard to compare QueryResults directly due to ID translation; use simpler test here once translation is no longer performed
+    firstResult.resultType should equal(Some(PATIENT_COUNT_XML))
+    firstResult.setSize should equal(setSize)
+    firstResult.description should equal(None)
+    firstResult.breakdowns.keySet should equal(resultTypesExpectedToSucceed)
+    firstResult.breakdowns.values.map(_.data).foreach(_ should equal(dummyBreakdownData)) 
+
+    resp.results.size should equal(1)
+  }
+  
+  private def breakdownFor(resultType: ResultOutputType) = I2b2ResultEnvelope(resultType, dummyBreakdownData)
+  
+  private def doTestGetBreakdowns(successfulBreakdowns: Iterator[I2b2ResultEnvelope]): RunQueryResponse = {
+    val outputTypes = justCounts ++ ResultOutputType.breakdownTypes
+
+    val resp = doQueryThatReturnsSpecifiedBreakdowns(countQueryResult, outputTypes, successfulBreakdowns)
+
+    dobasicRunQueryResponseTest(resp)
+    
+    resp
+  }
+
+  private def dobasicRunQueryResponseTest(resp: RunQueryResponse) {
+    resp.createDate should equal(now)
+    resp.groupId should equal(groupId)
+    //TODO: re-enable these once ID translation is no longer performed
+    //resp.queryId should equal(queryId)
+    //resp.queryInstanceId should equal(instanceId)
+    resp.queryName should equal(queryDef.name)
+    resp.requestXml should equal(queryDef)
+  }
+
+  private def doQueryThatReturnsSpecifiedBreakdowns(countQueryResult: QueryResult, outputTypes: Set[ResultOutputType], successfulBreakdowns: Iterator[I2b2ResultEnvelope]): RunQueryResponse = {
+    val breakdownQueryResults = ResultOutputType.breakdownTypes.zipWithIndex.map {
+      case (rt, i) =>
+        countQueryResult.withId(resultId + i + 1).withResultType(rt)
+    }
+
+    doQuery(outputTypes, new HttpClient {
+      override def post(input: String, url: String): String = {
+        val resp = ShrineRequest.fromI2b2(input) match {
+          case _: RunQueryRequest => {
+            RunQueryResponse(queryId, now, "userId", "groupId", queryDef, instanceId, Seq(countQueryResult) ++ breakdownQueryResults)
+          }
+          //NB: return a ReadResultResponse with new breakdown data each time, but will throw if the successfulBreakdowns
+          //iterator is exhausted, simulating an error calling the CRC 
+          case req: ReadResultRequest => ReadResultResponse(xmlResultId, countQueryResult, successfulBreakdowns.next())
+        }
+
+        resp.toI2b2String
+      }
+    })
+  }
+
+  private def doQuery(outputTypes: Set[ResultOutputType])(i2b2XmlToReturn: => String): RunQueryResponse = {
+    doQuery(outputTypes, MockHttpClient(i2b2XmlToReturn))
+  }
+
+  private def doQuery(outputTypes: Set[ResultOutputType], httpClient: HttpClient): RunQueryResponse = {
+    val credentials = HiveCredentials("some-domain", "username", "password", "project")
+
+    val identity = new Identity("some-domain", "username")
+
+    val authn = AuthenticationInfo("some-domain", "username", Credential("jksafhkjaf", false))
+
+    val translator = new QueryDefinitionTranslator(new ExpressionTranslator(Map("foo" -> Set("bar"))))
+
+    //NB: Don't obfuscate, for simpler testing
+    val adapter = new RunQueryAdapter("crc-url", httpClient, MockAdapterDao, credentials, translator, new ShrineConfig, false)
+
+    val req = new RunQueryRequest(projectId, 1000L, authn, "topicId", outputTypes, queryDef)
+
+    //val broadcastMessage = new BroadcastMessage(queryId, masterId, instanceId, Seq(resultId), req)
+    val broadcastMessage = BroadcastMessage(req, Some(queryId))
+
+    adapter.processRequest(identity, broadcastMessage)
   }
 }

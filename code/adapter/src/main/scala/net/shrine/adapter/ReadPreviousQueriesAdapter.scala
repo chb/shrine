@@ -5,6 +5,7 @@ import net.shrine.protocol.{ReadPreviousQueriesResponse, BroadcastMessage}
 import scala.collection.JavaConversions._
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.config.HiveCredentials
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -17,9 +18,8 @@ import net.shrine.config.HiveCredentials
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class ReadPreviousQueriesAdapter(
-    override protected val crcUrl: String,
     override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends Adapter(crcUrl, dao, hiveCredentials) {
+    override protected val hiveCredentials: HiveCredentials) extends Adapter(dao, hiveCredentials) {
 
   protected def processRequest(identity: Identity, message: BroadcastMessage) = {
     val networkMasterDefs = dao.findNetworkMasterDefinitions(identity.getDomain, identity.getUsername)

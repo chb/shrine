@@ -131,6 +131,8 @@ final case class QueryResult(
   def withResultType(resType: ResultOutputType): QueryResult = copy(resultType = Option(resType))
 
   def withBreakdown(breakdownData: I2b2ResultEnvelope) = copy(breakdowns = breakdowns + (breakdownData.resultType -> breakdownData))
+  
+  def withBreakdowns(newBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) = copy(breakdowns = newBreakdowns) 
 }
 
 object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[QueryResult] {

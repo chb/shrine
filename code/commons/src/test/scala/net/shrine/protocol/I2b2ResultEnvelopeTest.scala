@@ -11,7 +11,7 @@ import net.shrine.protocol.I2b2ResultEnvelope.Column
  * @date Aug 15, 2012
  */
 final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
-  private val tuples = Seq("x" -> 1, "y" -> 2, "z" -> 3)
+  private val tuples = Seq("x" -> 1L, "y" -> 2L, "z" -> 3L)
   
   @Test
   def testPlusPlus {
@@ -70,22 +70,19 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
     
     env.resultType should be(ResultOutputType.PATIENT_AGE_COUNT_XML)
     
-    val expected = Seq(Column("  0-9 years old", 0),
-                       Column("  10-17 years old", 11),
-                       Column("  18-34 years old", 26),
-                       Column("  35-44 years old", 26),
-                       Column("  45-54 years old", 8),
-                       Column("  55-64 years old", 6),
-                       Column("  65-74 years old", 5),
-                       Column("  75-84 years old", 0),
-                       Column(">= 65 years old", 5),
-                       Column(">= 85 years old", 0),
-                       Column("Not recorded", 0))
+    val expected = Map("  0-9 years old" -> 0,
+                       "  10-17 years old" -> 11,
+                       "  18-34 years old" -> 26,
+                       "  35-44 years old" -> 26,
+                       "  45-54 years old" -> 8,
+                       "  55-64 years old" -> 6,
+                       "  65-74 years old" -> 5,
+                       "  75-84 years old" -> 0,
+                       ">= 65 years old" -> 5,
+                       ">= 85 years old" -> 0,
+                       "Not recorded" -> 0)
                        
-    env.columns.zip(expected).foreach { case (actual, expected) =>
-      actual.name should equal(expected.name)
-      actual.value should equal(expected.value)
-    }
+    env.data should equal(expected)
     
     val badXml1 = I2b2Workarounds.unescape("""&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 &lt;ns10:i2b2_result_envelope xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
@@ -152,7 +149,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
 
     val empty = I2b2ResultEnvelope.empty(resultType)
 
-    val env = empty + ("foo" -> 123)
+    val env = empty + ("foo" -> 123L)
 
     (env eq empty) should be(false)
 
@@ -180,8 +177,8 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
   def testToMap {
     val resultType = ResultOutputType.PATIENT_COUNT_XML
     
-    val env = I2b2ResultEnvelope(resultType, Seq(Column("foo", 123), Column("bar", 99)))
+    val env = new I2b2ResultEnvelope(resultType, Seq(Column("foo", 123L), Column("bar", 99L)))
     
-    env.toMap should equal(Map("foo" -> 123, "bar" -> 99))
+    env.toMap should equal(Map("foo" -> 123L, "bar" -> 99L))
   }
 }

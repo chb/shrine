@@ -10,4 +10,4 @@ package net.shrine.config
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class HiveCredentials (val domain: String, val username: String, val password: String, val project: String)
+final case class HiveCredentials (val domain: String, val username: String, val password: String, val project: String)

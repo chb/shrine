@@ -1,7 +1,6 @@
 package net.shrine.protocol
 
 import xml.NodeSeq
-import collection.JavaConversions._
 import org.apache.log4j.MDC
 import net.shrine.filters.LogFilter
 import util.Random
@@ -19,7 +18,7 @@ import net.shrine.serialization.{XmlMarshaller, XmlUnmarshaller}
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class BroadcastMessage private(
+final class BroadcastMessage private(
     val requestId: Long,
     val masterId: Option[Long],
     val instanceId: Option[Long],
@@ -42,7 +41,7 @@ class BroadcastMessage private(
         instanceId.map(x => <instanceId>{x}</instanceId>).getOrElse(<instanceId/>)
       }
       {
-        resultIds.map(ids => makeResultIdsElement(ids)).getOrElse(<resultIds/>)
+        resultIds.map(makeResultIdsElement).getOrElse(<resultIds/>)
       }
       <request>{request.toXml}</request>
     </broadcastMessage>)
@@ -50,15 +49,20 @@ class BroadcastMessage private(
   private[this] def makeResultIdsElement(ids: Seq[Long]) = {
     <resultIds>
       {
-        ids map {x =>
-          <resultId>{x}</resultId>
-        }
+        ids.map(x => <resultId>{x}</resultId>)
       }
     </resultIds>
   }
 
-  def getResultIdsJava(): java.util.List[java.lang.Long] =
-    seqAsJavaList(resultIds.getOrElse(List()) map {x=> new java.lang.Long(x.toString)})
+  def getResultIdsJava(): java.util.List[java.lang.Long] = {
+    import scala.collection.JavaConverters._
+    import java.lang.{Long => JLong}
+    
+    (for {
+      ids <- resultIds.toSeq
+      id <- ids
+    } yield JLong.valueOf(id)).asJava
+  }
 }
 
 object BroadcastMessage extends XmlUnmarshaller[BroadcastMessage] {
@@ -67,9 +71,7 @@ object BroadcastMessage extends XmlUnmarshaller[BroadcastMessage] {
   def fromXml(nodeSeq: NodeSeq) = {
     val idSeq = nodeSeq \ "resultIds" \ "resultId"
     val resultIds = idSeq match {
-      case x if x.nonEmpty => Some(x map {y =>
-        y.text.toLong
-      })
+      case x if x.nonEmpty => Some(x.map(_.text.toLong))
       case _ => None
     }
 
@@ -86,22 +88,20 @@ object BroadcastMessage extends XmlUnmarshaller[BroadcastMessage] {
       ShrineRequest.fromXml(nodeSeq \ "request" \ "_"))
   }
 
-  private def logId: Long = MDC.get(LogFilter.GRID).asInstanceOf[Long]
+  //Will blow up if not called from an app-server environment
+  private def log4jLogId: Long = MDC.get(LogFilter.GRID).asInstanceOf[Long]
 
   private def randomId: Long = BigInt(63, random).abs.toLong
 
-  def apply(request: RunQueryRequest): BroadcastMessage = {
-    val resultIds: Seq[Long] = for {i <- 1 to request.outputTypes.size} yield randomId
-    new BroadcastMessage(logId, randomId, randomId, resultIds, request)
+  def apply(request: RunQueryRequest, logId: Option[Long] = None): BroadcastMessage = {
+    val resultIds: Seq[Long] = for(i <- 1 to request.outputTypes.size) yield randomId
+    
+    new BroadcastMessage(logId.getOrElse(log4jLogId), randomId, randomId, resultIds, request)
   }
 
-  def serializer: BasicSerializer[Object] = new BasicSerializer[Object]() {
-    def fromString(s: String) = {
-      BroadcastMessage.fromXml(s)
-    }
+  def serializer: BasicSerializer[BroadcastMessage] = new BasicSerializer[BroadcastMessage] {
+    override def fromString(s: String) = BroadcastMessage.fromXml(s)
 
-    def toString(o: Object) = {
-      o.asInstanceOf[BroadcastMessage].toXml.toString
-    }
+    override def toString(o: BroadcastMessage) = o.toXmlString
   }
 }

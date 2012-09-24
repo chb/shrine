@@ -15,12 +15,12 @@ import org.scalatest.mock.EasyMockSugar
  */
 class ReadPdoAdapterTest extends AssertionsForJUnit with ShouldMatchersForJUnit with EasyMockSugar {
   @Test
-  def testPdoLocalTranslate() {
+  def testPdoLocalTranslate {
     val networkId = "1234"
     val localId = "localId"
     val adapterDAO = mock[AdapterDAO]
 
-    val adapter : ReadPdoAdapter = new ReadPdoAdapter("crcurl", adapterDAO, null)
+    val adapter : ReadPdoAdapter = new ReadPdoAdapter("crcurl", MockHttpClient, adapterDAO, null)
     val xmlRequest =
       <ns3:request xsi:type="ns3:GetPDOFromInputList_requestType"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -55,7 +55,7 @@ class ReadPdoAdapterTest extends AssertionsForJUnit with ShouldMatchersForJUnit 
     val request : ReadPdoRequest = new ReadPdoRequest("project", 1L, info, networkId, xmlRequest)
 
     expecting {
-      adapterDAO.findLocalResultID(1234L.longValue()).andReturn(localId)
+      adapterDAO.findLocalResultID(1234L).andReturn(localId)
     }
     whenExecuting(adapterDAO) {
       val localRequest : ReadPdoRequest = adapter.translateNetworkToLocal(request)

@@ -5,7 +5,7 @@ import xml.{NodeSeq, XML}
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
-import net.shrine.util.HTTPClient
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -18,9 +18,10 @@ import net.shrine.util.HTTPClient
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 abstract class CrcAdapter[T <: ShrineRequest, V <: ShrineResponse](
-    override protected val crcUrl: String,
+    crcUrl: String,
+    httpClient: HttpClient,
     override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends Adapter(crcUrl, dao, hiveCredentials) {
+    override protected val hiveCredentials: HiveCredentials) extends Adapter(dao, hiveCredentials) {
 
   protected def translateNetworkToLocal(request: T): T
 
@@ -30,19 +31,20 @@ abstract class CrcAdapter[T <: ShrineRequest, V <: ShrineResponse](
 
   protected def processRequest(identity: Identity, message: BroadcastMessage): ShrineResponse = {
     val i2b2Response = callCrc(translateRequest(message.request))
+    
     val shrineResponse = parseShrineResponse(XML.loadString(i2b2Response))
+    
     translateResponse(shrineResponse)
   }
 
   private def translateRequest(request: ShrineRequest): ShrineRequest = {
-    def authInfo = new AuthenticationInfo(
-      hiveCredentials.domain,
-      hiveCredentials.username,
-      new Credential(hiveCredentials.password, false))
+    val HiveCredentials(domain, username, password, project) = hiveCredentials
+    
+    def authInfo = AuthenticationInfo(domain, username, Credential(password, false))
 
     request match {
       case transReq: TranslatableRequest[T] => {
-        translateNetworkToLocal(transReq.withAuthn(authInfo).withProject(hiveCredentials.project).asRequest)
+        translateNetworkToLocal(transReq.withAuthn(authInfo).withProject(project).asRequest)
       }
       case _ => request
     }
@@ -58,11 +60,11 @@ abstract class CrcAdapter[T <: ShrineRequest, V <: ShrineResponse](
   }
 
   protected def callCrc(request: ShrineRequest): String = {
-    val crcRequest = request.toI2b2.toString
+    val crcRequest = request.toI2b2String
     
     debug(String.format("Request to CRC:\r\n%s", crcRequest))
     
-    val crcResponse = HTTPClient.post(crcRequest, crcUrl)
+    val crcResponse = httpClient.post(crcRequest, crcUrl)
     
     debug(String.format("Response from CRC:\r\n%s", crcResponse))
     

@@ -4,12 +4,14 @@ import dao.AdapterDAO
 import xml.NodeSeq
 import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
+import net.shrine.util.HttpClient
 
 class ReadPdoAdapter(
-    crcUrl2: String,
+    crcUrl: String,
+    httpClient: HttpClient,
     dao: AdapterDAO,
     hiveCredentials: HiveCredentials)
-    extends CrcAdapter[ReadPdoRequest, ReadPdoResponse](crcUrl2, dao, hiveCredentials) {
+    extends CrcAdapter[ReadPdoRequest, ReadPdoResponse](crcUrl, httpClient, dao, hiveCredentials) {
 
   protected def parseShrineResponse(nodeSeq: NodeSeq) = ReadPdoResponse.fromI2b2(nodeSeq)
 
@@ -19,5 +21,4 @@ class ReadPdoAdapter(
     val localPatientCollId = dao.findLocalResultID(java.lang.Long.parseLong(request.patientSetCollId))
     request.withPatientSetCollId(localPatientCollId)
   }
-
 }
