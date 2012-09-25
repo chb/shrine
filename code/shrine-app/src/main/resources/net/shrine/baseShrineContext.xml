@@ -177,9 +177,8 @@
     </bean>
 
     <bean id="mastersByUserQuery" class="net.shrine.adapter.ReadPreviousQueriesAdapter">
-        <constructor-arg index="0" ref="realCRCEndpoint"/>
-        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
-        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="0" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="1" ref="hiveCredentials"/>
     </bean>
 
     <bean id="mastersByIDQuery" class="net.shrine.adapter.ReadQueryInstancesAdapter">
@@ -204,8 +203,7 @@
     </bean>
 
     <bean id="getRequestXmlQuery" class="net.shrine.adapter.ReadQueryDefinitionAdapter">
-        <constructor-arg index="0" ref="realCRCEndpoint"/>
-        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
-        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="0" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="1" ref="hiveCredentials"/>
     </bean>
 </beans>
