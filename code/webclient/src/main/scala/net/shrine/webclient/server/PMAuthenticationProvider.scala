@@ -4,7 +4,7 @@ import org.springframework.security.authentication.{BadCredentialsException, Use
 import org.springframework.security.core.Authentication
 import net.shrine.i2b2.protocol.pm.{User, GetUserConfigurationRequest}
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import net.shrine.util.HTTPClient
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -16,7 +16,7 @@ import net.shrine.util.HTTPClient
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final class PMAuthenticationProvider(val pmEndpoint: String) extends AuthenticationProvider {
+final class PMAuthenticationProvider(val pmEndpoint: String, httpClient: HttpClient) extends AuthenticationProvider {
 
   def validUser(token: DomainUsernamePasswordAuthenticationToken, user: User): Boolean = (token.domain == user.domain) && (token.principal == user.username)
 
@@ -25,7 +25,7 @@ final class PMAuthenticationProvider(val pmEndpoint: String) extends Authenticat
     val domain = token.domain
     val pmRequest = new GetUserConfigurationRequest(domain, token.principal, authentication.getCredentials.asInstanceOf[String])
 
-    val responseXml: String = HTTPClient.post(pmRequest.toI2b2String, pmEndpoint)
+    val responseXml: String = httpClient.post(pmRequest.toI2b2String, pmEndpoint)
     val user = User.fromI2b2(responseXml)
 
     if(!validUser(token, user)) {

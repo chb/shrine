@@ -19,15 +19,15 @@ final class HelpersTest extends TestCase with AssertionsForJUnit with ShouldMatc
   
   import scala.collection.JavaConverters._
 
-  private def toColumn(i: Int) = Column("col_" + i,  i)
+  private def toColumn(i: Int) = ("col_" + i,  i.toLong)
   
-  private val cols = (1 to 4).map(toColumn)
+  private val cols = (1 to 4).map(toColumn).toMap
   
   private val envs = ResultOutputType.breakdownTypes.map(rt => I2b2ResultEnvelope(rt, cols))
   
-  private def toLong(i: Int) = java.lang.Long.valueOf(i.toLong)
+  private def toLong(i: Long) = java.lang.Long.valueOf(i.toLong)
   
-  val breakdown = new Breakdown(cols.map(_.toTuple).toMap.mapValues(toLong).asJava)
+  val breakdown = new Breakdown(cols.mapValues(toLong).asJava)
   
   private val expectedBreakdowns = ResultOutputType.breakdownTypes.map(rt => rt.name -> breakdown).toMap
   

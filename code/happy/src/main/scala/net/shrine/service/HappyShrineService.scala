@@ -42,9 +42,9 @@ import net.shrine.protocol.CRCRequestType
 import net.shrine.protocol.Credential
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.RunQueryRequest
-import net.shrine.util.HTTPClient
 import net.shrine.util.XmlUtil
 import net.shrine.util.Versions
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -58,12 +58,13 @@ import net.shrine.util.Versions
  */
 @Service
 class HappyShrineService @Autowired() (
-  private val shrineConfig: ShrineConfig,
-  private val hiveCredentials: HiveCredentials,
-  private val pmEndpoint: String,
-  private val spinClient: SpinAgent,
-  private val auditDao: AuditDAO,
-  private val adapterDao: AdapterDAO) extends HappyShrineRequestHandler {
+  shrineConfig: ShrineConfig,
+  hiveCredentials: HiveCredentials,
+  pmEndpoint: String,
+  spinClient: SpinAgent,
+  auditDao: AuditDAO,
+  adapterDao: AdapterDAO,
+  httpClient: HttpClient) extends HappyShrineRequestHandler {
 
   //TODO - maybe make this a spring bean since its used in shrine service too?
   private lazy val endpointConfig = EndpointConfig.soap(shrineConfig.getAggregatorEndpoint)
@@ -110,7 +111,7 @@ class HappyShrineService @Autowired() (
 
   override def hiveReport: String = {
     val pmRequest = new GetUserConfigurationRequest(hiveCredentials.domain, hiveCredentials.username, hiveCredentials.password)
-    val responseXml: String = HTTPClient.post(pmRequest.toI2b2String, pmEndpoint)
+    val responseXml: String = httpClient.post(pmRequest.toI2b2String, pmEndpoint)
 
     HiveConfig.fromI2b2(responseXml).toXmlString
   }

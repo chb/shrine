@@ -2,12 +2,12 @@ package net.shrine.hms.authorization
 
 import org.apache.commons.httpclient.auth.AuthScope
 import org.apache.commons.httpclient.methods.{StringRequestEntity, PostMethod, GetMethod}
-import org.apache.commons.httpclient.{HttpMethod, HttpStatus, UsernamePasswordCredentials, HttpClient}
+import org.apache.commons.httpclient.{HttpMethod, HttpStatus, UsernamePasswordCredentials, HttpClient => CommonsHttpClient}
 import net.liftweb.json._
 import net.shrine.protocol.{AuthenticationInfo, ReadApprovedQueryTopicsResponse, ApprovedTopic, RunQueryRequest, ReadApprovedQueryTopicsRequest}
 import xml.{XML, Utility}
 import net.shrine.util.{XmlUtil, Loggable}
-import net.shrine.util.HTTPClient
+import net.shrine.util.HttpClient 
 import net.shrine.i2b2.protocol.pm.{User, GetUserConfigurationRequest}
 import net.shrine.authorization.{AuthorizationException, QueryAuthorizationService}
 
@@ -21,13 +21,13 @@ import net.shrine.authorization.{AuthorizationException, QueryAuthorizationServi
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class HmsDataStewardAuthorizationService(serviceUrl: String, username: String, password: String, pmEndpoint: String) extends QueryAuthorizationService with Loggable {
+class HmsDataStewardAuthorizationService(serviceUrl: String, username: String, password: String, pmEndpoint: String, httpClient: HttpClient) extends QueryAuthorizationService with Loggable {
 
   import net.shrine.hms.authorization.HmsDataStewardAuthorizationService._
 
   def identifyEcommonsUsername(authn: AuthenticationInfo): String = {
     val pmRequest = new GetUserConfigurationRequest(authn.domain, authn.username, authn.credential.value)
-    val responseXml: String = HTTPClient.post(pmRequest.toI2b2String, pmEndpoint)
+    val responseXml: String = httpClient.post(pmRequest.toI2b2String, pmEndpoint)
     User.fromI2b2(responseXml).params("ecommons_username")
   }
 
@@ -63,7 +63,7 @@ class HmsDataStewardAuthorizationService(serviceUrl: String, username: String, p
   }
 
   def sendRequest(method: HttpMethod): String = {
-    val client = new HttpClient()
+    val client = new CommonsHttpClient()
     client.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password))
     method.setDoAuthentication(true)
     val responseString = try {

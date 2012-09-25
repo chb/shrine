@@ -29,7 +29,7 @@ final class ShrineProxyServletTest extends TestCase with ShouldMatchers with Ass
     
     val proxy = servlet.proxy.asInstanceOf[DefaultShrineProxy]
     
-    proxy.urlPoster should be(DefaultShrineProxy.HttpClientUrlPoster)
+    proxy.urlPoster should be(DefaultShrineProxy.JerseyHttpClientUrlPoster)
     //whitelist values from shrine-proxy-acl.xml on this module's classpath
     proxy.whiteList should be(Set("http://127.0.0.1:7070/axis2/rest/", "http://localhost:7070/axis2/rest/", "http://webservices.i2b2.org/", "https://", "http://"))
     

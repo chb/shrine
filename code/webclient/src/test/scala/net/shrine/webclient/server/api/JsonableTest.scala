@@ -107,9 +107,7 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
   def testMultiInstitutionQueryResultIsJsonable {
     def singleInstResult(count: Long): SingleInstitutionQueryResult = {
       new SingleInstitutionQueryResult(count, makeBreakdownsByTypeMap(ResultOutputType.values.map { resultType =>
-        I2b2ResultEnvelope(resultType, (0 to 4).map { i =>
-          I2b2ResultEnvelope.Column("column_" + i, i)
-        })
+        I2b2ResultEnvelope(resultType, (0 to 4).map(i => ("column_" + i, i.toLong)).toMap)
       }), false)
     }
     

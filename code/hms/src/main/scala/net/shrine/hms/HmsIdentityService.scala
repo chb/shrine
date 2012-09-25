@@ -3,7 +3,7 @@ package net.shrine.hms
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.i2b2.protocol.pm.GetUserConfigurationRequest
 import net.shrine.i2b2.protocol.pm.User
-import net.shrine.util.HTTPClient
+import net.shrine.util.HttpClient
 import org.spin.identity.IdentityService
 import org.spin.identity.IdentityServiceException
 import org.spin.tools.crypto.XMLSignatureUtil
@@ -18,11 +18,11 @@ import org.spin.tools.crypto.XMLSignatureUtil
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class HmsIdentityService(pmEndpoint: String) extends IdentityService {
+class HmsIdentityService(pmEndpoint: String, httpClient: HttpClient) extends IdentityService {
   def certify(domain: String, username: String, password: String) = {
     try {
       val requestString = new GetUserConfigurationRequest(domain, username, password).toI2b2String
-      val responseString = HTTPClient.post(requestString, pmEndpoint)
+      val responseString = httpClient.post(requestString, pmEndpoint)
       val user = User.fromI2b2(responseString)
       val ecommonsUsername = user.params("ecommons_username")
       if(ecommonsUsername == null) {

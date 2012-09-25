@@ -33,7 +33,7 @@ import java.security.SecureRandom
 import com.sun.jersey.api.client.RequestBuilder
 import com.sun.jersey.api.client.UniformInterface
 import net.shrine.protocol.query.QueryDefinition
-import net.shrine.util.HTTPClient.createJerseyClient
+import net.shrine.util.JerseyHttpClient.createJerseyClient
 
 /**
  *

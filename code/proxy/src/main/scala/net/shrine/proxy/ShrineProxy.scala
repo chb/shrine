@@ -1,6 +1,5 @@
 package net.shrine.proxy
 
-import net.shrine.util.HTTPClient
 import org.apache.log4j.Logger
 import org.spin.tools.config.ConfigException
 import org.spin.tools.config.ConfigTool
@@ -12,6 +11,7 @@ import java.util.ArrayList
 import java.util.List
 import scala.xml.XML
 import scala.xml.NodeSeq
+import net.shrine.util.JerseyHttpClient
 
 /**
  * [ Author ]
@@ -67,14 +67,16 @@ object DefaultShrineProxy {
     }
   }
   
-  object HttpClientUrlPoster extends ShrineProxy.UrlPoster {
-    override def post(url: String, input: String): String = HTTPClient.post(input, url, acceptAllSslCerts = true)
+  object JerseyHttpClientUrlPoster extends ShrineProxy.UrlPoster {
+    private val httpClient = new JerseyHttpClient(acceptAllSslCerts = true)
+    
+    override def post(url: String, input: String): String = httpClient.post(input, url)
   }
 }
 
 final class DefaultShrineProxy(val whiteList: Set[String], val blackList: Set[String], val urlPoster: ShrineProxy.UrlPoster ) extends ShrineProxy {
 
-  def this() = this(DefaultShrineProxy.loadWhiteList, DefaultShrineProxy.loadBlackList, DefaultShrineProxy.HttpClientUrlPoster)
+  def this() = this(DefaultShrineProxy.loadWhiteList, DefaultShrineProxy.loadBlackList, DefaultShrineProxy.JerseyHttpClientUrlPoster)
 
   import DefaultShrineProxy._
   
