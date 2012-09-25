@@ -25,7 +25,7 @@ final class HelpersTest extends TestCase with AssertionsForJUnit with ShouldMatc
   
   private val envs = ResultOutputType.breakdownTypes.map(rt => I2b2ResultEnvelope(rt, cols))
   
-  private def toLong(i: Long) = java.lang.Long.valueOf(i.toLong)
+  private def toLong(l: Long) = java.lang.Long.valueOf(l)
   
   val breakdown = new Breakdown(cols.mapValues(toLong).asJava)
   
