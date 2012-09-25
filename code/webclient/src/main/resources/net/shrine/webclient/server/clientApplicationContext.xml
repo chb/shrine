@@ -13,14 +13,11 @@
     <context:component-scan base-package="net.shrine.webclient.server"/>
     <context:property-override ignore-resource-not-found="false" location="classpath:webclient.properties"/>
 
-    <jee:jndi-lookup id="pmEndpoint" jndi-name="java:comp/env/shrine/pmEndpoint"
-            default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
-    <jee:jndi-lookup id="shrineUrl" jndi-name="java:comp/env/shrine/shrineUrl"
-            default-value="https://shrine-dev1.chip.org:6060/shrine-cell/rest/"/>
-    <jee:jndi-lookup id="projectId" jndi-name="java:comp/env/shrine/projectId"
-            default-value="SHRINE"/>
-    <jee:jndi-lookup id="acceptAllCerts" jndi-name="java:comp/env/shrine/acceptAllCerts"
-            default-value="false"/>
+    <jee:jndi-lookup id="pmEndpoint" jndi-name="java:comp/env/shrine/pmEndpoint" default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
+    <jee:jndi-lookup id="shrineUrl" jndi-name="java:comp/env/shrine/shrineUrl" default-value="https://shrine-dev1.chip.org:6060/shrine-cell/rest/"/>
+    <jee:jndi-lookup id="projectId" jndi-name="java:comp/env/shrine/projectId" default-value="SHRINE"/>
+    <jee:jndi-lookup id="acceptAllCerts" jndi-name="java:comp/env/shrine/acceptAllCerts" default-value="false"/>
+    <jee:jndi-lookup id="i2b2Domain" jndi-name="java:comp/env/shrine/i2b2Domain" default-value="HarvardDemo"/>
 
     <bean name="shrineClient" class="net.shrine.webclient.server.RequestScopedShrineClient" factory-method="apply" scope="request">
         <aop:scoped-proxy/>
@@ -33,17 +30,22 @@
     <bean name="ontService" class="net.shrine.webclient.server.OntologyServiceImpl"/>
     <bean name="boostrapInfoSource" class="net.shrine.webclient.server.SpringSecurityBootstrapInfoSource"/>
 
-
     <sec:authentication-manager alias="authenticationManager">
         <sec:authentication-provider ref="pmAuthProvider"/>
     </sec:authentication-manager>
 
     <bean name="authFilter" class="net.shrine.webclient.server.DomainUsernamePasswordAuthenticationProcessingFilter">
-        <property name="authenticationManager" ref="authenticationManager"/>
+        <constructor-arg ref="i2b2Domain"/>
+        <constructor-arg ref="authenticationManager"/>
+    </bean>
+
+    <bean id="httpClient" class="net.shrine.util.JerseyHttpClient">
+      <constructor-arg ref="acceptAllCerts"/>
     </bean>
 
     <bean name="pmAuthProvider" class="net.shrine.webclient.server.PMAuthenticationProvider">
         <constructor-arg ref="pmEndpoint"/>
+        <constructor-arg ref="httpClient"/>
     </bean>
 
     <bean name="logoutHandler" class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler">
@@ -54,6 +56,8 @@
         <sec:custom-filter ref="authFilter" position="FORM_LOGIN_FILTER"/>
         <sec:intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS" />
         <sec:intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <sec:intercept-url pattern="/css/shrine.css" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <sec:intercept-url pattern="/images/logo.png" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <sec:intercept-url pattern="/**" access="ROLE_USER"/>
         <sec:logout success-handler-ref="logoutHandler"/>
     </sec:http>
