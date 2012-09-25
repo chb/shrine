@@ -47,6 +47,11 @@
     <jee:jndi-lookup id="adapterStatusQuery" jndi-name="java:comp/env/shrine/adapterStatusQuery"
                      default-value="\\SHRINE\SHRINE\Diagnoses\Mental Illness\Disorders usually diagnosed in infancy, childhood, or adolescence\Pervasive developmental disorders\Infantile autism, current or active state\"/>
     <jee:jndi-lookup id="adapterMappingsFileName" jndi-name="java:comp/env/shrine/adapterMappingsFileName" default-value="AdapterMappings.xml"/>                     
+    <jee:jndi-lookup id="shouldTrustAllSslCerts" jndi-name="java:comp/env/shrine/shouldTrustAllSslCerts" default-value="false"/>
+
+    <bean id="httpClient" class="net.shrine.util.JerseyHttpClient">
+      <constructor-arg ref="shouldTrustAllSslCerts"/>
+    </bean>
 
     <bean id="hiveCredentials" class="net.shrine.config.HiveCredentials">
         <constructor-arg ref="i2b2HiveDomain"/>
@@ -121,23 +126,22 @@
         </property>
     </bean>
 
-
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/shrineDB"/>
     </bean>
 
 	<bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
-	  <constructor-arg ref="adapterMappingsFileName"/>
+	   <constructor-arg ref="adapterMappingsFileName"/>
 	</bean>
 	
 	<bean id="adapterMappings" factory-bean="adapterMappingsSource" factory-method="load"/>
 
     <bean id="expressionTranslator" class="net.shrine.adapter.translators.ExpressionTranslator" factory-method="apply">
-      <constructor-arg ref="adapterMappings"/>
+        <constructor-arg ref="adapterMappings"/>
     </bean>
  
     <bean id="queryDefinitionTranslator" class="net.shrine.adapter.translators.QueryDefinitionTranslator">
-      <constructor-arg ref="expressionTranslator"/>
+        <constructor-arg ref="expressionTranslator"/>
     </bean>
 
     <bean id="shrineQueryActionMap" class="net.shrine.adapter.query.ShrineQueryActionMap">
@@ -156,18 +160,20 @@
 
     <bean id="runQueryInstanceFromQueryDefinition" class="net.shrine.adapter.RunQueryAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
-        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
-        <constructor-arg index="2" ref="hiveCredentials"/>
-        <constructor-arg index="3" ref="queryDefinitionTranslator"/>
-        <constructor-arg index="4" ref="shrineConfig"/>
-        <constructor-arg index="5" value="true"/>
+        <constructor-arg index="1" ref="httpClient"/>
+        <constructor-arg index="2" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="3" ref="hiveCredentials"/>
+        <constructor-arg index="4" ref="queryDefinitionTranslator"/>
+        <constructor-arg index="5" ref="shrineConfig"/>
+        <constructor-arg index="6" value="true"/>
     </bean>
 
     <bean id="instancesByIDQuery" class="net.shrine.adapter.ReadInstanceResultsAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
-        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
-        <constructor-arg index="2" ref="hiveCredentials"/>
-        <constructor-arg index="3" value="true"/>
+        <constructor-arg index="1" ref="httpClient"/>
+        <constructor-arg index="2" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="3" ref="hiveCredentials"/>
+        <constructor-arg index="4" value="true"/>
     </bean>
 
     <bean id="mastersByUserQuery" class="net.shrine.adapter.ReadPreviousQueriesAdapter">
@@ -178,20 +184,23 @@
 
     <bean id="mastersByIDQuery" class="net.shrine.adapter.ReadQueryInstancesAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
-        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
-        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="1" ref="httpClient"/>
+        <constructor-arg index="2" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="3" ref="hiveCredentials"/>
     </bean>
 
     <bean id="masterDeleteQuery" class="net.shrine.adapter.DeleteQueryAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
-        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
-        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="1" ref="httpClient"/>
+        <constructor-arg index="2" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="3" ref="hiveCredentials"/>
     </bean>
 
     <bean id="masterRenameQuery" class="net.shrine.adapter.RenameQueryAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
-        <constructor-arg index="1" ref="hibernateAdapterDAO"/>
-        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="1" ref="httpClient"/>
+        <constructor-arg index="2" ref="hibernateAdapterDAO"/>
+        <constructor-arg index="3" ref="hiveCredentials"/>
     </bean>
 
     <bean id="getRequestXmlQuery" class="net.shrine.adapter.ReadQueryDefinitionAdapter">
