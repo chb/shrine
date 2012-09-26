@@ -3,7 +3,7 @@
     <g:HTMLPanel styleName="resultInstitution">
         <div class="resultInstitutionName"><span ui:field='name'/></div>
         <div class="resultInstitutionData">
-            <div class="resultInstitutionQuantity"><span ui:field='quantity'/></div>
+            <div class="resultInstitutionQuantity"><span ui:field='quantity'/><span class="plusMinus">(+/- 3)</span></div>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>
