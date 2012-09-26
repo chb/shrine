@@ -71,18 +71,27 @@ public final class ResultDetails extends FlowPanel {
         return options;
     }
 
-    private static DataTable createDataTable(final Breakdown value) {
+    private static DataTable createDataTable(final Breakdown breakdown) {
         final DataTable data = DataTable.create();
         
         data.addColumn(AbstractDataTable.ColumnType.STRING, "Demographics Category");
         data.addRows(1);
         data.setValue(0, 0, "# of Patients");
         
-        final List<Map.Entry<String, Long>> entries = Util.makeArrayList(value.entrySet());
+        //TODO: Is sorting by column name appropriate here?  Hopefully it will be enough, though
+        //we can always preserve the order in which the columns come from i2b2 
+        final List<String> columnNames = Util.sorted(breakdown.keySet());
         
-        for (int i = 0; i < entries.size(); i++) {
-            data.addColumn(AbstractDataTable.ColumnType.NUMBER, entries.get(i).getKey());
-            data.setValue(0, i + 1, entries.get(i).getValue());
+        //NB: Defensive scope, to avoid leaking i
+        {
+            int i = 0;
+        
+            for (final String columnName : columnNames) {
+                data.addColumn(AbstractDataTable.ColumnType.NUMBER, columnName);
+                data.setValue(0, i + 1, breakdown.get(columnName));
+                
+                ++i;
+            }
         }
         
         return data;
