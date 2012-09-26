@@ -1,25 +1,26 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<g:HTMLPanel styleName="breakDownOuter">
-		<div class="breakDown">
-			<div class="breakDownTop">
-				<div class="breakDownTopLeft">
-					<div class="breakDownTopRight">
-						Approved Query Topic:
-						<br />
-						<select name="datasteward" class="dataDropdown">
-							<option value="1">Diabetes and medications</option>
-                      		<option value="2">Request New Query Topic</option>
-						</select>
-						<g:Button text="Run Query" addStyleNames="largeButton" ui:field="runQueryButton"/>
-					</div>
-					<g:SimplePanel ui:field="querySummaryHolder"/>
-				</div>
-			</div>
-			<g:HTMLPanel styleName="breakDownUpper" ui:field="resultsWrapper">
-				<g:FlowPanel styleName="resultInstitutions" ui:field="resultsPanel" />
-			</g:HTMLPanel>
-		</div>
-	</g:HTMLPanel>
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <g:HTMLPanel styleName="breakDownSummary">
+        <div class="breakDownTop">
+            <div class="breakDownTopLeft">
+                <div class="breakDownTopRight">
+                    Approved Query Topic:
+                    <br />
+                    <select name="datasteward" class="dataDropdown">
+                        <option value="1">Diabetes and medications</option>
+                        <option value="2">Request New Query Topic</option>
+                    </select>
+                    <g:Button text="Run Query" addStyleNames="largeButton" ui:field="runQueryButton" />
+                </div>
+                <div class="title">Query Summary</div>
+                <g:SimplePanel ui:field="querySummaryHolder" styleName="querySentence" />
+            </div>
+        </div>
+        <!-- TODO: resultsWrapper and resultsPanel only exist as a placeholder for the old spinner image; they should be removed soon -->
+        <g:HTMLPanel styleName="breakDownUpper" ui:field="resultsWrapper">
+            <g:FlowPanel styleName="resultInstitutions"
+                ui:field="resultsPanel" />
+        </g:HTMLPanel>
+    </g:HTMLPanel>
 </ui:UiBinder> 
