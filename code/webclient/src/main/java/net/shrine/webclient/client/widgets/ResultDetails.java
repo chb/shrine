@@ -1,5 +1,6 @@
 package net.shrine.webclient.client.widgets;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import net.shrine.webclient.shared.domain.Breakdown;
 import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.visualization.client.AbstractDataTable;
 import com.google.gwt.visualization.client.DataTable;
 import com.google.gwt.visualization.client.visualizations.corechart.AxisOptions;
@@ -29,17 +31,29 @@ public final class ResultDetails extends FlowPanel {
 
     private static final int CHART_WIDTH = 660;
     private static final int CHART_HEIGHT = 270;
+    
+    //TODO: Make ResultOutputType enum available to GWT to avoid this hard-coding
+    private static final List<String> breakdownTypes = Arrays.asList("PATIENT_GENDER_COUNT_XML", "PATIENT_AGE_COUNT_XML", "PATIENT_RACE_COUNT_XML", "PATIENT_VITALSTATUS_COUNT_XML");
 
     public ResultDetails(final SingleInstitutionQueryResult result) {
         super();
         
         this.setVisible(false);
         
-        for (final Map.Entry<String, Breakdown> entry : result.getBreakdowns().entrySet()) {
-            final Breakdown breakdown = entry.getValue();
-            final ColumnChart chart = new ColumnChart(createDataTable(breakdown), createOptions());
-            final String breakdownType = entry.getKey();
-            this.add(new ChartPanel(breakdownType, chart));
+        for (final String breakdownType : breakdownTypes) {
+            final Widget breakdownWidget;
+            
+            if(result.getBreakdowns().containsKey(breakdownType)) {
+                final Breakdown breakdown = result.getBreakdowns().get(breakdownType);
+                
+                final ColumnChart chart = new ColumnChart(createDataTable(breakdown), createOptions());
+                
+                breakdownWidget = new ChartPanel(breakdownType, chart);
+            } else {
+                breakdownWidget = new MissingBreakdownPanel();
+            }
+            
+            this.add(breakdownWidget);
         }
         
         this.setVisible(true);

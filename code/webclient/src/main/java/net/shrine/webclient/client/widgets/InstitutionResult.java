@@ -30,6 +30,9 @@ public final class InstitutionResult extends Composite {
 
     @UiField
     SpanElement quantity;
+    
+    @UiField
+    SpanElement obfuscationAmount;
 
     private final SingleInstitutionQueryResult result;
 
@@ -51,20 +54,35 @@ public final class InstitutionResult extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         name.setInnerText(instName);
-        quantity.setInnerText(asString(singleInstitutionResult.getCount()));
+        
+        setQuantityText(singleInstitutionResult);
 
         addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 Log.debug("Institution result " + instName + " clicked");
+                
                 eventBus.fireEvent(new InstitutionResultClickedEvent(index, singleInstitutionResult));
             }
         });
 
     }
 
+    private void setQuantityText(final SingleInstitutionQueryResult singleInstitutionResult) {
+        //TODO: Find better way to hide the "+/- N"
+        if(areFewerPatientsThanMinimum(singleInstitutionResult.getCount())) {
+            obfuscationAmount.setInnerText("");
+        }
+        
+        quantity.setInnerText(asString(singleInstitutionResult.getCount()));
+    }
+
+    private boolean areFewerPatientsThanMinimum(final long resultSetSize) {
+        return resultSetSize < MinimumSetSizeToDisplay;
+    }
+
     String asString(final long resultSetSize) {
-        if(resultSetSize < MinimumSetSizeToDisplay) {
+        if(areFewerPatientsThanMinimum(resultSetSize)) {
             return "< " + MinimumSetSizeToDisplay;
         }
 

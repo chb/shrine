@@ -10,13 +10,13 @@ import com.google.gwt.user.client.ui.Widget;
  * @author clint
  * @date Sep 26, 2012
  */
-public final class MissingBreakdownsPanel extends Composite {
+public final class MissingBreakdownPanel extends Composite {
 
     private static MissingBreakdownsPanelUiBinder uiBinder = GWT.create(MissingBreakdownsPanelUiBinder.class);
 
-    interface MissingBreakdownsPanelUiBinder extends UiBinder<Widget, MissingBreakdownsPanel> { }
+    interface MissingBreakdownsPanelUiBinder extends UiBinder<Widget, MissingBreakdownPanel> { }
 
-    public MissingBreakdownsPanel() {
+    public MissingBreakdownPanel() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 }
