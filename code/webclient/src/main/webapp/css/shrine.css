@@ -168,7 +168,7 @@ a:link, a:hover, a:visited, a:active {
     overflow-y: auto !important;
     padding: 0 15px 5px 5px;
     z-index: 1101;
-    /* TODO: HACK ALERT */
+	/* TODO: HACK ALERT */
 	/* display: none; */
 }
 
@@ -388,6 +388,7 @@ a:link, a:hover, a:visited, a:active {
 	background: #8b3836;
 	color: #FFF;
 }
+
 .largeButton:hover {
 	background: #72201e;
 }
@@ -531,6 +532,7 @@ a:link, a:hover, a:visited, a:active {
 	margin: 0 0 20px 0;
 	overflow: auto;
 	float:left;
+	background: #FFFFFF;
 	/* TODO: HACK ALERT */
 	/* display:none; */
 }
@@ -901,8 +903,13 @@ a:link, a:hover, a:visited, a:active {
 
 .resultInstitutionQuantity {
 	display: inline-block;
-	width: 140px;
 	font-weight: bold;
+}
+
+.resultInstitutionQuantity .plusMinus {
+	color: #009999;
+	font-size: 50%;
+	vertical-align: top;
 }
 
 .resultInstitutionLink {
