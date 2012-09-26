@@ -29,29 +29,27 @@ final case class I2b2ResultEnvelope(resultType: ResultOutputType, data: Map[Stri
   //Extra parameter list with dummy int value needed to disambiguate this constructor and the class-level one, which without
   //the extra param list have the same signature after erasure. :/  Making the dummy param implicit lets us omit the second 
   //param list entirely when calling this constructor.
-  def this(resultType: ResultOutputType, cols: (String, Long)*)(implicit dummy: Int = 42) = this(resultType, cols.toMap)
-  
-  def this(resultType: ResultOutputType, columns: Seq[Column]) = this(resultType, columns.map(_.toTuple).toMap)
-  
-  def +(column: Column): I2b2ResultEnvelope = this + column.toTuple
+  def this(resultType: ResultOutputType, cols: (String, Long)*) = this(resultType, cols.toMap)
 
-  def +(column: (String, Long)): I2b2ResultEnvelope = {
+  def +(column: ColumnTuple): I2b2ResultEnvelope = {
     this.copy(data = data + column)
   }
 
-  def ++(columns: Iterable[(String, Long)]): I2b2ResultEnvelope = {
+  def ++(columns: Iterable[ColumnTuple]): I2b2ResultEnvelope = {
     columns.foldLeft(this)(_ + _)
   }
   
   def toMap: Map[String, Long] = data.mapValues(_.toLong)
   
-  def columns: Seq[Column] = data.map(Column.fromTuple).toSeq
+  //private def columns: Seq[Column] = data.map(Column.fromTuple).toSeq
 
   override def toI2b2: NodeSeq = XmlUtil.stripWhitespace(
     <ns10:i2b2_result_envelope xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/pm/1.1/">
       <body>
         <ns10:result name={ resultType.name }>
-          { columns.map(_.toI2b2) }
+          {
+            data.map { case (name, value) => <data type="int" column={ name }>{ value }</data> }
+          }
         </ns10:result>
       </body>
     </ns10:i2b2_result_envelope>)
@@ -59,57 +57,46 @@ final case class I2b2ResultEnvelope(resultType: ResultOutputType, data: Map[Stri
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(
     <resultEnvelope>
       <resultType>{ resultType }</resultType>
-      { columns.map(_.toXml) }
+      { 
+        data.map { case (name, value) =>
+          <column>
+            <name>{ name }</name>
+            <value>{ value }</value>
+          </column>
+        }
+      }
     </resultEnvelope>)
     
   override def toJson: JValue = {
-    (resultType.name -> columns.map(_.toTuple).toMap)
+    (resultType.name -> data)
   } 
 }
 
 object I2b2ResultEnvelope extends I2b2Unmarshaller[Option[I2b2ResultEnvelope]] with XmlUnmarshaller[Option[I2b2ResultEnvelope]] {
 
-  final case class Column(name: String, value: Long) extends I2b2Marshaller with XmlMarshaller with JsonMarshaller {
-    def toI2b2: NodeSeq = {
-      <data type="int" column={ name }>{ value }</data>
-    }
-
-    def toXml: NodeSeq = {
-      <column>
-        <name>{ name }</name>
-        <value>{ value }</value>
-      </column>
-    }
-
-    def toTuple: (String, Long) = (name, value)
-    
-    override def toJson: JValue = toTuple 
-  }
+  type ColumnTuple = (String, Long)
   
-  object Column extends XmlUnmarshaller[Option[Column]] with I2b2Unmarshaller[Option[Column]] with JsonUnmarshaller[Option[Column]] {
-    def fromTuple(tuple: (String, Long)): Column = {
-      val (name, value) = tuple
-      
-      Column(name, value)
-    }
+  private object Column {
     
-    private def unmarshal(xml: NodeSeq, name: NodeSeq => String, value: NodeSeq => Long): Option[Column] = {
-      Some(Column(name(xml), value(xml)))
+    private def unmarshal(xml: NodeSeq, name: NodeSeq => String, value: NodeSeq => Long): Option[ColumnTuple] = {
+      val tuple = (name(xml), value(xml))
+      
+      Some(tuple)
     }
     
     private def from(attr: String): NodeSeq => String = xml => (xml \ attr).text
     
-    override def fromI2b2(xml: NodeSeq): Option[Column] = unmarshal(xml, from("@column"), _.text.toInt)
+    def fromI2b2(xml: NodeSeq): Option[ColumnTuple] = unmarshal(xml, from("@column"), _.text.toLong)
     
-    override def fromXml(xml: NodeSeq): Option[Column] = unmarshal(xml, from("name"), from("value") andThen (_.toInt))
+    def fromXml(xml: NodeSeq): Option[ColumnTuple] = unmarshal(xml, from("name"), from("value") andThen (_.toLong))
     
-    override def fromJson(json: JValue): Option[Column] = json match {
-      case JObject(List(JField(name, JInt(value)))) => Some(Column(name, value.toInt))
+    def fromJson(json: JValue): Option[ColumnTuple] = json match {
+      case JObject(List(JField(name, JInt(value)))) => Some((name, value.toInt))
       case _ => None
     }
   }
 
-  def empty(resultType: ResultOutputType) = new I2b2ResultEnvelope(resultType, Seq.empty)
+  def empty(resultType: ResultOutputType) = new I2b2ResultEnvelope(resultType)
 
   override def fromXml(xml: NodeSeq): Option[I2b2ResultEnvelope] = {
     unmarshal(xml, 
@@ -125,18 +112,12 @@ object I2b2ResultEnvelope extends I2b2Unmarshaller[Option[I2b2ResultEnvelope]] w
               Column.fromI2b2)
   }
   
-  private def unmarshal(xml: NodeSeq, getResultType: NodeSeq => Option[ResultOutputType], columnXmls: NodeSeq => NodeSeq, toColumn: NodeSeq => Option[Column]): Option[I2b2ResultEnvelope] = {
+  private def unmarshal(xml: NodeSeq, getResultType: NodeSeq => Option[ResultOutputType], columnXmls: NodeSeq => NodeSeq, toColumn: NodeSeq => Option[ColumnTuple]): Option[I2b2ResultEnvelope] = {
     for {
       resultType <- getResultType(xml)
       columns = columnXmls(xml).flatMap(toColumn(_))
-    } yield new I2b2ResultEnvelope(resultType, columns)
+    } yield new I2b2ResultEnvelope(resultType, columns: _*)
   }
 
-  private def tryOrNone[T](f: => T): Option[T] = {
-    try {
-      Option(f)
-    } catch {
-      case e: Exception => None
-    }
-  }
+  private def tryOrNone[T](f: => T): Option[T] = Try(f).toOption
 }

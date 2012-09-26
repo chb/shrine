@@ -70,17 +70,17 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
     
     env.resultType should be(ResultOutputType.PATIENT_AGE_COUNT_XML)
     
-    val expected = Map("  0-9 years old" -> 0,
-                       "  10-17 years old" -> 11,
-                       "  18-34 years old" -> 26,
-                       "  35-44 years old" -> 26,
-                       "  45-54 years old" -> 8,
-                       "  55-64 years old" -> 6,
-                       "  65-74 years old" -> 5,
-                       "  75-84 years old" -> 0,
-                       ">= 65 years old" -> 5,
-                       ">= 85 years old" -> 0,
-                       "Not recorded" -> 0)
+    val expected = Map("  0-9 years old" -> 0L,
+                       "  10-17 years old" -> 11L,
+                       "  18-34 years old" -> 26L,
+                       "  35-44 years old" -> 26L,
+                       "  45-54 years old" -> 8L,
+                       "  55-64 years old" -> 6L,
+                       "  65-74 years old" -> 5L,
+                       "  75-84 years old" -> 0L,
+                       ">= 65 years old" -> 5L,
+                       ">= 85 years old" -> 0L,
+                       "Not recorded" -> 0L)
                        
     env.data should equal(expected)
     
@@ -114,33 +114,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
     &lt;/body>
 &lt;/ns10:i2b2_result_envelope>""")
        
-     I2b2ResultEnvelope.fromI2b2(badXml2).get.columns should equal(Nil)
-  }
-
-  @Test
-  def testPlusColumn {
-    val resultType = ResultOutputType.PATIENT_COUNT_XML
-
-    val empty = I2b2ResultEnvelope.empty(resultType)
-
-    val column1 = Column("foo", 123)
-
-    val env1 = empty + column1
-
-    (env1 eq empty) should be(false)
-
-    env1.resultType should be(resultType)
-
-    env1.columns should equal(Seq(column1))
-
-    val column2 = Column("nuh", 123)
-
-    val env2 = env1 + column2
-
-    (env2 eq env1) should be(false)
-
-    env2.resultType should be(resultType)
-    env2.columns should equal(Seq(column1, column2))
+     I2b2ResultEnvelope.fromI2b2(badXml2).get.data.isEmpty should be(true)
   }
 
   @Test
@@ -155,7 +129,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
 
     env.resultType should be(resultType)
 
-    env.columns should equal(Seq(Column("foo", 123)))
+    env.data should equal(Map("foo" -> 123L))
   }
 
   @Test
@@ -165,7 +139,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
 
       env1 should not be (null)
       env1.resultType should be(resultType)
-      env1.columns.isEmpty should be(true)
+      env1.data.isEmpty should be(true)
 
       val env2 = I2b2ResultEnvelope.empty(resultType)
 
@@ -177,7 +151,7 @@ final class I2b2ResultEnvelopeTest extends TestCase with AssertionsForJUnit with
   def testToMap {
     val resultType = ResultOutputType.PATIENT_COUNT_XML
     
-    val env = new I2b2ResultEnvelope(resultType, Seq(Column("foo", 123L), Column("bar", 99L)))
+    val env = new I2b2ResultEnvelope(resultType, Map("foo" -> 123L, "bar" -> 99L))
     
     env.toMap should equal(Map("foo" -> 123L, "bar" -> 99L))
   }

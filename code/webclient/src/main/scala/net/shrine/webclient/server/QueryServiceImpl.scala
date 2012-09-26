@@ -54,8 +54,8 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
     import ResultOutputType._
     
     def addDummyBreakdowns(instResult: SingleInstitutionQueryResult): SingleInstitutionQueryResult = {
-      val breakdowns = makeBreakdownsByTypeMap(Seq(new I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, "foo" -> 123, "bar" -> 42),
-                                                   new I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, "blarg" -> 123, "baz" -> 9876)))
+      val breakdowns = makeBreakdownsByTypeMap(Seq(new I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, "foo" -> 123L, "bar" -> 42L),
+                                                   new I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, "blarg" -> 123L, "baz" -> 9876L)))
       
       new SingleInstitutionQueryResult(instResult.getCount, breakdowns, instResult.isError)
     }
