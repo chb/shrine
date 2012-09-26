@@ -1,8 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 	<g:HTMLPanel>
-		<div class="title">Query Summary</div>
 		<g:HTML styleName="querySentence" ui:field="querySentencePanel"/>
-		<!-- <span class="term" style="color: rgb(0, 102, 51);">Neonatal diabetes mallitus</span> <span class="joiner">AND</span> <span class="term" style="color: rgb(0, 102, 153);">Pravastatin</span> -->
 	</g:HTMLPanel>
 </ui:UiBinder> 

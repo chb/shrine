@@ -40,9 +40,11 @@ public final class SummaryPanel extends Composite {
     @UiField
     Button runQueryButton;
 
+    @Deprecated
     @UiField
     FlowPanel resultsPanel;
 
+    @Deprecated
     @UiField
     HTMLPanel resultsWrapper;
 
