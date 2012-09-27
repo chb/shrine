@@ -14,24 +14,27 @@ public class RichSuggestResponse<S> {
 
     private Collection<S> suggestions;
 
+    private int sequenceNumber;
+
     // For GWT
     @SuppressWarnings("unused")
     private RichSuggestResponse() {
-        this(Util.<S> makeArrayList());
+        this(Util.<S> makeArrayList(), 0);
     }
 
-    public RichSuggestResponse(final Collection<S> suggestions) {
+    public RichSuggestResponse(final Collection<S> suggestions, final int sequenceNumber) {
         super();
 
         this.suggestions = suggestions;
+        this.sequenceNumber = sequenceNumber;
     }
 
-    public static final <S> RichSuggestResponse<S> of(final Collection<S> suggestions) {
-        return new RichSuggestResponse<S>(suggestions);
+    public static final <S> RichSuggestResponse<S> of(final Collection<S> suggestions, final int sequenceNumber) {
+        return new RichSuggestResponse<S>(suggestions, sequenceNumber);
     }
 
     public static final <S> RichSuggestResponse<S> empty() {
-        return new RichSuggestResponse<S>(Collections.<S> emptyList());
+        return new RichSuggestResponse<S>(Collections.<S> emptyList(), 0);
     }
 
     public Collection<S> getSuggestions() {
@@ -45,11 +48,20 @@ public class RichSuggestResponse<S> {
     public boolean hasSuggestions() {
         return !suggestions.isEmpty();
     }
+    
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + sequenceNumber;
         result = prime * result + (suggestions == null ? 0 : suggestions.hashCode());
         return result;
     }
@@ -66,6 +78,9 @@ public class RichSuggestResponse<S> {
             return false;
         }
         final RichSuggestResponse<?> other = (RichSuggestResponse<?>) obj;
+        if (sequenceNumber != other.sequenceNumber) {
+            return false;
+        }
         if (suggestions == null) {
             if (other.suggestions != null) {
                 return false;
@@ -78,6 +93,6 @@ public class RichSuggestResponse<S> {
 
     @Override
     public String toString() {
-        return "RichSuggestResponse [suggestions=" + suggestions + "]";
+        return "RichSuggestResponse [suggestions=" + suggestions + ", sequenceNumber=" + sequenceNumber + "]";
     }
 }

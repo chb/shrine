@@ -13,33 +13,36 @@ import net.shrine.webclient.shared.domain.TermSuggestion;
  * @date Apr 13, 2012
  */
 public class RichSuggestResponseTestGwt extends AbstractWebclientTest {
-	public void testConstructor() {
-		
-		{
-			final RichSuggestResponse<TermSuggestion> empty = new RichSuggestResponse<TermSuggestion>(new ArrayList<TermSuggestion>());
-			
-			assertNotNull(empty.getSuggestions());
-			assertEquals(0, empty.getSuggestions().size());
-		}
-		
-		{
-			final MockSuggestion suggestion = new MockSuggestion("/SHRINE/foo");
-			
-			final RichSuggestResponse<MockSuggestion> response = RichSuggestResponse.of(asList(suggestion));
-			
-			assertNotNull(response.getSuggestions());
-			assertEquals(suggestion, response.getSuggestions().iterator().next());
-			assertEquals(1, response.getSuggestions().size());
-		}
-	}
-	
-	public void testOf() {
-		final MockSuggestion suggestion = new MockSuggestion("/SHRINE/foo");
-		
-		final RichSuggestResponse<MockSuggestion> response = RichSuggestResponse.of(asList(suggestion));
-		
-		assertNotNull(response.getSuggestions());
-		assertEquals(suggestion, response.getSuggestions().iterator().next());
-		assertEquals(1, response.getSuggestions().size());
-	}
+    public void testConstructor() {
+
+        {
+            final RichSuggestResponse<TermSuggestion> empty = new RichSuggestResponse<TermSuggestion>(new ArrayList<TermSuggestion>(), 99);
+
+            assertNotNull(empty.getSuggestions());
+            assertEquals(0, empty.getSuggestions().size());
+            assertEquals(99, empty.getSequenceNumber());
+        }
+
+        {
+            final MockSuggestion suggestion = new MockSuggestion("/SHRINE/foo");
+
+            final RichSuggestResponse<MockSuggestion> response = RichSuggestResponse.of(asList(suggestion), 99);
+
+            assertNotNull(response.getSuggestions());
+            assertEquals(suggestion, response.getSuggestions().iterator().next());
+            assertEquals(1, response.getSuggestions().size());
+            assertEquals(99, response.getSequenceNumber());
+        }
+    }
+
+    public void testOf() {
+        final MockSuggestion suggestion = new MockSuggestion("/SHRINE/foo");
+
+        final RichSuggestResponse<MockSuggestion> response = RichSuggestResponse.of(asList(suggestion), 99);
+
+        assertNotNull(response.getSuggestions());
+        assertEquals(suggestion, response.getSuggestions().iterator().next());
+        assertEquals(1, response.getSuggestions().size());
+        assertEquals(99, response.getSequenceNumber());
+    }
 }

@@ -33,7 +33,7 @@ public final class OntologySuggestOracle implements RichSuggestOracle<TermSugges
         ontologyService.getSuggestions(request.getQuery(), request.getLimit(), new MethodCallback<List<TermSuggestion>>() {
             @Override
             public void onSuccess(final Method method, final List<TermSuggestion> suggestions) {
-                callback.onSuggestionsReady(request, RichSuggestResponse.of(suggestions));
+                callback.onSuggestionsReady(request, RichSuggestResponse.of(suggestions, request.getSequenceNumber()));
             }
 
             @Override

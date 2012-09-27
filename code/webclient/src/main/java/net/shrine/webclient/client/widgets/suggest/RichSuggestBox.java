@@ -44,6 +44,8 @@ public class RichSuggestBox<S> extends Composite implements SuggestRowContainer<
 
     private static final int DefaultMaxSuggestions = 20;
 
+    private int suggestionRequestSequenceNumber = Integer.MIN_VALUE;
+
     public RichSuggestBox(final RichSuggestOracle<S> oracle, final WidgetMaker<S> widgetMaker) {
         this(oracle, widgetMaker, DefaultMaxSuggestions);
     }
@@ -358,16 +360,32 @@ public class RichSuggestBox<S> extends Composite implements SuggestRowContainer<
         }
     }
 
+    //NB: Default access for tests
+    boolean isNew(final RichSuggestResponse<S> response) {
+        return response.getSequenceNumber() >= suggestionRequestSequenceNumber;
+    }
+
+    //NB: Default access for tests
+    int getSuggestionRequestSequenceNumber() {
+        return suggestionRequestSequenceNumber;
+    }
+
     final void requestSuggestions() {
-        oracle.requestSuggestions(new RichSuggestRequest(maxSuggestions, textBox.getText()), new RichSuggestCallback<S>() {
+        final int sequenceNumber = SequenceNumbers.next();
+
+        suggestionRequestSequenceNumber = sequenceNumber;
+
+        oracle.requestSuggestions(new RichSuggestRequest(maxSuggestions, textBox.getText(), sequenceNumber), new RichSuggestCallback<S>() {
             @Override
             public void onSuggestionsReady(final RichSuggestRequest request, final RichSuggestResponse<S> response) {
-                if (response.hasSuggestions()) {
-                    fillSuggestionPanel(response);
+                if (isNew(response)) {
+                    if (response.hasSuggestions()) {
+                        fillSuggestionPanel(response);
 
-                    positionAndShowPopup();
-                } else {
-                    hidePopup();
+                        positionAndShowPopup();
+                    } else {
+                        hidePopup();
+                    }
                 }
             }
         });

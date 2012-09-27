@@ -2,6 +2,8 @@ package net.shrine.webclient.client.widgets.suggest;
 
 import static java.util.Arrays.asList;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.shrine.webclient.client.AbstractWebclientTest;
@@ -18,593 +20,619 @@ import com.google.gwt.user.client.ui.Widget;
  * @date Apr 13, 2012
  */
 public class RichSuggestBoxTestGwt extends AbstractWebclientTest {
-	private static final Integer Zero = Integer.valueOf(0);
-	private static final Integer One = Integer.valueOf(1);
-	private static final Integer Two = Integer.valueOf(2);
+    private static final Integer Zero = Integer.valueOf(0);
+    private static final Integer One = Integer.valueOf(1);
+    private static final Integer Two = Integer.valueOf(2);
 
-	public void testConstructor() {
-		try {
-			new RichSuggestBox<MockSuggestion>(null, new MockWidgetMaker());
-			fail("Should have thrown");
-		} catch (IllegalArgumentException expected) {
-		}
+    public void testConstructor() {
+        try {
+            new RichSuggestBox<MockSuggestion>(null, new MockWidgetMaker());
+            fail("Should have thrown");
+        } catch (IllegalArgumentException expected) {
+        }
 
-		try {
-			new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), null);
-			fail("Should have thrown");
-		} catch (IllegalArgumentException expected) {
-		}
+        try {
+            new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), null);
+            fail("Should have thrown");
+        } catch (IllegalArgumentException expected) {
+        }
 
-		try {
-			new RichSuggestBox<MockSuggestion>(null, null);
-			fail("Should have thrown");
-		} catch (IllegalArgumentException expected) {
-		}
+        try {
+            new RichSuggestBox<MockSuggestion>(null, null);
+            fail("Should have thrown");
+        } catch (IllegalArgumentException expected) {
+        }
 
-		final RichSuggestBox<MockSuggestion> suggestBox = new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), new MockWidgetMaker());
+        final RichSuggestBox<MockSuggestion> suggestBox = new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), new MockWidgetMaker());
 
-		assertNull(suggestBox.getSuggestionsPanel());
-		assertNotNull(suggestBox.getSuggestionPopup());
-		assertFalse(suggestBox.getSuggestionPopup().isAnimationEnabled());
-		assertEquals(20, suggestBox.getMaxSuggestions());
-		assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
+        assertNull(suggestBox.getSuggestionsPanel());
+        assertNotNull(suggestBox.getSuggestionPopup());
+        assertFalse(suggestBox.getSuggestionPopup().isAnimationEnabled());
+        assertEquals(20, suggestBox.getMaxSuggestions());
+        assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
 
-		final RichSuggestBox<MockSuggestion> suggestBox2 = new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), new MockWidgetMaker(), 99);
+        final RichSuggestBox<MockSuggestion> suggestBox2 = new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), new MockWidgetMaker(), 99);
 
-		assertEquals(99, suggestBox2.getMaxSuggestions());
-	}
+        assertEquals(99, suggestBox2.getMaxSuggestions());
+    }
 
-	public void testGetText() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+    public void testGetText() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		assertEquals("", suggestBox.getText());
+        assertEquals("", suggestBox.getText());
 
-		final String text = "klfhklafhlksdfhlksdhlksdghlsghl";
+        final String text = "klfhklafhlksdfhlksdhlksdghlsghl";
 
-		suggestBox.setText(text);
+        suggestBox.setText(text);
 
-		assertEquals(text, suggestBox.getText());
-	}
+        assertEquals(text, suggestBox.getText());
+    }
 
-	// NB: Also exercises addSelectionHandler()
-	public void testFireSuggestionEvent() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+    // NB: Also exercises addSelectionHandler()
+    public void testFireSuggestionEvent() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		final MockRichSuggestEventHandler handler = new MockRichSuggestEventHandler();
+        final MockRichSuggestEventHandler handler = new MockRichSuggestEventHandler();
 
-		suggestBox.addSelectionHandler(handler);
+        suggestBox.addSelectionHandler(handler);
 
-		final MockSuggestion suggestion = new MockSuggestion("foo");
+        final MockSuggestion suggestion = new MockSuggestion("foo");
 
-		final RichSuggestionEvent<MockSuggestion> event = RichSuggestionEvent.from(suggestion);
+        final RichSuggestionEvent<MockSuggestion> event = RichSuggestionEvent.from(suggestion);
 
-		assertNull(handler.lastEventReceived);
+        assertNull(handler.lastEventReceived);
 
-		suggestBox.fireSuggestionEvent(event);
+        suggestBox.fireSuggestionEvent(event);
 
-		assertEquals(event, handler.lastEventReceived);
-	}
+        assertEquals(event, handler.lastEventReceived);
+    }
 
-	public void testSetOracle() {
-		final MockRichSuggestOracle newOracle = new MockRichSuggestOracle();
+    public void testSetOracle() {
+        final MockRichSuggestOracle newOracle = new MockRichSuggestOracle();
 
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		assertNotSame(newOracle, suggestBox.getOracle());
+        assertNotSame(newOracle, suggestBox.getOracle());
 
-		suggestBox.setOracle(newOracle);
+        suggestBox.setOracle(newOracle);
 
-		assertSame(newOracle, suggestBox.getOracle());
-	}
+        assertSame(newOracle, suggestBox.getOracle());
+    }
 
-	public void setWidgetMaker() {
-		final MockWidgetMaker newWidgetMaker = new MockWidgetMaker();
+    public void setWidgetMaker() {
+        final MockWidgetMaker newWidgetMaker = new MockWidgetMaker();
 
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		assertNotSame(newWidgetMaker, suggestBox.getWidgetMaker());
+        assertNotSame(newWidgetMaker, suggestBox.getWidgetMaker());
 
-		suggestBox.setWidgetMaker(newWidgetMaker);
+        suggestBox.setWidgetMaker(newWidgetMaker);
 
-		assertSame(newWidgetMaker, suggestBox.getWidgetMaker());
-	}
+        assertSame(newWidgetMaker, suggestBox.getWidgetMaker());
+    }
 
-	public void testRefreshSuggestionPanel() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+    public void testRefreshSuggestionPanel() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		assertNull(suggestBox.getSuggestionsPanel());
-		assertNull(suggestBox.getSuggestionPopup().getWidget());
+        assertNull(suggestBox.getSuggestionsPanel());
+        assertNull(suggestBox.getSuggestionPopup().getWidget());
 
-		// refresh first time
+        // refresh first time
 
-		suggestBox.refreshSuggestionPanel();
+        suggestBox.refreshSuggestionPanel();
 
-		final SuggestionsPanel suggestionsPanel1 = suggestBox.getSuggestionsPanel();
+        final SuggestionsPanel suggestionsPanel1 = suggestBox.getSuggestionsPanel();
 
-		assertNotNull(suggestionsPanel1);
+        assertNotNull(suggestionsPanel1);
 
-		assertSame(suggestionsPanel1, suggestBox.getSuggestionPopup().getWidget());
+        assertSame(suggestionsPanel1, suggestBox.getSuggestionPopup().getWidget());
 
-		// refresh again
+        // refresh again
 
-		suggestBox.refreshSuggestionPanel();
+        suggestBox.refreshSuggestionPanel();
 
-		final SuggestionsPanel suggestionsPanel2 = suggestBox.getSuggestionsPanel();
+        final SuggestionsPanel suggestionsPanel2 = suggestBox.getSuggestionsPanel();
 
-		assertNotNull(suggestionsPanel2);
+        assertNotNull(suggestionsPanel2);
 
-		assertNotSame(suggestionsPanel1, suggestionsPanel2);
+        assertNotSame(suggestionsPanel1, suggestionsPanel2);
 
-		final Runnable noop = new Runnable() {
-			@Override
-			public void run() { }
-		};
-		
-		suggestionsPanel2.add(new RichSuggestionRow(suggestBox, new Label(""), noop));
+        final Runnable noop = new Runnable() {
+            @Override
+            public void run() {
+            }
+        };
 
-		assertEquals(1, suggestionsPanel2.getWidgetCount());
+        suggestionsPanel2.add(new RichSuggestionRow(suggestBox, new Label(""), noop));
 
-		assertSame(suggestionsPanel2, suggestBox.getSuggestionPopup().getWidget());
+        assertEquals(1, suggestionsPanel2.getWidgetCount());
 
-		// refresh again
+        assertSame(suggestionsPanel2, suggestBox.getSuggestionPopup().getWidget());
 
-		suggestBox.refreshSuggestionPanel();
+        // refresh again
 
-		final SuggestionsPanel suggestionsPanel3 = suggestBox.getSuggestionsPanel();
+        suggestBox.refreshSuggestionPanel();
 
-		assertNotSame(suggestionsPanel2, suggestionsPanel3);
+        final SuggestionsPanel suggestionsPanel3 = suggestBox.getSuggestionsPanel();
 
-		assertEquals(0, suggestionsPanel2.getWidgetCount()); // clear() should
-																// have been
-																// called
-		assertNull(suggestionsPanel2.getHighlightedRow()); // stopObserving()
-															// should have been
-															// called
+        assertNotSame(suggestionsPanel2, suggestionsPanel3);
 
-		assertEquals(0, suggestionsPanel3.getWidgetCount());
-		assertNotNull(suggestionsPanel3.getHighlightedRow());
+        assertEquals(0, suggestionsPanel2.getWidgetCount()); // clear() should
+                                                             // have been
+                                                             // called
+        assertNull(suggestionsPanel2.getHighlightedRow()); // stopObserving()
+                                                           // should have been
+                                                           // called
 
-		assertSame(suggestionsPanel3, suggestBox.getSuggestionPopup().getWidget());
-	}
-	
-	public void testIsEmpty() {
-		final MockRichSuggestOracle oracle = new MockRichSuggestOracle();
+        assertEquals(0, suggestionsPanel3.getWidgetCount());
+        assertNotNull(suggestionsPanel3.getHighlightedRow());
 
-		final RichSuggestBox<MockSuggestion> suggestBox = new RichSuggestBox<MockSuggestion>(oracle, new MockWidgetMaker());
-		
-		assertEquals(0, suggestBox.getText().length());
-		assertTrue(suggestBox.isEmpty());
-		
-		suggestBox.setText("foo");
-		
-		assertEquals(3, suggestBox.getText().length());
-		assertFalse(suggestBox.isEmpty());
-	}
+        assertSame(suggestionsPanel3, suggestBox.getSuggestionPopup().getWidget());
+    }
 
-	public void testKeyHandlers() {
-		final MockRichSuggestOracle oracle = new MockRichSuggestOracle();
+    public void testIsEmpty() {
+        final MockRichSuggestOracle oracle = new MockRichSuggestOracle();
 
-		final RichSuggestBox<MockSuggestion> suggestBox = new RichSuggestBox<MockSuggestion>(oracle, new MockWidgetMaker());
+        final RichSuggestBox<MockSuggestion> suggestBox = new RichSuggestBox<MockSuggestion>(oracle, new MockWidgetMaker());
 
-		// Misc modifiers shouldn't do anything
-		assertNull(oracle.lastRequest);
+        assertEquals(0, suggestBox.getText().length());
+        assertTrue(suggestBox.isEmpty());
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_ALT));
+        suggestBox.setText("foo");
 
-		assertNull(oracle.lastRequest);
+        assertEquals(3, suggestBox.getText().length());
+        assertFalse(suggestBox.isEmpty());
+    }
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_LEFT));
+    public void testIsNew() {
+        final MockRichSuggestOracle oracle = new MockRichSuggestOracle();
 
-		assertNull(oracle.lastRequest);
+        final RichSuggestBox<MockSuggestion> suggestBox = new RichSuggestBox<MockSuggestion>(oracle, new MockWidgetMaker());
+        
+        assertEquals(Integer.MIN_VALUE, suggestBox.getSuggestionRequestSequenceNumber());
+        
+        suggestBox.setText("foo");
+        
+        assertEquals(Integer.MIN_VALUE, suggestBox.getSuggestionRequestSequenceNumber());
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_RIGHT));
+        suggestBox.getTextBox().fireEvent(Events.keyUp('x'));
+        
+        assertNotNull(oracle.lastRequest);
+        
+        assertEquals(0, suggestBox.getSuggestionRequestSequenceNumber());
+        
+        assertTrue(suggestBox.isNew(RichSuggestResponse.of(Collections.<MockSuggestion>emptyList(), 0)));
+        assertTrue(suggestBox.isNew(RichSuggestResponse.of(Collections.<MockSuggestion>emptyList(), 1)));
+        assertTrue(suggestBox.isNew(RichSuggestResponse.of(Collections.<MockSuggestion>emptyList(), 19)));
+        assertFalse(suggestBox.isNew(RichSuggestResponse.of(Collections.<MockSuggestion>emptyList(), -1)));
+        assertFalse(suggestBox.isNew(RichSuggestResponse.of(Collections.<MockSuggestion>emptyList(), Integer.MIN_VALUE)));
+        assertFalse(suggestBox.isNew(RichSuggestResponse.of(Collections.<MockSuggestion>emptyList(), -11)));
+    }
+    
+    public void testKeyHandlers() {
+        final MockRichSuggestOracle oracle = new MockRichSuggestOracle();
 
-		assertNull(oracle.lastRequest);
+        final RichSuggestBox<MockSuggestion> suggestBox = new RichSuggestBox<MockSuggestion>(oracle, new MockWidgetMaker());
 
-		// only spaces, letters, or numbers should trigger autosuggest call
+        // Misc modifiers shouldn't do anything
+        assertNull(oracle.lastRequest);
 
-		suggestBox.setText("foo");
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_ALT));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp('x'));
+        assertNull(oracle.lastRequest);
 
-		assertNotNull(oracle.lastRequest);
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_LEFT));
 
-		assertEquals(suggestBox.getMaxSuggestions(), oracle.lastRequest.getLimit());
-		assertEquals("foo", oracle.lastRequest.getQuery());
+        assertNull(oracle.lastRequest);
 
-		oracle.lastRequest = null;
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_RIGHT));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(' '));
+        assertNull(oracle.lastRequest);
 
-		assertNotNull(oracle.lastRequest);
+        // only spaces, letters, or numbers should trigger autosuggest call
 
-		assertEquals(suggestBox.getMaxSuggestions(), oracle.lastRequest.getLimit());
-		assertEquals("foo", oracle.lastRequest.getQuery());
+        suggestBox.setText("foo");
 
-		oracle.lastRequest = null;
+        suggestBox.getTextBox().fireEvent(Events.keyUp('x'));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
+        assertNotNull(oracle.lastRequest);
 
-		assertNotNull(oracle.lastRequest);
+        assertEquals(suggestBox.getMaxSuggestions(), oracle.lastRequest.getLimit());
+        assertEquals("foo", oracle.lastRequest.getQuery());
 
-		assertEquals(suggestBox.getMaxSuggestions(), oracle.lastRequest.getLimit());
-		assertEquals("foo", oracle.lastRequest.getQuery());
+        oracle.lastRequest = null;
 
-		// suggestions panel should be filled, popup should be showing
+        suggestBox.getTextBox().fireEvent(Events.keyUp(' '));
 
-		assertNotNull(suggestBox.getSuggestionsPanel());
+        assertNotNull(oracle.lastRequest);
 
-		assertEquals(1, suggestBox.getSuggestionsPanel().getWidgetCount());
+        assertEquals(suggestBox.getMaxSuggestions(), oracle.lastRequest.getLimit());
+        assertEquals("foo", oracle.lastRequest.getQuery());
 
-		assertEquals(MockRichSuggestOracle.DefaultSuggestionText, ((Label) ((RichSuggestionRow) suggestBox.getSuggestionsPanel().getWidget(0)).getWidget()).getText());
+        oracle.lastRequest = null;
 
-		assertTrue(suggestBox.getSuggestionPopup().isShowing());
+        suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
 
-		// Subsequent ignored keys shouldn't alter popup
+        assertNotNull(oracle.lastRequest);
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_ALT));
+        assertEquals(suggestBox.getMaxSuggestions(), oracle.lastRequest.getLimit());
+        assertEquals("foo", oracle.lastRequest.getQuery());
 
-		assertEquals(1, suggestBox.getSuggestionsPanel().getWidgetCount());
+        // suggestions panel should be filled, popup should be showing
 
-		assertEquals(MockRichSuggestOracle.DefaultSuggestionText, ((Label) ((RichSuggestionRow) suggestBox.getSuggestionsPanel().getWidget(0)).getWidget()).getText());
+        assertNotNull(suggestBox.getSuggestionsPanel());
 
-		assertTrue(suggestBox.getSuggestionPopup().isShowing());
+        assertEquals(1, suggestBox.getSuggestionsPanel().getWidgetCount());
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_LEFT));
+        assertEquals(MockRichSuggestOracle.DefaultSuggestionText, ((Label) ((RichSuggestionRow) suggestBox.getSuggestionsPanel().getWidget(0)).getWidget()).getText());
 
-		assertEquals(MockRichSuggestOracle.DefaultSuggestionText, ((Label) ((RichSuggestionRow) suggestBox.getSuggestionsPanel().getWidget(0)).getWidget()).getText());
+        assertTrue(suggestBox.getSuggestionPopup().isShowing());
 
-		assertTrue(suggestBox.getSuggestionPopup().isShowing());
+        // Subsequent ignored keys shouldn't alter popup
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_RIGHT));
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_ALT));
 
-		assertEquals(MockRichSuggestOracle.DefaultSuggestionText, ((Label) ((RichSuggestionRow) suggestBox.getSuggestionsPanel().getWidget(0)).getWidget()).getText());
+        assertEquals(1, suggestBox.getSuggestionsPanel().getWidgetCount());
 
-		assertTrue(suggestBox.getSuggestionPopup().isShowing());
+        assertEquals(MockRichSuggestOracle.DefaultSuggestionText, ((Label) ((RichSuggestionRow) suggestBox.getSuggestionsPanel().getWidget(0)).getWidget()).getText());
 
-		// Popup should be hidden if we get no suggestions from the oracle
+        assertTrue(suggestBox.getSuggestionPopup().isShowing());
 
-		oracle.returnNoSuggestions = true;
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_LEFT));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
+        assertEquals(MockRichSuggestOracle.DefaultSuggestionText, ((Label) ((RichSuggestionRow) suggestBox.getSuggestionsPanel().getWidget(0)).getWidget()).getText());
 
-		assertNotNull(oracle.lastRequest);
+        assertTrue(suggestBox.getSuggestionPopup().isShowing());
 
-		assertEquals(suggestBox.getMaxSuggestions(), oracle.lastRequest.getLimit());
-		assertEquals("foo", oracle.lastRequest.getQuery());
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_RIGHT));
 
-		assertFalse(suggestBox.getSuggestionPopup().isShowing());
+        assertEquals(MockRichSuggestOracle.DefaultSuggestionText, ((Label) ((RichSuggestionRow) suggestBox.getSuggestionsPanel().getWidget(0)).getWidget()).getText());
 
-		oracle.returnNoSuggestions = false;
+        assertTrue(suggestBox.getSuggestionPopup().isShowing());
 
-		suggestBox.setText("7");
-		
-		// Send a key event to get popup filled
-		suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
-		
-		assertTrue(suggestBox.getSuggestionPopup().isShowing());
+        // Popup should be hidden if we get no suggestions from the oracle
 
-		// Enter shouldn't do anything if no row is highlighted
+        oracle.returnNoSuggestions = true;
 
-		assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
+        suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_ENTER));
+        assertNotNull(oracle.lastRequest);
 
-		// cut-corner: if popup isn't hidden, then selectHighlightedRow() wasn't
-		// called
-		assertTrue(suggestBox.getSuggestionPopup().isShowing());
+        assertEquals(suggestBox.getMaxSuggestions(), oracle.lastRequest.getLimit());
+        assertEquals("foo", oracle.lastRequest.getQuery());
 
-		// now highlight a row
+        assertFalse(suggestBox.getSuggestionPopup().isShowing());
 
-		suggestBox.getHighlightedPopupRow().set(0);
+        oracle.returnNoSuggestions = false;
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_ENTER));
+        suggestBox.setText("7");
 
-		// cut-corner: if popup IS hidden, then selectHighlightedRow() WAS
-		// called
-		assertFalse(suggestBox.getSuggestionPopup().isShowing());
+        // Send a key event to get popup filled
+        suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
 
-		// Up/Down arrows
+        assertTrue(suggestBox.getSuggestionPopup().isShowing());
 
-		suggestBox.getHighlightedPopupRow().clear();
+        // Enter shouldn't do anything if no row is highlighted
 
-		oracle.numToReturn = 3;
+        assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
 
-		// Send a key event to get popup filled
-		suggestBox.setText("7");
-		
-		suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_ENTER));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
+        // cut-corner: if popup isn't hidden, then selectHighlightedRow() wasn't
+        // called
+        assertTrue(suggestBox.getSuggestionPopup().isShowing());
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+        // now highlight a row
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
+        suggestBox.getHighlightedPopupRow().set(0);
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_ENTER));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
+        // cut-corner: if popup IS hidden, then selectHighlightedRow() WAS
+        // called
+        assertFalse(suggestBox.getSuggestionPopup().isShowing());
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+        // Up/Down arrows
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
-		
-		assertEquals(One, suggestBox.getHighlightedPopupRow().get());
+        suggestBox.getHighlightedPopupRow().clear();
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
+        oracle.numToReturn = 3;
 
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
+        // Send a key event to get popup filled
+        suggestBox.setText("7");
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
+        suggestBox.getTextBox().fireEvent(Events.keyUp('7'));
 
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
 
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
 
-		assertEquals(One, suggestBox.getHighlightedPopupRow().get());
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
 
-		suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
-	}
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
 
-	public void testSetHighlightedRow() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        assertEquals(One, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.refreshSuggestionPanel();
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
 
-		final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
-		final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
-		final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
+        assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.getSuggestionsPanel().add(row0);
-		suggestBox.getSuggestionsPanel().add(row1);
-		suggestBox.getSuggestionsPanel().add(row2);
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
 
-		assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
+        assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.setHighlightedRow(-1);
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_DOWN));
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+        assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.setHighlightedRow(99);
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
 
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
+        assertEquals(One, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.setHighlightedRow(0);
+        suggestBox.getTextBox().fireEvent(Events.keyUp(KeyCodes.KEY_UP));
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+    }
 
-		suggestBox.setHighlightedRow(1);
+    public void testSetHighlightedRow() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		assertEquals(One, suggestBox.getHighlightedPopupRow().get());
+        suggestBox.refreshSuggestionPanel();
 
-		suggestBox.setHighlightedRow(2);
+        final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
+        final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
+        final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
 
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
+        suggestBox.getSuggestionsPanel().add(row0);
+        suggestBox.getSuggestionsPanel().add(row1);
+        suggestBox.getSuggestionsPanel().add(row2);
 
-		suggestBox.setHighlightedRow(3);
+        assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
 
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
-	}
+        suggestBox.setHighlightedRow(-1);
 
-	public void testZeroHighlightedRow() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.refreshSuggestionPanel();
+        suggestBox.setHighlightedRow(99);
 
-		// 3 widgets, max row index is 2
+        assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 
-		final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
-		final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
-		final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
+        suggestBox.setHighlightedRow(0);
 
-		suggestBox.getSuggestionsPanel().add(row0);
-		suggestBox.getSuggestionsPanel().add(row1);
-		suggestBox.getSuggestionsPanel().add(row2);
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.setHighlightedRow(1);
+        suggestBox.setHighlightedRow(1);
 
-		assertEquals(One, suggestBox.getHighlightedPopupRow().get());
+        assertEquals(One, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.zeroHighlightedRow();
+        suggestBox.setHighlightedRow(2);
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
-	}
+        assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 
-	public void testIncrementDecrementHighlightedRow() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        suggestBox.setHighlightedRow(3);
 
-		suggestBox.refreshSuggestionPanel();
+        assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
+    }
 
-		// 3 widgets, max row index is 2
-		final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
-		final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
-		final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
+    public void testZeroHighlightedRow() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		suggestBox.getSuggestionsPanel().add(row0);
-		suggestBox.getSuggestionsPanel().add(row1);
-		suggestBox.getSuggestionsPanel().add(row2);
+        suggestBox.refreshSuggestionPanel();
 
-		assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
+        // 3 widgets, max row index is 2
 
-		suggestBox.incrementHighlightedRow();
+        final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
+        final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
+        final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+        suggestBox.getSuggestionsPanel().add(row0);
+        suggestBox.getSuggestionsPanel().add(row1);
+        suggestBox.getSuggestionsPanel().add(row2);
 
-		suggestBox.incrementHighlightedRow();
+        suggestBox.setHighlightedRow(1);
 
-		assertEquals(One, suggestBox.getHighlightedPopupRow().get());
+        assertEquals(One, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.incrementHighlightedRow();
+        suggestBox.zeroHighlightedRow();
 
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+    }
 
-		suggestBox.incrementHighlightedRow();
+    public void testIncrementDecrementHighlightedRow() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		// should be clamped
+        suggestBox.refreshSuggestionPanel();
 
-		assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
+        // 3 widgets, max row index is 2
+        final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
+        final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
+        final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
 
-		suggestBox.decrementHighlightedRow();
+        suggestBox.getSuggestionsPanel().add(row0);
+        suggestBox.getSuggestionsPanel().add(row1);
+        suggestBox.getSuggestionsPanel().add(row2);
 
-		assertEquals(One, suggestBox.getHighlightedPopupRow().get());
+        assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
 
-		suggestBox.decrementHighlightedRow();
+        suggestBox.incrementHighlightedRow();
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.decrementHighlightedRow();
+        suggestBox.incrementHighlightedRow();
 
-		// should be clamped
+        assertEquals(One, suggestBox.getHighlightedPopupRow().get());
 
-		assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
-	}
+        suggestBox.incrementHighlightedRow();
 
-	public void testRowFromWidget() {
-		final MockRichSuggestEventHandler handler = new MockRichSuggestEventHandler();
+        assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        suggestBox.incrementHighlightedRow();
 
-		suggestBox.addSelectionHandler(handler);
+        // should be clamped
 
-		suggestBox.refreshSuggestionPanel();
+        assertEquals(Two, suggestBox.getHighlightedPopupRow().get());
 
-		// 3 widgets, max row index is 2
-		final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
-		final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
-		final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
+        suggestBox.decrementHighlightedRow();
 
-		suggestBox.getSuggestionsPanel().add(row0);
-		suggestBox.getSuggestionsPanel().add(row1);
-		suggestBox.getSuggestionsPanel().add(row2);
+        assertEquals(One, suggestBox.getHighlightedPopupRow().get());
 
-		final RichSuggestionRow row = suggestBox.rowFromWidget(1, new MockSuggestion("blah"), new Label("BLAH"));
+        suggestBox.decrementHighlightedRow();
 
-		assertEquals(RichSuggestionRow.StyleNames.NotHighlighted.toStyleName(), row.getStyleName());
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
 
-		row.fireEvent(Events.mouseOver());
+        suggestBox.decrementHighlightedRow();
 
-		assertEquals(RichSuggestionRow.StyleNames.NotHighlighted.toStyleName(), row.getStyleName());
+        // should be clamped
 
-		assertEquals(One, suggestBox.getHighlightedPopupRow().get());
+        assertEquals(Zero, suggestBox.getHighlightedPopupRow().get());
+    }
 
-		row.fireEvent(Events.mouseOut());
+    public void testRowFromWidget() {
+        final MockRichSuggestEventHandler handler = new MockRichSuggestEventHandler();
 
-		assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		row.select();
+        suggestBox.addSelectionHandler(handler);
 
-		assertNotNull(handler.lastEventReceived);
+        suggestBox.refreshSuggestionPanel();
 
-		assertEquals("blah", handler.lastEventReceived.getSuggestion().suggestion);
-	}
+        // 3 widgets, max row index is 2
+        final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
+        final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
+        final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
 
-	public void testSelectHighlightedRow() {
-		final MockRichSuggestEventHandler handler = new MockRichSuggestEventHandler();
+        suggestBox.getSuggestionsPanel().add(row0);
+        suggestBox.getSuggestionsPanel().add(row1);
+        suggestBox.getSuggestionsPanel().add(row2);
 
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        final RichSuggestionRow row = suggestBox.rowFromWidget(1, new MockSuggestion("blah"), new Label("BLAH"));
 
-		suggestBox.addSelectionHandler(handler);
+        assertEquals(RichSuggestionRow.StyleNames.NotHighlighted.toStyleName(), row.getStyleName());
 
-		suggestBox.refreshSuggestionPanel();
+        row.fireEvent(Events.mouseOver());
 
-		// 3 widgets, max row index is 2
-		final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
-		final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
-		final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
+        assertEquals(RichSuggestionRow.StyleNames.NotHighlighted.toStyleName(), row.getStyleName());
 
-		suggestBox.getSuggestionsPanel().add(row0);
-		suggestBox.getSuggestionsPanel().add(row1);
-		suggestBox.getSuggestionsPanel().add(row2);
+        assertEquals(One, suggestBox.getHighlightedPopupRow().get());
 
-		suggestBox.setHighlightedRow(1);
+        row.fireEvent(Events.mouseOut());
 
-		assertEquals(RichSuggestionRow.StyleNames.NotHighlighted.toStyleName(), row0.getStyleName());
-		assertEquals(RichSuggestionRow.StyleNames.Highlighted.toStyleName(), row1.getStyleName());
-		assertEquals(RichSuggestionRow.StyleNames.NotHighlighted.toStyleName(), row2.getStyleName());
+        assertTrue(suggestBox.getHighlightedPopupRow().isEmpty());
 
-		suggestBox.selectHighlightedRow();
+        row.select();
 
-		assertFalse(suggestBox.getSuggestionPopup().isShowing());
+        assertNotNull(handler.lastEventReceived);
 
-		assertNotNull(handler.lastEventReceived);
+        assertEquals("blah", handler.lastEventReceived.getSuggestion().suggestion);
+    }
 
-		assertEquals("bar", handler.lastEventReceived.getSuggestion().suggestion);
-	}
+    public void testSelectHighlightedRow() {
+        final MockRichSuggestEventHandler handler = new MockRichSuggestEventHandler();
 
-	public void testFillSuggestionPanel() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		assertNull(suggestBox.getSuggestionsPanel());
+        suggestBox.addSelectionHandler(handler);
 
-		suggestBox.fillSuggestionPanel(RichSuggestResponse.<MockSuggestion> empty());
+        suggestBox.refreshSuggestionPanel();
 
-		assertFalse(suggestBox.getSuggestionsPanel().iterator().hasNext());
+        // 3 widgets, max row index is 2
+        final RichSuggestionRow row0 = suggestBox.rowFromWidget(0, new MockSuggestion("foo"), new Label("FOO"));
+        final RichSuggestionRow row1 = suggestBox.rowFromWidget(1, new MockSuggestion("bar"), new Label("BAR"));
+        final RichSuggestionRow row2 = suggestBox.rowFromWidget(2, new MockSuggestion("baz"), new Label("BAZ"));
 
-		final MockSuggestion suggestion0 = new MockSuggestion("suggestion1");
-		final MockSuggestion suggestion1 = new MockSuggestion("suggestion2");
+        suggestBox.getSuggestionsPanel().add(row0);
+        suggestBox.getSuggestionsPanel().add(row1);
+        suggestBox.getSuggestionsPanel().add(row2);
 
-		suggestBox.fillSuggestionPanel(RichSuggestResponse.of(asList(suggestion0, suggestion1)));
+        suggestBox.setHighlightedRow(1);
 
-		final List<Widget> rows = Util.toList(suggestBox.getSuggestionsPanel());
+        assertEquals(RichSuggestionRow.StyleNames.NotHighlighted.toStyleName(), row0.getStyleName());
+        assertEquals(RichSuggestionRow.StyleNames.Highlighted.toStyleName(), row1.getStyleName());
+        assertEquals(RichSuggestionRow.StyleNames.NotHighlighted.toStyleName(), row2.getStyleName());
 
-		assertNotNull(rows);
-		assertEquals(2, rows.size());
+        suggestBox.selectHighlightedRow();
 
-		final RichSuggestionRow row0 = (RichSuggestionRow) rows.get(0);
-		final RichSuggestionRow row1 = (RichSuggestionRow) rows.get(1);
+        assertFalse(suggestBox.getSuggestionPopup().isShowing());
 
-		assertNotNull(row0);
-		assertNotNull(row1);
+        assertNotNull(handler.lastEventReceived);
 
-		// Make sure we get rows with the widgets we expect MockWidgetmaker to
-		// make
-		assertEquals("suggestion1", ((Label) row0.getWidget()).getText());
-		assertEquals("suggestion2", ((Label) row1.getWidget()).getText());
-	}
+        assertEquals("bar", handler.lastEventReceived.getSuggestion().suggestion);
+    }
 
-	public void testHidePopup() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+    public void testFillSuggestionPanel() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
 
-		final String text = "foo";
-		
-		suggestBox.setText(text);
-		
-		assertEquals(text, suggestBox.getText());
-		
-		suggestBox.getSuggestionPopup().show();
+        assertNull(suggestBox.getSuggestionsPanel());
 
-		assertEquals(text, suggestBox.getText());
-		
-		assertTrue(suggestBox.getSuggestionPopup().isShowing());
+        suggestBox.fillSuggestionPanel(RichSuggestResponse.<MockSuggestion> empty());
 
-		suggestBox.hidePopup();
+        assertFalse(suggestBox.getSuggestionsPanel().iterator().hasNext());
 
-		assertFalse(suggestBox.getSuggestionPopup().isShowing());
-		
-		assertEquals(text, suggestBox.getText());
-	}
+        final MockSuggestion suggestion0 = new MockSuggestion("suggestion1");
+        final MockSuggestion suggestion1 = new MockSuggestion("suggestion2");
 
-	public void testClearTextBox() {
-		final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+        suggestBox.fillSuggestionPanel(RichSuggestResponse.of(asList(suggestion0, suggestion1), 99));
 
-		final String text = "foo";
-		
-		suggestBox.setText(text);
-		
-		assertEquals(text, suggestBox.getText());
-		
-		suggestBox.clearTextBox();
-		
-		assertEquals("", suggestBox.getText());
-	}
-	
-	private static RichSuggestBox<MockSuggestion> makeMockedOutRichSuggestBox() {
-		return new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), new MockWidgetMaker());
-	}
+        final List<Widget> rows = Util.toList(suggestBox.getSuggestionsPanel());
+
+        assertNotNull(rows);
+        assertEquals(2, rows.size());
+
+        final RichSuggestionRow row0 = (RichSuggestionRow) rows.get(0);
+        final RichSuggestionRow row1 = (RichSuggestionRow) rows.get(1);
+
+        assertNotNull(row0);
+        assertNotNull(row1);
+
+        // Make sure we get rows with the widgets we expect MockWidgetmaker to
+        // make
+        assertEquals("suggestion1", ((Label) row0.getWidget()).getText());
+        assertEquals("suggestion2", ((Label) row1.getWidget()).getText());
+    }
+
+    public void testHidePopup() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+
+        final String text = "foo";
+
+        suggestBox.setText(text);
+
+        assertEquals(text, suggestBox.getText());
+
+        suggestBox.getSuggestionPopup().show();
+
+        assertEquals(text, suggestBox.getText());
+
+        assertTrue(suggestBox.getSuggestionPopup().isShowing());
+
+        suggestBox.hidePopup();
+
+        assertFalse(suggestBox.getSuggestionPopup().isShowing());
+
+        assertEquals(text, suggestBox.getText());
+    }
+
+    public void testClearTextBox() {
+        final RichSuggestBox<MockSuggestion> suggestBox = makeMockedOutRichSuggestBox();
+
+        final String text = "foo";
+
+        suggestBox.setText(text);
+
+        assertEquals(text, suggestBox.getText());
+
+        suggestBox.clearTextBox();
+
+        assertEquals("", suggestBox.getText());
+    }
+
+    private static RichSuggestBox<MockSuggestion> makeMockedOutRichSuggestBox() {
+        return new RichSuggestBox<MockSuggestion>(new MockRichSuggestOracle(), new MockWidgetMaker());
+    }
 }
