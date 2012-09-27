@@ -2,7 +2,6 @@ package net.shrine.webclient.client.widgets;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.shared.domain.Breakdown;
