@@ -4,16 +4,15 @@
 			 xmlns:shrine="urn:import:net.shrine.webclient.client.widgets">
 			 
 	<g:HTMLPanel styleName="mainContent">
-        <g:HTMLPanel styleName="searchBox">
-		  <!--Search Box -->
-		  <g:SimplePanel ui:field="searchBoxHolder"/>
-		  <!-- Data Dictionary -->
-		  <shrine:DataDictionaryRow ui:field="dataDictionaryRow"/>
-        </g:HTMLPanel>  
+        <!--Search Box -->
+		<g:SimplePanel styleName="searchBox" ui:field="searchBoxHolder"/>
+        <!-- Data Dictionary -->
+        <shrine:DataDictionaryRow ui:field="dataDictionaryRow"/>  
 		<!-- Query groups -->
 		<shrine:QueryPanel ui:field="queryPanel" />
-		<!-- Breakdown Row -->
+		<!-- Query Summary -->
 		<shrine:SummaryPanel ui:field="summaryPanel" />
+        <!-- Query Results -->
 		<shrine:ResultsPanel ui:field="resultsPanel" />
 	</g:HTMLPanel>
 </ui:UiBinder> 
