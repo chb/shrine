@@ -57,7 +57,7 @@
         <sec:intercept-url pattern="/favicon.ico" access="ROLE_ANONYMOUS" />
         <sec:intercept-url pattern="/login.html" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <sec:intercept-url pattern="/css/shrine.css" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <sec:intercept-url pattern="/images/logo.png" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <sec:intercept-url pattern="/images/*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
         <sec:intercept-url pattern="/**" access="ROLE_USER"/>
         <sec:logout success-handler-ref="logoutHandler"/>
     </sec:http>
