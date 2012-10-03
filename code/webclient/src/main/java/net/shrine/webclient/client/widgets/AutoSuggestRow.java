@@ -1,6 +1,9 @@
 package net.shrine.webclient.client.widgets;
 
 import static java.util.Arrays.asList;
+
+import java.util.List;
+
 import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.client.widgets.suggest.RichSuggestionEvent;
 import net.shrine.webclient.client.widgets.suggest.SuggestRowContainer;
@@ -55,11 +58,19 @@ public final class AutoSuggestRow extends Composite {
 
         initIconImage(termSuggestion);
 
-        final RegExp replaceHighlightRegex = RegExp.compile("(" + termSuggestion.getHighlight() + ")", "ig");
+        final List<RegExp> replaceHighlightRegexes = Util.makeArrayList();
+        
+        if(!termSuggestion.getHighlight().trim().isEmpty()) {
+            final String[] highlightParts = termSuggestion.getHighlight().trim().split(" ");
+            
+            for(final String part : highlightParts) {
+                replaceHighlightRegexes.add(RegExp.compile("(" + part + ")", "ig"));
+            }
+        }
+        
+        initSimpleNameSpan(termSuggestion, replaceHighlightRegexes);
 
-        initSimpleNameSpan(termSuggestion, replaceHighlightRegex);
-
-        initSynonymSpan(termSuggestion, replaceHighlightRegex);
+        initSynonymSpan(termSuggestion, replaceHighlightRegexes);
 
         // Make full path appear when mouse hovers
         this.setTitle(termSuggestion.getPath());
@@ -111,11 +122,11 @@ public final class AutoSuggestRow extends Composite {
         };
     }
 
-    void initSimpleNameSpan(final TermSuggestion termSuggestion, final RegExp replaceHighlightRegex) {
-        simpleName.getElement().setInnerHTML(makeHighlightedText(termSuggestion.getSimpleName().trim(), replaceHighlightRegex));
+    void initSimpleNameSpan(final TermSuggestion termSuggestion, final List<RegExp> replaceHighlightRegexes) {
+        simpleName.getElement().setInnerHTML(makeHighlightedText(termSuggestion.getSimpleName().trim(), replaceHighlightRegexes));
     }
 
-    void initSynonymSpan(final TermSuggestion termSuggestion, final RegExp replaceHighlightRegex) {
+    void initSynonymSpan(final TermSuggestion termSuggestion, final List<RegExp> replaceHighlightRegexes) {
         final String synonymText = termSuggestion.getSynonym();
 
         final boolean shouldShowSynonym = synonymText != null && !synonymText.equalsIgnoreCase(termSuggestion.getSimpleName());
@@ -125,12 +136,18 @@ public final class AutoSuggestRow extends Composite {
         if (shouldShowSynonym) {
             final String wrapppedSynonymText = synonymText != null ? ("(synonym: " + synonymText + ")") : "";
 
-            this.synonym.getElement().setInnerHTML(makeHighlightedText(wrapppedSynonymText, replaceHighlightRegex));
+            this.synonym.getElement().setInnerHTML(makeHighlightedText(wrapppedSynonymText, replaceHighlightRegexes));
         }
     }
 
-    String makeHighlightedText(final String original, final RegExp highlightRegex) {
-        return highlightRegex.replace(original, "<strong>$1</strong>");
+    String makeHighlightedText(final String original, final List<RegExp> highlightRegexes) {
+        String result = original;
+        
+        for(final RegExp highlightPartRegex : highlightRegexes) {
+            result = highlightPartRegex.replace(result, "<strong>$1</strong>");
+        }
+        
+        return result;
     }
 
     void fireSuggestionEvent(final SuggestRowContainer<TermSuggestion> eventSink, final RichSuggestionEvent<TermSuggestion> suggestionEvent) {
