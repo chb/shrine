@@ -49,7 +49,7 @@ public final class ResultDetails extends FlowPanel {
                 
                 breakdownWidget = new ChartPanel(breakdownType, chart);
             } else {
-                breakdownWidget = new MissingBreakdownPanel();
+                breakdownWidget = new MissingBreakdownPanel(ChartPanel.getBreakdownName(breakdownType));
             }
             
             this.add(breakdownWidget);
