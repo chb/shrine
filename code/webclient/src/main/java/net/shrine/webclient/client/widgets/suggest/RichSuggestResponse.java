@@ -48,7 +48,7 @@ public class RichSuggestResponse<S> {
     public boolean hasSuggestions() {
         return !suggestions.isEmpty();
     }
-    
+
     public int getSequenceNumber() {
         return sequenceNumber;
     }

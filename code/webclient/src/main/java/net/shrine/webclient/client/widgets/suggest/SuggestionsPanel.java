@@ -14,46 +14,46 @@ import com.google.gwt.user.client.ui.Widget;
  * @date Apr 17, 2012
  */
 public final class SuggestionsPanel extends FlowPanel implements Observer {
-	private Observable<Integer> highlightedRow;
+    private Observable<Integer> highlightedRow;
 
-	SuggestionsPanel(final Observable<Integer> highlightedRow) {
-		super();
-		
-		Util.requireNotNull(highlightedRow);
-		
-		this.highlightedRow = highlightedRow;
-		
-		this.highlightedRow.observedBy(this);
-		
-		//TODO: HACK ALERT
-		this.addStyleName("autosuggest");
-		
-		this.inform();
-	}
+    SuggestionsPanel(final Observable<Integer> highlightedRow) {
+        super();
 
-	@Override
-	public void inform() {
-		for(final Widget w : this) {
-			((RichSuggestionRow)w).unHighlight();
-		}
-		
-		if(highlightedRow.isDefined()) {
-			final int index = highlightedRow.get();
-			
-			if(index >= 0 && index < Util.count(this)) {
-				((RichSuggestionRow)this.getWidget(index)).highlight();
-			}
-		}
-	}
+        Util.requireNotNull(highlightedRow);
 
-	ReadOnlyObservable<Integer> getHighlightedRow() {
-		return highlightedRow;
-	}
+        this.highlightedRow = highlightedRow;
 
-	@Override
-	public void stopObserving() {
-		this.highlightedRow.noLongerObservedBy(this);
-		
-		this.highlightedRow = null;
-	}
+        this.highlightedRow.observedBy(this);
+
+        // TODO: HACK ALERT
+        this.addStyleName("autosuggest");
+
+        this.inform();
+    }
+
+    @Override
+    public void inform() {
+        for (final Widget w : this) {
+            ((RichSuggestionRow) w).unHighlight();
+        }
+
+        if (highlightedRow.isDefined()) {
+            final int index = highlightedRow.get();
+
+            if (index >= 0 && index < Util.count(this)) {
+                ((RichSuggestionRow) this.getWidget(index)).highlight();
+            }
+        }
+    }
+
+    ReadOnlyObservable<Integer> getHighlightedRow() {
+        return highlightedRow;
+    }
+
+    @Override
+    public void stopObserving() {
+        this.highlightedRow.noLongerObservedBy(this);
+
+        this.highlightedRow = null;
+    }
 }

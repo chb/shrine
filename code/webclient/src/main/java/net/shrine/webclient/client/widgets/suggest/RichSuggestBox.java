@@ -360,12 +360,12 @@ public class RichSuggestBox<S> extends Composite implements SuggestRowContainer<
         }
     }
 
-    //NB: Default access for tests
+    // NB: Default access for tests
     boolean isNew(final RichSuggestResponse<S> response) {
         return response.getSequenceNumber() >= suggestionRequestSequenceNumber;
     }
 
-    //NB: Default access for tests
+    // NB: Default access for tests
     int getSuggestionRequestSequenceNumber() {
         return suggestionRequestSequenceNumber;
     }

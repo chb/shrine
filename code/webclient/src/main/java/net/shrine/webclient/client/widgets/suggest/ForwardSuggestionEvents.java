@@ -9,18 +9,18 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @date Apr 11, 2012
  */
 public final class ForwardSuggestionEvents {
-	private ForwardSuggestionEvents() {
-		super();
-	}
-	
-	public static <S extends IsSerializable> RichSuggestionEventHandler<S> to(final SuggestRowContainer<S> eventSink) {
-		return new RichSuggestionEventHandler<S>() {
-			@Override
-			public void onSelectionMade(final RichSuggestionEvent<S> event) {
-				Log.debug("Forwarding event");
-					
-				eventSink.fireSuggestionEvent(event);
-			}
-		};
-	}
+    private ForwardSuggestionEvents() {
+        super();
+    }
+
+    public static <S extends IsSerializable> RichSuggestionEventHandler<S> to(final SuggestRowContainer<S> eventSink) {
+        return new RichSuggestionEventHandler<S>() {
+            @Override
+            public void onSelectionMade(final RichSuggestionEvent<S> event) {
+                Log.debug("Forwarding event");
+
+                eventSink.fireSuggestionEvent(event);
+            }
+        };
+    }
 }

@@ -11,7 +11,7 @@ public final class SequenceNumbers {
     private SequenceNumbers() {
         super();
     }
-    
+
     public static int next() {
         return current++;
     }

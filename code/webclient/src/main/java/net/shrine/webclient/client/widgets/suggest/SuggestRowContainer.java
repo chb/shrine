@@ -1,6 +1,5 @@
 package net.shrine.webclient.client.widgets.suggest;
 
-
 /**
  * 
  * @author clint

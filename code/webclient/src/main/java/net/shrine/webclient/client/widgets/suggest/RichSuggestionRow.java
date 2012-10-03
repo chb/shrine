@@ -21,63 +21,63 @@ import com.google.gwt.user.client.ui.Widget;
  * @date Apr 10, 2012
  */
 public final class RichSuggestionRow extends SimplePanel implements HasMouseOutHandlers, HasMouseOverHandlers, HasClickHandlers {
-	/**
-	 * 
-	 * @author clint
-	 * @date Apr 11, 2012
-	 */
-	public static enum StyleNames {
-		Highlighted, NotHighlighted;
-		
-		public String toStyleName() {
-			return "richSuggestionRow-" + name();
-		}
-	}
-	
-	private final HasHideablePopup container;
-	private final Runnable onSelect;
-	
-	public RichSuggestionRow(final HasHideablePopup container, final Widget wrapped, final Runnable onSelect) {
-		super(wrapped);
-		
-		Util.requireNotNull(container);
-		Util.requireNotNull(wrapped);
-		Util.requireNotNull(onSelect);
-		
-		this.container = container;
-		this.onSelect = onSelect;
-		
-		unHighlight();
-	}
-	
-	@Override
-	public HandlerRegistration addClickHandler(ClickHandler handler) {
-		return this.addDomHandler(handler, ClickEvent.getType());
-	}
+    /**
+     * 
+     * @author clint
+     * @date Apr 11, 2012
+     */
+    public static enum StyleNames {
+        Highlighted, NotHighlighted;
 
-	@Override
-	public HandlerRegistration addMouseOverHandler(final MouseOverHandler handler) {
-		return this.addDomHandler(handler, MouseOverEvent.getType());
-	}
+        public String toStyleName() {
+            return "richSuggestionRow-" + name();
+        }
+    }
 
-	@Override
-	public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
-		return this.addDomHandler(handler, MouseOutEvent.getType());
-	}
+    private final HasHideablePopup container;
+    private final Runnable onSelect;
 
-	void highlight() {
-		this.setStyleName(StyleNames.Highlighted.toStyleName());
-	}
+    public RichSuggestionRow(final HasHideablePopup container, final Widget wrapped, final Runnable onSelect) {
+        super(wrapped);
 
-	void unHighlight() {
-		this.setStyleName(StyleNames.NotHighlighted.toStyleName());
-	}
+        Util.requireNotNull(container);
+        Util.requireNotNull(wrapped);
+        Util.requireNotNull(onSelect);
 
-	void select() {
-		onSelect.run();
-		
-		container.hidePopup();
-		
-		container.clearTextBox();
-	}
+        this.container = container;
+        this.onSelect = onSelect;
+
+        unHighlight();
+    }
+
+    @Override
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+        return this.addDomHandler(handler, ClickEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addMouseOverHandler(final MouseOverHandler handler) {
+        return this.addDomHandler(handler, MouseOverEvent.getType());
+    }
+
+    @Override
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+        return this.addDomHandler(handler, MouseOutEvent.getType());
+    }
+
+    void highlight() {
+        this.setStyleName(StyleNames.Highlighted.toStyleName());
+    }
+
+    void unHighlight() {
+        this.setStyleName(StyleNames.NotHighlighted.toStyleName());
+    }
+
+    void select() {
+        onSelect.run();
+
+        container.hidePopup();
+
+        container.clearTextBox();
+    }
 }
