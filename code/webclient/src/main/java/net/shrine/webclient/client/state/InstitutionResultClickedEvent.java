@@ -1,9 +1,9 @@
 package net.shrine.webclient.client.state;
 
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.web.bindery.event.shared.Event;
 import net.shrine.webclient.client.util.EventUtil;
 import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult;
+
+import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * @author Bill Simons
