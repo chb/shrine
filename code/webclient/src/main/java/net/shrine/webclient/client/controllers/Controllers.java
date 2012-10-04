@@ -1,5 +1,7 @@
 package net.shrine.webclient.client.controllers;
 
+import com.google.gwt.event.shared.EventBus;
+
 import net.shrine.webclient.client.services.QueryService;
 import net.shrine.webclient.client.state.State;
 
@@ -16,10 +18,10 @@ public final class Controllers {
     
     public final QueryController query;
     
-    public Controllers(final State state, final QueryService queryService) {
+    public Controllers(final State state, final QueryService queryService, final EventBus eventBus) {
     	super();
     	
-    	this.query = new QueryController(state, queryService);
+    	this.query = new QueryController(state, queryService, eventBus);
     	
     	this.constraints = new QueryConstraintController(state);
     	

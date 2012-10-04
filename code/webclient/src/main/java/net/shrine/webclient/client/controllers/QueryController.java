@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.shrine.webclient.client.services.QueryService;
+import net.shrine.webclient.client.state.QueryCompletedEvent;
+import net.shrine.webclient.client.state.QueryStartedEvent;
 import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.client.util.Util;
 import net.shrine.webclient.shared.domain.MultiInstitutionQueryResult;
@@ -13,6 +15,7 @@ import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * 
@@ -23,48 +26,54 @@ import com.allen_sauer.gwt.log.client.Log;
 public final class QueryController extends StatefulController {
 
     private final QueryService queryService;
+    
+    private final EventBus eventBus;
 
-    public QueryController(final State state, final QueryService queryService) {
+    public QueryController(final State state, final QueryService queryService, final EventBus eventBus) {
         super(state);
 
         Util.requireNotNull(queryService);
 
         this.queryService = queryService;
+        this.eventBus = eventBus;
     }
 
-    public void runEveryQuery() {
-
+    public void runQuery() {
         state.getQueryResult().clear();
-
-        runAllQuery();
-    }
-    
-    public void runAllQuery() {
+        
         state.updateQueryExpression();
 
         state.getQueryResult().clear();
 
         Log.debug("Query XML: " + state.getQueryExpression());
 
+        eventBus.fireEvent(QueryStartedEvent.Instance);
+        
         queryService.performQuery(state.getQueryExpression(), new MethodCallback<MultiInstitutionQueryResult>() {
             @Override
             public void onSuccess(final Method method, final MultiInstitutionQueryResult result) {
                 Log.debug("Got query result: " + result);
                 
-                state.completeQuery(result.asMap());
+                completeQuery(result.asMap());
             }
 
             @Override
             public void onFailure(final Method method, final Throwable caught) {
                 Log.error("Error making query 'All': " + caught.getMessage(), caught);
 
-                completeAllQueryWithNoResults();
+                completeQueryWithNoResults();
             }
         });
     }
 
-    public void completeAllQueryWithNoResults() {
-        state.completeQuery(noResults());
+    public void completeQueryWithNoResults() {
+        completeQuery(noResults());
+    }
+    
+    private void completeQuery(final Map<String, SingleInstitutionQueryResult> results) {
+        state.completeQuery(results);
+        
+        eventBus.fireEvent(QueryCompletedEvent.Instance);
     }
 
     private static Map<String, SingleInstitutionQueryResult> noResults() {

@@ -1,11 +1,14 @@
 package net.shrine.webclient.client;
 
-import com.google.gwt.visualization.client.VisualizationUtils;
-import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
 import net.shrine.webclient.client.controllers.Controllers;
 import net.shrine.webclient.client.services.BootstrapService;
 import net.shrine.webclient.client.services.Services;
+import net.shrine.webclient.client.state.QueryCompletedEvent;
+import net.shrine.webclient.client.state.QueryCompletedEventHandler;
+import net.shrine.webclient.client.state.QueryStartedEvent;
+import net.shrine.webclient.client.state.QueryStartedEventHandler;
 import net.shrine.webclient.client.state.State;
+import net.shrine.webclient.client.widgets.LoadingPanel;
 import net.shrine.webclient.client.widgets.OntologySearchBox;
 import net.shrine.webclient.client.widgets.QueryTermDragController;
 import net.shrine.webclient.client.widgets.WebClientWrapper;
@@ -18,6 +21,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.visualization.client.VisualizationUtils;
+import com.google.gwt.visualization.client.visualizations.corechart.ColumnChart;
 
 /**
  * 
@@ -28,12 +33,30 @@ public final class Webclient implements EntryPoint {
 
     private static final int DefaultDragSensitivity = 5;
 
+    private static final LoadingPanel loadingPanel = new LoadingPanel();
+    
+    private final QueryStartedEventHandler loadingPanelAdder = new QueryStartedEventHandler() {
+        @Override
+        public void handle(final QueryStartedEvent event) {
+            RootPanel.get().add(loadingPanel);
+        }
+    };
+    
+    private final QueryCompletedEventHandler loadingPanelRemover = new QueryCompletedEventHandler() {
+        @Override
+        public void handle(final QueryCompletedEvent event) {
+            RootPanel.get().remove(loadingPanel);
+        }
+    };
+    
     private void doOnModuleLoad() {
         final SimpleEventBus eventBus = new SimpleEventBus();
 
+        initLoadingPanelEventHandlers(eventBus);
+        
         final State state = new State(eventBus);
 
-        final Controllers controllers = new Controllers(state, Services.makeQueryService());
+        final Controllers controllers = new Controllers(state, Services.makeQueryService(), eventBus);
 
         final WebClientWrapper wrapper = new WebClientWrapper();
 
@@ -62,6 +85,11 @@ public final class Webclient implements EntryPoint {
         Log.info("Shrine Webclient loaded");
 
         Log.debug("Base URL: " + GWT.getModuleBaseURL());
+    }
+
+    private void initLoadingPanelEventHandlers(final SimpleEventBus eventBus) {
+        eventBus.addHandler(QueryStartedEvent.getType(), loadingPanelAdder);
+        eventBus.addHandler(QueryCompletedEvent.getType(), loadingPanelRemover);
     }
 
     static void configureDragController(final PickupDragController dragController) {
