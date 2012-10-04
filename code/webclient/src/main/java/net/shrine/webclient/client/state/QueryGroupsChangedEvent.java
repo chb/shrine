@@ -13,32 +13,31 @@ import com.google.gwt.event.shared.GwtEvent;
  * @date May 15, 2012
  */
 public final class QueryGroupsChangedEvent extends GwtEvent<QueryGroupsChangedEventHandler> {
-	private static final GwtEvent.Type<QueryGroupsChangedEventHandler> TYPE = EventUtil.eventType();
-	
-	private final List<ReadOnlyQueryGroup> queryGroups;
-	
-	public QueryGroupsChangedEvent(final List<? extends ReadOnlyQueryGroup> queryGroups) {
-		super();
-		
-		this.queryGroups = Util.makeArrayList(queryGroups);
-	}
-	
-	public List<ReadOnlyQueryGroup> getQueryGroups() {
-		return queryGroups;
-	}
+    private static final GwtEvent.Type<QueryGroupsChangedEventHandler> TYPE = EventUtil.eventType();
 
-	public static GwtEvent.Type<QueryGroupsChangedEventHandler> getType() {
-		return TYPE;
-	}
-	
-	@Override
-	public GwtEvent.Type<QueryGroupsChangedEventHandler> getAssociatedType() {
-		return TYPE;
-	}
+    private final List<ReadOnlyQueryGroup> queryGroups;
 
-	@Override
-	protected void dispatch(final QueryGroupsChangedEventHandler handler) {
-		handler.handle(this);
-	}
+    public QueryGroupsChangedEvent(final List<? extends ReadOnlyQueryGroup> queryGroups) {
+        super();
+
+        this.queryGroups = Util.makeArrayList(queryGroups);
+    }
+
+    public List<ReadOnlyQueryGroup> getQueryGroups() {
+        return queryGroups;
+    }
+
+    public static GwtEvent.Type<QueryGroupsChangedEventHandler> getType() {
+        return TYPE;
+    }
+
+    @Override
+    public GwtEvent.Type<QueryGroupsChangedEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(final QueryGroupsChangedEventHandler handler) {
+        handler.handle(this);
+    }
 }
-

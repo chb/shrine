@@ -20,204 +20,204 @@ import com.google.gwt.event.shared.EventBus;
  * 
  */
 public final class QueryGroup extends FiresEventsObservable<SingleQueryGroupChangedEvent> implements XmlAble, ReadOnlyQueryGroup, Comparable<QueryGroup> {
-	private Expression expression;
+    private Expression expression;
 
-	private boolean negated = false;
+    private boolean negated = false;
 
-	private Date start = null;
+    private Date start = null;
 
-	private Date end = null;
+    private Date end = null;
 
-	private int minOccurances = 1;
+    private int minOccurances = 1;
 
-	private final Date createdOn = new Date();
+    private final Date createdOn = new Date();
 
-	private String name;
+    private String name;
 
-	private final int id;
+    private final int id;
 
-	private static int nextId = 1;
+    private static int nextId = 1;
 
-	public static final int NullId = 0;
-	
-	static int getNextId() {
-		return nextId;
-	}
+    public static final int NullId = 0;
 
-	public QueryGroup(final EventBus eventBus, final String name, final Expression expression) {
-		this(eventBus, nextId++, name, expression);
-	}
-	
-	public QueryGroup(final EventBus eventBus, final int id, final String name, final Expression expression) {
-		super(eventBus);
-		
-		this.wireUp(new EventCreator<SingleQueryGroupChangedEvent>() {
-			@Override
-			public SingleQueryGroupChangedEvent create() {
-				return new SingleQueryGroupChangedEvent(QueryGroup.this);
-			}
-		});
-		
-		Util.requireNotNull(expression);
-		Util.requireNotNull(name);
+    static int getNextId() {
+        return nextId;
+    }
 
-		this.expression = expression;
-		this.id = id;
-		this.name = name;
-	}
+    public QueryGroup(final EventBus eventBus, final String name, final Expression expression) {
+        this(eventBus, nextId++, name, expression);
+    }
 
-	@Override
-	public int compareTo(final QueryGroup other) {
-		return createdOn.compareTo(other.createdOn);
-	}
+    public QueryGroup(final EventBus eventBus, final int id, final String name, final Expression expression) {
+        super(eventBus);
 
-	static String dateToXml(final String tagName, final Date date) {
-		return date == null ? "" : "<" + tagName + ">" + Formats.Date.iso8601.format(date) + "</" + tagName + ">";
-	}
+        this.wireUp(new EventCreator<SingleQueryGroupChangedEvent>() {
+            @Override
+            public SingleQueryGroupChangedEvent create() {
+                return new SingleQueryGroupChangedEvent(QueryGroup.this);
+            }
+        });
 
-	@Override
-	public String toXmlString() {
-		final String exprString = expression.toXmlString();
+        Util.requireNotNull(expression);
+        Util.requireNotNull(name);
 
-		String result;
+        this.expression = expression;
+        this.id = id;
+        this.name = name;
+    }
 
-		if (negated) {
-			result = "<not>" + exprString + "</not>";
-		} else {
-			result = exprString;
-		}
+    @Override
+    public int compareTo(final QueryGroup other) {
+        return createdOn.compareTo(other.createdOn);
+    }
 
-		if (start != null || end != null) {
-			result = "<dateBounded>" + dateToXml("start", start) + dateToXml("end", end) + result + "</dateBounded>";
-		}
+    static String dateToXml(final String tagName, final Date date) {
+        return date == null ? "" : "<" + tagName + ">" + Formats.Date.iso8601.format(date) + "</" + tagName + ">";
+    }
 
-		if (minOccurances != 1) {
-			result = "<occurs><min>" + minOccurances + "</min>" + result + "</occurs>";
-		}
+    @Override
+    public String toXmlString() {
+        final String exprString = expression.toXmlString();
 
-		return result;
-	}
+        String result;
 
-	@Override
-	public Expression getExpression() {
-		return expression;
-	}
+        if (negated) {
+            result = "<not>" + exprString + "</not>";
+        } else {
+            result = exprString;
+        }
 
-	public void setExpression(final Expression expression) {
-		Util.requireNotNull(expression);
-		Util.require(expression instanceof Term || expression instanceof Or, "Only terms or disjunctions can be represented as a QueryGroup");
+        if (start != null || end != null) {
+            result = "<dateBounded>" + dateToXml("start", start) + dateToXml("end", end) + result + "</dateBounded>";
+        }
 
-		try {
-			this.expression = expression;
-		} finally {
-			notifyObservers();
-		}
-	}
+        if (minOccurances != 1) {
+            result = "<occurs><min>" + minOccurances + "</min>" + result + "</occurs>";
+        }
 
-	@Override
-	public int getMinOccurances() {
-		return minOccurances;
-	}
+        return result;
+    }
 
-	public void setMinOccurances(final int minOccurances) {
-		Util.require(minOccurances > 0);
+    @Override
+    public Expression getExpression() {
+        return expression;
+    }
 
-		try {
-			this.minOccurances = minOccurances;
-		} finally {
-			notifyObservers();
-		}
-	}
+    public void setExpression(final Expression expression) {
+        Util.requireNotNull(expression);
+        Util.require(expression instanceof Term || expression instanceof Or, "Only terms or disjunctions can be represented as a QueryGroup");
 
-	@Override
-	public boolean isNegated() {
-		return negated;
-	}
+        try {
+            this.expression = expression;
+        } finally {
+            notifyObservers();
+        }
+    }
 
-	public void setNegated(final boolean negated) {
-		try {
-			this.negated = negated;
-		} finally {
-			notifyObservers();
-		}
-	}
+    @Override
+    public int getMinOccurances() {
+        return minOccurances;
+    }
 
-	@Override
-	public Date getStart() {
-		return start;
-	}
+    public void setMinOccurances(final int minOccurances) {
+        Util.require(minOccurances > 0);
 
-	public void setStart(final Date newStart) {
-		try {
-			start = newStart;
-		} finally {
-			notifyObservers();
-		}
-	}
+        try {
+            this.minOccurances = minOccurances;
+        } finally {
+            notifyObservers();
+        }
+    }
 
-	@Override
-	public Date getEnd() {
-		return end;
-	}
+    @Override
+    public boolean isNegated() {
+        return negated;
+    }
 
-	public void setEnd(final Date newEnd) {
-		try {
-			end = newEnd;
-		} finally {
-			notifyObservers();
-		}
-	}
+    public void setNegated(final boolean negated) {
+        try {
+            this.negated = negated;
+        } finally {
+            notifyObservers();
+        }
+    }
 
-	@Override
-	public int getId() {
-		return id;
-	}
+    @Override
+    public Date getStart() {
+        return start;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    public void setStart(final Date newStart) {
+        try {
+            start = newStart;
+        } finally {
+            notifyObservers();
+        }
+    }
 
-	public void setName(final String name) {
-		Util.requireNotNull(name);
+    @Override
+    public Date getEnd() {
+        return end;
+    }
 
-		try {
-			this.name = name;
-		} finally {
-			notifyObservers();
-		}
-	}
+    public void setEnd(final Date newEnd) {
+        try {
+            end = newEnd;
+        } finally {
+            notifyObservers();
+        }
+    }
 
-	@Override
-	public Date getCreatedOn() {
-		return createdOn;
-	}
+    @Override
+    public int getId() {
+        return id;
+    }
 
-	@Override
-	public String toString() {
-		return "QueryGroup [id=" + id + "]";
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public int hashCode() {
-		return 31 + id;
-	}
+    public void setName(final String name) {
+        Util.requireNotNull(name);
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final QueryGroup other = (QueryGroup) obj;
-		if (id != other.id) {
-			return false;
-		}
-		return true;
-	}
+        try {
+            this.name = name;
+        } finally {
+            notifyObservers();
+        }
+    }
+
+    @Override
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    @Override
+    public String toString() {
+        return "QueryGroup [id=" + id + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 + id;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final QueryGroup other = (QueryGroup) obj;
+        if (id != other.id) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -33,7 +33,8 @@ public final class State {
     // size), negated (t/f), start date, end date, min occurrances )
     private final ObservableList<QueryGroup> queryGroups = ObservableList.empty();
 
-    // React to changes in query list by renaming queries (to preserve A ... Z naming)
+    // React to changes in query list by renaming queries (to preserve A ... Z
+    // naming)
     @SuppressWarnings("unused")
     private final Observer queryRenamer = new SimpleObserver(queryGroups) {
         @Override

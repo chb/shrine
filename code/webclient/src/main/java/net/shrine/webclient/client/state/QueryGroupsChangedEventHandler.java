@@ -8,5 +8,5 @@ import com.google.gwt.event.shared.EventHandler;
  * @date May 15, 2012
  */
 public interface QueryGroupsChangedEventHandler extends EventHandler {
-	void handle(final QueryGroupsChangedEvent event);
+    void handle(final QueryGroupsChangedEvent event);
 }
