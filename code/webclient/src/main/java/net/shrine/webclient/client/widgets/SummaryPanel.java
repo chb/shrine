@@ -18,8 +18,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -40,14 +38,6 @@ public final class SummaryPanel extends Composite {
     @UiField
     Button runQueryButton;
 
-    @Deprecated
-    @UiField
-    FlowPanel resultsPanel;
-
-    @Deprecated
-    @UiField
-    HTMLPanel resultsWrapper;
-
     public SummaryPanel() {
         super();
 
@@ -57,8 +47,6 @@ public final class SummaryPanel extends Composite {
     void wireUp(final EventBus eventBus, final Controllers controllers) {
         Util.requireNotNull(controllers);
         Util.requireNotNull(eventBus);
-
-        clearResults();
 
         initRunQueryButton(controllers);
 
@@ -73,10 +61,6 @@ public final class SummaryPanel extends Composite {
         runQueryButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                clearResults();
-
-                showLoadingSpinner();
-
                 controllers.query.runAllQuery();
             }
         });
@@ -99,18 +83,6 @@ public final class SummaryPanel extends Composite {
         querySummaryHolder.clear();
     }
 
-    void clearResults() {
-        resultsPanel.clear();
-
-        resultsWrapper.setVisible(false);
-    }
-
-    void showLoadingSpinner() {
-        resultsWrapper.setVisible(true);
-
-        resultsPanel.add(new LoadingSpinner());
-    }
-
     private final class AllResultsQueryGroupsChangedEventHandler implements QueryGroupsChangedEventHandler {
         @Override
         public void handle(final QueryGroupsChangedEvent event) {
@@ -121,13 +93,6 @@ public final class SummaryPanel extends Composite {
             } else {
                 clearQuerySummary();
             }
-
-            // TODO, REVISITME: We shouldn't clear the result display if the new
-            // query group list
-            // isn't actually different than the old one. This is tricky in the
-            // face of a mutable
-            // query list made of mutable QueryGroups. :/
-            clearResults();
 
             setRunQueryButtonEnabledStatus(queryGroups);
         }

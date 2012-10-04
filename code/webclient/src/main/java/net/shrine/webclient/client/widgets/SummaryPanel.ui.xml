@@ -17,10 +17,5 @@
                 <g:SimplePanel ui:field="querySummaryHolder" styleName="querySentence" />
             </div>
         </div>
-        <!-- TODO: resultsWrapper and resultsPanel only exist as a placeholder for the old spinner image; they should be removed soon -->
-        <g:HTMLPanel styleName="breakDownUpper" ui:field="resultsWrapper">
-            <g:FlowPanel styleName="resultInstitutions"
-                ui:field="resultsPanel" />
-        </g:HTMLPanel>
     </g:HTMLPanel>
 </ui:UiBinder> 
