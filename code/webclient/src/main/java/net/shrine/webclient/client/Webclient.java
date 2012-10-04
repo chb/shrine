@@ -26,63 +26,67 @@ import com.google.gwt.user.client.ui.RootPanel;
  */
 public final class Webclient implements EntryPoint {
 
-	private static final int DefaultDragSensitivity = 5;
+    private static final int DefaultDragSensitivity = 5;
 
-	private void doOnModuleLoad() {
-		final SimpleEventBus eventBus = new SimpleEventBus();
-		
-		final State state = new State(eventBus);
+    private void doOnModuleLoad() {
+        final SimpleEventBus eventBus = new SimpleEventBus();
 
-		final Controllers controllers = new Controllers(state, Services.makeQueryService());
-		
-		final WebClientWrapper wrapper = new WebClientWrapper();
+        final State state = new State(eventBus);
 
-		final OntologySearchBox ontSearchBox = new OntologySearchBox(eventBus, controllers);
-		
-		final PickupDragController dragController = new QueryTermDragController(RootPanel.get(), false);
-		
-		configureDragController(dragController);
+        final Controllers controllers = new Controllers(state, Services.makeQueryService());
+
+        final WebClientWrapper wrapper = new WebClientWrapper();
+
+        final OntologySearchBox ontSearchBox = new OntologySearchBox(eventBus, controllers);
+
+        final PickupDragController dragController = new QueryTermDragController(RootPanel.get(), false);
+
+        configureDragController(dragController);
 
         final BootstrapService bootstrapService = Services.makeBootstrapService();
 
-		wrapper.wireUp(eventBus, state, controllers, ontSearchBox, dragController, bootstrapService);
+        wrapper.wireUp(eventBus, state, controllers, ontSearchBox, dragController, bootstrapService);
 
-		RootPanel.get().add(wrapper);
+        RootPanel.get().add(wrapper);
 
         // Load the visualization api, passing the onLoadCallback to be called
         // when loading is done.
-        Runnable onLoadCallback = new Runnable() {
-             public void run() {
-               Log.debug("Visualization API loaded");
-             }
-           };
+        final Runnable onLoadCallback = new Runnable() {
+            public void run() {
+                Log.debug("Visualization API loaded");
+            }
+        };
 
         VisualizationUtils.loadVisualizationApi(onLoadCallback, ColumnChart.PACKAGE);
 
-		Log.info("Shrine Webclient loaded");
-		
-		Log.debug("Base URL: " + GWT.getModuleBaseURL());
-	}
+        Log.info("Shrine Webclient loaded");
 
-	static void configureDragController(final PickupDragController dragController) {
-		dragController.setBehaviorConstrainedToBoundaryPanel(true);
-	    dragController.setBehaviorMultipleSelection(false);
-	    //NB: widgets must be "dragged" at least 5 pixels before dragging is considered to have begun.
-	    //This allows widgets to receive click events (for close buttons, etc) without triggering DnD.
-	    dragController.setBehaviorDragStartSensitivity(DefaultDragSensitivity);
-	}
-	
-	public void onModuleLoad() {
+        Log.debug("Base URL: " + GWT.getModuleBaseURL());
+    }
 
-		// Install an UncaughtExceptionHandler which will produce FATAL log messages (useful when not in dev mode)
-		Log.setUncaughtExceptionHandler();
+    static void configureDragController(final PickupDragController dragController) {
+        dragController.setBehaviorConstrainedToBoundaryPanel(true);
+        dragController.setBehaviorMultipleSelection(false);
+        // NB: widgets must be "dragged" at least 5 pixels before dragging is
+        // considered to have begun.
+        // This allows widgets to receive click events (for close buttons, etc)
+        // without triggering DnD.
+        dragController.setBehaviorDragStartSensitivity(DefaultDragSensitivity);
+    }
 
-		// use deferred command to catch initialization exceptions in doOnModuleLoad
-	    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				doOnModuleLoad();
-			}
-		});
-	}
+    public void onModuleLoad() {
+
+        // Install an UncaughtExceptionHandler which will produce FATAL log
+        // messages (useful when not in dev mode)
+        Log.setUncaughtExceptionHandler();
+
+        // use deferred command to catch initialization exceptions in
+        // doOnModuleLoad
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                doOnModuleLoad();
+            }
+        });
+    }
 }
