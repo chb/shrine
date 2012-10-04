@@ -1,5 +1,8 @@
 package net.shrine.config
 
+import net.shrine.protocol.AuthenticationInfo
+import net.shrine.protocol.Credential
+
 /**
  * @author Bill Simons
  * @date 3/12/12
@@ -10,4 +13,6 @@ package net.shrine.config
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final case class HiveCredentials (val domain: String, val username: String, val password: String, val project: String)
+final case class HiveCredentials (val domain: String, val username: String, val password: String, val project: String) {
+  def toAuthenticationInfo = AuthenticationInfo(domain, username, Credential(password, false)) 
+}

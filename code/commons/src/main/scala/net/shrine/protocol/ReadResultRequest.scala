@@ -16,9 +16,9 @@ final case class ReadResultRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val resultId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val localResultId: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
-  def this(header: RequestHeader, resultId: Long) = this(header.projectId, header.waitTimeMs, header.authn, resultId)
+  def this(header: RequestHeader, localResultId: String) = this(header.projectId, header.waitTimeMs, header.authn, localResultId)
 
   override val requestType: CRCRequestType = ResultRequestType
 
@@ -28,14 +28,14 @@ final case class ReadResultRequest(
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:result_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <query_result_instance_id>{ resultId }</query_result_instance_id>
+        <query_result_instance_id>{ localResultId }</query_result_instance_id>
       </ns4:request>
     </message_body>)
 
   def toXml: NodeSeq = XmlUtil.stripWhitespace(
     <readResult>
       { headerFragment }
-      <resultId>{ resultId }</resultId>
+      <resultId>{ localResultId }</resultId>
     </readResult>)
 }
 
@@ -43,7 +43,8 @@ object ReadResultRequest extends ShrineRequestUnmarshaller[ReadResultRequest] wi
   def fromXml(xml: NodeSeq): ReadResultRequest = {
     val header = shrineHeader(xml)
 
-    val resultId = (xml \ "resultId").text.toLong
+    //NB: This is the LOCAL, NOT NETWORK, resultId
+    val resultId = (xml \ "resultId").text
 
     new ReadResultRequest(header, resultId)
   }
@@ -51,7 +52,8 @@ object ReadResultRequest extends ShrineRequestUnmarshaller[ReadResultRequest] wi
   def fromI2b2(xml: NodeSeq): ReadResultRequest = {
     val header = i2b2Header(xml)
 
-    val resultId = (xml \ "message_body" \ "request" \ "query_result_instance_id").text.toLong
+    //NB: This is the LOCAL, NOT NETWORK, resultId
+    val resultId = (xml \ "message_body" \ "request" \ "query_result_instance_id").text
 
     new ReadResultRequest(header, resultId)
   }

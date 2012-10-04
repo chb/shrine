@@ -126,9 +126,11 @@ class RunQueryAdapter(
 
     def isBreakdown(result: QueryResult) = result.resultType.map(_.isBreakdown).getOrElse(false)
 
-    def readResultRequest(runQueryReq: RunQueryRequest, resultId: Long) = ReadResultRequest(runQueryReq.projectId, runQueryReq.waitTimeMs, runQueryReq.authn, resultId)
-
-    val obfuscated = {
+    def toLocalResultId(networkResultId: Long): String = dao.findLocalResultID(networkResultId)
+    
+    def readResultRequest(runQueryReq: RunQueryRequest, networkResultId: Long) = ReadResultRequest(hiveCredentials.project, runQueryReq.waitTimeMs, hiveCredentials.toAuthenticationInfo, toLocalResultId(networkResultId))
+    
+    val obfuscatedRunQueryResponse = {
       val response = super.processRequest(identity, message).asInstanceOf[RunQueryResponse]
 
       createIdMappings(identity, message, response)
@@ -136,17 +138,17 @@ class RunQueryAdapter(
       obfuscateResponse(translateLocalIdsToNetworkIds(response, message.masterId.get, message.instanceId.get, message.resultIds.get))
     }
 
-    val (breakdownResults, nonBreakDownResults) = obfuscated.results.partition(isBreakdown)
+    val (breakdownResults, nonBreakDownResults) = obfuscatedRunQueryResponse.results.partition(isBreakdown)
 
     val AsRunQueryRequest(runQueryReq) = message.request
 
-    val attemptsWithBreakDownCounts = breakdownResults.map { breakdownResult =>
-      (breakdownResult, Try {
-        val respXml = callCrc(readResultRequest(runQueryReq, breakdownResult.resultId))
+    val attemptsWithBreakDownCounts = breakdownResults.map { origBreakdownResult =>
+      (origBreakdownResult, Try {
+        val respXml = callCrc(readResultRequest(runQueryReq, origBreakdownResult.resultId))
 
         val breakdownData = ReadResultResponse.fromI2b2(respXml).data
 
-        breakdownResult.withBreakdown(breakdownData)
+        origBreakdownResult.withBreakdown(breakdownData)
       })
     }
 
@@ -154,7 +156,7 @@ class RunQueryAdapter(
 
     failures.foreach {
       case (origQueryResult, Failure(e)) =>
-        error(e, "Couldn't load breakdown for QueryResult with masterId: " + obfuscated.queryId + ", instanceId: " + origQueryResult.instanceId + ", resultId: " + origQueryResult.resultId + ". Asked for result type: " + origQueryResult.resultType)
+        error(e, "Couldn't load breakdown for QueryResult with masterId: " + obfuscatedRunQueryResponse.queryId + ", instanceId: " + origQueryResult.instanceId + ", resultId: " + origQueryResult.resultId + ". Asked for result type: " + origQueryResult.resultType)
     }
 
     //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
@@ -166,6 +168,6 @@ class RunQueryAdapter(
       nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
     }
      
-    obfuscated.withResults(Seq(resultWithMergedBreakdowns))
+    obfuscatedRunQueryResponse.withResults(Seq(resultWithMergedBreakdowns))
   }
 }

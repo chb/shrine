@@ -55,7 +55,11 @@ object ReadResultResponse extends XmlUnmarshaller[ReadResultResponse] with I2b2U
     def envelope(x: NodeSeq) = {
       val unescapedXml = I2b2Workarounds.unescape((crcResultXml(x) \ "xml_value").text)
 
-      I2b2ResultEnvelope.fromI2b2(unescapedXml)
+      try {
+        I2b2ResultEnvelope.fromI2b2(unescapedXml)
+      } catch {
+        case e: Exception => throw new Exception("Error unmarshalling an " + I2b2ResultEnvelope.getClass.getSimpleName + " from '" + x.toString + "'")
+      }
     }
 
     def getXmlResultId(x: NodeSeq) = (crcResultXml(x) \ "xml_result_id").text.toLong

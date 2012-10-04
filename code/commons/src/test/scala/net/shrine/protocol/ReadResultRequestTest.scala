@@ -16,7 +16,7 @@ final class ReadResultRequestTest extends TestCase with AssertionsForJUnit with 
   private val projectId = "2qfhsjksdfhkshdf"
   private val waitTime = 12345L
   private val authn = AuthenticationInfo("some-domain", "some-user", Credential("ksdlghjksdghksdghk", true))
-  private val resultId = 8734568L
+  private val resultId = "8734568"
 
   private val exampleReq = ReadResultRequest(projectId, waitTime, authn, resultId)
 
@@ -78,12 +78,12 @@ final class ReadResultRequestTest extends TestCase with AssertionsForJUnit with 
       <projectId>{ exampleReq.projectId }</projectId>
       <waitTimeMs>{ exampleReq.waitTimeMs }</waitTimeMs>
       { exampleReq.authn.toXml }
-      <resultId>{ exampleReq.resultId }</resultId>
+      <resultId>{ exampleReq.localResultId }</resultId>
     </readResult>)
 
   @Test
   def testRequestType {
-    ReadResultRequest("", 123L, null, 456L).requestType should equal(CRCRequestType.ResultRequestType)
+    ReadResultRequest("", 123L, null, "456L").requestType should equal(CRCRequestType.ResultRequestType)
   }
 
   @Test
@@ -95,7 +95,7 @@ final class ReadResultRequestTest extends TestCase with AssertionsForJUnit with 
     req.projectId should equal(projectId)
     req.waitTimeMs should equal(waitTime)
     req.authn should equal(authn)
-    req.resultId should equal(resultId)
+    req.localResultId should equal(resultId)
   }
 
   @Test
