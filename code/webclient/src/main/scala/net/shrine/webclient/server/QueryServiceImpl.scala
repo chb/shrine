@@ -27,7 +27,7 @@ object QueryServiceImpl {
 
     import ResultOutputType._
       
-    val outputTypes = Set(PATIENT_COUNT_XML) //TODO - re-enable // ++ ResultOutputType.values.filter(_.isBreakdown)
+    val outputTypes = Set(PATIENT_COUNT_XML) ++ ResultOutputType.values.filter(_.isBreakdown)
   }
 }
 
@@ -76,10 +76,16 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
     
     //MultiInstitutionQueryResult(results)
     
-    //TODO: NB: results with dummy breakdowns, until new shrine-dev2 is online  
+    //TODO: NB: results with dummy breakdowns, until new shrine-dev2 is working properly  
 
     import scala.collection.JavaConverters._
     
-    new MultiInstitutionQueryResult(results.mapValues(addDummyBreakdowns).asJava)
+    new MultiInstitutionQueryResult(results.mapValues { singleInstResult =>
+      if(singleInstResult.getBreakdowns.isEmpty) {
+        addDummyBreakdowns(singleInstResult) 
+      } else {
+        singleInstResult
+      }
+    }.asJava)
   }
 }
