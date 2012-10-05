@@ -144,6 +144,9 @@ class RunQueryAdapter(
 
     val attemptsWithBreakDownCounts = breakdownResults.map { origBreakdownResult =>
       (origBreakdownResult, Try {
+        //NB: readResultRequest() goes back to the DB to translate the network resultId to a local one suitable for
+        //sending to the CRC.  This extra DB hit isn't ideal, but this was a simple way to proceed, and Id-translation
+        //will - hopefully - be gone soon, rendering this issue moot.
         val respXml = callCrc(readResultRequest(runQueryReq, origBreakdownResult.resultId))
 
         val breakdownData = ReadResultResponse.fromI2b2(respXml).data
