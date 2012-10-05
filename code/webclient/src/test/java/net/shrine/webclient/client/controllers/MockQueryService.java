@@ -14,7 +14,7 @@ import org.fusesource.restygwt.client.MethodCallback;
  * @author clint
  * @date Apr 23, 2012
  */
-public final class MockQueryService implements QueryService {
+public class MockQueryService implements QueryService {
     public Integer totalToReturn = total;
 
     public MultiInstitutionQueryResult multiNodeResultsToReturn = multiNodeResults;

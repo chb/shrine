@@ -26,7 +26,7 @@ import com.google.gwt.event.shared.EventBus;
 public final class QueryController extends StatefulController {
 
     private final QueryService queryService;
-    
+
     private final EventBus eventBus;
 
     public QueryController(final State state, final QueryService queryService, final EventBus eventBus) {
@@ -40,7 +40,7 @@ public final class QueryController extends StatefulController {
 
     public void runQuery() {
         state.getQueryResult().clear();
-        
+
         state.updateQueryExpression();
 
         state.getQueryResult().clear();
@@ -48,31 +48,35 @@ public final class QueryController extends StatefulController {
         Log.debug("Query XML: " + state.getQueryExpression());
 
         eventBus.fireEvent(QueryStartedEvent.Instance);
-        
-        queryService.performQuery(state.getQueryExpression(), new MethodCallback<MultiInstitutionQueryResult>() {
-            @Override
-            public void onSuccess(final Method method, final MultiInstitutionQueryResult result) {
-                Log.debug("Got query result: " + result);
-                
-                completeQuery(result.asMap());
-            }
 
-            @Override
-            public void onFailure(final Method method, final Throwable caught) {
-                Log.error("Error making query 'All': " + caught.getMessage(), caught);
+        try {
+            queryService.performQuery(state.getQueryExpression(), new MethodCallback<MultiInstitutionQueryResult>() {
+                @Override
+                public void onSuccess(final Method method, final MultiInstitutionQueryResult result) {
+                    Log.debug("Got query result: " + result);
 
-                completeQueryWithNoResults();
-            }
-        });
+                    completeQuery(result.asMap());
+                }
+
+                @Override
+                public void onFailure(final Method method, final Throwable caught) {
+                    Log.error("Error making query 'All': " + caught.getMessage(), caught);
+
+                    completeQueryWithNoResults();
+                }
+            });
+        } catch (Exception e) {
+            completeQueryWithNoResults();
+        }
     }
 
     public void completeQueryWithNoResults() {
         completeQuery(noResults());
     }
-    
+
     private void completeQuery(final Map<String, SingleInstitutionQueryResult> results) {
         state.completeQuery(results);
-        
+
         eventBus.fireEvent(QueryCompletedEvent.Instance);
     }
 

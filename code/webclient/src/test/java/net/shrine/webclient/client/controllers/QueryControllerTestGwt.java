@@ -7,8 +7,10 @@ import net.shrine.webclient.client.state.QueryStartedEvent;
 import net.shrine.webclient.client.state.QueryStartedEventHandler;
 import net.shrine.webclient.client.state.State;
 import net.shrine.webclient.shared.domain.And;
+import net.shrine.webclient.shared.domain.MultiInstitutionQueryResult;
 import net.shrine.webclient.shared.domain.Term;
 
+import org.fusesource.restygwt.client.MethodCallback;
 import org.junit.Test;
 
 import com.google.gwt.event.shared.EventBus;
@@ -32,7 +34,7 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
     private EventBus eventBus;
 
     private SimpleQueryStartedEventHandler queryStartedListener;
-    
+
     private SimpleQueryCompletedEventHandler queryCompletedListener;
 
     @Override
@@ -40,14 +42,15 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
         super.gwtSetUp();
 
         eventBus = new SimpleEventBus();
-        
+
         queryStartedListener = new SimpleQueryStartedEventHandler();
         queryCompletedListener = new SimpleQueryCompletedEventHandler();
-        
+
         eventBus.addHandler(QueryStartedEvent.getType(), queryStartedListener);
         eventBus.addHandler(QueryCompletedEvent.getType(), queryCompletedListener);
-        
+
         state = state();
+
         queryService = new MockQueryService();
         controller = new QueryController(state, queryService, eventBus);
         queryBuildingController = new QueryBuildingController(state);
@@ -70,14 +73,13 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
     public void testRunQuery() {
         assertFalse(queryStartedListener.triggered);
         assertFalse(queryCompletedListener.triggered);
-        
+
         try {
             controller.runQuery();
-            
+
             fail("Should have thrown when no queries to run");
-        } catch (final IllegalArgumentException expected) {
-        }
-        
+        } catch (final IllegalArgumentException expected) {}
+
         resetListeners();
 
         final Term t1 = term("nuh");
@@ -88,7 +90,7 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
 
         assertTrue(queryStartedListener.triggered);
         assertTrue(queryCompletedListener.triggered);
-        
+
         assertEquals(t1.toXmlString(), state.getQueryExpression());
         assertEquals(t1.toXmlString(), state.getQuery(t1Id).getExpression().toXmlString());
 
@@ -99,11 +101,11 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
         final int t2Id = queryBuildingController.addNewTerm(t2).getId();
 
         state.getQueryResult().clear();
-        
+
         resetListeners();
 
         controller.runQuery();
-        
+
         assertTrue(queryStartedListener.triggered);
         assertTrue(queryCompletedListener.triggered);
 
@@ -114,9 +116,59 @@ public class QueryControllerTestGwt extends AbstractWebclientTest {
         assertEquals(queryService.multiNodeResultsToReturn.asMap(), state.getQueryResult().get());
     }
 
+    @Test
+    public void testRunQueryQueryServiceThrows() {
+        queryService = new AlwaysThrowsQueryService();
+        controller = new QueryController(state, queryService, eventBus);
+        
+        assertFalse(queryStartedListener.triggered);
+        assertFalse(queryCompletedListener.triggered);
+        
+        final Term t1 = term("nuh");
+
+        queryBuildingController.addNewTerm(t1).getId();
+
+        controller.runQuery();
+        
+        assertTrue(queryStartedListener.triggered);
+        assertTrue(queryCompletedListener.triggered);
+    }
+    
+    @Test
+    public void testRunQueryQueryServiceRemoteCallFails() {
+        queryService = new AlwaysFailsQueryService();
+        controller = new QueryController(state, queryService, eventBus);
+        
+        assertFalse(queryStartedListener.triggered);
+        assertFalse(queryCompletedListener.triggered);
+        
+        final Term t1 = term("nuh");
+
+        queryBuildingController.addNewTerm(t1).getId();
+
+        controller.runQuery();
+        
+        assertTrue(queryStartedListener.triggered);
+        assertTrue(queryCompletedListener.triggered);
+    }
+    
     private void resetListeners() {
         queryStartedListener.triggered = false;
         queryCompletedListener.triggered = false;
+    }
+
+    private static final class AlwaysThrowsQueryService extends MockQueryService {
+        @Override
+        public void performQuery(final String expr, final MethodCallback<MultiInstitutionQueryResult> callback) {
+            throw new RuntimeException("blarg");
+        }
+    }
+    
+    private static final class AlwaysFailsQueryService extends MockQueryService {
+        @Override
+        public void performQuery(final String expr, final MethodCallback<MultiInstitutionQueryResult> callback) {
+            callback.onFailure(null, new RuntimeException("foo"));
+        }
     }
     
     private static final class SimpleQueryStartedEventHandler implements QueryStartedEventHandler {
