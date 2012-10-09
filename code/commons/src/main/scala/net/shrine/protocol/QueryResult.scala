@@ -81,7 +81,8 @@ final case class QueryResult(
             
             statusType match {
               case Finished => <status_type_id>3</status_type_id><description>{ Finished }</description>
-              case Processing => <status_type_id>2</status_type_id><description>{ Processing }</description>
+              //TODO: Can we use the same <status_type_id> for both Queued and Processing?
+              case Processing | Queued => <status_type_id>2</status_type_id><description>{ Processing }</description>
               case Error => statusMessage.map(x => <description>{ x }</description>).orNull
             }
           }
@@ -93,12 +94,7 @@ final case class QueryResult(
     <queryResult>
       <resultId>{ resultId }</resultId>
       <instanceId>{ instanceId }</instanceId>
-      <resultType>{
-        resultType match {
-          case Some(rt) => rt.name
-          case _ => null
-        }
-      }</resultType>
+      <resultType>{ resultType.map(_.name).orNull }</resultType>
       <setSize>{ setSize }</setSize>
       {
         startDate.map(x => <startDate>{ x }</startDate>).orNull
@@ -140,6 +136,7 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
     val Error = "ERROR"
     val Finished = "FINISHED"
     val Processing = "PROCESSING"
+    val Queued = "QUEUED"
   }
 
   def extractLong(nodeSeq: NodeSeq)(elemName: String): Long = (nodeSeq \ elemName).text.toLong

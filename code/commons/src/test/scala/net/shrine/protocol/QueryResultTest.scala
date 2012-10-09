@@ -36,9 +36,9 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
 
   private val resultWithBreakDowns = queryResult.copy(breakdowns =
     Map(PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Map("foo" -> 1L, "bar" -> 2L)),
-        PATIENT_RACE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_RACE_COUNT_XML, Map("nuh" -> 3L, "zuh" -> 4L)),
-        PATIENT_VITALSTATUS_COUNT_XML -> I2b2ResultEnvelope(PATIENT_VITALSTATUS_COUNT_XML, Map("blarg" -> 5L, "glarg" -> 6L)),
-        PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("huh" -> 7L, "yeah" -> 8))))
+      PATIENT_RACE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_RACE_COUNT_XML, Map("nuh" -> 3L, "zuh" -> 4L)),
+      PATIENT_VITALSTATUS_COUNT_XML -> I2b2ResultEnvelope(PATIENT_VITALSTATUS_COUNT_XML, Map("blarg" -> 5L, "glarg" -> 6L)),
+      PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("huh" -> 7L, "yeah" -> 8))))
 
   private val expectedWhenBreakdownsArePresent = XmlUtil.stripWhitespace(
     <queryResult>
@@ -133,12 +133,12 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
   @Test
   def testIsError {
     queryResult.isError should be(false)
-    
+
     queryResult.copy(statusType = QueryResult.StatusType.Processing).isError should be(false)
-    
+
     queryResult.copy(statusType = QueryResult.StatusType.Error).isError should be(true)
   }
-    
+
   @Test
   def testToXml {
     val expectedWhenNoBreakdowns = XmlUtil.stripWhitespace(
@@ -236,7 +236,7 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
     actual.statusMessage should equal(None) //this field is ignored when unmarshalling
     actual.statusType should equal(expected.statusType)
   }
-  
+
   @Test
   def testI2b2RoundTrip = doI2b2XmlRoundTrip(resultWithBreakDowns, QueryResult, compareIgnoringBreakdownsDescriptionAndStatusMessage)
 
@@ -248,13 +248,43 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
   @Test
   def testFromI2b2WithErrors {
     val errorResult = QueryResult.errorResult(Some(description), statusMessage)
-    
+
     compareIgnoringBreakdownsDescriptionAndStatusMessage(QueryResult.fromI2b2(expectedI2b2ErrorXml), errorResult)
   }
 
   @Test
   def testToI2b2 {
     queryResult.toI2b2String should equal(expectedI2b2Xml)
+  }
+
+  @Test
+  def testToI2b2QueuedAndProcessing {
+    def doTest(statusType: String) {
+      val expectedI2b2XmlWithStillProcessing = XmlUtil.stripWhitespace(
+        <query_result_instance>
+          <result_instance_id>{ resultId }</result_instance_id>
+          <query_instance_id>{ instanceId }</query_instance_id>
+          <description>{ description }</description>
+          <query_result_type>
+            <name>{ resultType }</name>
+            <result_type_id>1</result_type_id><display_type>LIST</display_type><visual_attribute_type>LA</visual_attribute_type><description>Patient list</description>
+          </query_result_type>
+          <set_size>{ setSize }</set_size>
+          <start_date>{ date }</start_date>
+          <end_date>{ date }</end_date>
+          <query_status_type>
+            <name>{ statusType }</name>
+            <status_type_id>2</status_type_id><description>{ QueryResult.StatusType.Processing }</description>
+          </query_status_type>
+        </query_result_instance>).toString
+
+      val result = queryResult.copy(statusType = statusType)
+
+      result.toI2b2String should equal(expectedI2b2XmlWithStillProcessing)
+    }
+
+    doTest(QueryResult.StatusType.Queued)
+    doTest(QueryResult.StatusType.Processing)
   }
 
   @Test
