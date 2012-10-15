@@ -54,3 +54,13 @@ create table patient_set(
   constraint patient_set_id_pk primary key(id),
   constraint fk_patient_set_query_result_id foreign key (result_id) references query_result (id)
 ) engine=innodb default charset=latin1;
+
+create table privileged_user(
+  id int not null auto_increment,
+  username VARCHAR(255) not null,
+  domain VARCHAR(255) not null,
+  threshold int not null,
+  override_date timestamp null,
+  constraint priviliged_user_pk primary key(id),
+  constraint ix_privileged_user_username_domain unique (username, domain)
+) engine=innodb default charset=latin1;
