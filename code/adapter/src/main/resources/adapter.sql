@@ -3,6 +3,7 @@ create table query(
   network_id bigint not null,
   username varchar(255) not null,
   domain varchar(255) not null,
+  query_definition text not null,
   date_created timestamp default current_timestamp,
   constraint query_id_pk primary key(id)
 ) engine=innodb default charset=latin1;
