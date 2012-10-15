@@ -57,8 +57,8 @@ create table patient_set(
 
 create table privileged_user(
   id int not null auto_increment,
-  username VARCHAR(255) not null,
-  domain VARCHAR(255) not null,
+  username varchar(255) not null,
+  domain varchar(255) not null,
   threshold int not null,
   override_date timestamp null,
   constraint priviliged_user_pk primary key(id),
