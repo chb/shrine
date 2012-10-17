@@ -1,4 +1,4 @@
-create table query(
+create table shrine_query(
   id int not null auto_increment,
   network_id bigint not null,
   username varchar(255) not null,
@@ -16,7 +16,7 @@ create table query_result(
   time_elapsed int not null,
   last_updated timestamp default current_timestamp,
   constraint query_result_id_pk primary key(id),
-  constraint fk_query_result_query_id foreign key (query_id) references query (id)
+  constraint fk_query_result_query_id foreign key (query_id) references shrine_query (id)
 ) engine=innodb default charset=latin1;
 
 create table error_result(
