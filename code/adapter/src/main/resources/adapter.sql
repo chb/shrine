@@ -15,7 +15,7 @@ create table QUERY_RESULT(
   query_id int not null,
   type enum('PATIENTSET','PATIENT_COUNT_XML','PATIENT_AGE_COUNT_XML','PATIENT_RACE_COUNT_XML','PATIENT_VITALSTATUS_COUNT_XML','PATIENT_GENDER_COUNT_XML','ERROR') not null,
   status enum('FINISHED', 'ERROR', 'PROCESSING', 'QUEUED') not null,
-  time_elapsed int not null,
+  time_elapsed int null,
   last_updated timestamp default current_timestamp,
   constraint QUERY_RESULT_id_pk primary key(id),
   constraint fk_QUERY_RESULT_query_id foreign key (query_id) references SHRINE_QUERY (id)
