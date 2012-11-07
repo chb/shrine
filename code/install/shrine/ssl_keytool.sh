@@ -11,11 +11,10 @@ source shrine.rc
 ##########
 
 if [ ! `which keytool` ]; then
-    KEYTOOL_PATH = /usr/java/default/bin/keytool
-    if [! -e ${KEYTOOL_PATH} ]; then
-      ln -s ${KEYTOOL_PATH} /usr/bin/keytool
+    if [ -f /usr/java/default/bin/keytool ]; then
+      ln -s /usr/java/default/bin/keytool /usr/bin/keytool
     else
-      echo "KEYTOOL NOT FOUND AT ${KEYTOOL_PATH}; EXPECT SUBSEQUENT FAILURES"
+      echo "KEYTOOL NOT FOUND AT /usr/java/default/bin/keytool; EXPECT SUBSEQUENT FAILURES"
     fi
 fi
 
