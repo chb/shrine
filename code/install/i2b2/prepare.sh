@@ -35,6 +35,7 @@ echo "[i2b2/prepare.sh] Your I2B2 Environment Variables (see i2b2.rc)"
 export | grep I2B2
 
 ##########
+./install_prereqs.sh
 ./configure_hive.sh
 ./configure_pm.sh
 ./ontology.sh

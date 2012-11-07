@@ -6,16 +6,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import resource="classpath:net/shrine/baseShrineContext.xml"/>
-    
-    <!-- Needed by HappyService -->
-    <bean id="pmHttpClient" class="net.shrine.serializers.pm.PMHttpClient">
-        <constructor-arg index="0" ref="pmEndpoint"/>
-    </bean>
 
-    <bean id="identityService" class="org.spin.query.message.identity.AlwaysCertifiesIdentityService"/>
+    <bean id="identityService" class="org.spin.identity.AlwaysCertifiesIdentityService"/>
 
     <bean id="authorizationService" class="net.shrine.authorization.AllowsAllAuthorizationService"/>
-        
+
     <bean id="shrineService" class="net.shrine.service.ShrineService">
         <constructor-arg index="0" ref="hibernateAuditDAO"/>
         <constructor-arg index="1" ref="authorizationService"/>

@@ -20,6 +20,13 @@ mkdir -p work; cd work
 
 #########
 
+iptables -A INPUT -p tcp --dport ${SHRINE_PORT} -j ACCEPT
+
+/sbin/service iptables save
+/sbin/service iptables restart
+
+#########
+
 NEXUS_URL_BASE=http://repo.open.med.harvard.edu/nexus/content/groups/public/net/shrine/
 
 SHRINE_WAR_ARTIFACT_ID=shrine-war

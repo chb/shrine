@@ -33,7 +33,7 @@ chmod +x *.sh
 echo "[shrine/install.sh] Your SHRINE Environment Variables (see shrine.rc)"
 
 ##########
-./install-mysql.sh
+./install_prereqs.sh
 ./mysql.sh
 ./spin.sh
 ./install-tomcat.sh

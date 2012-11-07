@@ -73,7 +73,7 @@ export SHRINE_MYSQL_USER=shrine
 export SHRINE_MYSQL_PASSWORD=demouser
 
 #The i2b2 user Shrine should use when making queries to an i2b2 hive.
-export SHRINE_ADAPTER_I2B2_USER=i2b2
+export SHRINE_ADAPTER_I2B2_USER=demo
 
 #The password for the i2b2 user Shrine should use when making queries to an i2b2 hive.
 export SHRINE_ADAPTER_I2B2_PASSWORD=demouser
