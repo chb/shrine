@@ -14,7 +14,6 @@
 		    name: "SHRINE_NODE_NAME",
 		    debug: true,
 		    allowAnalysis: true,
-		    // isSHRINE: false <-- actually should be called "use harvard sheriff" TODO
 		    urlCellPM: "http://I2B2_PM_IP/i2b2/rest/PMService/"
 		}
 	]
