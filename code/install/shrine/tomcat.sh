@@ -20,8 +20,8 @@ mkdir -p work; cd work
 
 #########
 
-iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport ${SHRINE_PORT} -j ACCEPT
-iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport ${SHRINE_SSL_PORT} -j ACCEPT
+iptables -I INPUT 9 -m state --state NEW -m tcp -p tcp --dport ${SHRINE_PORT} -j ACCEPT
+iptables -I INPUT 9 -m state --state NEW -m tcp -p tcp --dport ${SHRINE_SSL_PORT} -j ACCEPT
 
 service iptables save
 service iptables restart
