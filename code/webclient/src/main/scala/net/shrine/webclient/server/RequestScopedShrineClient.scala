@@ -1,6 +1,6 @@
 package net.shrine.webclient.server
 
-import net.shrine.service.{ JerseyShrineClient, ShrineClient }
+import net.shrine.client.{JerseyShrineClient, ShrineClient}
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.util.Loggable
 

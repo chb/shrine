@@ -1,6 +1,5 @@
 package net.shrine.webclient.server
 
-import net.shrine.service.ShrineClient
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.ReadApprovedQueryTopicsResponse
 import net.shrine.protocol.ReadQueryDefinitionResponse
@@ -17,6 +16,7 @@ import scala.xml.NodeSeq
 import net.shrine.protocol.QueryResult
 import java.util.Date
 import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
+import net.shrine.client.ShrineClient
 
 /**
  * @author clint

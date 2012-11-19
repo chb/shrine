@@ -1,8 +1,8 @@
-package net.shrine.service
+package net.shrine.protocol
+
 import junit.framework.TestCase
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
-import net.shrine.protocol.ResultOutputType
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response.Status
 import org.junit.Test
@@ -20,7 +20,6 @@ import org.junit.Test
  */
 final class OutputTypeSetTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
 
-  import scala.collection.JavaConversions._
 
   private val possibleOutputTypeSets = Seq(ResultOutputType.values.toSet,
     Set(ResultOutputType.PATIENT_COUNT_XML),
@@ -94,7 +93,6 @@ final class OutputTypeSetTest extends TestCase with AssertionsForJUnit with Shou
   @Test
   def testDeserialize {
     import OutputTypeSet.deserialize
-    import ResultOutputType._
 
     intercept[WebApplicationException] {
       deserialize(null)

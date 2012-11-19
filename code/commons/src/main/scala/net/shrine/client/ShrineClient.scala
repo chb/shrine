@@ -1,11 +1,10 @@
-package net.shrine.service
+package net.shrine.client
+
 import net.shrine.protocol.ReadPreviousQueriesResponse
 import net.shrine.protocol.ReadApprovedQueryTopicsResponse
 import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.ResultOutputType
-import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.ReadQueryInstancesResponse
-import net.shrine.protocol.ReadInstanceResultsRequest
 import net.shrine.protocol.ReadInstanceResultsResponse
 import net.shrine.protocol.ReadPdoResponse
 import scala.xml.NodeSeq
@@ -13,6 +12,8 @@ import net.shrine.protocol.ReadQueryDefinitionResponse
 import net.shrine.protocol.DeleteQueryResponse
 import net.shrine.protocol.RenameQueryResponse
 import net.shrine.protocol.query.QueryDefinition
+import scala.collection.JavaConversions._
+
 
 /**
  *
@@ -45,8 +46,7 @@ trait ShrineClient {
   def renameQuery(queryId: Long, queryName: String): RenameQueryResponse
   
   //Overloads for Java interop
-  
-  import scala.collection.JavaConversions._
-  
-  def runQuery(topicId: String, outputTypes: java.util.Set[ResultOutputType], queryDefinition: QueryDefinition): RunQueryResponse = runQuery(topicId, outputTypes.toSet, queryDefinition)
+
+
+ def runQuery(topicId: String, outputTypes: java.util.Set[ResultOutputType], queryDefinition: QueryDefinition): RunQueryResponse = runQuery(topicId, outputTypes.toSet, queryDefinition)
 }

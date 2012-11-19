@@ -1,6 +1,5 @@
-package net.shrine.service
+package net.shrine.protocol
 
-import net.shrine.protocol.ResultOutputType
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.Response.Status
@@ -39,7 +38,7 @@ final case class OutputTypeSet(private val outputTypes: Set[ResultOutputType]) {
 
 object OutputTypeSet {
 
-  private[service] def deserialize(outputTypesString: String): Set[ResultOutputType] = {
+  private[shrine] def deserialize(outputTypesString: String): Set[ResultOutputType] = {
     try {
       require(outputTypesString != null)
       
@@ -59,7 +58,7 @@ object OutputTypeSet {
 
   import java.net.{ URLEncoder, URLDecoder }
 
-  private[service] def encode(s: String): String = URLEncoder.encode(s, utf8)
+  private[shrine] def encode(s: String): String = URLEncoder.encode(s, utf8)
 
-  private[service] def decode(s: String): String = URLDecoder.decode(s, utf8)
+  private[shrine] def decode(s: String): String = URLDecoder.decode(s, utf8)
 }

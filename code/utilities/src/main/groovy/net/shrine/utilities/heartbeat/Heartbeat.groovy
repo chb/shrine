@@ -7,7 +7,7 @@ import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.Credential
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.query.QueryDefinition
-import net.shrine.service.JerseyShrineClient
+import net.shrine.client.JerseyShrineClient
 import org.apache.commons.mail.DefaultAuthenticator
 import org.apache.commons.mail.Email
 import org.apache.commons.mail.SimpleEmail

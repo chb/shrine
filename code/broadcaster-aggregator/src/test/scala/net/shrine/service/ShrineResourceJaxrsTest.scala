@@ -17,6 +17,7 @@ import net.shrine.protocol._
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import org.spin.tools.{RandomTool, NetworkTime}
+import net.shrine.client.JerseyShrineClient
 
 /**
  *

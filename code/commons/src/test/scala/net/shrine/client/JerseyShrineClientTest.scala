@@ -1,11 +1,9 @@
-package net.shrine.service
+package net.shrine.client
 
 import junit.framework.TestCase
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
 import scala.xml.NodeSeq
-import com.sun.jersey.api.client.config.DefaultClientConfig
-import com.sun.jersey.client.urlconnection.HTTPSProperties
 import net.shrine.protocol._
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term

@@ -7,8 +7,6 @@ import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.query.Expression.fromXml
 import net.shrine.protocol.query.QueryDefinition
-import net.shrine.service.JerseyShrineClient
-import net.shrine.service.ShrineClient
 import net.shrine.protocol.query.Expression
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.{Service, Component}
@@ -16,6 +14,7 @@ import org.springframework.context.annotation.Scope
 import net.shrine.protocol.I2b2ResultEnvelope
 import net.shrine.webclient.shared.domain.MultiInstitutionQueryResult
 import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
+import net.shrine.client.ShrineClient
 
 /**
  * @author clint

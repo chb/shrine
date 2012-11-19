@@ -4,7 +4,6 @@ import junit.framework.TestCase
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.matchers.ShouldMatchers
 import org.junit.Test
-import net.shrine.service.ShrineClient
 import net.shrine.protocol.ReadQueryDefinitionResponse
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.ReadPdoResponse

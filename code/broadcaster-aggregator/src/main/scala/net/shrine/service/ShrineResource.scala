@@ -16,23 +16,11 @@ import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
-import net.shrine.protocol.AuthenticationInfo
-import net.shrine.protocol.ReadApprovedQueryTopicsRequest
-import net.shrine.protocol.ReadPreviousQueriesRequest
-import net.shrine.protocol.ResultOutputType
-import net.shrine.protocol.RunQueryRequest
-import net.shrine.protocol.ShrineRequestHandler
+import net.shrine.protocol._
 import net.shrine.service.annotation.RequestHandler
-import net.shrine.protocol.ReadQueryInstancesRequest
-import net.shrine.protocol.ShrineResponse
-import net.shrine.protocol.ReadInstanceResultsRequest
 import scala.xml.NodeSeq
-import net.shrine.protocol.ReadPdoRequest
 import java.io.StringReader
 import javax.ws.rs.DELETE
-import net.shrine.protocol.ReadQueryDefinitionRequest
-import net.shrine.protocol.DeleteQueryRequest
-import net.shrine.protocol.RenameQueryRequest
 import net.shrine.protocol.query.QueryDefinition
 
 /**
