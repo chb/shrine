@@ -1,6 +1,5 @@
 package net.shrine.adapter
 
-import dao.LegacyAdapterDAO
 import net.shrine.protocol.QueryResult
 import java.util.Random
 

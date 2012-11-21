@@ -31,7 +31,6 @@ import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.query.Expression
 import net.shrine.util.Util
 
-
 /**
  * @author clint
  * @date Oct 15, 2012
@@ -39,19 +38,41 @@ import net.shrine.util.Util
 final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, sequenceHelper: SequenceHelper) extends AdapterDao {
   import driver.Implicit._
 
+  override def findRecentQueries(howMany: Int): Seq[ShrineQuery] = {
+    allResults(Queries.queriesForAllUsers.take(howMany))
+  }
+
+  override def renameQuery(networkQueryId: Long, newName: String) {
+    //TODO: why can't we use a parameterized query here?
+    val updateQuery = for {
+      query <- ShrineQueries
+      if query.networkId === networkQueryId
+    } yield query.name
+
+    database.withSession { implicit session: Session =>
+      updateQuery.update(newName)
+    }
+  }
+
+  override def deleteQuery(networkQueryId: Long) {
+    database.withSession { implicit session: Session =>
+      Queries.queriesByNetworkId(networkQueryId).mutate(_.delete())
+    }
+  }
+
   override def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean = Util.tryOrElse(false) {
     val privilegedUserOption = firstResultOption(Queries.privilegedUsers(id.getUsername, id.getDomain))
 
     val threshold = privilegedUserOption.map(_.threshold).getOrElse(defaultThreshold.intValue)
 
     val thirtyDaysInThePast = DateHelpers.daysFromNow(-30)
-    
+
     val overrideDate = privilegedUserOption.map(_.overrideDate).getOrElse(thirtyDaysInThePast)
 
     val counts = allResults(Queries.repeatedResults(id.getUsername, id.getDomain, overrideDate)).sorted
 
     val repeatedResultCount = counts.lastOption.getOrElse(0)
-    
+
     repeatedResultCount > threshold
   }
 
@@ -187,8 +208,20 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
       database.withTransaction(outer.findResultsFor(networkQueryId))
     }
 
-    def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean = {
+    override def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean = {
       database.withTransaction(outer.isUserLockedOut(id, defaultThreshold))
+    }
+
+    override def renameQuery(networkQueryId: Long, newName: String) {
+      database.withTransaction(outer.renameQuery(networkQueryId, newName))
+    }
+
+    override def deleteQuery(networkQueryId: Long) {
+      database.withTransaction(outer.deleteQuery(networkQueryId))
+    }
+
+    override def findRecentQueries(howMany: Int): Seq[ShrineQuery] = {
+      database.withTransaction(outer.findRecentQueries(howMany))
     }
   }
 
@@ -219,17 +252,33 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
       } yield countRow.originalCount.count
     }
 
+    val queriesForAllUsers = {
+      import DateHelpers.Implicit._
+      
+      for {
+        query <- ShrineQueries
+        _ <- Query.orderBy(query.creationDate.desc)
+      } yield query.*
+    }
+
     val queriesForUser = for {
       username ~ domain <- Parameters[String, String]
-      q <- ShrineQueries
-      if q.domain === domain //NB: Note triple-equals
-      if q.username === username //NB: Note triple-equals
-    } yield q.*
+      query <- ShrineQueries
+      if query.domain === domain //NB: Note triple-equals
+      if query.username === username //NB: Note triple-equals
+    } yield query.*
 
     val queriesByNetworkId = for {
       networkQueryId <- Parameters[Long]
-      q <- ShrineQueries if q.networkId === networkQueryId //NB: Note triple-equals
-    } yield q.*
+      query <- ShrineQueries
+      if query.networkId === networkQueryId //NB: Note triple-equals
+    } yield query.*
+
+    val queryNamesByNetworkId = for {
+      networkQueryId <- Parameters[Long]
+      query <- ShrineQueries
+      if query.networkId === networkQueryId //NB: Note triple-equals
+    } yield query.name
 
     val resultsForQuery = for {
       networkQueryId <- Parameters[Long]
@@ -238,8 +287,8 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
 
     val countResults = for {
       networkQueryId <- Parameters[Long]
-      q <- ShrineQueries if q.networkId === networkQueryId
-      qr <- QueryResults if qr.queryId === q.id
+      query <- ShrineQueries if query.networkId === networkQueryId
+      qr <- QueryResults if qr.queryId === query.id
       countRow <- CountResults if countRow.resultId === qr.id
     } yield countRow.*
 

@@ -1,13 +1,15 @@
 package net.shrine.adapter
 
-import dao.LegacyAdapterDAO
 import org.spin.tools.crypto.signature.Identity
-import net.shrine.protocol.{ReadQueryDefinitionResponse, ReadQueryDefinitionRequest, BroadcastMessage}
+import net.shrine.protocol.{ ReadQueryDefinitionResponse, ReadQueryDefinitionRequest, BroadcastMessage }
 import org.spin.tools.NetworkTime._
-import net.shrine.config.{HiveCredentials}
+import net.shrine.config.{ HiveCredentials }
 import net.shrine.util.HttpClient
 import net.shrine.serialization.XmlMarshaller
 import net.shrine.util.Util
+import net.shrine.adapter.dao.AdapterDao
+import net.shrine.protocol.ErrorResponse
+import net.shrine.protocol.query.QueryDefinition
 
 /**
  * @author Bill Simons
@@ -19,18 +21,23 @@ import net.shrine.util.Util
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadQueryDefinitionAdapter(
-    dao: LegacyAdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends WithHiveCredentialsAdapter(hiveCredentials) {
+class ReadQueryDefinitionAdapter(dao: AdapterDao) extends Adapter {
 
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
     val newRequest = message.request.asInstanceOf[ReadQueryDefinitionRequest]
-    val definition = dao.findMasterQueryDefinition(newRequest.queryId)
+
+    val resultOption = for {
+      definition <- dao.findQueryByNetworkId(newRequest.queryId)
+    } yield {
+      new ReadQueryDefinitionResponse(
+        definition.networkId,
+        definition.name,
+        definition.username,
+        definition.dateCreated,
+        //TODO: I2b2 or Shrine format?
+        QueryDefinition(definition.name, definition.queryExpr).toI2b2String) 
+    }
     
-    new ReadQueryDefinitionResponse(definition.getQueryMasterId.toLong,
-      definition.getName,
-      definition.getUserId,
-      makeXMLGregorianCalendar(definition.getCreateDate),
-      definition.getRequestXml)
+    resultOption.getOrElse(ErrorResponse("Couldn't find query with network id: " + newRequest.queryId))
   }
 }

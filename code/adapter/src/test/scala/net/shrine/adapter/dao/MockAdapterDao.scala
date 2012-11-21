@@ -11,6 +11,7 @@ import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.I2b2ResultEnvelope
 import net.shrine.protocol.query.Expression
 import org.spin.tools.crypto.signature.Identity
+import net.shrine.adapter.dao.model.ShrineQuery
 
 /**
  * @author clint
@@ -34,4 +35,10 @@ object MockAdapterDao extends AdapterDao {
   override def findResultsFor(networkQueryId: Long): Option[ShrineQueryResult] = None
   
   override def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean = false
+  
+  override def renameQuery(networkQueryId: Long, newName: String): Unit = ()
+  
+  override def deleteQuery(networkQueryId: Long): Unit = ()
+  
+  override def findRecentQueries(howMany: Int): Seq[ShrineQuery] = Nil
 }

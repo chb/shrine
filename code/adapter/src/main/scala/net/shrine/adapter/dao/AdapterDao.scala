@@ -12,6 +12,7 @@ import net.shrine.protocol.I2b2ResultEnvelope
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.query.Expression
 import org.spin.tools.crypto.signature.Identity
+import net.shrine.adapter.dao.model.ShrineQuery
 
 /**
  * @author clint
@@ -42,4 +43,10 @@ trait AdapterDao {
   def findResultsFor(networkQueryId: Long): Option[ShrineQueryResult]
   
   def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean
+  
+  def renameQuery(networkQueryId: Long, newName: String): Unit
+  
+  def deleteQuery(networkQueryId: Long): Unit
+  
+  def findRecentQueries(howMany: Int): Seq[ShrineQuery]
 }

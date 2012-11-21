@@ -1,6 +1,5 @@
 package net.shrine.adapter
 
-import dao.LegacyAdapterDAO
 import org.spin.node.QueryContext
 import java.lang.String
 import org.springframework.transaction.annotation.Transactional

@@ -72,27 +72,6 @@
         <constructor-arg ref="sequenceHelper"/>
     </bean>
 
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory"/>
-        </property>
-    </bean>
-
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="net.shrine.adapter.dao.hibernate.entity"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
-                <prop key="hibernate.hbm2ddl.auto">create</prop>
-            </props>
-        </property>
-    </bean>
-
-    <bean id="legacyAdapterDao" class="net.shrine.adapter.dao.hibernate.HibernateLegacyAdapterDAO"/>
-
     <bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
 	  <constructor-arg index="0" value="AdapterMappings.xml"/>
 	</bean>

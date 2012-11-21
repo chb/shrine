@@ -1,6 +1,5 @@
 package net.shrine.adapter
 
-import dao.LegacyAdapterDAO
 import xml.NodeSeq
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.config.HiveCredentials

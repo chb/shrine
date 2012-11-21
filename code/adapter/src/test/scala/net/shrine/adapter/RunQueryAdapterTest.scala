@@ -12,7 +12,6 @@ import org.spin.tools.crypto.signature.Identity
 
 import junit.framework.TestCase
 import net.shrine.adapter.dao.MockAdapterDao
-import net.shrine.adapter.dao.MockLegacyAdapterDao
 import net.shrine.adapter.translators.ExpressionTranslator
 import net.shrine.adapter.translators.QueryDefinitionTranslator
 import net.shrine.config.HiveCredentials

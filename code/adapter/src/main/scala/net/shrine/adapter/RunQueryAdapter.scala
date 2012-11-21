@@ -1,6 +1,5 @@
 package net.shrine.adapter
 
-import dao.{ MasterTuple, UserAndMaster, IDPair, ResultTuple, RequestResponseData, LegacyAdapterDAO }
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol.{ BroadcastMessage, RunQueryResponse, RunQueryRequest }
 import xml.NodeSeq

@@ -113,7 +113,6 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan">
             <list>
-                <value>net.shrine.adapter.dao.hibernate.entity</value>
                 <value>net.shrine.broadcaster.dao.hibernate</value>
             </list>
         </property>
@@ -183,11 +182,10 @@
         <constructor-arg index="0" ref="realCRCEndpoint"/>
         <constructor-arg index="1" ref="httpClient"/>
         <constructor-arg index="2" ref="adapterDao"/>
-        <constructor-arg index="3" ref="hibernateLegacyAdapterDAO"/>
-        <constructor-arg index="4" ref="hiveCredentials"/>
-        <constructor-arg index="5" ref="queryDefinitionTranslator"/>
-        <constructor-arg index="6" ref="shrineConfig"/>
-        <constructor-arg index="7" value="true"/>
+        <constructor-arg index="3" ref="hiveCredentials"/>
+        <constructor-arg index="4" ref="queryDefinitionTranslator"/>
+        <constructor-arg index="5" ref="shrineConfig"/>
+        <constructor-arg index="6" value="true"/>
     </bean>
 
     <bean id="instancesByIDQuery" class="net.shrine.adapter.ReadInstanceResultsAdapter">
@@ -207,19 +205,17 @@
     <bean id="masterDeleteQuery" class="net.shrine.adapter.DeleteQueryAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
         <constructor-arg index="1" ref="httpClient"/>
-        <constructor-arg index="2" ref="hibernateLegacyAdapterDAO"/>
-        <constructor-arg index="3" ref="hiveCredentials"/>
+        <constructor-arg index="2" ref="adapterDAO"/>
     </bean>
 
     <bean id="masterRenameQuery" class="net.shrine.adapter.RenameQueryAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
         <constructor-arg index="1" ref="httpClient"/>
-        <constructor-arg index="2" ref="hibernateLegacyAdapterDAO"/>
+        <constructor-arg index="2" ref="adapterDAO"/>
         <constructor-arg index="3" ref="hiveCredentials"/>
     </bean>
 
     <bean id="getRequestXmlQuery" class="net.shrine.adapter.ReadQueryDefinitionAdapter">
-        <constructor-arg index="0" ref="hibernateLegacyAdapterDAO"/>
-        <constructor-arg index="1" ref="hiveCredentials"/>
+        <constructor-arg index="0" ref="adapterDAO"/>
     </bean>
 </beans>

@@ -1,7 +1,6 @@
 package net.shrine.adapter
 
-import dao.LegacyAdapterDAO
-import xml.{NodeSeq, XML}
+import scala.xml.{NodeSeq, XML}
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol._
 import net.shrine.config.HiveCredentials

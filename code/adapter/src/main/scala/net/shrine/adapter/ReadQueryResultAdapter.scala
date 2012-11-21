@@ -2,7 +2,6 @@ package net.shrine.adapter
 
 import org.spin.tools.crypto.signature.Identity
 
-import dao.LegacyAdapterDAO
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.config.HiveCredentials
 import net.shrine.protocol.BroadcastMessage

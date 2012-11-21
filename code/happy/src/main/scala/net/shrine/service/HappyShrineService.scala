@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import javax.xml.bind.JAXBContext
-import net.shrine.adapter.dao.LegacyAdapterDAO
+import net.shrine.adapter.dao.AdapterDao
 import net.shrine.broadcaster.dao.AuditDAO
 import net.shrine.config.ShrineConfig
 import net.shrine.config.HiveCredentials
@@ -63,7 +63,7 @@ class HappyShrineService @Autowired() (
   pmEndpoint: String,
   spinClient: SpinAgent,
   auditDao: AuditDAO,
-  adapterDao: LegacyAdapterDAO,
+  adapterDao: AdapterDao,
   httpClient: HttpClient) extends HappyShrineRequestHandler {
 
   //TODO - maybe make this a spring bean since its used in shrine service too?
@@ -249,14 +249,15 @@ class HappyShrineService @Autowired() (
   @Transactional(readOnly = true)
   override def queryReport: String = {
     val recentQueries = adapterDao.findRecentQueries(10)
+    
     XmlUtil.stripWhitespace(
       <recentQueries>
         {
-          recentQueries map { query =>
+          recentQueries.map { query =>
             <query>
-              <id>{ query.getNetworkMasterID }</id>
-              <date>{ query.getMasterCreateDate }</date>
-              <name>{ query.getMasterName }</name>
+              <id>{ query.networkId }</id>
+              <date>{ query.dateCreated }</date>
+              <name>{ query.name }</name>
             </query>
           }
         }

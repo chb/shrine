@@ -18,7 +18,7 @@ create table QUERY_RESULT(
   time_elapsed int null,
   last_updated timestamp default current_timestamp,
   constraint QUERY_RESULT_id_pk primary key(id),
-  constraint fk_QUERY_RESULT_query_id foreign key (query_id) references SHRINE_QUERY (id)
+  constraint fk_QUERY_RESULT_query_id foreign key (query_id) references SHRINE_QUERY (id) on delete cascade
 ) engine=innodb default charset=latin1;
 
 create table ERROR_RESULT(
@@ -26,7 +26,7 @@ create table ERROR_RESULT(
   result_id int not null,
   message varchar(255) not null,
   constraint ERROR_RESULT_id_pk primary key(id),
-  constraint fk_ERROR_RESULT_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id)
+  constraint fk_ERROR_RESULT_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id) on delete cascade
 ) engine=innodb default charset=latin1;
 
 create table COUNT_RESULT(
@@ -36,7 +36,7 @@ create table COUNT_RESULT(
   obfuscated_count int not null,
   date_created timestamp default current_timestamp,
   constraint COUNT_RESULT_id_pk primary key(id),
-  constraint fk_COUNT_RESULT_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id)
+  constraint fk_COUNT_RESULT_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id) on delete cascade
 ) engine=innodb default charset=latin1;
 
 create table BREAKDOWN_RESULT(
@@ -46,7 +46,7 @@ create table BREAKDOWN_RESULT(
   original_value int not null,
   obfuscated_value int not null,
   constraint BREAKDOWN_RESULT_id_pk primary key(id),
-  constraint fk_BREAKDOWN_RESULT_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id)
+  constraint fk_BREAKDOWN_RESULT_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id) on delete cascade
 ) engine=innodb default charset=latin1;
 
 create table PATIENT_SET(
@@ -54,7 +54,7 @@ create table PATIENT_SET(
   result_id int not null,
   patient_num varchar(255) not null,
   constraint PATIENT_SET_id_pk primary key(id),
-  constraint fk_PATIENT_SET_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id)
+  constraint fk_PATIENT_SET_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id) on delete cascade
 ) engine=innodb default charset=latin1;
 
 create table PRIVILEGED_USER(

@@ -11,5 +11,7 @@ import org.scalaquery.ql.extended.{ExtendedTable => Table}
 trait HasResultId { self: Table[_] =>
   def resultId = column[Int]("RESULT_ID", O.NotNull)
   
-  def resultIdFk = foreignKey("ResultId_FK", resultId, QueryResults)(_.id)
+  import ForeignKeyAction.{ NoAction, Cascade }
+  
+  def resultIdFk = foreignKey("ResultId_FK", resultId, QueryResults)(targetColumns = _.id, onUpdate = NoAction, onDelete = Cascade)
 }

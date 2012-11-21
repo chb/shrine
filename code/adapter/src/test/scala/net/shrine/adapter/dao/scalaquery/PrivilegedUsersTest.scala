@@ -129,8 +129,6 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
   
   private def lockoutUser(lockedOutId: Identity, resultSetSize: Int) {
     for (i <- 1 until testThreshold + 2) {
-      println("Locking out " + lockedOutId.getUsername + " query: " + i)
-      
       logCountQueryResult(i, lockedOutId, resultSetSize)
     }
   }

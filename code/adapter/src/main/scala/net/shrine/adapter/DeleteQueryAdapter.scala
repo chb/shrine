@@ -1,12 +1,12 @@
 package net.shrine.adapter
 
-import dao.LegacyAdapterDAO
-import xml.NodeSeq
+import scala.xml.NodeSeq
 import net.shrine.protocol._
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.config.HiveCredentials
 import net.shrine.util.HttpClient
 import net.shrine.serialization.XmlMarshaller
+import net.shrine.adapter.dao.AdapterDao
 
 /**
  * @author Bill Simons
@@ -21,7 +21,7 @@ import net.shrine.serialization.XmlMarshaller
 class DeleteQueryAdapter(
     crcUrl: String,
     httpClient: HttpClient,
-    dao: LegacyAdapterDAO,
+    dao: AdapterDao,
     override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[DeleteQueryRequest, DeleteQueryResponse](crcUrl, httpClient, hiveCredentials) {
 
   override protected def parseShrineResponse(nodeSeq: NodeSeq) = DeleteQueryResponse.fromI2b2(nodeSeq)
@@ -29,9 +29,7 @@ class DeleteQueryAdapter(
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
     val response = super.processRequest(identity, message).asInstanceOf[DeleteQueryResponse]
     
-    dao.removeMasterDefinitions(response.queryId)
-    
-    dao.removeUserToMasterMapping(response.queryId)
+    dao.deleteQuery(response.queryId)
     
     response
   }

@@ -4,7 +4,6 @@ import junit.framework.TestCase
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.AssertionsForJUnit
 import org.junit.Test
-import net.shrine.adapter.dao.MockLegacyAdapterDao
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.ResultOutputType
 
@@ -33,18 +32,6 @@ final class ObfuscatorTest extends TestCase with ShouldMatchers with AssertionsF
   
   @Test
   def testObfuscateSeqOfQueryResults {
-    final class ExplicitMockLegacyAdapterDao(obfuscationAmount: Option[Int]) extends MockLegacyAdapterDao {
-      var passedResultIds: Seq[String] = Seq.empty
-      var passedObfcsAmounts: Seq[Int] = Seq.empty
-      
-      override def findObfuscationAmount(resultId: String) = obfuscationAmount
-      
-      override def updateObfuscationAmount(resultId: String, obfscAmount: Int) {
-        passedResultIds :+= resultId
-        passedObfcsAmounts :+= obfscAmount
-      }
-    }
-    
     def queryResult(resultId: Long, setSize: Long) = {
       import ResultOutputType._
       

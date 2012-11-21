@@ -31,7 +31,9 @@ object QueryResults extends Table[QueryResultRow]("QUERY_RESULT") with HasId {
   
   override def * = id ~~ withoutGeneratedColumns ~ lastUpdated <> (QueryResultRow, QueryResultRow.unapply _)
   
-  def queryIdFk = foreignKey("QueryResultQueryId_FK", queryId, ShrineQueries)(_.id)
+  import ForeignKeyAction.{ NoAction, Cascade }
+  
+  def queryIdFk = foreignKey("QueryResultQueryId_FK", queryId, ShrineQueries)(targetColumns = _.id, onUpdate = NoAction, onDelete = Cascade)
   
   private implicit val resultOutputType2StringMapper: TypeMapper[ResultOutputType] = 
     MappedTypeMapper.base[ResultOutputType, String](

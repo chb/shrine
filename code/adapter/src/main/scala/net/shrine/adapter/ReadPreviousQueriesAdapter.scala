@@ -1,6 +1,5 @@
 package net.shrine.adapter
 
-import dao.LegacyAdapterDAO
 import net.shrine.protocol.{ReadPreviousQueriesResponse, BroadcastMessage}
 import scala.collection.JavaConversions._
 import org.spin.tools.crypto.signature.Identity
