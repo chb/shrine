@@ -16,7 +16,7 @@ object Helpers {
   import scala.collection.JavaConverters._
   
   def makeBreakdownsByTypeMap(envelopes: Iterable[I2b2ResultEnvelope]): JMap[String, Breakdown] = {
-    envelopes.map { envelope => (envelope.resultType.name, makeBreakdown(envelope)) }.toMap.asJava
+    envelopes.map(envelope => (envelope.resultType.name, makeBreakdown(envelope))).toMap.asJava
   }
   
   def makeSingleInstitutionQueryResult(result: QueryResult): SingleInstitutionQueryResult = {

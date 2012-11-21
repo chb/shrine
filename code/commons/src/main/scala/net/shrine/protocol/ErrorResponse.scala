@@ -16,18 +16,18 @@ import net.shrine.serialization.XmlUnmarshaller
  * 
  * NB: Now a case class for structural equality 
  */
-final case class ErrorResponse(val errorMessage: String) extends ShrineResponse with TranslatableResponse[ErrorResponse] {
+final case class ErrorResponse(val errorMessage: String) extends ShrineResponse {
 
   override protected def status = <status type="ERROR">{errorMessage}</status>
 
-  protected def i2b2MessageBody = null
+  override protected def i2b2MessageBody = null
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <errorResponse>
       <message>{errorMessage}</message>
     </errorResponse>)
 }
 
 object ErrorResponse extends XmlUnmarshaller[ErrorResponse] {
-  def fromXml(nodeSeq: NodeSeq) = new ErrorResponse((nodeSeq \ "message").text)
+  override def fromXml(nodeSeq: NodeSeq) = new ErrorResponse((nodeSeq \ "message").text)
 }

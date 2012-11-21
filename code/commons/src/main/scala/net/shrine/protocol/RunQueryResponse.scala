@@ -28,9 +28,9 @@ final case class RunQueryResponse(
     val groupId: String,
     val requestXml: QueryDefinition,
     val queryInstanceId: Long,
-    val results: Seq[QueryResult]) extends ShrineResponse with TranslatableResponse[RunQueryResponse] {
+    val results: Seq[QueryResult]) extends ShrineResponse {
 
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  override protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:master_instance_result_responseType">
       <status>
         <condition type="DONE">DONE</condition>
@@ -60,7 +60,7 @@ final case class RunQueryResponse(
     </ns5:response>)
 
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <runQueryResponse>
       <queryId>{queryId}</queryId>
       <instanceId>{queryInstanceId}</instanceId>
@@ -87,7 +87,7 @@ final case class RunQueryResponse(
 }
 
 object RunQueryResponse extends I2b2Unmarshaller[RunQueryResponse] with XmlUnmarshaller[RunQueryResponse] {
-  def fromI2b2(nodeSeq: NodeSeq) = {
+  override def fromI2b2(nodeSeq: NodeSeq) = {
     def firstChild(nodeSeq: NodeSeq) = nodeSeq.head.asInstanceOf[Elem].child.head
     
     val results = (nodeSeq \ "message_body" \ "response" \ "query_result_instance").map(QueryResult.fromI2b2)
@@ -114,7 +114,7 @@ object RunQueryResponse extends I2b2Unmarshaller[RunQueryResponse] with XmlUnmar
     new RunQueryResponse(queryId, makeXMLGregorianCalendar(createDate), userId, groupId, requestXml.get, queryInstanceId, results)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     val results = (nodeSeq \ "queryResults" \ "_").map(QueryResult.fromXml)
 
     new RunQueryResponse(

@@ -1,6 +1,6 @@
 package net.shrine.adapter.dao.hibernate
 
-import net.shrine.adapter.dao.AdapterDAO
+import net.shrine.adapter.dao.LegacyAdapterDAO
 import net.shrine.adapter.dao.DAOException
 import net.shrine.adapter.dao.IDPair
 import net.shrine.adapter.dao.MasterQueryDefinition
@@ -37,14 +37,14 @@ import java.util.{List => JList}
 import scala.collection.JavaConverters._
 import net.shrine.protocol.QueryMaster
 
-object HibernateAdapterDAO {
-  private val log = Logger.getLogger(classOf[HibernateAdapterDAO])
+object HibernateLegacyAdapterDAO {
+  private val log = Logger.getLogger(classOf[HibernateLegacyAdapterDAO])
 }
 
 @Repository
-class HibernateAdapterDAO extends AdapterDAO {
+class HibernateLegacyAdapterDAO extends LegacyAdapterDAO {
 
-  import HibernateAdapterDAO._
+  import HibernateLegacyAdapterDAO._
 
   @Autowired
   private var sessionFactory: SessionFactory = _

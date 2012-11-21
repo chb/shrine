@@ -33,9 +33,7 @@ final case class ReadPreviousQueriesRequest(
       <fetchSize>{ fetchSize }</fetchSize>
     </readPreviousQueries>)
 
-  def handle(handler: ShrineRequestHandler) = {
-    handler.readPreviousQueries(this)
-  }
+  def handle(handler: ShrineRequestHandler) = handler.readPreviousQueries(this)
 
   protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>

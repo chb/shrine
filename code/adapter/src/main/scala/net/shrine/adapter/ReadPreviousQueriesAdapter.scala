@@ -1,14 +1,23 @@
 package net.shrine.adapter
 
-import dao.AdapterDAO
+import dao.LegacyAdapterDAO
 import net.shrine.protocol.{ReadPreviousQueriesResponse, BroadcastMessage}
 import scala.collection.JavaConversions._
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.config.HiveCredentials
 import net.shrine.util.HttpClient
+import net.shrine.adapter.dao.AdapterDao
+import net.shrine.protocol.QueryMaster
+import net.shrine.util.Util
+import net.shrine.adapter.dao.model.ShrineQuery
+import net.shrine.protocol.QueryMaster
+import net.shrine.protocol.ShrineResponse
+import net.shrine.serialization.XmlMarshaller
+import net.shrine.util.Loggable
 
 /**
  * @author Bill Simons
+ * @author clint
  * @date 4/11/11
  * @link http://cbmi.med.harvard.edu
  * @link http://chip.org
@@ -17,13 +26,23 @@ import net.shrine.util.HttpClient
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadPreviousQueriesAdapter(
-    override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends Adapter(dao, hiveCredentials) {
-
-  protected def processRequest(identity: Identity, message: BroadcastMessage) = {
-    val networkMasterDefs = dao.findNetworkMasterDefinitions(identity.getDomain, identity.getUsername)
-    val response = new ReadPreviousQueriesResponse(identity.getUsername, identity.getDomain, networkMasterDefs)
+class ReadPreviousQueriesAdapter(dao: AdapterDao) extends Adapter with Loggable {
+  
+  override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
+    //TODO: do we need the BroadcastMessage for anything?  fetchsize?
+    
+    val previousQueries = dao.findQueriesByUserAndDomain(identity.getDomain, identity.getUsername)
+    
+    val response = ReadPreviousQueriesResponse(identity.getUsername, identity.getDomain, previousQueries.map(_.toQueryMaster))
+    
+    if(debugEnabled) {
+      debug("Retrieved previous queries: ")
+      
+      previousQueries.foreach(q => debug("  " + q))
+      
+      debug(response)
+    }
+    
     response
   }
 }

@@ -4,6 +4,10 @@ import net.shrine.protocol._
 import collection.mutable.ArrayBuffer
 import org.spin.message.Result
 
+/**
+ * @author ???
+ * @date ???
+ */
 class ReadPdoResponseAggregator extends Aggregator {
 
   override def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]) = {

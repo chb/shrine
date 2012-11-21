@@ -25,11 +25,11 @@ import net.shrine.client.ShrineClient
 final case class MockShrineClient(toReturn: Map[String, SingleInstitutionQueryResult]) extends ShrineClient {
   var queryDefinition: QueryDefinition = _
 
-  def readApprovedQueryTopics(userId: String): ReadApprovedQueryTopicsResponse = null
+  override def readApprovedQueryTopics(userId: String): ReadApprovedQueryTopicsResponse = null
 
-  def readPreviousQueries(userId: String, fetchSize: Int): ReadPreviousQueriesResponse = null
+  override def readPreviousQueries(userId: String, fetchSize: Int): ReadPreviousQueriesResponse = null
 
-  def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDef: QueryDefinition): RunQueryResponse = {
+  override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDef: QueryDefinition): RunQueryResponse = {
     this.queryDefinition = queryDef
 
     val now = NetworkTime.makeXMLGregorianCalendar(new Date)
@@ -38,22 +38,22 @@ final case class MockShrineClient(toReturn: Map[String, SingleInstitutionQueryRe
       case (instName, instResult) => {
         val statusType = if(instResult.isError) QueryResult.StatusType.Error else QueryResult.StatusType.Finished
         
-        QueryResult(123L, 456L, Option(ResultOutputType.PATIENT_COUNT_XML), instResult.getCount, Some(now), Some(now), Some(instName), statusType, None)
+        QueryResult(123L, 456L, Option(ResultOutputType.PATIENT_COUNT_XML), instResult.getCount, Some(now), Some(now), Some(instName), statusType.name, None)
       }
     }
 
     RunQueryResponse(987L, now, "some-user-id", "some-group-id", queryDefinition, 42L, queryResults.toSeq)
   }
 
-  def readQueryInstances(queryId: Long): ReadQueryInstancesResponse = null
+  override def readQueryInstances(queryId: Long): ReadQueryInstancesResponse = null
 
-  def readInstanceResults(instanceId: Long): ReadInstanceResultsResponse = null
+  override def readInstanceResults(instanceId: Long): ReadInstanceResultsResponse = null
 
-  def readPdo(patientSetCollId: String, optionsXml: NodeSeq): ReadPdoResponse = null
+  override def readPdo(patientSetCollId: String, optionsXml: NodeSeq): ReadPdoResponse = null
 
-  def readQueryDefinition(queryId: Long): ReadQueryDefinitionResponse = null
+  override def readQueryDefinition(queryId: Long): ReadQueryDefinitionResponse = null
 
-  def deleteQuery(queryId: Long): DeleteQueryResponse = null
+  override def deleteQuery(queryId: Long): DeleteQueryResponse = null
 
-  def renameQuery(queryId: Long, queryName: String): RenameQueryResponse = null
+  override def renameQuery(queryId: Long, queryName: String): RenameQueryResponse = null
 }

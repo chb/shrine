@@ -16,43 +16,58 @@ import net.shrine.serialization.I2b2Unmarshaller
  * @link http://www.gnu.org/licenses/lgpl.html
  *
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
+ * 
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * NOTE: Now that the adapter caches/stores results from the CRC, Instead of an
+ * i2b2 instance id, this class now contains the Shrine-generated, network-wide 
+ * id of a query, which is used to obtain results previously obtained from the 
+ * CRC from Shrine's datastore.
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  */
 final case class ReadInstanceResultsRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val instanceId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[ReadInstanceResultsRequest] {
+  /*
+   * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   * NOTE: Now that the adapter caches/stores results from the CRC, Instead of an
+   * i2b2 instance id, this class now contains the Shrine-generated, network-wide 
+   * id of a query, which is used to obtain results previously obtained from the 
+   * CRC from Shrine's datastore.
+   * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   */ 
+  val shrineNetworkQueryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
-  val requestType = InstanceRequestType
+  override val requestType = InstanceRequestType
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <readInstanceResults>
       { headerFragment }
-      <instanceId>{ instanceId }</instanceId>
+      <shrineNetworkQueryId>{ shrineNetworkQueryId }</shrineNetworkQueryId>
     </readInstanceResults>)
 
-  def handle(handler: ShrineRequestHandler) = {
+  override def handle(handler: ShrineRequestHandler) = {
     handler.readInstanceResults(this)
   }
 
-  def withId(id: Long) = new ReadInstanceResultsRequest(projectId, waitTimeMs, authn, id)
+  def withId(id: Long) = this.copy(shrineNetworkQueryId = id)
 
-  def withProject(proj: String) = new ReadInstanceResultsRequest(proj, waitTimeMs, authn, instanceId)
+  def withProject(proj: String) = this.copy(projectId = proj)
 
-  def withAuthn(ai: AuthenticationInfo) = new ReadInstanceResultsRequest(projectId, waitTimeMs, ai, instanceId)
+  def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:instance_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <query_instance_id>{ instanceId }</query_instance_id>
+        <query_instance_id>{ shrineNetworkQueryId }</query_instance_id>
       </ns4:request>
     </message_body>)
 }
 
 object ReadInstanceResultsRequest extends I2b2Unmarshaller[ReadInstanceResultsRequest] with ShrineRequestUnmarshaller[ReadInstanceResultsRequest] {
 
-  def fromI2b2(nodeSeq: NodeSeq): ReadInstanceResultsRequest = {
+  override def fromI2b2(nodeSeq: NodeSeq): ReadInstanceResultsRequest = {
     new ReadInstanceResultsRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
@@ -60,12 +75,11 @@ object ReadInstanceResultsRequest extends I2b2Unmarshaller[ReadInstanceResultsRe
       (nodeSeq \ "message_body" \ "request" \ "query_instance_id").text.toLong)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq): ReadInstanceResultsRequest = {
     new ReadInstanceResultsRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),
       shrineAuthenticationInfo(nodeSeq),
-      (nodeSeq \ "instanceId").text.toLong)
-
+      (nodeSeq \ "shrineNetworkQueryId").text.toLong)
   }
 }

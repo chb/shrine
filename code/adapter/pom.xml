@@ -21,6 +21,18 @@
     </build>
     <dependencies>
         <dependency>
+	    <groupId>org.scalaquery</groupId>
+  	    <artifactId>scalaquery_${lift-scala-version}</artifactId>
+    	    <version>0.10.0-M1</version>
+        </dependency>
+        <!--
+	<dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>slick_${scala-version}</artifactId>
+            <version>0.11.1</version>
+        </dependency>
+	-->
+        <dependency>
             <groupId>net.shrine</groupId>
             <artifactId>shrine-commons</artifactId>
             <version>${project.version}</version>

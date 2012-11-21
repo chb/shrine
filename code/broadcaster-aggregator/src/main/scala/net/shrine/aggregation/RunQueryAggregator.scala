@@ -6,6 +6,7 @@ import net.shrine.aggregation.BasicAggregator.Valid
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.query.QueryDefinition
 import org.spin.message.Result
+import net.shrine.util.Util
 
 /**
  *
@@ -16,12 +17,12 @@ import org.spin.message.Result
  * Date: 8/11/11
  */
 class RunQueryAggregator(
-  private val queryId: Long,
-  private val userId: String,
-  private val groupId: String,
-  private val requestQueryDefinition: QueryDefinition,
-  private val queryInstance: Long,
-  private val doAggregation: Boolean) extends PackagesErrorsAggregator[RunQueryResponse](errorMessage = None, invalidMessage = Some("Unexpected response")) {
+  queryId: Long,
+  userId: String,
+  groupId: String,
+  requestQueryDefinition: QueryDefinition,
+  queryInstance: Long,
+  doAggregation: Boolean) extends PackagesErrorsAggregator[RunQueryResponse](errorMessage = None, invalidMessage = Some("Unexpected response")) {
 
   /* We need to override this some place in Carranet, we need this method to change descriptions of responses */
   protected def transformResult(n: QueryResult, metaData: Result): QueryResult = n.withDescription(metaData.getDescription)
@@ -44,7 +45,7 @@ class RunQueryAggregator(
         (setResultOption orElse countResultOption).getOrElse(0L)
     }
 
-    val now = (new NetworkTime).getXMLGregorianCalendar
+    val now = Util.now
 
     val aggResults =
       if (doAggregation) {

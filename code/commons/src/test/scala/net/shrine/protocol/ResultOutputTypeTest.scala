@@ -24,6 +24,17 @@ final class ResultOutputTypeTest extends TestCase with ShouldMatchers with Asser
   }
   
   @Test
+  def testIsError {
+    ERROR.isError should be(true)
+    PATIENT_AGE_COUNT_XML.isError should be(false)
+    PATIENT_RACE_COUNT_XML.isError should be(false)
+    PATIENT_VITALSTATUS_COUNT_XML.isError should be(false)
+    PATIENT_GENDER_COUNT_XML.isError should be(false)
+    PATIENTSET.isError should be(false)
+    PATIENT_COUNT_XML.isError should be(false)
+  }
+  
+  @Test
   def testBreakdownTypes {
     ResultOutputType.breakdownTypes.toSeq should equal(Seq(PATIENT_AGE_COUNT_XML, 
                                                            PATIENT_RACE_COUNT_XML, 

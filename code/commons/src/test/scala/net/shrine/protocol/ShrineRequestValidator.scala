@@ -23,7 +23,7 @@ trait ShrineRequestValidator extends AssertionsForJUnit with ShouldMatchersForJU
 
   def messageBody: NodeSeq
 
-  def testShrineRequestFromI2b2()
+  def testShrineRequestFromI2b2
 
   def request = XmlUtil.stripWhitespace(
     <ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns8="http://sheriff.shrine.net/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">

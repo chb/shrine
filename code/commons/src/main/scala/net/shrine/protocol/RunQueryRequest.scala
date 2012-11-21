@@ -25,11 +25,11 @@ final case class RunQueryRequest(
   override val authn: AuthenticationInfo,
   val topicId: String,
   val outputTypes: Set[ResultOutputType],
-  val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
+  val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
   val requestType = QueryDefinitionRequestType
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <runQuery>
       { headerFragment }
       <topicId>{ topicId }</topicId>
@@ -43,7 +43,7 @@ final case class RunQueryRequest(
       { queryDefinition.toXml }
     </runQuery>)
 
-  def handle(handler: ShrineRequestHandler) = {
+  override def handle(handler: ShrineRequestHandler) = {
     handler.runQuery(this)
   }
 
@@ -77,7 +77,7 @@ object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequ
   
   val neededI2b2Namespace = "http://www.i2b2.org/xsd/cell/crc/psm/1.1/"
 
-  def fromI2b2(nodeSeq: NodeSeq): RunQueryRequest = {
+  override def fromI2b2(nodeSeq: NodeSeq): RunQueryRequest = {
     val queryDefNode = nodeSeq \ "message_body" \ "request" \ "query_definition"
 
     val queryDefXml = queryDefNode.head match {
@@ -115,7 +115,7 @@ object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequ
     (nodeSeq \ "outputType").map(x => ResultOutputType.valueOf(x.text)).toSet
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     new RunQueryRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),

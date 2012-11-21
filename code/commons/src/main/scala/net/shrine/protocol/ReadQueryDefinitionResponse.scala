@@ -23,7 +23,7 @@ class ReadQueryDefinitionResponse(
     val createDate: XMLGregorianCalendar,
     val queryDefinition: String) extends ShrineResponse {
 
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  override protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <ns6:response xsi:type="ns6:master_responseType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <status>
         <condition type="DONE">DONE</condition>
@@ -37,7 +37,7 @@ class ReadQueryDefinitionResponse(
       </query_master>
     </ns6:response>)
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <readQueryDefinitionResponse>
       <masterId>{masterId}</masterId>
       <name>{name}</name>
@@ -65,7 +65,7 @@ class ReadQueryDefinitionResponse(
 }
 
 object ReadQueryDefinitionResponse extends I2b2Unmarshaller[ReadQueryDefinitionResponse] with XmlUnmarshaller[ReadQueryDefinitionResponse] {
-  def fromI2b2(nodeSeq: NodeSeq) = {
+  override def fromI2b2(nodeSeq: NodeSeq) = {
     new ReadQueryDefinitionResponse(
       (nodeSeq \ "message_body" \ "response" \ "query_master" \ "query_master_id").text.toLong,
       (nodeSeq \ "message_body" \ "response" \ "query_master" \ "name").text,
@@ -74,7 +74,7 @@ object ReadQueryDefinitionResponse extends I2b2Unmarshaller[ReadQueryDefinitionR
       (nodeSeq \ "message_body" \ "response" \ "query_master" \ "request_xml" \ "query_definition").toString)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = new ReadQueryDefinitionResponse(
+  override def fromXml(nodeSeq: NodeSeq) = new ReadQueryDefinitionResponse(
     (nodeSeq \ "masterId").text.toLong,
     (nodeSeq \ "name").text,
     (nodeSeq \ "userId").text,

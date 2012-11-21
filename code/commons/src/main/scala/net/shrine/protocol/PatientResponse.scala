@@ -2,7 +2,7 @@ package net.shrine.protocol
 
 import xml.NodeSeq
 import net.shrine.util.XmlUtil
-import net.shrine.serialization.{I2b2Unmarshaller, XmlUnmarshaller}
+import net.shrine.serialization.{ I2b2Unmarshaller, XmlUnmarshaller }
 
 /**
  * @author ??
@@ -17,38 +17,31 @@ import net.shrine.serialization.{I2b2Unmarshaller, XmlUnmarshaller}
  * NB: a case class for structural equals() and hashCode()
  */
 final case class PatientResponse(
-    val patientId: String,
-    val params: Seq[ParamResponse]) extends ShrineResponse {
+  val patientId: String,
+  val params: Seq[ParamResponse]) extends ShrineResponse {
 
-  def i2b2MessageBody = XmlUtil.stripWhitespace(<patient>
-    <patient_id>
-      {patientId}
-    </patient_id>{params map {
-      x =>
-        x.i2b2MessageBody
-    }}
-  </patient>)
+  override def i2b2MessageBody = marshal(_.i2b2MessageBody)
 
-  def toXml = XmlUtil.stripWhitespace(<patient>
-    <patient_id>
-      {patientId}
-    </patient_id>{params map {
-      x =>
-        x.toXml
-    }}
-  </patient>)
+  override def toXml = marshal(_.toXml)
+
+  private def marshal(marshalParam: ParamResponse => NodeSeq): NodeSeq = {
+    XmlUtil.stripWhitespace(
+      <patient>
+        <patient_id>
+          { patientId }
+        </patient_id>{ params.map(marshalParam) }
+      </patient>)
+  }
 }
 
 object PatientResponse extends I2b2Unmarshaller[PatientResponse] with XmlUnmarshaller[PatientResponse] {
-  def fromXml(nodeSeq: NodeSeq) = {
-    new PatientResponse((nodeSeq \ "patient_id").text,
-      ((nodeSeq \ "param").map { x => ParamResponse.fromXml(x) })
-    )
-  }
+  override def fromXml(xml: NodeSeq) = unmarshal(ParamResponse.fromXml)(xml)
 
-  def fromI2b2(nodeSeq: NodeSeq) = {
-    new PatientResponse((nodeSeq \ "patient_id").text,
-      ((nodeSeq \ "param").map { x => ParamResponse.fromI2b2(x) })
-    )
+  override def fromI2b2(xml: NodeSeq) = unmarshal(ParamResponse.fromI2b2)(xml)
+  
+  private def unmarshal(unmarshalParam: NodeSeq => ParamResponse)(xml: NodeSeq): PatientResponse = {
+    PatientResponse(
+      (xml \ "patient_id").text,
+      (xml \ "param").map(unmarshalParam))
   }
 }

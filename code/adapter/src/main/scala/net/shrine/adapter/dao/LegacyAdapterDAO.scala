@@ -10,7 +10,8 @@ import net.shrine.protocol.QueryMaster
  *         <p/>
  *         Interface to factor out the common methods that an adapter DAO should implement.
  */
-trait AdapterDAO {
+@Deprecated
+trait LegacyAdapterDAO {
   def findRequestResponseDataByResultID(resultID: Long): Option[RequestResponseData]
 
   def insertRequestResponseData(requestResponseData: RequestResponseData): Unit

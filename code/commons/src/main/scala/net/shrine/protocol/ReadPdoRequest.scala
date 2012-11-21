@@ -23,7 +23,7 @@ final case class ReadPdoRequest(
     override val waitTimeMs: Long,
     override val authn: AuthenticationInfo,
     val patientSetCollId: String,
-    val optionsXml: NodeSeq) extends ShrineRequest(projectId, waitTimeMs, authn) with TranslatableRequest[ReadPdoRequest] {
+    val optionsXml: NodeSeq) extends ShrineRequest(projectId, waitTimeMs, authn) {
 
   val requestType = GetPDOFromInputListRequestType
 

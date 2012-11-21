@@ -16,9 +16,9 @@ import net.shrine.util.XmlUtil
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class ReadInstanceResultsRequestTest extends ShrineRequestValidator {
-  val instanceId = 1105351618885108053L
+  private val shrineNetworkQueryId = 1105351618885108053L
 
-  def messageBody = <message_body>
+  override def messageBody = <message_body>
       <ns4:psmheader>
         <user login={username}>{username}</user>
         <patient_set_limit>0</patient_set_limit>
@@ -26,52 +26,50 @@ class ReadInstanceResultsRequestTest extends ShrineRequestValidator {
         <request_type>CRC_QRY_getQueryResultInstanceList_fromQueryInstanceId</request_type>
       </ns4:psmheader>
         <ns4:request xsi:type="ns4:instance_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <query_instance_id>{instanceId}</query_instance_id>
+          <query_instance_id>{shrineNetworkQueryId}</query_instance_id>
         </ns4:request>
     </message_body>
 
-  val readInstanceResultsRequest = XmlUtil.stripWhitespace(
+  private val readInstanceResultsRequest = XmlUtil.stripWhitespace(
       <readInstanceResults>
         {requestHeaderFragment}
-        <instanceId>{instanceId}</instanceId>
+        <shrineNetworkQueryId>{shrineNetworkQueryId}</shrineNetworkQueryId>
       </readInstanceResults>)
 
-
   @Test
-  def testFromI2b2() {
+  def testFromI2b2 {
     val translatedRequest = ReadInstanceResultsRequest.fromI2b2(request)
     validateRequestWith(translatedRequest) {
-      translatedRequest.instanceId should equal(instanceId)
+      translatedRequest.shrineNetworkQueryId should equal(shrineNetworkQueryId)
     }
   }
 
   @Test
-  def testShrineRequestFromI2b2() {
+  def testShrineRequestFromI2b2 {
     val shrineRequest = ShrineRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[ReadInstanceResultsRequest])
   }
 
   @Test
-  def testToI2b2() {
-    new ReadInstanceResultsRequest(projectId, waitTimeMs, authn, instanceId).toI2b2 should equal(request)
+  def testToI2b2 {
+    new ReadInstanceResultsRequest(projectId, waitTimeMs, authn, shrineNetworkQueryId).toI2b2 should equal(request)
   }
 
   @Test
-  def testToXml() {
-    new ReadInstanceResultsRequest(projectId, waitTimeMs, authn, instanceId).toXml should equal(readInstanceResultsRequest)
+  def testToXml {
+    new ReadInstanceResultsRequest(projectId, waitTimeMs, authn, shrineNetworkQueryId).toXml should equal(readInstanceResultsRequest)
   }
 
   @Test
-  def testFromXml() {
+  def testFromXml {
     val actual = ReadInstanceResultsRequest.fromXml(readInstanceResultsRequest)
     validateRequestWith(actual) {
-      actual.instanceId should equal(instanceId)
+      actual.shrineNetworkQueryId should equal(shrineNetworkQueryId)
     }
   }
 
   @Test
-  def testShrineRequestFromXml() {
+  def testShrineRequestFromXml {
     assertTrue(ShrineRequest.fromXml(readInstanceResultsRequest).isInstanceOf[ReadInstanceResultsRequest])
   }
-
 }

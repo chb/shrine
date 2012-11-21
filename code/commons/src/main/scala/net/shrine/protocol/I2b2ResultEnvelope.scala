@@ -38,6 +38,8 @@ final case class I2b2ResultEnvelope(resultType: ResultOutputType, data: Map[Stri
   def ++(columns: Iterable[ColumnTuple]): I2b2ResultEnvelope = {
     columns.foldLeft(this)(_ + _)
   }
+
+  def mapValues(f: Long => Long): I2b2ResultEnvelope = this.copy(data = data.mapValues(f))
   
   def toMap: Map[String, Long] = data.mapValues(_.toLong)
   

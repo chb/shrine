@@ -1,9 +1,8 @@
 package net.shrine.adapter
 
-import dao.{ MasterTuple, UserAndMaster, IDPair, ResultTuple, RequestResponseData, AdapterDAO }
+import dao.{ MasterTuple, UserAndMaster, IDPair, ResultTuple, RequestResponseData, LegacyAdapterDAO }
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol.{ BroadcastMessage, RunQueryResponse, RunQueryRequest }
-import net.shrine.adapter.Obfuscator.obfuscate
 import xml.NodeSeq
 import net.shrine.adapter.translators.QueryDefinitionTranslator
 import net.shrine.config.{ HiveCredentials, ShrineConfig }
@@ -20,9 +19,12 @@ import net.shrine.util.Failure
 import net.shrine.util.Loggable
 import net.shrine.util.Success
 import net.shrine.util.HttpClient
+import net.shrine.adapter.dao.AdapterDao
+import net.shrine.protocol.query.QueryDefinition
 
 /**
  * @author Bill Simons
+ * @author clint
  * @date 4/15/11
  * @link http://cbmi.med.harvard.edu
  * @link http://chip.org
@@ -34,115 +36,87 @@ import net.shrine.util.HttpClient
 class RunQueryAdapter(
   crcUrl: String,
   httpClient: HttpClient,
-  override protected val dao: AdapterDAO,
+  dao: AdapterDao,
   override protected val hiveCredentials: HiveCredentials,
   private[adapter] val conceptTranslator: QueryDefinitionTranslator,
   config: ShrineConfig,
-  doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, httpClient, dao, hiveCredentials) {
-
-  override protected def parseShrineResponse(nodeSeq: NodeSeq) = RunQueryResponse.fromI2b2(nodeSeq)
-
-  override protected def translateLocalToNetwork(response: RunQueryResponse) = response
-
-  override protected def translateNetworkToLocal(request: RunQueryRequest) = {
-    request.withQueryDefinition(conceptTranslator.translate(request.queryDefinition))
-  }
-
-  private def translateLocalResultIdsToNetworkIds(partiallyTranslatedResponse: RunQueryResponse, response: RunQueryResponse, broadcastResultIds: Seq[Long]): RunQueryResponse = {
-    partiallyTranslatedResponse.withResults(response.results.zip(broadcastResultIds).map {
-      case (result, broadcastResultId) => result.withId(broadcastResultId)
-    })
-  }
-
-  private def translateLocalIdsToNetworkIds(response: RunQueryResponse, broadcastMasterId: Long, broadcastInstanceId: Long, broadcastResultIds: Seq[Long]) = {
-    val partiallyTranslatedResponse = response.withId(broadcastMasterId).withInstanceId(broadcastInstanceId)
-
-    translateLocalResultIdsToNetworkIds(partiallyTranslatedResponse, response, broadcastResultIds)
-  }
-
-  private def insertResultIds(response: RunQueryResponse, identity: Identity, broadcastMessage: BroadcastMessage): Unit = {
-    //TODO: What should we do if the broadcast message has no result Ids?
-    require(broadcastMessage.resultIds.isDefined)
-
-    val broadcastResultIds = broadcastMessage.resultIds.get
-
-    //TODO: Is this appropriate?
-    require(broadcastResultIds.size == response.results.size, "expected same number of result ids, but got: broadcast: " + broadcastResultIds + " local: " + response.results)
-
-    for {
-      (result, broadcastResultId) <- response.results.zip(broadcastResultIds)
-      localResultId = result.resultId
-      broadcastMasterId <- broadcastMessage.masterId
-      broadcastInstanceId <- broadcastMessage.instanceId
-    } {
-      dao.insertRequestResponseData(new RequestResponseData(
-        identity.getDomain,
-        identity.getUsername,
-        broadcastMasterId,
-        broadcastInstanceId,
-        broadcastResultId,
-        result.statusType,
-        result.setSize.toInt,
-        0L,
-        "",
-        response.toI2b2String))
-
-      dao.insertResultTuple(new ResultTuple(IDPair.of(broadcastResultId, localResultId.toString)))
-    }
-  }
-
-  private def createIdMappings(identity: Identity, message: BroadcastMessage, response: RunQueryResponse) = {
-    dao.insertUserAndMasterIDMapping(new UserAndMaster(identity.getDomain,
-      identity.getUsername,
-      message.masterId.get,
-      message.request.asInstanceOf[RunQueryRequest].queryDefinition.name,
-      response.createDate.toGregorianCalendar.getTime))
-
-    val AsRunQueryRequest(runQueryReq) = message.request
-      
-    //TODO: Is converting to i2b2 XML appropriate?  It's what we've always stored.
-    dao.insertMaster(new MasterTuple(IDPair.of(message.masterId.get, response.queryId.toString), runQueryReq.queryDefinition.toI2b2String))
-
-    dao.insertInstanceIDPair(IDPair.of(message.instanceId.get, response.queryInstanceId.toString))
-
-    insertResultIds(response, identity, message)
-  }
-
-  protected def obfuscateResponse(response: RunQueryResponse): RunQueryResponse = {
-    if (doObfuscation) response.withResults(obfuscate(response.results, dao)) else response
-  }
-
-  private def isLockedOut(identity: Identity): Boolean = {
-    config.getAdapterLockoutAttemptsThreshold match {
-      case 0 => false
-      case _ => dao.isUserLockedOut(identity, config.getAdapterLockoutAttemptsThreshold)
-    }
-  }
+  doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, httpClient, hiveCredentials) {
 
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): RunQueryResponse = {
     if (isLockedOut(identity)) {
       throw new AdapterLockoutException(identity)
     }
 
+    //TODO: Any way to avoid this cast?
+    val runQueryReq = message.request.asInstanceOf[RunQueryRequest]
+    
+    val insertedQueryId = dao.insertQuery(message.masterId.get, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
+
+    val originalRunQueryResponse = super.processRequest(identity, message).asInstanceOf[RunQueryResponse]
+    
+    val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, originalRunQueryResponse)
+
+    //TODO: Revisit optional nature of message.{masterId, instanceId, resultIds}
+    //TODO: how to fail if those fields are missing?  The current .get calls will fail quite un-gracefully
+    val obfuscatedRunQueryResponse = obfuscateResponse(originalRunQueryResponse)
+
+    storeCountAndErrorResults(originalRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
+
     def isBreakdown(result: QueryResult) = result.resultType.map(_.isBreakdown).getOrElse(false)
-
-    def toLocalResultId(networkResultId: Long): String = dao.findLocalResultID(networkResultId)
     
-    def readResultRequest(runQueryReq: RunQueryRequest, networkResultId: Long) = ReadResultRequest(hiveCredentials.project, runQueryReq.waitTimeMs, hiveCredentials.toAuthenticationInfo, toLocalResultId(networkResultId))
-    
-    val obfuscatedRunQueryResponse = {
-      val response = super.processRequest(identity, message).asInstanceOf[RunQueryResponse]
-
-      createIdMappings(identity, message, response)
-      
-      obfuscateResponse(translateLocalIdsToNetworkIds(response, message.masterId.get, message.instanceId.get, message.resultIds.get))
-    }
-
     val (breakdownResults, nonBreakDownResults) = obfuscatedRunQueryResponse.results.partition(isBreakdown)
 
-    val AsRunQueryRequest(runQueryReq) = message.request
+    val attemptsWithBreakDownCounts = attemptToRetrieveBreakdowns(runQueryReq, breakdownResults)
 
-    val attemptsWithBreakDownCounts = breakdownResults.map { origBreakdownResult =>
+    val (successes, failures) = attemptsWithBreakDownCounts.partition { case (_, t) => t.isSuccess }
+
+    logBreakdownFailures(obfuscatedRunQueryResponse, failures)
+
+    val mergedBreakdowns = mergeAndStoreBreakdowns(successes, insertedQueryResultIds)
+
+    //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
+    val resultWithMergedBreakdowns = nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
+    
+    obfuscatedRunQueryResponse.withResults(Seq(resultWithMergedBreakdowns))
+  }
+  
+  private[adapter] def storeCountResults(insertedIds: Map[ResultOutputType, Seq[Int]], notErrors: Seq[QueryResult], obfuscatedNotErrors: Seq[QueryResult]) {
+    for {
+      Seq(insertedCountQueryResultId) <- insertedIds.get(ResultOutputType.PATIENT_COUNT_XML)
+      //NB: Take the count/setSize from the FIRST QueryResult, though the same count should be there for all of them, if there are more than one
+      origQueryResult <- notErrors.headOption
+      obfscQueryResult <- obfuscatedNotErrors.headOption
+    } {
+      dao.insertCountResult(insertedCountQueryResultId, origQueryResult.setSize, obfscQueryResult.setSize)
+    }
+  }
+
+  private[adapter] def storeErrorResults(insertedIds: Map[ResultOutputType, Seq[Int]], errors: Seq[QueryResult]) {
+    val errorResultIds = insertedIds.filter { case (resultType, _) => resultType.isError }.values
+
+    for {
+      (Seq(insertedErrorResultId), errorQueryResult) <- errorResultIds zip errors
+    } {
+      dao.insertErrorResult(insertedErrorResultId, errorQueryResult.statusMessage.getOrElse("Unknown failure"))
+    }
+  }
+
+  private[adapter] def storeCountAndErrorResults(response: RunQueryResponse, obfuscated: RunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
+
+    val (errors, notErrors) = response.results.partition(_.isError)
+    
+    val obfuscatedNotErrors = obfuscated.results.filter(!_.isError)
+
+    storeCountResults(insertedIds, notErrors, obfuscatedNotErrors)
+
+    //Store errors, if present
+    storeErrorResults(insertedIds, errors)
+  }
+  
+  private[adapter] def attemptToRetrieveBreakdowns(runQueryReq: RunQueryRequest, breakdownResults: Seq[QueryResult]): Seq[(QueryResult, Try[QueryResult])] = {
+    def readResultRequest(runQueryReq: RunQueryRequest, networkResultId: Long) = ReadResultRequest(hiveCredentials.project, runQueryReq.waitTimeMs, hiveCredentials.toAuthenticationInfo, networkResultId.toString)
+    
+    breakdownResults.map { origBreakdownResult =>
       (origBreakdownResult, Try {
         //NB: readResultRequest() goes back to the DB to translate the network resultId to a local one suitable for
         //sending to the CRC.  This extra DB hit isn't ideal, but this was a simple way to proceed, and Id-translation
@@ -154,23 +128,47 @@ class RunQueryAdapter(
         origBreakdownResult.withBreakdown(breakdownData)
       })
     }
-
-    val (successes, failures) = attemptsWithBreakDownCounts.partition { case (_, t) => t.isSuccess }
-
-    failures.foreach {
-      case (origQueryResult, Failure(e)) =>
-        error(e, "Couldn't load breakdown for QueryResult with masterId: " + obfuscatedRunQueryResponse.queryId + ", instanceId: " + origQueryResult.instanceId + ", resultId: " + origQueryResult.resultId + ". Asked for result type: " + origQueryResult.resultType)
+  }
+  
+  private[adapter] def logBreakdownFailures(obfuscatedRunQueryResponse: RunQueryResponse, failures: Seq[(QueryResult, Try[QueryResult])]) {
+    for {
+      (origQueryResult, Failure(e)) <- failures
+    } {
+      error(e, "Couldn't load breakdown for QueryResult with masterId: " + obfuscatedRunQueryResponse.queryId + ", instanceId: " + origQueryResult.instanceId + ", resultId: " + origQueryResult.resultId + ". Asked for result type: " + origQueryResult.resultType)
     }
+  }
 
-    //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
-    val resultWithMergedBreakdowns = {
-      val withBreakdownCounts = successes.collect { case (_, Success(queryResultWithBreakdowns)) => queryResultWithBreakdowns }
-      
-      val mergedBreakdowns = withBreakdownCounts.map(_.breakdowns).fold(Map.empty)(_ ++ _)
-      
-      nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
+  private[adapter] def mergeAndStoreBreakdowns(breakdownSuccesses: Seq[(QueryResult, Try[QueryResult])], insertedQueryResultIds: Map[ResultOutputType, Seq[Int]]) = {
+    val withBreakdownCounts = breakdownSuccesses.collect { case (_, Success(queryResultWithBreakdowns)) => queryResultWithBreakdowns }
+
+    val mergedBreakdowns = withBreakdownCounts.map(_.breakdowns).fold(Map.empty)(_ ++ _)
+
+    val obfuscatedBreakdowns = RunQueryAdapter.obfuscateBreakdowns(mergedBreakdowns)
+
+    //Store breakdowns (plain and obfuscated) in the DB
+    dao.insertBreakdownResults(insertedQueryResultIds, mergedBreakdowns, obfuscatedBreakdowns)
+
+    mergedBreakdowns
+  }
+  
+  override protected def parseShrineResponse(nodeSeq: NodeSeq) = RunQueryResponse.fromI2b2(nodeSeq)
+
+  protected def obfuscateResponse(response: RunQueryResponse): RunQueryResponse = {
+    import net.shrine.adapter.Obfuscator.obfuscate
+
+    if (doObfuscation) response.withResults(obfuscate(response.results)) else response
+  }
+
+  private def isLockedOut(identity: Identity): Boolean = {
+    config.getAdapterLockoutAttemptsThreshold match {
+      case 0 => false
+      case _ => dao.isUserLockedOut(identity, config.getAdapterLockoutAttemptsThreshold)
     }
-     
-    obfuscatedRunQueryResponse.withResults(Seq(resultWithMergedBreakdowns))
+  }
+}
+
+object RunQueryAdapter {
+  private[adapter] def obfuscateBreakdowns(breakdowns: Map[ResultOutputType, I2b2ResultEnvelope]): Map[ResultOutputType, I2b2ResultEnvelope] = {
+    breakdowns.mapValues(_.mapValues(Obfuscator.obfuscate))
   }
 }

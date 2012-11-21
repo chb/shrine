@@ -44,13 +44,32 @@
         <property name="defaultObject" value="net.shrine.adapter.query.ShrineQueryActionMap"/>
     </bean>
 
-
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:testHibernate"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
         <property name="suppressClose" value="true"/>
+    </bean>
+
+    <bean id="scalaQueryDatabase" class="org.scalaquery.session.Database" factory-method="forDataSource">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    
+    <bean id="scalaQuerySpringWorkarounds" class="net.shrine.adapter.dao.scalaquery.workarounds.SpringWorkarounds">
+        <constructor-arg value="h2"/>
+    </bean>
+    
+    <bean id="sequenceHelper" factory-bean="scalaQuerySpringWorkarounds" factory-method="sequenceHelper">
+        <constructor-arg type="org.scalaquery.session.Database" ref="scalaQueryDatabase"/>
+    </bean>
+    
+    <bean id="scalaQueryDriver" factory-bean="scalaQuerySpringWorkarounds" factory-method="driver"/>
+    
+    <bean id="adapterDao" class="net.shrine.adapter.dao.scalaquery.ScalaQueryAdapterDao">
+        <constructor-arg ref="scalaQueryDatabase"/>
+        <constructor-arg ref="scalaQueryDriver"/>
+        <constructor-arg ref="sequenceHelper"/>
     </bean>
 
     <bean id="transactionManager"
@@ -72,7 +91,7 @@
         </property>
     </bean>
 
-    <bean id="adapterDao" class="net.shrine.adapter.dao.hibernate.HibernateAdapterDAO"/>
+    <bean id="legacyAdapterDao" class="net.shrine.adapter.dao.hibernate.HibernateLegacyAdapterDAO"/>
 
     <bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
 	  <constructor-arg index="0" value="AdapterMappings.xml"/>

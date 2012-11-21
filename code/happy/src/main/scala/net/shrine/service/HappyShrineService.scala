@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import javax.xml.bind.JAXBContext
-import net.shrine.adapter.dao.AdapterDAO
+import net.shrine.adapter.dao.LegacyAdapterDAO
 import net.shrine.broadcaster.dao.AuditDAO
 import net.shrine.config.ShrineConfig
 import net.shrine.config.HiveCredentials
@@ -63,7 +63,7 @@ class HappyShrineService @Autowired() (
   pmEndpoint: String,
   spinClient: SpinAgent,
   auditDao: AuditDAO,
-  adapterDao: AdapterDAO,
+  adapterDao: LegacyAdapterDAO,
   httpClient: HttpClient) extends HappyShrineRequestHandler {
 
   //TODO - maybe make this a spring bean since its used in shrine service too?

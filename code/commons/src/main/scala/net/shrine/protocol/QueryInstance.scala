@@ -19,7 +19,6 @@ final case class QueryInstance (
     val groupId: String,
     val startDate: XMLGregorianCalendar,
     val endDate: XMLGregorianCalendar) {
-  
  
   def withId(newId: String): QueryInstance = this.copy(queryInstanceId = newId)
 

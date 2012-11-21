@@ -24,11 +24,17 @@ abstract class PackagesErrorsAggregator[T <: ShrineResponse : Manifest](
   private[aggregation] def makeErrorResult(error: Error): QueryResult = { 
     val Error(spinResultOption, errorResponse) = error
     
-    QueryResult.errorResult(spinResultOption.map(_.spinResultMetadata.getDescription) orElse Option(errorResponse.errorMessage), errorMessage.getOrElse(errorResponse.errorMessage))
+    val desc = spinResultOption.map(_.spinResultMetadata.getDescription) orElse Option(errorResponse.errorMessage)
+    
+    QueryResult.errorResult(desc, errorMessage.getOrElse(errorResponse.errorMessage))
   }
   
   private[aggregation] def makeInvalidResult(invalid: Invalid): QueryResult = {
-    QueryResult.errorResult(Option(invalid.spinResult.spinResultMetadata.getDescription), invalidMessage.getOrElse(invalid.errorMessage))
+    val Invalid(spinResult, errorMessage) = invalid 
+    
+    val desc = Option(spinResult.spinResultMetadata.getDescription)
+    
+    QueryResult.errorResult(desc, invalidMessage.getOrElse(errorMessage))
   }
   
   private[aggregation] final override def makeResponseFrom(validResponses: Seq[Valid[T]], errorResponses: Seq[Error], invalidResponses: Seq[Invalid]): ShrineResponse = {

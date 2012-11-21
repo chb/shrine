@@ -18,32 +18,23 @@ import net.shrine.serialization.{I2b2Unmarshaller, XmlUnmarshaller}
  */
 final case class ParamResponse(val name: String, val column: String, val value: String) extends ShrineResponse {
 
-  def i2b2MessageBody = XmlUtil.stripWhitespace(
+  override def i2b2MessageBody = toXml
+
+  override def toXml = XmlUtil.stripWhitespace(
     <param name={name} column={column}>
       {value}
-    </param>
-  )
-
-  def toXml = XmlUtil.stripWhitespace(<param name={name} column={column}>
-    {value}
-  </param>)
+    </param>)
 }
 
 object ParamResponse extends I2b2Unmarshaller[ParamResponse] with XmlUnmarshaller[ParamResponse] {
-  def fromXml(nodeSeq: NodeSeq) = {
-    new ParamResponse(
-      (nodeSeq \ "@name").text,
-      (nodeSeq \ "@column").text,
-      nodeSeq.text
-    )
-  }
+  override def fromXml(xml: NodeSeq) = unmarshal(xml)
 
-  def fromI2b2(nodeSeq: NodeSeq) = {
-    new ParamResponse(
-      (nodeSeq \ "@name").text,
-      (nodeSeq \ "@column").text,
-      nodeSeq.text
-
-    )
+  override def fromI2b2(xml: NodeSeq) = unmarshal(xml)
+  
+  private def unmarshal(xml: NodeSeq): ParamResponse = {
+    ParamResponse(
+      (xml \ "@name").text,
+      (xml \ "@column").text,
+      xml.text)
   }
 }

@@ -22,7 +22,7 @@ final case class RenameQueryRequest(
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
   val queryId: Long,
-  val queryName: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RenameQueryRequest] {
+  val queryName: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
   val requestType = MasterRenameRequestType
 

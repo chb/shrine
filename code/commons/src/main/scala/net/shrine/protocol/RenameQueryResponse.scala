@@ -16,8 +16,8 @@ import net.shrine.serialization.{I2b2Unmarshaller, XmlUnmarshaller}
  *
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
-final case class RenameQueryResponse(val queryId: Long, val queryName: String) extends ShrineResponse with TranslatableResponse[RenameQueryResponse] {
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+final case class RenameQueryResponse(val queryId: Long, val queryName: String) extends ShrineResponse {
+  override protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <ns6:response xsi:type="ns6:master_responseType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <status>
         <condition type="DONE">DONE</condition>
@@ -30,7 +30,7 @@ final case class RenameQueryResponse(val queryId: Long, val queryName: String) e
 
   def withId(id: Long): RenameQueryResponse = this.copy(queryId = id)
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <renameQueryResponse>
       <queryId>{queryId}</queryId>
       <queryName>{queryName}</queryName>
@@ -38,11 +38,11 @@ final case class RenameQueryResponse(val queryId: Long, val queryName: String) e
 }
 
 object RenameQueryResponse extends I2b2Unmarshaller[RenameQueryResponse] with XmlUnmarshaller[RenameQueryResponse] {
-  def fromI2b2(nodeSeq: NodeSeq) = new RenameQueryResponse(
+  override def fromI2b2(nodeSeq: NodeSeq) = new RenameQueryResponse(
     (nodeSeq \ "message_body" \ "response" \ "query_master" \ "query_master_id").text.toLong,
     (nodeSeq \ "message_body" \ "response" \ "query_master" \ "name").text)
 
-  def fromXml(nodeSeq: NodeSeq) = new RenameQueryResponse(
+  override def fromXml(nodeSeq: NodeSeq) = new RenameQueryResponse(
     (nodeSeq \ "queryId").text.toLong,
     (nodeSeq \ "queryName").text)
 }

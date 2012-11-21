@@ -2,6 +2,7 @@ package net.shrine.aggregation
 
 import net.shrine.aggregation.BasicAggregator.Valid
 import net.shrine.protocol.{QueryMaster, ShrineResponse, ReadPreviousQueriesResponse}
+import net.shrine.util.Loggable
 
 /**
  * @author Bill Simons
@@ -16,7 +17,7 @@ import net.shrine.protocol.{QueryMaster, ShrineResponse, ReadPreviousQueriesResp
  */
 class ReadPreviousQueriesAggregator(
     private val userId: String,
-    private val groupId: String) extends IgnoresErrorsAggregator[ReadPreviousQueriesResponse] {
+    private val groupId: String) extends IgnoresErrorsAggregator[ReadPreviousQueriesResponse] with Loggable {
 
   private[aggregation] def newestToOldest(x: QueryMaster, y: QueryMaster) = x.createDate.compare(y.createDate) > 0
   
@@ -27,9 +28,9 @@ class ReadPreviousQueriesAggregator(
 
     val sortedMastersById = mastersGroupedById.map { case (id, mastersWithThatId) => (id, mastersWithThatId.sortWith(oldestToNewest)) }.toMap
 
-    val mostRecentMasters = sortedMastersById.map { case (id, mastersWithThatId) => mastersWithThatId.headOption }.flatten.toSeq
+    val mostRecentMastersForEachId = sortedMastersById.flatMap { case (id, mastersWithThatId) => mastersWithThatId.headOption }.toSeq
 
-    val sortedMasters = mostRecentMasters.sortWith(newestToOldest)
+    val sortedMasters = mostRecentMastersForEachId.sortWith(newestToOldest)
     
     new ReadPreviousQueriesResponse(userId, groupId, sortedMasters)
   }

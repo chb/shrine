@@ -1,34 +1,42 @@
 package net.shrine.adapter
 
-import org.scalatest.junit.{ ShouldMatchersForJUnit, AssertionsForJUnit }
-import org.junit.Test
-import net.shrine.protocol.query.QueryDefinition
-import net.shrine.protocol.query.OccuranceLimited
-import net.shrine.protocol.query.Term
-import net.shrine.adapter.translators.QueryDefinitionTranslator
-import net.shrine.protocol.query.Or
-import net.shrine.adapter.translators.ExpressionTranslator
-import net.shrine.protocol.BroadcastMessage
-import net.shrine.protocol.ResultOutputType
-import net.shrine.protocol.RunQueryRequest
-import net.shrine.protocol.RunQueryResponse
-import net.shrine.protocol.QueryResult
-import junit.framework.TestCase
-import net.shrine.config.ShrineConfig
-import net.shrine.adapter.dao.MockAdapterDao
-import net.shrine.config.HiveCredentials
-import org.spin.tools.NetworkTime
 import java.util.GregorianCalendar
+
+import scala.Array.canBuildFrom
+
+import org.junit.Test
+import org.scalatest.junit.AssertionsForJUnit
+import org.scalatest.junit.ShouldMatchersForJUnit
+import org.spin.tools.NetworkTime
 import org.spin.tools.crypto.signature.Identity
+
+import junit.framework.TestCase
+import net.shrine.adapter.dao.MockAdapterDao
+import net.shrine.adapter.dao.MockLegacyAdapterDao
+import net.shrine.adapter.translators.ExpressionTranslator
+import net.shrine.adapter.translators.QueryDefinitionTranslator
+import net.shrine.config.HiveCredentials
+import net.shrine.config.ShrineConfig
 import net.shrine.protocol.AuthenticationInfo
+import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.Credential
-import net.shrine.util.HttpClient
-import scala.xml.XML
-import net.shrine.protocol.ShrineResponse
-import net.shrine.protocol.ShrineRequest
+import net.shrine.protocol.I2b2ResultEnvelope
+import net.shrine.protocol.QueryResult
 import net.shrine.protocol.ReadResultRequest
 import net.shrine.protocol.ReadResultResponse
-import net.shrine.protocol.I2b2ResultEnvelope
+import net.shrine.protocol.ResultOutputType
+import net.shrine.protocol.ResultOutputType.PATIENT_AGE_COUNT_XML
+import net.shrine.protocol.ResultOutputType.PATIENT_COUNT_XML
+import net.shrine.protocol.ResultOutputType.PATIENT_GENDER_COUNT_XML
+import net.shrine.protocol.ResultOutputType.PATIENT_RACE_COUNT_XML
+import net.shrine.protocol.RunQueryRequest
+import net.shrine.protocol.RunQueryResponse
+import net.shrine.protocol.ShrineRequest
+import net.shrine.protocol.query.OccuranceLimited
+import net.shrine.protocol.query.Or
+import net.shrine.protocol.query.QueryDefinition
+import net.shrine.protocol.query.Term
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -40,7 +48,7 @@ import net.shrine.protocol.I2b2ResultEnvelope
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final class RunQueryAdapterTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
+final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
   private val queryDef = QueryDefinition("foo", Term("foo"))
 
   private val broadcastMessageId = 1234563789L
@@ -58,10 +66,37 @@ final class RunQueryAdapterTest extends TestCase with AssertionsForJUnit with Sh
 
   private val now = NetworkTime.makeXMLGregorianCalendar(new GregorianCalendar)
   
-  private val countQueryResult = QueryResult(resultId, instanceId, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, Some(now), Some(now), None, QueryResult.StatusType.Finished, None)
+  private val countQueryResult = QueryResult(resultId, instanceId, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, Some(now), Some(now), None, QueryResult.StatusType.Finished.name, None)
   
   private val dummyBreakdownData = Map("x" -> 1L, "y" -> 2L, "z" -> 3L)
 
+  @Test
+  def testObfuscateBreakdowns {
+    import ResultOutputType._
+    
+    val breakdown1 = I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Map.empty)
+    val breakdown2 = I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("foo" -> 123, "bar" -> 345))
+    val breakdown3 = I2b2ResultEnvelope(PATIENT_RACE_COUNT_XML, Map("x" -> 999, "y" -> 888))
+    
+    val original = Map.empty ++ Seq(breakdown1, breakdown2, breakdown3).map(env => (env.resultType, env))
+    
+    val obfuscated = RunQueryAdapter.obfuscateBreakdowns(original)
+    
+    original.keySet should equal(obfuscated.keySet)
+    
+    original.keySet.forall(resultType => original(resultType).data.keySet == obfuscated(resultType).data.keySet) should be(true)
+    
+    for {
+      (resultType, origBreakdown) <- original
+      obfscBreakdown <- obfuscated.get(resultType)
+      key <- origBreakdown.data.keySet
+    } {
+      (origBreakdown eq obfscBreakdown) should be(false)
+      
+      ObfuscatorTest.within3(origBreakdown.data(key), obfscBreakdown.data(key)) should be(true)
+    }
+  }
+  
   @Test
   def testTranslateQueryDefinitionXml {
     val localTerms = Set("local1a", "local1b")

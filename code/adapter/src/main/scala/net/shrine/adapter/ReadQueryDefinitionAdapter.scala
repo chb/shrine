@@ -1,11 +1,13 @@
 package net.shrine.adapter
 
-import dao.AdapterDAO
+import dao.LegacyAdapterDAO
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol.{ReadQueryDefinitionResponse, ReadQueryDefinitionRequest, BroadcastMessage}
 import org.spin.tools.NetworkTime._
 import net.shrine.config.{HiveCredentials}
 import net.shrine.util.HttpClient
+import net.shrine.serialization.XmlMarshaller
+import net.shrine.util.Util
 
 /**
  * @author Bill Simons
@@ -18,12 +20,13 @@ import net.shrine.util.HttpClient
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class ReadQueryDefinitionAdapter(
-    override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends Adapter(dao, hiveCredentials) {
+    dao: LegacyAdapterDAO,
+    override protected val hiveCredentials: HiveCredentials) extends WithHiveCredentialsAdapter(hiveCredentials) {
 
-  protected def processRequest(identity: Identity, message: BroadcastMessage) = {
+  override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
     val newRequest = message.request.asInstanceOf[ReadQueryDefinitionRequest]
     val definition = dao.findMasterQueryDefinition(newRequest.queryId)
+    
     new ReadQueryDefinitionResponse(definition.getQueryMasterId.toLong,
       definition.getName,
       definition.getUserId,

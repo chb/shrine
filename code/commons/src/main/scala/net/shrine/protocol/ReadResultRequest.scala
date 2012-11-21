@@ -32,7 +32,7 @@ final case class ReadResultRequest(
       </ns4:request>
     </message_body>)
 
-  def toXml: NodeSeq = XmlUtil.stripWhitespace(
+  override def toXml: NodeSeq = XmlUtil.stripWhitespace(
     <readResult>
       { headerFragment }
       <resultId>{ localResultId }</resultId>
@@ -40,7 +40,7 @@ final case class ReadResultRequest(
 }
 
 object ReadResultRequest extends ShrineRequestUnmarshaller[ReadResultRequest] with I2b2Unmarshaller[ReadResultRequest] {
-  def fromXml(xml: NodeSeq): ReadResultRequest = {
+  override def fromXml(xml: NodeSeq): ReadResultRequest = {
     val header = shrineHeader(xml)
 
     //NB: This is the LOCAL, NOT NETWORK, resultId
@@ -49,7 +49,7 @@ object ReadResultRequest extends ShrineRequestUnmarshaller[ReadResultRequest] wi
     new ReadResultRequest(header, resultId)
   }
 
-  def fromI2b2(xml: NodeSeq): ReadResultRequest = {
+  override def fromI2b2(xml: NodeSeq): ReadResultRequest = {
     val header = i2b2Header(xml)
 
     //NB: This is the LOCAL, NOT NETWORK, resultId

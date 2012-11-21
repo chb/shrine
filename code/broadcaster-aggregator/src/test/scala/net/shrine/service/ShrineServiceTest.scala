@@ -31,6 +31,8 @@ import org.spin.message.ResultSet
 import org.spin.message.Failure
 import org.spin.message.Result
 import org.spin.message.StatusCode
+import net.shrine.protocol.ReadQueryInstancesRequest
+import net.shrine.protocol.ReadQueryInstancesResponse
 
 /**
  * @author Bill Simons
@@ -45,13 +47,43 @@ import org.spin.message.StatusCode
 class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit with EasyMockSugar {
 
   @Test
-  def testDeterminePeerGroup = {
-    val shrineConfig = new ShrineConfig;
+  def testReadQueryInstances {
+    val projectId = "foo"
+    val queryId = 123L
+    val authn = AuthenticationInfo("some-domain", "some-username", Credential("blarg", false))
+    val req = ReadQueryInstancesRequest(projectId, 1L, authn, queryId)
+    
+    val service = new ShrineService(null, null, null, new ShrineConfig, null)
+    
+    val response = service.readQueryInstances(req).asInstanceOf[ReadQueryInstancesResponse]
+    
+    response should not be(null)
+    response.groupId should equal(projectId)
+    response.queryMasterId should equal(queryId)
+    response.userId should equal(authn.username)
+    
+    val Seq(instance) = response.queryInstances
+    
+    instance.startDate should not be(null)
+    instance.endDate should not be(null)
+    instance.startDate should equal(instance.endDate)
+    instance.groupId should equal(projectId)
+    instance.queryInstanceId should equal(queryId.toString)
+    instance.queryMasterId should equal(queryId.toString)
+    instance.userId should equal(authn.username)
+  }
+  
+  @Test
+  def testDeterminePeerGroup {
+    val shrineConfig = new ShrineConfig
     val service = new ShrineService(null, null, null, shrineConfig, null)
     val expectedPeerGroup = "alksjdlaksjdlaksfj"
     val projectId = "projectId"
+      
     service.determinePeergroup(projectId) should equal(projectId)
+    
     shrineConfig.setBroadcasterPeerGroupToQuery(expectedPeerGroup)
+    
     service.determinePeergroup(projectId) should equal(expectedPeerGroup)
   }
 

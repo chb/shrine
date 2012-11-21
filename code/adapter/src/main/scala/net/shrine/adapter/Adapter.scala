@@ -1,6 +1,6 @@
 package net.shrine.adapter
 
-import dao.AdapterDAO
+import dao.LegacyAdapterDAO
 import org.spin.node.QueryContext
 import java.lang.String
 import org.springframework.transaction.annotation.Transactional
@@ -9,6 +9,7 @@ import net.shrine.protocol.{ErrorResponse, ShrineResponse, BroadcastMessage}
 import net.shrine.util.Loggable
 import net.shrine.config.HiveCredentials
 import org.spin.node.AbstractQueryAction
+import net.shrine.serialization.XmlMarshaller
 
 /**
  * @author Bill Simons
@@ -20,14 +21,12 @@ import org.spin.node.AbstractQueryAction
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-abstract class Adapter(
-    protected val dao: AdapterDAO,
-    protected val hiveCredentials: HiveCredentials) extends AbstractQueryAction[BroadcastMessage] with Loggable {
+abstract class Adapter extends AbstractQueryAction[BroadcastMessage] with Loggable {
   
-  final def unmarshal(serializedCriteria: String) = BroadcastMessage.fromXml(serializedCriteria)
+  final override def unmarshal(serializedCriteria: String) = BroadcastMessage.fromXml(serializedCriteria)
 
   @Transactional
-  final def perform(context: QueryContext, message: BroadcastMessage): String = {
+  final override def perform(context: QueryContext, message: BroadcastMessage): String = {
     val shrineResponse = try {
       processRequest(context.getQueryInfo.getIdentity, message)
     } catch {
@@ -43,5 +42,5 @@ abstract class Adapter(
     shrineResponse.toXmlString
   }
 
-  protected def processRequest(identity: Identity, message: BroadcastMessage): ShrineResponse
+  protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller
 }

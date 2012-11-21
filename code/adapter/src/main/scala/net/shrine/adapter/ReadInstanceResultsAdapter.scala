@@ -1,12 +1,16 @@
 package net.shrine.adapter
 
-import dao.AdapterDAO
+import dao.LegacyAdapterDAO
 import xml.NodeSeq
 import org.spin.tools.crypto.signature.Identity
-import net.shrine.protocol.{BroadcastMessage, ReadInstanceResultsResponse, ReadInstanceResultsRequest}
-import net.shrine.adapter.Obfuscator.obfuscate
 import net.shrine.config.HiveCredentials
-import net.shrine.util.HttpClient
+import net.shrine.adapter.dao.AdapterDao
+import net.shrine.protocol.ReadInstanceResultsResponse
+import net.shrine.protocol.ReadInstanceResultsRequest
+import net.shrine.protocol.BroadcastMessage
+import net.shrine.protocol.ShrineResponse
+import net.shrine.protocol.ErrorResponse
+import net.shrine.serialization.XmlMarshaller
 
 /**
  * @author Bill Simons
@@ -19,33 +23,18 @@ import net.shrine.util.HttpClient
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class ReadInstanceResultsAdapter(
-    crcUrl: String,
-    httpClient: HttpClient,
-    override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials,
-    private val doObfuscation: Boolean ) extends CrcAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](crcUrl, httpClient, dao, hiveCredentials) {
+    dao: AdapterDao,
+    private val doObfuscation: Boolean) extends Adapter {
 
-  protected def parseShrineResponse(nodeSeq: NodeSeq) = ReadInstanceResultsResponse.fromI2b2(nodeSeq)
-
-  protected def translateLocalToNetwork(response: ReadInstanceResultsResponse) = {
-    val networkId = dao.findNetworkInstanceID(response.queryInstanceId.toString).get
-    response.withId(networkId).withResults(response.results map {result =>
-      result.withId(dao.findNetworkResultID(result.resultId.toString).get)
-    })
-  }
-
-  protected def translateNetworkToLocal(request: ReadInstanceResultsRequest) = {
-    val localId = dao.findLocalInstanceID(request.instanceId).toLong
-    request.withId(localId)
-  }
-
-  protected def obfuscateResponse(response: ReadInstanceResultsResponse): ReadInstanceResultsResponse = {
-    if (doObfuscation) response.withResults(obfuscate(response.results, dao)) else response
-  }
-
-  override protected def processRequest(identity: Identity, message: BroadcastMessage) = {
-    val response = super.processRequest(identity, message).asInstanceOf[ReadInstanceResultsResponse]
-    obfuscateResponse(response)
+  //TODO: Honor doObfuscation flag?
+  //TODO: used passed Identity for something?  Check auth{n,z}?
+  
+  override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
+    val req = message.request.asInstanceOf[ReadInstanceResultsRequest]
+    
+    val networkQueryId = req.shrineNetworkQueryId
+    
+    StoredQueries.retrieve(dao, req.shrineNetworkQueryId)(ReadInstanceResultsResponse(_, _))
   }
 }
 

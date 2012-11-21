@@ -11,7 +11,7 @@ import net.shrine.util.XmlUtil
  * @date Aug 17, 2012
  */
 final case class ReadResultResponse(xmlResultId: Long, metadata: QueryResult, data: I2b2ResultEnvelope) extends ShrineResponse {
-  protected override def i2b2MessageBody: NodeSeq = XmlUtil.stripWhitespace(
+  override protected def i2b2MessageBody: NodeSeq = XmlUtil.stripWhitespace(
     <ns4:response xsi:type="ns4:crc_xml_result_responseType">
       <status>
         <condition type="DONE">DONE</condition>

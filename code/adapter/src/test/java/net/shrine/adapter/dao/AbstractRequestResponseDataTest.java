@@ -76,7 +76,7 @@ public abstract class AbstractRequestResponseDataTest extends AbstractTransactio
     protected final RequestResponseData requestResponseData4 = new RequestResponseData(identity2.getDomain(), identity2.getUsername(), masterID4, 1, 1, "ERROR", 10, 1000, "spin", "<resultXml/>");
 
     @Resource
-    protected AdapterDAO adapterDAO;
+    protected LegacyAdapterDAO adapterDAO;
 
     protected void insertResultIDPairs() throws DAOException {
         for (final ResultTuple tuple : asList(result1a, result1b)) {

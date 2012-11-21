@@ -37,7 +37,7 @@ final class LoggableTest extends TestCase with AssertionsForJUnit with ShouldMat
     doTest(_.error, ERROR, logMessageIsLazy = false)
   }
   
-  private def doTest(log: Loggable => ( => String) => Unit, priority: Priority, logMessageIsLazy: Boolean) {
+  private def doTest(log: Loggable => ( => Any) => Unit, priority: Priority, logMessageIsLazy: Boolean) {
     val loggable = new MockLoggable
     
     var messageComputed = false
@@ -88,22 +88,22 @@ final class LoggableTest extends TestCase with AssertionsForJUnit with ShouldMat
       loggedAt.keys.foreach(loggedAt(_) = false)
     }
     
-    override def debug(s: => String) {
+    override def debug(s: => Any) {
       loggedAt(Priority.DEBUG) = true 
       super.debug(s)
     }
     
-    override def info(s: => String) {
+    override def info(s: => Any) {
       loggedAt(Priority.INFO) = true 
       super.info(s)
     }
     
-    override def warn(s: => String) {
+    override def warn(s: => Any) {
       loggedAt(Priority.WARN) = true 
       super.warn(s)
     }
     
-    override def error(s: => String) {
+    override def error(s: => Any) {
       loggedAt(Priority.ERROR) = true 
       super.error(s)
     }

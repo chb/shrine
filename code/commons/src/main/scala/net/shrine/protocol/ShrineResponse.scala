@@ -1,20 +1,16 @@
 package net.shrine.protocol
 
-import xml.NodeSeq
+import net.shrine.serialization.XmlMarshaller
+import net.shrine.serialization.XmlUnmarshaller
+import scala.xml.NodeSeq
+import net.shrine.serialization.I2b2Marshaller
 import net.shrine.util.XmlUtil
-import net.shrine.serialization.{I2b2Marshaller, XmlMarshaller, XmlUnmarshaller}
 
 /**
- * @author Bill Simons
- * @date 3/25/11
- * @link http://cbmi.med.harvard.edu
- * @link http://chip.org
- *       <p/>
- *       NOTICE: This software comes with NO guarantees whatsoever and is
- *       licensed as Lgpl Open Source
- * @link http://www.gnu.org/licenses/lgpl.html
+ * @author clint
+ * @date Nov 5, 2012
  */
-abstract class ShrineResponse extends XmlMarshaller with I2b2Marshaller {
+trait ShrineResponse extends XmlMarshaller with I2b2Marshaller {
   protected def i2b2MessageBody: NodeSeq
 
   protected def status = <status type="DONE">DONE</status>

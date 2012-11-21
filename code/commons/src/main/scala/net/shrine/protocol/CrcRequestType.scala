@@ -20,8 +20,12 @@ import net.shrine.util.SEnum
 final class CRCRequestType private[CRCRequestType] (val name: String, val i2b2RequestType: Option[String]) extends CRCRequestType.Value {
   def this(name: String, i2b2RequestType: String) = this(name, Option(i2b2RequestType))
   
+  def hasI2b2RequestType = i2b2RequestType.isDefined
+  
   def unsafeI2b2RequestType = i2b2RequestType.get
 }
+
+//TODO: Rename these, add unit test
 
 object CRCRequestType extends SEnum[CRCRequestType] {
   val GetPDOFromInputListRequestType = new CRCRequestType("GetPDOFromInputListRequestType", "getPDO_fromInputList")
@@ -43,4 +47,6 @@ object CRCRequestType extends SEnum[CRCRequestType] {
   val MasterRenameRequestType = new CRCRequestType("MasterRenameRequestType", "CRC_QRY_renameQueryMaster")
   
   val GetRequestXml = new CRCRequestType("GetRequestXml", "CRC_QRY_getRequestXml_fromQueryMasterId")
+  
+  val GetQueryResult = new CRCRequestType("GetQueryResult", None)
 }

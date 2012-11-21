@@ -1,11 +1,12 @@
 package net.shrine.adapter
 
-import dao.AdapterDAO
+import dao.LegacyAdapterDAO
 import xml.{NodeSeq, XML}
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
 import net.shrine.util.HttpClient
+import net.shrine.serialization.XmlMarshaller
 
 /**
  * @author Bill Simons
@@ -20,51 +21,28 @@ import net.shrine.util.HttpClient
 abstract class CrcAdapter[T <: ShrineRequest, V <: ShrineResponse](
     crcUrl: String,
     httpClient: HttpClient,
-    override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends Adapter(dao, hiveCredentials) {
-
-  protected def translateNetworkToLocal(request: T): T
-
-  protected def translateLocalToNetwork(response: V): V
+    override protected val hiveCredentials: HiveCredentials) extends WithHiveCredentialsAdapter(hiveCredentials) {
 
   protected def parseShrineResponse(nodeSeq: NodeSeq): ShrineResponse
 
-  protected def processRequest(identity: Identity, message: BroadcastMessage): ShrineResponse = {
-    val i2b2Response = callCrc(translateRequest(message.request))
+  override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
+    val i2b2Response = callCrc(message.request)
     
-    val shrineResponse = parseShrineResponse(XML.loadString(i2b2Response))
-    
-    translateResponse(shrineResponse)
-  }
-
-  private def translateRequest(request: ShrineRequest): ShrineRequest = {
-    val HiveCredentials(domain, username, password, project) = hiveCredentials
-    
-    def authInfo = AuthenticationInfo(domain, username, Credential(password, false))
-
-    request match {
-      case transReq: TranslatableRequest[T] => {
-        translateNetworkToLocal(transReq.withAuthn(authInfo).withProject(project).asRequest)
-      }
-      case _ => request
-    }
-  }
-
-  private def translateResponse(response: ShrineResponse): ShrineResponse = {
-    response match {
-      case transResp: TranslatableResponse[V] => {
-        translateLocalToNetwork(transResp.asResponse)
-      }
-      case _ => response
-    }
+    parseShrineResponse(XML.loadString(i2b2Response))
   }
 
   protected def callCrc(request: ShrineRequest): String = {
     val crcRequest = request.toI2b2String
     
     debug(String.format("Request to CRC:\r\n%s", crcRequest))
+
+    val start = System.currentTimeMillis
     
     val crcResponse = httpClient.post(crcRequest, crcUrl)
+    
+    val elapsed = System.currentTimeMillis - start
+    
+    debug("Calling the CRC took " + elapsed + "ms")
     
     debug(String.format("Response from CRC:\r\n%s", crcResponse))
     

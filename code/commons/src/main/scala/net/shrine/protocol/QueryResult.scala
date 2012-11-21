@@ -5,6 +5,7 @@ import xml.NodeSeq
 import org.spin.tools.NetworkTime.makeXMLGregorianCalendar
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.{ I2b2Marshaller, I2b2Unmarshaller, XmlMarshaller, XmlUnmarshaller }
+import net.shrine.util.SEnum
 
 /**
  * @author Bill Simons
@@ -26,7 +27,7 @@ final case class QueryResult(
   val startDate: Option[XMLGregorianCalendar],
   val endDate: Option[XMLGregorianCalendar],
   val description: Option[String],
-  val statusType: String,
+  val statusType: String, //Should this be a QueryResult.StatusType?
   val statusMessage: Option[String],
   val breakdowns: Map[ResultOutputType, I2b2ResultEnvelope] = Map.empty) extends XmlMarshaller with I2b2Marshaller {
 
@@ -45,7 +46,8 @@ final case class QueryResult(
 
   import QueryResult._
 
-  def isError = statusType == StatusType.Error
+  //NB: Fragile, non-type-safe ==
+  def isError = statusType == StatusType.Error.name
 
   def toI2b2 = {
     import ResultOutputType._
@@ -79,11 +81,12 @@ final case class QueryResult(
           {
             import StatusType._
             
-            statusType match {
-              case Finished => <status_type_id>3</status_type_id><description>{ Finished }</description>
+            //TODO: What to do for the catch-all case?  Treat it as an error?  Just fail loudly, like we do now?
+            StatusType.valueOf(statusType) match {
+              case Some(Finished) => <status_type_id>3</status_type_id><description>{ Finished.name }</description>
               //TODO: Can we use the same <status_type_id> for both Queued and Processing?
-              case Processing | Queued => <status_type_id>2</status_type_id><description>{ Processing }</description>
-              case Error => statusMessage.map(x => <description>{ x }</description>).orNull
+              case Some(Processing) | Some(Queued) => <status_type_id>2</status_type_id><description>{ Processing.name }</description>
+              case Some(Error) => statusMessage.map(x => <description>{ x }</description>).orNull
             }
           }
         </query_status_type>
@@ -132,11 +135,13 @@ final case class QueryResult(
 }
 
 object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[QueryResult] {
-  object StatusType {
-    val Error = "ERROR"
-    val Finished = "FINISHED"
-    val Processing = "PROCESSING"
-    val Queued = "QUEUED"
+  final class StatusType(val name: String) extends StatusType.Value
+  
+  object StatusType extends SEnum[StatusType] {
+    val Error = new StatusType("ERROR")
+    val Finished = new StatusType("FINISHED")
+    val Processing = new StatusType("PROCESSING")
+    val Queued = new StatusType("QUEUED")
   }
 
   def extractLong(nodeSeq: NodeSeq)(elemName: String): Long = (nodeSeq \ elemName).text.toLong

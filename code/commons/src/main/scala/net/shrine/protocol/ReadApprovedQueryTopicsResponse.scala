@@ -17,7 +17,7 @@ import net.shrine.serialization.XmlUnmarshaller
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
 final case class ReadApprovedQueryTopicsResponse(val approvedTopics: Seq[ApprovedTopic]) extends ShrineResponse {
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  override protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <ns7:sheriff_response xsi:type="ns7:sheriffResponseType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       {
         approvedTopics map {_.toI2b2}
@@ -25,7 +25,7 @@ final case class ReadApprovedQueryTopicsResponse(val approvedTopics: Seq[Approve
     </ns7:sheriff_response>
   )
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <readApprovedQueryTopicsResponse>
       <approvedTopics>
       {
@@ -36,7 +36,7 @@ final case class ReadApprovedQueryTopicsResponse(val approvedTopics: Seq[Approve
 }
 
 object ReadApprovedQueryTopicsResponse extends XmlUnmarshaller[ReadApprovedQueryTopicsResponse] {
-  def fromXml(xml: NodeSeq): ReadApprovedQueryTopicsResponse = {
+  override def fromXml(xml: NodeSeq): ReadApprovedQueryTopicsResponse = {
     val approvedTopics = (xml \\ "approvedTopic").map(ApprovedTopic.fromXml)
     
     new ReadApprovedQueryTopicsResponse(approvedTopics)

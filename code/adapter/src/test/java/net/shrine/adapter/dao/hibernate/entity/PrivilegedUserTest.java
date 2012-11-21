@@ -1,6 +1,6 @@
 package net.shrine.adapter.dao.hibernate.entity;
 
-import net.shrine.adapter.dao.AdapterDAO;
+import net.shrine.adapter.dao.LegacyAdapterDAO;
 import net.shrine.adapter.dao.DAOException;
 import net.shrine.adapter.dao.RequestResponseData;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import static java.util.Arrays.asList;
 
 public class PrivilegedUserTest extends AbstractTransactionalDataSourceSpringContextTests {
     @Resource
-    protected AdapterDAO adapterDAO;
+    protected LegacyAdapterDAO adapterDAO;
 
     protected final String testDomain = "testDomain";
     protected final String testUsername = "testUsername";

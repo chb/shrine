@@ -21,15 +21,15 @@ final case class ReadQueryInstancesResponse(
     val queryMasterId: Long,
     val userId: String,
     val groupId: String,
-    val queryInstances: Seq[QueryInstance]) extends ShrineResponse with TranslatableResponse[ReadQueryInstancesResponse] {
+    val queryInstances: Seq[QueryInstance]) extends ShrineResponse {
 
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  override protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:instance_responseType">
       <status>
         <condition type="DONE">DONE</condition>
       </status>
       {
-        queryInstances map {x =>
+        queryInstances.map { x =>
           XmlUtil.stripWhitespace(
             <query_instance>
               <query_instance_id>{x.queryInstanceId}</query_instance_id>
@@ -49,13 +49,13 @@ final case class ReadQueryInstancesResponse(
     </ns5:response>)
 
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <readQueryInstancesResponse>
       <masterId>{queryMasterId}</masterId>
       <userId>{userId}</userId>
       <groupId>{groupId}</groupId>
       {
-        queryInstances map {x =>
+        queryInstances.map {x =>
           XmlUtil.stripWhitespace(
             <queryInstance>
               <instanceId>{x.queryInstanceId}</instanceId>
@@ -73,31 +73,35 @@ final case class ReadQueryInstancesResponse(
 }
 
 object ReadQueryInstancesResponse extends I2b2Unmarshaller[ReadQueryInstancesResponse] with XmlUnmarshaller[ReadQueryInstancesResponse] {
-  def fromI2b2(nodeSeq: NodeSeq) = {
-    val queryInstances = (nodeSeq \ "message_body" \ "response" \ "query_instance") map {x =>
-
+  override def fromI2b2(nodeSeq: NodeSeq) = {
+    val queryInstances = (nodeSeq \ "message_body" \ "response" \ "query_instance").map { x =>
       val queryInstanceId = (x \ "query_instance_id").text
       val queryMasterId = (x \ "query_master_id").text
       val userId = (x \ "user_id").text
       val groupId = (x \ "group_id").text
       val startDate = makeXMLGregorianCalendar((x \ "start_date").text)
       val endDate = makeXMLGregorianCalendar((x \ "end_date").text)
-      new QueryInstance(queryInstanceId, queryMasterId, userId, groupId, startDate, endDate)
+      
+      QueryInstance(queryInstanceId, queryMasterId, userId, groupId, startDate, endDate)
     }
-    val firstInstance = queryInstances(0) //TODO - parsing error if no masters - need to deal with "no result" cases
-    new ReadQueryInstancesResponse(firstInstance.queryMasterId.toLong, firstInstance.userId, firstInstance.groupId, queryInstances)
+    val firstInstance = queryInstances.head //TODO - parsing error if no masters - need to deal with "no result" cases
+    
+    ReadQueryInstancesResponse(firstInstance.queryMasterId.toLong, firstInstance.userId, firstInstance.groupId, queryInstances)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     val masterId = (nodeSeq \ "masterId").text.toLong
     val userId = (nodeSeq \ "userId").text
     val groupId = (nodeSeq \ "groupId").text
-    val queryInstances = (nodeSeq \ "queryInstance") map {x =>
+  
+    val queryInstances = (nodeSeq \ "queryInstance").map { x =>
       val queryInstanceId = (x \ "instanceId").text
       val startDate = makeXMLGregorianCalendar((x \ "startDate").text)
       val endDate = makeXMLGregorianCalendar((x \ "endDate").text)
-      new QueryInstance(queryInstanceId, masterId.toString, userId, groupId, startDate, endDate)
+      
+      QueryInstance(queryInstanceId, masterId.toString, userId, groupId, startDate, endDate)
     }
-    new ReadQueryInstancesResponse(masterId, userId, groupId, queryInstances)
+    
+    ReadQueryInstancesResponse(masterId, userId, groupId, queryInstances)
   }
 }

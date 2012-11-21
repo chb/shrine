@@ -31,7 +31,6 @@ import net.shrine.webclient.server.BootstrapInfoSource
 final class ClientApiResource @Autowired()(@Injectable queryService: QueryService, 
                                             @Injectable ontologyService: OntologyService,
                                             @Injectable bootstrapInfoSource: BootstrapInfoSource) {
-
   @GET
   @Path("ontology/suggestions")
   def getSuggestions(

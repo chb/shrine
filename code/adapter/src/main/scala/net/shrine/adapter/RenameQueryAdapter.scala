@@ -1,11 +1,12 @@
 package net.shrine.adapter
 
-import dao.AdapterDAO
+import dao.LegacyAdapterDAO
 import xml.NodeSeq
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
 import net.shrine.util.HttpClient
+import net.shrine.serialization.XmlMarshaller
 
 /**
  * @author Bill Simons
@@ -20,24 +21,16 @@ import net.shrine.util.HttpClient
 class RenameQueryAdapter(
     crcUrl: String,
     httpClient: HttpClient,
-    override protected val dao: AdapterDAO,
-    override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[RenameQueryRequest, RenameQueryResponse](crcUrl, httpClient, dao, hiveCredentials) {
+    dao: LegacyAdapterDAO,
+    override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[RenameQueryRequest, RenameQueryResponse](crcUrl, httpClient, hiveCredentials) {
 
   protected def parseShrineResponse(nodeSeq: NodeSeq) = RenameQueryResponse.fromI2b2(nodeSeq)
 
-  override protected def processRequest(identity: Identity, message: BroadcastMessage) = {
+  override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
     val response = super.processRequest(identity, message).asInstanceOf[RenameQueryResponse]
+    
     dao.updateUsersToMasterQueryName(response.queryId, response.queryName)
+    
     response
-  }
-
-  protected def translateLocalToNetwork(response: RenameQueryResponse) = {
-    val networkId = dao.findNetworkMasterID(response.queryId.toString).get
-    response.withId(networkId)
-  }
-
-  protected def translateNetworkToLocal(request: RenameQueryRequest) = {
-    val localId = dao.findLocalMasterID(request.queryId).toLong
-    request.withId(localId)
   }
 }

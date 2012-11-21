@@ -11,7 +11,7 @@ final class ClasspathAdapterMappingsSource(mappingFileName: String) extends Adap
   require(mappingFileName != null)
   
   //NB: Will blow up loudly if mapping file isn't found
-  def load: AdapterMappings = {
+  override def load: AdapterMappings = {
     val mappingStream = getClass.getClassLoader.getResourceAsStream(mappingFileName)
     
     require(mappingStream != null, "Couldn't find adapter mapping file '" + mappingFileName + "' on the classpath")

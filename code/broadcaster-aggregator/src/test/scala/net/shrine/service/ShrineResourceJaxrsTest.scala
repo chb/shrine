@@ -165,9 +165,9 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
   
   @Test
   def testReadInstanceResults = resetMockThen {
-    val instanceId = 98765L
+    val shrineNetworkQueryId = 98765L
     
-    val response = shrineClient.readInstanceResults(instanceId)
+    val response = shrineClient.readInstanceResults(shrineNetworkQueryId)
 
     response should not(be(null))
 
@@ -185,7 +185,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     validateCachedParam(param, CRCRequestType.InstanceRequestType)
 
-    param.instanceId should equal(instanceId)
+    param.shrineNetworkQueryId should equal(shrineNetworkQueryId)
   }
   
   @Test

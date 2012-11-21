@@ -28,6 +28,10 @@ public enum ResultOutputType {
     private ResultOutputType(final boolean isBreakdown) {
         this.isBreakdown = isBreakdown;
     }
+
+    public boolean isError() {
+        return this == ERROR;
+    }
     
     public static ResultOutputType[] breakdownTypes() {
         final List<ResultOutputType> results = new ArrayList<ResultOutputType>();

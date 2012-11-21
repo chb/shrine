@@ -22,6 +22,9 @@ import org.spin.client.AgentException
 import org.spin.client.SpinAgent
 import org.spin.client.TimeoutException
 import java.net.MalformedURLException
+import org.spin.tools.NetworkTime
+import net.shrine.util.Util
+import net.shrine.util.Try
 
 /**
  * @author Bill Simons
@@ -47,12 +50,7 @@ class ShrineService(
   protected def generateIdentity(authn: AuthenticationInfo): Identity = identityService.certify(authn.domain, authn.username, authn.credential.value)
 
   private[service] def determinePeergroup(projectId: String): String = {
-    if(shrineConfig.getBroadcasterPeerGroupToQuery == null) {
-      projectId
-    }
-    else {
-      shrineConfig.getBroadcasterPeerGroupToQuery
-    }
+    Option(shrineConfig.getBroadcasterPeerGroupToQuery).getOrElse(projectId)
   }
 
   private[service] def broadcastMessage(message: BroadcastMessage, queryInfo: QueryInfo): AckNack = {
@@ -68,13 +66,12 @@ class ShrineService(
   private def getSpinResults(queryID: String, identity: Identity): ResultSet = {
     try {
       spinClient.receive(queryID, identity)
-    }
-    catch {
+    } catch {
       case e: TimeoutException => spinClient.getResult(queryID, identity)
     }
   }
 
-  private[service] def aggregate(queryId: String, identity: Identity, aggregator: Aggregator) = {
+  private[service] def aggregate(queryId: String, identity: Identity, aggregator: Aggregator): ShrineResponse = {
     
     def toDescription(response: Response): String = Option(response).map(_.getDescription).getOrElse("Unknown")
     
@@ -106,13 +103,7 @@ class ShrineService(
       }
     }
     
-    def toHostName(url: String): Option[String] = {
-      try {
-        Option((new java.net.URL(url)).getHost)
-      } catch {
-        case e: MalformedURLException => None
-      }
-    }
+    def toHostName(url: String): Option[String] = Try(new java.net.URL(url).getHost).toOption
     
     val spinResultEntries = results.map(result => new SpinResultEntry(decrypt(result.getPayload), result))
 
@@ -150,14 +141,24 @@ class ShrineService(
   }
 
   @Transactional
-  override def runQuery(request: RunQueryRequest) = {
+  override def runQuery(request: RunQueryRequest): ShrineResponse = {
     authorizationService.authorizeRunQueryRequest(request)
+    
     val identity = generateIdentity(request.authn)
 
     auditRunQueryRequest(identity, request)
+    
     val message = BroadcastMessage(request)
-    val aggregator = new RunQueryAggregator(message.masterId.get, request.authn.username, request.projectId,
-      request.queryDefinition, message.instanceId.get, shrineConfig.isIncludeAggregateResult)
+    
+    //TODO: What if masterId and instanceId are None?
+    val aggregator = new RunQueryAggregator(
+        message.masterId.get, 
+        request.authn.username, 
+        request.projectId,
+        request.queryDefinition, 
+        message.instanceId.get, 
+        shrineConfig.isIncludeAggregateResult)
+    
     executeRequest(identity, message, aggregator)
   }
 
@@ -165,9 +166,21 @@ class ShrineService(
 
   override def readPdo(request: ReadPdoRequest) = executeRequest(request, new ReadPdoResponseAggregator)
 
-  override def readInstanceResults(request: ReadInstanceResultsRequest) = executeRequest(request, new ReadInstanceResultsAggregator(request.instanceId, false))
+  override def readInstanceResults(request: ReadInstanceResultsRequest) = executeRequest(request, new ReadInstanceResultsAggregator(request.shrineNetworkQueryId, false))
 
-  override def readQueryInstances(request: ReadQueryInstancesRequest) = executeRequest(request, new ReadQueryInstancesAggregator(request.queryId, request.authn.username, request.projectId))
+  override def readQueryInstances(request: ReadQueryInstancesRequest) = {
+    val now = Util.now
+    val networkQueryId = request.queryId
+    val username = request.authn.username
+    val groupId = request.projectId
+    
+    //NB: Return a dummy response, with a dummy QueryInstance containing the network (Shrine) id of the query we'd like
+    //to get "instances" for.  This allows the legacy web client to formulate a request for query results that Shrine
+    //can understand, while meeting the conversational requirements of the legacy web client.
+    val instance = QueryInstance(networkQueryId.toString, networkQueryId.toString, username, groupId, now, now)
+    
+    ReadQueryInstancesResponse(networkQueryId, username, groupId, Seq(instance))
+  }
 
   override def readPreviousQueries(request: ReadPreviousQueriesRequest) = executeRequest(request, new ReadPreviousQueriesAggregator(request.authn.username, request.projectId))
 

@@ -21,7 +21,7 @@ final case class ReadQueryInstancesRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[ReadQueryInstancesRequest] {
+  val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
   val requestType = MasterRequestType
 
