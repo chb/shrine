@@ -20,9 +20,6 @@ import java.net.{MalformedURLException, URL}
  *
  * @link http://cbmi.med.harvard.edu
  *
- * This software is licensed under the LGPL
- * @link http://www.gnu.org/licenses/lgpl.html
- *
  * A client for remote ShrineResources, implemented using Jersey
  *
  * @param shrineUrl: The base URL that the remote ShrineResource is exposed at

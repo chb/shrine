@@ -12,8 +12,6 @@ import net.shrine.protocol.ReadQueryDefinitionResponse
 import net.shrine.protocol.DeleteQueryResponse
 import net.shrine.protocol.RenameQueryResponse
 import net.shrine.protocol.query.QueryDefinition
-import scala.collection.JavaConversions._
-
 
 /**
  *
@@ -21,9 +19,6 @@ import scala.collection.JavaConversions._
  * @date Sep 14, 2011
  *
  * @link http://cbmi.med.harvard.edu
- *
- * This software is licensed under the LGPL
- * @link http://www.gnu.org/licenses/lgpl.html
  *
  */
 trait ShrineClient {
@@ -46,7 +41,7 @@ trait ShrineClient {
   def renameQuery(queryId: Long, queryName: String): RenameQueryResponse
   
   //Overloads for Java interop
+  import scala.collection.JavaConverters._
 
-
- def runQuery(topicId: String, outputTypes: java.util.Set[ResultOutputType], queryDefinition: QueryDefinition): RunQueryResponse = runQuery(topicId, outputTypes.toSet, queryDefinition)
+  def runQuery(topicId: String, outputTypes: java.util.Set[ResultOutputType], queryDefinition: QueryDefinition): RunQueryResponse = runQuery(topicId, outputTypes.asScala.toSet, queryDefinition)
 }
