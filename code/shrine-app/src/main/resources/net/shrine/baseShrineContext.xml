@@ -205,17 +205,17 @@
     <bean id="masterDeleteQuery" class="net.shrine.adapter.DeleteQueryAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
         <constructor-arg index="1" ref="httpClient"/>
-        <constructor-arg index="2" ref="adapterDAO"/>
+        <constructor-arg index="2" ref="adapterDao"/>
     </bean>
 
     <bean id="masterRenameQuery" class="net.shrine.adapter.RenameQueryAdapter">
         <constructor-arg index="0" ref="realCRCEndpoint"/>
         <constructor-arg index="1" ref="httpClient"/>
-        <constructor-arg index="2" ref="adapterDAO"/>
+        <constructor-arg index="2" ref="adapterDao"/>
         <constructor-arg index="3" ref="hiveCredentials"/>
     </bean>
 
     <bean id="getRequestXmlQuery" class="net.shrine.adapter.ReadQueryDefinitionAdapter">
-        <constructor-arg index="0" ref="adapterDAO"/>
+        <constructor-arg index="0" ref="adapterDao"/>
     </bean>
 </beans>
