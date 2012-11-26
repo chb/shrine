@@ -206,6 +206,7 @@
         <constructor-arg index="0" ref="realCRCEndpoint"/>
         <constructor-arg index="1" ref="httpClient"/>
         <constructor-arg index="2" ref="adapterDao"/>
+        <constructor-arg index="3" ref="hiveCredentials"/>
     </bean>
 
     <bean id="masterRenameQuery" class="net.shrine.adapter.RenameQueryAdapter">
