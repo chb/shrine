@@ -87,16 +87,17 @@
             <artifactId>shrine-ont-service</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- Jackson dep needed by RestyGWT -->
         <dependency>
-            <groupId>net.shrine</groupId>
-            <artifactId>shrine-broadcaster-aggregator</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xalan</groupId>
-                    <artifactId>xalan</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+        <!-- Jackson dep needed by RestyGWT -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-jaxrs</artifactId>
+            <version>1.7.1</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
