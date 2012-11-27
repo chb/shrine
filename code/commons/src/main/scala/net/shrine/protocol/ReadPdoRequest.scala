@@ -23,11 +23,11 @@ final case class ReadPdoRequest(
     override val waitTimeMs: Long,
     override val authn: AuthenticationInfo,
     val patientSetCollId: String,
-    val optionsXml: NodeSeq) extends ShrineRequest(projectId, waitTimeMs, authn) {
+    val optionsXml: NodeSeq) extends ShrineRequest(projectId, waitTimeMs, authn) with TranslatableRequest[ReadPdoRequest] {
 
   val requestType = GetPDOFromInputListRequestType
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <readPdo>
       {headerFragment}
       <optionsXml>
@@ -38,13 +38,13 @@ final case class ReadPdoRequest(
       </patientSetCollId>
     </readPdo>)
 
-  def handle(handler: ShrineRequestHandler) = {
+  override def handle(handler: ShrineRequestHandler) = {
     handler.readPdo(this)
   }
   
   private[protocol] def getOptionsXml = ReadPdoRequest.updateCollId(optionsXml.head, patientSetCollId).toSeq
 
-  protected def i2b2MessageBody =
+  protected override  def i2b2MessageBody =
     XmlUtil.stripWhitespace(
       <message_body>
         <ns3:pdoheader>
@@ -54,16 +54,16 @@ final case class ReadPdoRequest(
         </ns3:pdoheader>{getOptionsXml}
       </message_body>)
 
-  def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
+  override def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
-  def withProject(proj: String) = this.copy(projectId = proj)
+  override def withProject(proj: String) = this.copy(projectId = proj)
 
   def withPatientSetCollId(newPatientSetCollId: String) = this.copy(patientSetCollId = newPatientSetCollId)
 }
 
 object ReadPdoRequest extends I2b2Unmarshaller[ReadPdoRequest] with ShrineRequestUnmarshaller[ReadPdoRequest] {
 
-  def fromI2b2(nodeSeq: NodeSeq): ReadPdoRequest = {
+  override def fromI2b2(nodeSeq: NodeSeq): ReadPdoRequest = {
     new ReadPdoRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
@@ -72,7 +72,7 @@ object ReadPdoRequest extends I2b2Unmarshaller[ReadPdoRequest] with ShrineReques
       (nodeSeq \ "message_body" \ "request"))
   }
 
-  def fromXml(nodeSeq: NodeSeq): ReadPdoRequest = {
+  override def fromXml(nodeSeq: NodeSeq): ReadPdoRequest = {
     new ReadPdoRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),

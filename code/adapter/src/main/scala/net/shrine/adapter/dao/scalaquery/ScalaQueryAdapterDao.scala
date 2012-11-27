@@ -30,12 +30,13 @@ import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.query.Expression
 import net.shrine.util.Util
+import net.shrine.util.Loggable
 
 /**
  * @author clint
  * @date Oct 15, 2012
  */
-final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, sequenceHelper: SequenceHelper) extends AdapterDao {
+final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, sequenceHelper: SequenceHelper) extends AdapterDao with Loggable {
   import driver.Implicit._
 
   override def findRecentQueries(howMany: Int): Seq[ShrineQuery] = {
@@ -73,7 +74,11 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
 
     val repeatedResultCount = counts.lastOption.getOrElse(0)
 
-    repeatedResultCount > threshold
+    val result = repeatedResultCount > threshold
+    
+    debug("User " + id.getDomain + ":" + id.getUsername + " locked out? " + result)
+    
+    result
   }
 
   override def insertQuery(networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = {

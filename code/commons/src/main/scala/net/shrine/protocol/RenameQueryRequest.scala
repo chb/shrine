@@ -22,28 +22,28 @@ final case class RenameQueryRequest(
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
   val queryId: Long,
-  val queryName: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val queryName: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RenameQueryRequest] {
 
   val requestType = MasterRenameRequestType
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <renameQuery>
       { headerFragment }
       <queryId>{ queryId }</queryId>
       <queryName>{ queryName }</queryName>
     </renameQuery>)
 
-  def handle(handler: ShrineRequestHandler) = {
+  override def handle(handler: ShrineRequestHandler) = {
     handler.renameQuery(this)
   }
 
   def withId(id: Long) = this.copy(queryId = id)
 
-  def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
+  override def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
-  def withProject(proj: String) = this.copy(projectId = proj)
+  override def withProject(proj: String) = this.copy(projectId = proj)
 
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:master_rename_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -56,7 +56,7 @@ final case class RenameQueryRequest(
 
 object RenameQueryRequest extends I2b2Unmarshaller[RenameQueryRequest] with ShrineRequestUnmarshaller[RenameQueryRequest] {
 
-  def fromI2b2(nodeSeq: NodeSeq): RenameQueryRequest = {
+  override def fromI2b2(nodeSeq: NodeSeq): RenameQueryRequest = {
     new RenameQueryRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
@@ -65,7 +65,7 @@ object RenameQueryRequest extends I2b2Unmarshaller[RenameQueryRequest] with Shri
       (nodeSeq \ "message_body" \ "request" \ "query_name").text)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     new RenameQueryRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),

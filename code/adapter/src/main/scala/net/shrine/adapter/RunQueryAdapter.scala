@@ -41,6 +41,10 @@ class RunQueryAdapter(
   config: ShrineConfig,
   doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, httpClient, hiveCredentials) {
 
+  override protected[adapter] def translateNetworkToLocal(request: RunQueryRequest): RunQueryRequest = {
+    request.mapQueryDefinition(conceptTranslator.translate)
+  }
+  
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): RunQueryResponse = {
     if (isLockedOut(identity)) {
       throw new AdapterLockoutException(identity)

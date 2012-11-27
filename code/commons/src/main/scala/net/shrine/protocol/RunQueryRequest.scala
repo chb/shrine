@@ -25,7 +25,7 @@ final case class RunQueryRequest(
   override val authn: AuthenticationInfo,
   val topicId: String,
   val outputTypes: Set[ResultOutputType],
-  val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
 
   val requestType = QueryDefinitionRequestType
 
@@ -66,11 +66,13 @@ final case class RunQueryRequest(
       <shrine><queryTopicID>{ topicId }</queryTopicID></shrine>
     </message_body>)
 
-  def withProject(proj: String) = this.copy(projectId = proj)
+  override def withProject(proj: String) = this.copy(projectId = proj)
 
-  def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
+  override def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
   def withQueryDefinition(qDef: QueryDefinition) = this.copy(queryDefinition = qDef)
+  
+  def mapQueryDefinition(f: QueryDefinition => QueryDefinition) = this.withQueryDefinition(f(queryDefinition))
 }
 
 object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequestUnmarshaller[RunQueryRequest] {

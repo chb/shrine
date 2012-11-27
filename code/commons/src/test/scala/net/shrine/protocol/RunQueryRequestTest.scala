@@ -30,7 +30,7 @@ class RunQueryRequestTest extends ShrineRequestValidator {
       <result_output priority_index="2" name="patIent_Count_Xml"/>
     </result_output_list>)
 
-  def messageBody = XmlUtil.stripWhitespace(
+  override def messageBody = XmlUtil.stripWhitespace(
     <message_body>
       <ns4:psmheader>
         <user group={domain} login={username}>{username}</user>
@@ -57,7 +57,7 @@ class RunQueryRequestTest extends ShrineRequestValidator {
       </runQuery>)
 
   @Test
-  def testFromI2b2() {
+  override def testFromI2b2 {
     val translatedRequest = RunQueryRequest.fromI2b2(request)
     validateRequestWith(translatedRequest) {
       translatedRequest.topicId should equal(topicId)
@@ -72,13 +72,40 @@ class RunQueryRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromI2b2() {
+  def testMapQueryDefinition {
+    val projectId = "projId"
+    val waitTimeMs = 12345L
+    val authn = AuthenticationInfo("some-domain", "some-user", Credential("salkjdlasd", false))
+    val topicId = "topicId"
+    val outputTypes = ResultOutputType.nonBreakdownTypes.toSet
+      
+    val req = new RunQueryRequest(projectId, waitTimeMs, authn, topicId, outputTypes, queryDefinition)
+    
+    val bogusTerm = Term("sa;ldk;alskd")
+    
+    val mapped = req.mapQueryDefinition(_.transform(_ => bogusTerm))
+    
+    (mapped eq req) should not be(true)
+    
+    mapped should not equal(req)
+    
+    mapped.projectId should equal(projectId)
+    mapped.waitTimeMs should equal(waitTimeMs)
+    mapped.authn should equal(authn)
+    mapped.topicId should equal(topicId)
+    mapped.outputTypes should equal(outputTypes)
+    mapped.queryDefinition.name should equal(queryDefinition.name)
+    mapped.queryDefinition.expr should equal(bogusTerm)
+  }
+  
+  @Test
+  override def testShrineRequestFromI2b2 {
     val shrineRequest = ShrineRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[RunQueryRequest])
   }
 
   @Test
-  def testToXml() {
+  override def testToXml {
     new RunQueryRequest(
       projectId,
       waitTimeMs,
@@ -89,7 +116,7 @@ class RunQueryRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testToI2b2() {
+  override def testToI2b2 {
     println(new RunQueryRequest(
       projectId,
       waitTimeMs,
@@ -100,7 +127,7 @@ class RunQueryRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testFromXml() {
+  override def testFromXml {
     val actual = RunQueryRequest.fromXml(runQueryRequest)
     validateRequestWith(actual) {
       actual.topicId should equal(topicId)
@@ -116,7 +143,7 @@ class RunQueryRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromXml() {
+  def testShrineRequestFromXml {
     assertTrue(ShrineRequest.fromXml(runQueryRequest).isInstanceOf[RunQueryRequest])
   }
 }

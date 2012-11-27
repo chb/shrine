@@ -1,6 +1,6 @@
 package net.shrine.adapter
 
-import scala.xml.{NodeSeq, XML}
+import scala.xml.{ NodeSeq, XML }
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
@@ -18,33 +18,47 @@ import net.shrine.serialization.XmlMarshaller
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 abstract class CrcAdapter[T <: ShrineRequest, V <: ShrineResponse](
-    crcUrl: String,
-    httpClient: HttpClient,
-    override protected val hiveCredentials: HiveCredentials) extends WithHiveCredentialsAdapter(hiveCredentials) {
+  crcUrl: String,
+  httpClient: HttpClient,
+  override protected val hiveCredentials: HiveCredentials) extends WithHiveCredentialsAdapter(hiveCredentials) {
 
   protected def parseShrineResponse(nodeSeq: NodeSeq): ShrineResponse
 
+  //NB: default is a noop; only RunQueryAdapter needs this for now
+  protected[adapter] def translateNetworkToLocal(request: T): T = request
+  
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
-    val i2b2Response = callCrc(message.request)
-    
+    val i2b2Response = callCrc(translateRequest(message.request))
+
     parseShrineResponse(XML.loadString(i2b2Response))
   }
 
   protected def callCrc(request: ShrineRequest): String = {
     val crcRequest = request.toI2b2String
-    
+
     debug(String.format("Request to CRC:\r\n%s", crcRequest))
 
     val start = System.currentTimeMillis
-    
+
     val crcResponse = httpClient.post(crcRequest, crcUrl)
-    
+
     val elapsed = System.currentTimeMillis - start
-    
+
     debug("Calling the CRC took " + elapsed + "ms")
-    
+
     debug(String.format("Response from CRC:\r\n%s", crcResponse))
-    
+
     crcResponse
+  }
+
+  private[adapter] def translateRequest(request: ShrineRequest): ShrineRequest = request match {
+    case transReq: TranslatableRequest[T] => {
+      val HiveCredentials(domain, username, password, project) = hiveCredentials
+
+      val authInfo = AuthenticationInfo(domain, username, Credential(password, false))
+
+      translateNetworkToLocal(transReq.withAuthn(authInfo).withProject(project).asRequest)
+    }
+    case _ => request
   }
 }

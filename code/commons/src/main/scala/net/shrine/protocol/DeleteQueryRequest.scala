@@ -21,27 +21,27 @@ final case class DeleteQueryRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[DeleteQueryRequest] {
 
   val requestType = MasterDeleteRequestType
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <deleteQuery>
       { headerFragment }
       <queryId>{ queryId }</queryId>
     </deleteQuery>)
 
-  def handle(handler: ShrineRequestHandler) = {
+  override def handle(handler: ShrineRequestHandler) = {
     handler.deleteQuery(this)
   }
 
   def withId(id: Long) = this.copy(queryId = id)
 
-  def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
+  override def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
-  def withProject(proj: String) = this.copy(projectId = proj)
+  override def withProject(proj: String) = this.copy(projectId = proj)
 
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:master_delete_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -53,7 +53,7 @@ final case class DeleteQueryRequest(
 
 object DeleteQueryRequest extends I2b2Unmarshaller[DeleteQueryRequest] with ShrineRequestUnmarshaller[DeleteQueryRequest] {
 
-  def fromI2b2(nodeSeq: NodeSeq): DeleteQueryRequest = {
+  override def fromI2b2(nodeSeq: NodeSeq): DeleteQueryRequest = {
     new DeleteQueryRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
@@ -61,7 +61,7 @@ object DeleteQueryRequest extends I2b2Unmarshaller[DeleteQueryRequest] with Shri
       (nodeSeq \ "message_body" \ "request" \ "query_master_id").text.toLong)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     new DeleteQueryRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),

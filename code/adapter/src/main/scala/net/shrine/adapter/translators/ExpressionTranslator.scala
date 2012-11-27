@@ -9,6 +9,7 @@ import net.shrine.protocol.query.DateBounded
 import net.shrine.protocol.query.OccuranceLimited
 import net.shrine.config.AdapterMappings
 import net.shrine.adapter.AdapterMappingException
+import net.shrine.util.Loggable
 
 /**
  * @author Clint Gilbert
@@ -45,20 +46,21 @@ object ExpressionTranslator {
 //NB: Second param allows plugging in different behavior when no mapping is found for a term; default is to throw
 final class ExpressionTranslator(
     private[translators] val mappings: Map[String, Set[String]],
-    onMissingMapping: Term => Expression = ExpressionTranslator.throwAdapterMappingException) {
+    onMissingMapping: Term => Expression = ExpressionTranslator.throwAdapterMappingException) extends Loggable {
 
   private[translators] def translateTerm(term: Term): Expression = {
 
-    val localTerms = mappings.get(term.value) match {
-      case Some(syns) => syns
-      case None => Set.empty
-    }
+    val localTerms = mappings.get(term.value).getOrElse(Set.empty)
 
-    localTerms.size match {
+    val result = localTerms.size match {
       case 0 => onMissingMapping(term)
       case 1 => if(localTerms.head == term.value) term else Term(localTerms.head)
       case _ => Or(localTerms.map(Term).toSeq: _*)
     }
+    
+    debug("Translated: " + term + " to " + result)
+    
+    result
   }
 
   def translate(expr: Expression): Expression = expr match {

@@ -8,7 +8,7 @@ import net.shrine.util.HttpClient
 class ReadPdoAdapter(
     crcUrl: String,
     httpClient: HttpClient,
-    hiveCredentials: HiveCredentials)
+    override protected val hiveCredentials: HiveCredentials)
     extends CrcAdapter[ReadPdoRequest, ReadPdoResponse](crcUrl, httpClient, hiveCredentials) {
 
   override protected def parseShrineResponse(nodeSeq: NodeSeq) = ReadPdoResponse.fromI2b2(nodeSeq)

@@ -14,13 +14,11 @@ import java.util.Calendar
  */
 object DateHelpers {
   def toSqlDate(xmlGc: XMLGregorianCalendar) = {
-    if(xmlGc == null) null
-    else new java.sql.Date(xmlGc.toGregorianCalendar.getTime.getTime)
+    new java.sql.Date(xmlGc.toGregorianCalendar.getTime.getTime)
   }
 
   def toXmlGc(date: java.sql.Date): XMLGregorianCalendar = {
-    if(date == null) null
-    else NetworkTime.makeXMLGregorianCalendar(new java.util.Date(date.getTime))
+    NetworkTime.makeXMLGregorianCalendar(new java.util.Date(date.getTime))
   }
 
   def daysFromNow(days: Int): XMLGregorianCalendar = {
