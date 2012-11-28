@@ -27,15 +27,15 @@ class ReadQueryDefinitionAdapter(dao: AdapterDao) extends Adapter {
     val newRequest = message.request.asInstanceOf[ReadQueryDefinitionRequest]
 
     val resultOption = for {
-      definition <- dao.findQueryByNetworkId(newRequest.queryId)
+      shrineQuery <- dao.findQueryByNetworkId(newRequest.queryId)
     } yield {
       new ReadQueryDefinitionResponse(
-        definition.networkId,
-        definition.name,
-        definition.username,
-        definition.dateCreated,
+        shrineQuery.networkId,
+        shrineQuery.name,
+        shrineQuery.username,
+        shrineQuery.dateCreated,
         //TODO: I2b2 or Shrine format?
-        QueryDefinition(definition.name, definition.queryExpr).toI2b2String) 
+        QueryDefinition(shrineQuery.name, shrineQuery.queryExpr).toI2b2String) 
     }
     
     resultOption.getOrElse(ErrorResponse("Couldn't find query with network id: " + newRequest.queryId))

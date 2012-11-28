@@ -17,11 +17,7 @@ import net.shrine.protocol.RenameQueryRequest
  * @author clint
  * @date Nov 27, 2012
  */
-final class DeleteQueryAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
-  val id = new Identity("some-domain", "some-user")
-  val authn = AuthenticationInfo("Some-domain", "some-user", Credential("aslkdjkaljsd", false))
-  val queryId = 123
-  
+final class DeleteQueryAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit {
   @Test
   def testProcessRequest = afterCreatingTables {
     
@@ -45,9 +41,9 @@ final class DeleteQueryAdapterTest extends AbstractDependencyInjectionSpringCont
 
     {
       //try to delete a bogus query
-      val DeleteQueryResponse(returnedId) = adapter.processRequest(id, new BroadcastMessage(123L, new DeleteQueryRequest("proj", 1000L, authn, 999)))
+      val DeleteQueryResponse(returnedId) = adapter.processRequest(id, new BroadcastMessage(123L, new DeleteQueryRequest("proj", 1000L, authn, bogusQueryId)))
 
-      returnedId should equal(999)
+      returnedId should equal(bogusQueryId)
 
       //Query in the DB should be unchanged
       val Some(query) = dao.findQueryByNetworkId(queryId)

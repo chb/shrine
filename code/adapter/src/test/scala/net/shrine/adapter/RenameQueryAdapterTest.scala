@@ -16,14 +16,7 @@ import net.shrine.protocol.query.Term
  * @author clint
  * @date Nov 27, 2012
  */
-final class RenameQueryAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
-  val id = new Identity("some-domain", "some-user")
-  val authn = AuthenticationInfo("Some-domain", "some-user", Credential("aslkdjkaljsd", false))
-    
-  val adapter = new DeleteQueryAdapter(dao)
-
-  val queryId = 123
-  
+final class RenameQueryAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit {
   @Test
   def testProcessRequest = afterCreatingTables {
     val name = "blarg"
@@ -52,9 +45,9 @@ final class RenameQueryAdapterTest extends AbstractDependencyInjectionSpringCont
     
     {
       //try to rename a bogus query
-      val RenameQueryResponse(returnedId, returnedName) = adapter.processRequest(id, new BroadcastMessage(123L, new RenameQueryRequest("proj", 1000L, authn, 999, newName)))
+      val RenameQueryResponse(returnedId, returnedName) = adapter.processRequest(id, new BroadcastMessage(123L, new RenameQueryRequest("proj", 1000L, authn, bogusQueryId, newName)))
 
-      returnedId should equal(999)
+      returnedId should equal(bogusQueryId)
       returnedName should equal(newName)
 
       //Query in the DB should be unchanged

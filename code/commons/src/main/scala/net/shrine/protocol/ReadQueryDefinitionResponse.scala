@@ -16,7 +16,7 @@ import net.shrine.serialization.{I2b2Unmarshaller, XmlUnmarshaller}
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadQueryDefinitionResponse(
+final case class ReadQueryDefinitionResponse(
     val masterId: Long,
     val name: String,
     val userId: String,
@@ -46,7 +46,7 @@ class ReadQueryDefinitionResponse(
       <queryDefinition>{queryDefinition}</queryDefinition>
     </readQueryDefinitionResponse>)
 
-  def canEqual(other: Any): Boolean = other.isInstanceOf[ReadQueryDefinitionResponse]
+  override def canEqual(other: Any): Boolean = other.isInstanceOf[ReadQueryDefinitionResponse]
 
   //NB: Does not include create date in equality
   override def equals(other: Any): Boolean = {
