@@ -210,7 +210,10 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
     doQuery(outputTypes, new HttpClient {
       override def post(input: String, url: String): String = {
         val resp = ShrineRequest.fromI2b2(input) match {
-          case _: RunQueryRequest => {
+          case req: RunQueryRequest => {
+            //NB: Terms should be translated
+            req.queryDefinition.expr should equal(Term("bar"))
+            
             RunQueryResponse(queryId, now, "userId", "groupId", queryDef, instanceId, Seq(countQueryResult) ++ breakdownQueryResults)
           }
           //NB: return a ReadResultResponse with new breakdown data each time, but will throw if the successfulBreakdowns
