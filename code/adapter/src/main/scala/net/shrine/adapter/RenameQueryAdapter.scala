@@ -18,19 +18,12 @@ import net.shrine.adapter.dao.AdapterDao
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class RenameQueryAdapter(
-    crcUrl: String,
-    httpClient: HttpClient,
-    dao: AdapterDao,
-    override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[RenameQueryRequest, RenameQueryResponse](crcUrl, httpClient, hiveCredentials) {
-
-  protected def parseShrineResponse(nodeSeq: NodeSeq) = RenameQueryResponse.fromI2b2(nodeSeq)
-
+class RenameQueryAdapter(dao: AdapterDao) extends Adapter {
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
-    val response = super.processRequest(identity, message).asInstanceOf[RenameQueryResponse]
+    val request = message.request.asInstanceOf[RenameQueryRequest]
     
-    dao.renameQuery(response.queryId, response.queryName)
+    dao.renameQuery(request.queryId, request.queryName)
     
-    response
+    RenameQueryResponse(request.queryId, request.queryName)
   }
 }

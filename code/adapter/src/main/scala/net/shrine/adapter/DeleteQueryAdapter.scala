@@ -18,19 +18,12 @@ import net.shrine.adapter.dao.AdapterDao
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class DeleteQueryAdapter(
-    crcUrl: String,
-    httpClient: HttpClient,
-    dao: AdapterDao,
-    override protected val hiveCredentials: HiveCredentials) extends CrcAdapter[DeleteQueryRequest, DeleteQueryResponse](crcUrl, httpClient, hiveCredentials) {
-
-  override protected def parseShrineResponse(nodeSeq: NodeSeq) = DeleteQueryResponse.fromI2b2(nodeSeq)
-
+class DeleteQueryAdapter(dao: AdapterDao) extends Adapter {
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
-    val response = super.processRequest(identity, message).asInstanceOf[DeleteQueryResponse]
+    val request = message.request.asInstanceOf[DeleteQueryRequest]
     
-    dao.deleteQuery(response.queryId)
+    dao.deleteQuery(request.queryId)
     
-    response
+    DeleteQueryResponse(request.queryId)
   }
 }
