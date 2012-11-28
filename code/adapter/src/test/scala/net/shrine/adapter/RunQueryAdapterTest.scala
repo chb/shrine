@@ -68,6 +68,8 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
   private val countQueryResult = QueryResult(resultId, instanceId, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, Some(now), Some(now), None, QueryResult.StatusType.Finished.name, None)
   
   private val dummyBreakdownData = Map("x" -> 1L, "y" -> 2L, "z" -> 3L)
+  
+  private val hiveCredentials = HiveCredentials("some-hive-domain", "hive-username", "hive-password", "hive-project")
 
   @Test
   def testObfuscateBreakdowns {
@@ -176,7 +178,9 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
     firstResult.breakdowns.keySet should equal(resultTypesExpectedToSucceed)
     firstResult.breakdowns.values.map(_.data).foreach(_ should equal(dummyBreakdownData)) 
 
-    resp.results.size should equal(1)
+    resp.results.size should equal(1)    
+
+
   }
   
   private def breakdownFor(resultType: ResultOutputType) = I2b2ResultEnvelope(resultType, dummyBreakdownData)
@@ -214,6 +218,13 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
             //NB: Terms should be translated
             req.queryDefinition.expr should equal(Term("bar"))
             
+            //Credentials should be "translated"
+            req.authn.username should equal(hiveCredentials.username)
+            req.authn.domain should equal(hiveCredentials.domain)
+            
+            //I2b2 Project ID should be translated 
+            req.projectId should equal(hiveCredentials.project)
+            
             RunQueryResponse(queryId, now, "userId", "groupId", queryDef, instanceId, Seq(countQueryResult) ++ breakdownQueryResults)
           }
           //NB: return a ReadResultResponse with new breakdown data each time, but will throw if the successfulBreakdowns
@@ -231,8 +242,6 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
   }
 
   private def doQuery(outputTypes: Set[ResultOutputType], httpClient: HttpClient): RunQueryResponse = {
-    val credentials = HiveCredentials("some-domain", "username", "password", "project")
-
     val identity = new Identity("some-domain", "username")
 
     val authn = AuthenticationInfo("some-domain", "username", Credential("jksafhkjaf", false))
@@ -240,7 +249,7 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
     val translator = new QueryDefinitionTranslator(new ExpressionTranslator(Map("foo" -> Set("bar"))))
 
     //NB: Don't obfuscate, for simpler testing
-    val adapter = new RunQueryAdapter("crc-url", httpClient, MockAdapterDao, credentials, translator, new ShrineConfig, false)
+    val adapter = new RunQueryAdapter("crc-url", httpClient, MockAdapterDao, hiveCredentials, translator, new ShrineConfig, false)
 
     val req = new RunQueryRequest(projectId, 1000L, authn, "topicId", outputTypes, queryDef)
 
