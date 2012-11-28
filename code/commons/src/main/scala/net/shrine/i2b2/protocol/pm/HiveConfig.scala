@@ -14,8 +14,8 @@ import xml.NodeSeq
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class HiveConfig(val crcUrl: String, val ontologyUrl: String) extends XmlMarshaller {
-  def toXml = XmlUtil.stripWhitespace(
+final class HiveConfig(val crcUrl: String, val ontologyUrl: String) extends XmlMarshaller {
+  override def toXml = XmlUtil.stripWhitespace(
     <hiveConfig>
         <crcUrl>{crcUrl}</crcUrl>
       <ontUrl>{ontologyUrl}</ontUrl>
@@ -23,11 +23,12 @@ class HiveConfig(val crcUrl: String, val ontologyUrl: String) extends XmlMarshal
 }
 
 object HiveConfig extends I2b2Unmarshaller[HiveConfig] {
-  def fromI2b2(nodeSeq: NodeSeq) = {
+  override def fromI2b2(nodeSeq: NodeSeq) = {
     val cellDataSeq = nodeSeq \ "message_body" \ "configure" \ "cell_datas" \ "cell_data"
     //TODO review for error handling - dangerous Option.get?
-    val crcUrl = (cellDataSeq.find{a =>(a \\ "@id").text =="CRC"}.get \ "url").text
-    val ontUrl = (cellDataSeq.find{a =>(a \\ "@id").text =="ONT"}.get \ "url").text
+    val crcUrl = (cellDataSeq.find(a => (a \\ "@id").text == "CRC").get \ "url").text
+    val ontUrl = (cellDataSeq.find(a => (a \\ "@id").text =="ONT").get \ "url").text
+    
     new HiveConfig(crcUrl, ontUrl)
   }
 }

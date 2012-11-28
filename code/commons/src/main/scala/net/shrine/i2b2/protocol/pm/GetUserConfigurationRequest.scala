@@ -15,9 +15,9 @@ import java.util.GregorianCalendar
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class GetUserConfigurationRequest(val domain: String,  val username: String, val password: String) extends I2b2Marshaller {
+final class GetUserConfigurationRequest(val domain: String, val username: String, val password: String) extends I2b2Marshaller {
 
-  def toI2b2 = XmlUtil.stripWhitespace(
+  override def toI2b2 = XmlUtil.stripWhitespace(
     <ns2:request xmlns:ns2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/cell/pm/1.1/">
       <message_header>
         <i2b2_version_compatible>1.1</i2b2_version_compatible>

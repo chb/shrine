@@ -20,7 +20,7 @@ final class User(val fullName: String, val username: String, val domain: String,
 }
 
 object User extends I2b2Unmarshaller[User] {
-  def fromI2b2(nodeSeq: NodeSeq) = {
+  override def fromI2b2(nodeSeq: NodeSeq) = {
     val params = Map.empty ++ (nodeSeq \ "message_body" \ "configure" \ "user" \ "param").map { param =>
       ((param \ "@name").text, param.text)
     }
