@@ -11,20 +11,21 @@ import net.shrine.protocol.Credential
 import net.shrine.protocol.ErrorResponse
 import net.shrine.protocol.DeleteQueryResponse
 import net.shrine.protocol.query.Term
+import net.shrine.protocol.RenameQueryRequest
 
 /**
  * @author clint
  * @date Nov 27, 2012
  */
 final class DeleteQueryAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
-  private val id = new Identity("some-domain", "some-user")
-  private val authn = AuthenticationInfo("Some-domain", "some-user", Credential("aslkdjkaljsd", false))
-
+  val id = new Identity("some-domain", "some-user")
+  val authn = AuthenticationInfo("Some-domain", "some-user", Credential("aslkdjkaljsd", false))
+  val queryId = 123
+  
   @Test
   def testProcessRequest = afterCreatingTables {
+    
     val adapter = new DeleteQueryAdapter(dao)
-
-    val queryId = 123
 
     {
       val DeleteQueryResponse(returnedId) = adapter.processRequest(id, new BroadcastMessage(123L, new DeleteQueryRequest("proj", 1000L, authn, queryId)))
@@ -32,8 +33,10 @@ final class DeleteQueryAdapterTest extends AbstractDependencyInjectionSpringCont
       returnedId should equal(queryId)
     }
 
+    //Add a query
     dao.insertQuery(queryId, "some-query", authn, Term("foo"))
 
+    //sanity check that it's there
     {
       val Some(query) = dao.findQueryByNetworkId(queryId)
 
@@ -60,6 +63,15 @@ final class DeleteQueryAdapterTest extends AbstractDependencyInjectionSpringCont
 
       //Query in the DB should be gone
       dao.findQueryByNetworkId(queryId) should be(None)
+    }
+  }
+  
+  @Test
+  def testProcessRequestBadRequest {
+    val adapter = new DeleteQueryAdapter(dao)
+
+    intercept[Exception] {
+      adapter.processRequest(id, new BroadcastMessage(123L, new RenameQueryRequest("proj", 1000L, authn, queryId, "foo")))
     }
   }
 }
