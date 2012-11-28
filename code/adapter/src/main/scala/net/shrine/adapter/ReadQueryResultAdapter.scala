@@ -17,17 +17,10 @@ import net.shrine.serialization.XmlMarshaller
  * 
  */
 //TODO: TEST!!!
-final class ReadQueryResultAdapter(
-    dao: AdapterDao,
-    doObfuscation: Boolean) extends Adapter {
-
-  //TODO: Honor doObfuscation flag?
-  //TODO: used passed Identity for something?  Check auth{n,z}?
-  
-  override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
-    val req = message.request.asInstanceOf[ReadQueryResultRequest]
-    
-    StoredQueries.retrieve(dao, req.queryId)(ReadQueryResultResponse(_, _))
-  }
-}
+final class ReadQueryResultAdapter(dao: AdapterDao, doObfuscation: Boolean) extends 
+    AbstractReadQueryResultAdapter[ReadQueryResultRequest, ReadQueryResultResponse](
+        dao,
+        doObfuscation,
+        _.queryId,
+        ReadQueryResultResponse(_, _))
 

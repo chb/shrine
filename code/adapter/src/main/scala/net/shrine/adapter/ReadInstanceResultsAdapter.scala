@@ -21,19 +21,10 @@ import net.shrine.serialization.XmlMarshaller
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadInstanceResultsAdapter(
-    dao: AdapterDao,
-    private val doObfuscation: Boolean) extends Adapter {
-
-  //TODO: Honor doObfuscation flag?
-  //TODO: used passed Identity for something?  Check auth{n,z}?
-  
-  override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
-    val req = message.request.asInstanceOf[ReadInstanceResultsRequest]
-    
-    val networkQueryId = req.shrineNetworkQueryId
-    
-    StoredQueries.retrieve(dao, req.shrineNetworkQueryId)(ReadInstanceResultsResponse(_, _))
-  }
-}
+class ReadInstanceResultsAdapter(dao: AdapterDao, doObfuscation: Boolean) extends 
+    AbstractReadQueryResultAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](
+        dao,
+        doObfuscation,
+        _.shrineNetworkQueryId,
+        ReadInstanceResultsResponse(_, _))
 

@@ -18,15 +18,20 @@ final case class ShrineQueryResult(
   breakdowns: Seq[Breakdown],
   errors: Seq[ShrineError]) {
   
-  def toQueryResults: Option[QueryResult] = {
+  def toQueryResults(doObfuscation: Boolean): Option[QueryResult] = {
     val countResult = count.map(_.toQueryResult).map { countQueryResult =>
       //add breakdowns
       
       val byType = Map.empty ++ breakdowns.map(b => (b.resultType, b.data))
       
-      val onlyObfuscated = byType.mapValues(_.mapValues(_.obfuscated))
+      val getRealOrObfuscated: ObfuscatedPair => Long = { 
+        if(doObfuscation) _.obfuscated
+        else _.original
+      }
       
-      countQueryResult.withBreakdowns(onlyObfuscated.map { 
+      val typesToData = byType.mapValues(_.mapValues(getRealOrObfuscated))
+      
+      countQueryResult.withBreakdowns(typesToData.map { 
         case (resultType, data) => 
           (resultType, I2b2ResultEnvelope(resultType, data)) 
       })

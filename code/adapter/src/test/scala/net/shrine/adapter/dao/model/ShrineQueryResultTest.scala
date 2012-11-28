@@ -24,12 +24,12 @@ final class ShrineQueryResultTest extends TestCase with ShouldMatchersForJUnit {
 
   private def someId = RandomTool.randomInt
 
-  private def queryResultRow(resultType: ResultOutputType) = QueryResultRow(someId, 
-                                                                             queryId, 
-                                                                             resultType, 
-                                                                             (if (resultType.isError) StatusType.Error else StatusType.Finished), 
-                                                                             (if (resultType.isError) None else Some(100)), 
-                                                                             Util.now)
+  private def queryResultRow(resultType: ResultOutputType) = QueryResultRow(someId,
+    queryId,
+    resultType,
+    (if (resultType.isError) StatusType.Error else StatusType.Finished),
+    (if (resultType.isError) None else Some(100)),
+    Util.now)
 
   private val countQueryResultRow = queryResultRow(PATIENT_COUNT_XML)
 
@@ -46,7 +46,7 @@ final class ShrineQueryResultTest extends TestCase with ShouldMatchersForJUnit {
   private val countRows = Seq(Count(someId, countQueryResultRow.id, 99, 100, Util.now), Count(someId, countQueryResultRow.id, 123, 124, Util.now))
 
   private val breakdownRows = Map(PATIENT_AGE_COUNT_XML -> Seq(BreakdownResultRow(someId, breakdownQueryResultRow1.id, "x", 1, 2), BreakdownResultRow(someId, breakdownQueryResultRow1.id, "y", 2, 3)),
-                                   PATIENT_GENDER_COUNT_XML -> Seq(BreakdownResultRow(someId, breakdownQueryResultRow2.id, "a", 9, 10), BreakdownResultRow(someId, breakdownQueryResultRow2.id, "b", 10, 11)))
+    PATIENT_GENDER_COUNT_XML -> Seq(BreakdownResultRow(someId, breakdownQueryResultRow2.id, "a", 9, 10), BreakdownResultRow(someId, breakdownQueryResultRow2.id, "b", 10, 11)))
 
   private val errorRows = Seq(ShrineError(someId, errorQueryResultRow1.id, "foo"), ShrineError(someId, errorQueryResultRow2.id, "bar"))
 
@@ -54,13 +54,18 @@ final class ShrineQueryResultTest extends TestCase with ShouldMatchersForJUnit {
   def testToQueryResults {
     val Some(shrineQueryResult) = ShrineQueryResult.fromRows(resultRows, countRows, breakdownRows, errorRows)
 
-    shrineQueryResult.copy(count = None).toQueryResults should equal(Option(errorRows.head.toQueryResult))
-    shrineQueryResult.copy(count = None, errors = Nil).toQueryResults should equal(None)
-    
-    val expected = Option(countRows.head.toQueryResult.withBreakdowns(Map(PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Map("x" -> 2, "y" -> 3)), 
-                                                                          PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("a" -> 10, "b" -> 11)))))
-    
-    shrineQueryResult.toQueryResults should equal(expected)
+    for (doObfuscation <- Seq(true, false)) {
+      def obfuscate(i: Int) = if(doObfuscation) i + 1 else i
+      
+      shrineQueryResult.copy(count = None).toQueryResults(doObfuscation) should equal(Option(errorRows.head.toQueryResult))
+      shrineQueryResult.copy(count = None, errors = Nil).toQueryResults(doObfuscation) should equal(None)
+
+      val expected = Option(countRows.head.toQueryResult.withBreakdowns(Map(
+        PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Map("x" -> obfuscate(1), "y" -> obfuscate(2))),
+        PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("a" -> obfuscate(9), "b" -> obfuscate(10))))))
+
+      shrineQueryResult.toQueryResults(doObfuscation) should equal(expected)
+    }
   }
 
   @Test
@@ -73,6 +78,6 @@ final class ShrineQueryResultTest extends TestCase with ShouldMatchersForJUnit {
     shrineQueryResult.count should equal(Some(countRows.head))
     shrineQueryResult.errors should equal(errorRows)
     shrineQueryResult.breakdowns.toSet should equal(Set(Breakdown(breakdownQueryResultRow1.id, PATIENT_AGE_COUNT_XML, Map("x" -> ObfuscatedPair(1, 2), "y" -> ObfuscatedPair(2, 3))),
-                                                        Breakdown(breakdownQueryResultRow2.id, PATIENT_GENDER_COUNT_XML, Map("a" -> ObfuscatedPair(9, 10), "b" -> ObfuscatedPair(10, 11)))))
+      Breakdown(breakdownQueryResultRow2.id, PATIENT_GENDER_COUNT_XML, Map("a" -> ObfuscatedPair(9, 10), "b" -> ObfuscatedPair(10, 11)))))
   }
 }
