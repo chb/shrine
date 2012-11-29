@@ -44,10 +44,12 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     val result2 = new SpinResultEntry(rqr2.toXmlString, new Result(null, "description1", null, null))
     val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description2", null, null))
 
-    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
+    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, true)
     
     val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
 
+    actual.queryId should equal(queryId)
+    actual.queryInstanceId should equal(-1L)
     actual.results.size should equal(5)
     actual.results.filter(_.resultTypeIs(PATIENT_COUNT_XML)).size should equal(3)
     actual.results.filter(_.resultTypeIs(PATIENTSET)).size should equal(2)
@@ -66,7 +68,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description1", null, null))
     val result2 = new SpinResultEntry(rqr2.toXmlString, new Result(null, "description2", null, null))
 
-    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
+    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, true)
     
     //TODO: test handling error responses
     val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
@@ -85,7 +87,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description1", null, null))
     val result2 = new SpinResultEntry(errorResponse.toXmlString, new Result(null, "description2", null, null))
 
-    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
+    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, true)
     
     val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
     
@@ -120,7 +122,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     
     val result2 = new SpinResultEntry(rqr2.toXmlString, new Result(null, "description1", null, null))
 
-    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, queryInstanceId, true)
+    val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, true)
     
     val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[RunQueryResponse]
     

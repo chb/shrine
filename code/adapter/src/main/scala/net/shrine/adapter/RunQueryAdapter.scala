@@ -53,7 +53,7 @@ class RunQueryAdapter(
     //TODO: Any way to avoid this cast?
     val runQueryReq = message.request.asInstanceOf[RunQueryRequest]
     
-    val insertedQueryId = dao.insertQuery(message.masterId.get, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
+    val insertedQueryId = dao.insertQuery(message.requestId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
 
     val originalRunQueryResponse = super.processRequest(identity, message).asInstanceOf[RunQueryResponse]
     

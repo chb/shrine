@@ -254,7 +254,7 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
     val req = new RunQueryRequest(projectId, 1000L, authn, "topicId", outputTypes, queryDef)
 
     //val broadcastMessage = new BroadcastMessage(queryId, masterId, instanceId, Seq(resultId), req)
-    val broadcastMessage = BroadcastMessage(req, Some(queryId))
+    val broadcastMessage = BroadcastMessage(queryId, req)
 
     adapter.processRequest(identity, broadcastMessage)
   }

@@ -43,8 +43,6 @@ class ShrineService(
   private val shrineConfig: ShrineConfig,
   private val spinClient: SpinAgent) extends ShrineRequestHandler with Loggable {
 
-  import ShrineService._
-
   private lazy val aggregatorEndpointConfig = new EndpointConfig(EndpointType.SOAP, shrineConfig.getAggregatorEndpoint);
 
   protected def generateIdentity(authn: AuthenticationInfo): Identity = identityService.certify(authn.domain, authn.username, authn.credential.value)
@@ -98,13 +96,13 @@ class ShrineService(
     }
 
     if (!failures.isEmpty) {
-      log.warn("Received " + failures.size + " failures. descriptions:")
+      warn("Received " + failures.size + " failures. descriptions:")
 
-      failures.map("  " + _.getDescription).foreach(log.warn)
+      failures.map("  " + _.getDescription).foreach(this.warn(_))
     }
 
     if (!nullResponses.isEmpty) {
-      log.error("Received " + nullResponses.size + " null results.  Got non-null results from " + (results.size + failures.size) + " nodes: " + (results ++ failures).map(toDescription))
+      error("Received " + nullResponses.size + " null results.  Got non-null results from " + (results.size + failures.size) + " nodes: " + (results ++ failures).map(toDescription))
     }
 
     def decrypt(envelope: Envelope) = {
@@ -167,13 +165,11 @@ class ShrineService(
 
     val message = BroadcastMessage(request)
 
-    //TODO: What if masterId and instanceId are None?
     val aggregator = new RunQueryAggregator(
-      message.masterId.get,
+      message.requestId, //TODO: Correct!?? used to be message.maseterId.get
       request.authn.username,
       request.projectId,
       request.queryDefinition,
-      message.instanceId.get,
       shrineConfig.isIncludeAggregateResult)
 
     executeRequest(identity, message, aggregator)
@@ -208,8 +204,4 @@ class ShrineService(
   override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest) = authorizationService.readApprovedEntries(request)
 
   override def readResult(request: ReadResultRequest): ShrineResponse = sys.error("TODO")
-}
-
-object ShrineService {
-  private val log = Logger.getLogger(classOf[ShrineService])
 }

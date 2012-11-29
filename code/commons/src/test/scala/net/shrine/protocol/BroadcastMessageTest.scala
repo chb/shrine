@@ -1,8 +1,8 @@
 package net.shrine.protocol
 
-import org.scalatest.junit.{AssertionsForJUnit, ShouldMatchersForJUnit}
+import org.scalatest.junit.{ AssertionsForJUnit, ShouldMatchersForJUnit }
 import org.junit.Test
-import org.junit.Assert.{assertTrue, assertNotNull}
+import org.junit.Assert.{ assertTrue, assertNotNull }
 import xml.Utility
 import net.shrine.util.XmlUtil
 
@@ -22,63 +22,33 @@ class BroadcastMessageTest extends AssertionsForJUnit with ShouldMatchersForJUni
   val instanceId = 984757
   val resultId1 = 656565
   val resultId2 = 1212121
-  val request = new ReadPreviousQueriesRequest("projectId", 10, new AuthenticationInfo("domain", "username", new Credential("cred", false)), "username", 20)
+  val authn = AuthenticationInfo("domain", "username", Credential("cred", false))
+  val request = ReadPreviousQueriesRequest("projectId", 10, authn, "username", 20)
   val message = XmlUtil.stripWhitespace(
-        <broadcastMessage>
-          <requestId>{requestId}</requestId>
-          <masterId>{masterId}</masterId>
-          <instanceId>{instanceId}</instanceId>
-          <resultIds>
-            <resultId>{resultId1}</resultId>
-            <resultId>{resultId2}</resultId>
-          </resultIds>
-          <request>{request.toXml}</request>
-        </broadcastMessage>)
-
-  @Test
-  def testFromXml() {
-    val actual = BroadcastMessage.fromXml(message)
-    actual.requestId should equal(requestId)
-    actual.masterId.get should equal(masterId)
-    actual.instanceId.get should equal(instanceId)
-    actual.resultIds.get should equal(Vector(resultId1, resultId2))
-    assertNotNull(actual.request)
-    assertTrue(actual.request.isInstanceOf[ReadPreviousQueriesRequest])
-  }
-
-  @Test
-  def testFromXmlWithoutOptionalElements() {
-    val actual = BroadcastMessage.fromXml(XmlUtil.stripWhitespace(
-        <broadcastMessage>
-            <requestId>{requestId}</requestId>
-            <masterId/>
-            <instanceId/>
-            <resultIds/>
-            <request>{request.toXml}</request>
-          </broadcastMessage>))
-    actual.requestId should equal(requestId)
-    actual.masterId should equal(None)
-    actual.instanceId should equal(None)
-    actual.resultIds should equal(None)
-    assertNotNull(actual.request)
-    assertTrue(actual.request.isInstanceOf[ReadPreviousQueriesRequest])
-  }
-
-  @Test
-  def testToXml() {
-    new BroadcastMessage(requestId, masterId, instanceId, Vector(resultId1, resultId2), request).toXml should equal(message)
-  }
-
-  @Test
-  def testToXmlWithAuxConstructor() {
-    val expected = XmlUtil.stripWhitespace(
     <broadcastMessage>
-          <requestId>{requestId}</requestId>
-          <masterId/>
-          <instanceId/>
-          <resultIds/>
-          <request>{request.toXml}</request>
-        </broadcastMessage>)
-    new BroadcastMessage(requestId, request).toXml should equal(expected)
+      <requestId>{ requestId }</requestId>
+      <request>{ request.toXml }</request>
+    </broadcastMessage>)
+
+  @Test
+  def testFromXml {
+    val actual = BroadcastMessage.fromXml(message)
+    
+    actual.requestId should equal(requestId)
+    actual.request should not be(null)
+    actual.request.isInstanceOf[ReadPreviousQueriesRequest] should be(true)
+    
+    val actualRequest = actual.request.asInstanceOf[ReadPreviousQueriesRequest]
+    
+    actualRequest.projectId should equal("projectId")
+    actualRequest.waitTimeMs should equal(10L)
+    actualRequest.authn should equal(authn)
+    actualRequest.userId should equal("username")
+    actualRequest.fetchSize should equal(20)
+  }
+
+  @Test
+  def testToXml {
+    BroadcastMessage(requestId, request).toXmlString should equal(message.toString)
   }
 }

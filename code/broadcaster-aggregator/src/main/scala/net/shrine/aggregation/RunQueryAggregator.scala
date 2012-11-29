@@ -21,12 +21,13 @@ class RunQueryAggregator(
   userId: String,
   groupId: String,
   requestQueryDefinition: QueryDefinition,
-  queryInstance: Long,
   doAggregation: Boolean) extends PackagesErrorsAggregator[RunQueryResponse](errorMessage = None, invalidMessage = Some("Unexpected response")) {
 
   /* We need to override this some place in Carranet, we need this method to change descriptions of responses */
   protected def transformResult(n: QueryResult, metaData: Result): QueryResult = n.withDescription(metaData.getDescription)
 
+  import RunQueryAggregator._
+  
   private[aggregation] final override def makeResponse(validResponses: Seq[Valid[RunQueryResponse]], errorResponses: Seq[QueryResult], invalidResponses: Seq[QueryResult]): ShrineResponse = {
 
     val results = validResponses.flatMap {
@@ -47,15 +48,20 @@ class RunQueryAggregator(
 
     val now = Util.now
 
-    val aggResults =
+    val aggResults = {
       if (doAggregation) {
-        val sumResult = new QueryResult(0L, queryInstance, PATIENT_COUNT_XML, counts.sum, now, now, "TOTAL COUNT", "FINISHED")
+        val sumResult = new QueryResult(0L, invalidInstanceId, PATIENT_COUNT_XML, counts.sum, now, now, "TOTAL COUNT", "FINISHED")
 
         results :+ sumResult
       } else {
         results
       }
+    }
 
-    new RunQueryResponse(queryId, now, userId, groupId, requestQueryDefinition, queryInstance, aggResults ++ errorResponses ++ invalidResponses)
+    new RunQueryResponse(queryId, now, userId, groupId, requestQueryDefinition, invalidInstanceId, aggResults ++ errorResponses ++ invalidResponses)
   }
+}
+
+object RunQueryAggregator {
+  val invalidInstanceId = -1L
 }
