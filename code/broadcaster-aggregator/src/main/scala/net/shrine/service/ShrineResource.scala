@@ -78,7 +78,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       @HeaderParam("outputTypes") outputTypes: OutputTypeSet,
       queryDefinitionXml: String): String = {
     val queryDef = QueryDefinition.fromXml(queryDefinitionXml).get //TODO: remove fragile .get call
-    performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, topicId, outputTypes.toSet, queryDef)))
+    performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, Ids.nextLong, topicId, outputTypes.toSet, queryDef)))
   }
   
   @GET

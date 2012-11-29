@@ -251,7 +251,7 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
     //NB: Don't obfuscate, for simpler testing
     val adapter = new RunQueryAdapter("crc-url", httpClient, MockAdapterDao, hiveCredentials, translator, new ShrineConfig, false)
 
-    val req = new RunQueryRequest(projectId, 1000L, authn, "topicId", outputTypes, queryDef)
+    val req = new RunQueryRequest(projectId, 1000L, authn, 999L, "topicId", outputTypes, queryDef)
 
     //val broadcastMessage = new BroadcastMessage(queryId, masterId, instanceId, Seq(resultId), req)
     val broadcastMessage = BroadcastMessage(queryId, req)

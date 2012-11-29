@@ -178,6 +178,7 @@ class HappyShrineService @Autowired() (
       "happyProject",
       180000,
       new AuthenticationInfo("happyDomain", "happy", new Credential("", false)),
+      Ids.nextLong,
       "",
       Set(ResultOutputType.PATIENT_COUNT_XML),
       queryDefinition)
@@ -192,7 +193,8 @@ class HappyShrineService @Autowired() (
     } else {
       val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
       val queryInfo: QueryInfo = new QueryInfo("LOCAL", identity, CRCRequestType.QueryDefinitionRequestType.name, endpointConfig)
-      val message = BroadcastMessage(newRunQueryRequest)
+      val req = newRunQueryRequest
+      val message = BroadcastMessage(req.networkQueryId, req)
 
       val ackNack = spinClient.send(queryInfo, message, BroadcastMessage.serializer)
       val resultSet = spinClient.receive(ackNack.getQueryId, identity)

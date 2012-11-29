@@ -23,6 +23,7 @@ final case class RunQueryRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
+  val networkQueryId: Long,
   val topicId: String,
   val outputTypes: Set[ResultOutputType],
   val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
@@ -32,6 +33,7 @@ final case class RunQueryRequest(
   override def toXml = XmlUtil.stripWhitespace(
     <runQuery>
       { headerFragment }
+      <queryId>{ networkQueryId }</queryId>
       <topicId>{ topicId }</topicId>
       <outputTypes>
         {
@@ -93,6 +95,7 @@ object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequ
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
       i2b2AuthenticationInfo(nodeSeq),
+      -1L, //TODO: appropriate?
       (nodeSeq \ "message_body" \ "shrine" \ "queryTopicID").text,
       determineI2b2OutputTypes(nodeSeq \ "message_body" \ "request" \ "result_output_list"),
       QueryDefinition.fromI2b2(queryDefXml).get) //TODO: Remove unsafe get call
@@ -122,6 +125,7 @@ object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequ
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),
       shrineAuthenticationInfo(nodeSeq),
+      (nodeSeq \ "queryId").text.toLong,
       (nodeSeq \ "topicId").text,
       determineShrineOutputTypes(nodeSeq \ "outputTypes"),
       QueryDefinition.fromXml(nodeSeq \ "queryDefinition").get) //TODO: Remove unsafe get call

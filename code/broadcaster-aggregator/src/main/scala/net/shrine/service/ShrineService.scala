@@ -141,7 +141,7 @@ class ShrineService(
   }
 
   protected def executeRequest(request: ShrineRequest, aggregator: Aggregator): ShrineResponse = {
-    executeRequest(generateIdentity(request.authn), BroadcastMessage(request), aggregator)
+    executeRequest(generateIdentity(request.authn), BroadcastMessage(Ids.nextLong, request), aggregator)
   }
 
   private def auditRunQueryRequest(identity: Identity, request: RunQueryRequest) {
@@ -161,10 +161,10 @@ class ShrineService(
 
     auditRunQueryRequest(identity, request)
 
-    val message = BroadcastMessage(request)
+    val message = BroadcastMessage(request.networkQueryId, request)
 
     val aggregator = new RunQueryAggregator(
-      message.requestId, //TODO: Correct!?? used to be message.maseterId.get
+      message.requestId, //TODO: Correct!?? used to be message.masterId.get
       request.authn.username,
       request.projectId,
       request.queryDefinition,
