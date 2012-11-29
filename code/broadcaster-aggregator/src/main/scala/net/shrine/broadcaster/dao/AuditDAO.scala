@@ -9,12 +9,12 @@ import java.util.Date
  * @author Clint Gilbert
  * @date ??
  * Ported to Scala on Feb 28, 2012
- * 
+ *
  * DAO that reads and writes audit entries
  */
 trait AuditDAO {
 
-    def addAuditEntry(auditEntry: AuditEntry): Unit
+  def addAuditEntry(auditEntry: AuditEntry): Unit
 
-    def findRecentEntries(limit: Int): Seq[AuditEntry]
+  def findRecentEntries(limit: Int): Seq[AuditEntry]
 }
