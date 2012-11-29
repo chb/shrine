@@ -59,8 +59,6 @@ class RunQueryAdapter(
     
     val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, originalRunQueryResponse)
 
-    //TODO: Revisit optional nature of message.{masterId, instanceId, resultIds}
-    //TODO: how to fail if those fields are missing?  The current .get calls will fail quite un-gracefully
     val obfuscatedRunQueryResponse = obfuscateResponse(originalRunQueryResponse)
 
     storeCountAndErrorResults(originalRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
