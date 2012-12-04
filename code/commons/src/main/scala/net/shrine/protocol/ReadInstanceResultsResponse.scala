@@ -2,7 +2,6 @@ package net.shrine.protocol
 
 import xml.NodeSeq
 import net.shrine.util.XmlUtil
-import net.shrine.serialization.{ I2b2Unmarshaller, XmlUnmarshaller }
 
 /**
  * @author Bill Simons
@@ -35,19 +34,11 @@ final case class ReadInstanceResultsResponse(
     override val shrineNetworkQueryId: Long,
     override val results: Seq[QueryResult]) extends AbstractReadInstanceResultsResponse(shrineNetworkQueryId) {
   
-  type ActualResponseType = ReadInstanceResultsResponse
+  override type ActualResponseType = ReadInstanceResultsResponse
 
   override def withId(id: Long) = this.copy(shrineNetworkQueryId = id)
 
   override def withResults(seq: Seq[QueryResult]) = this.copy(results = seq)
 }
 
-object ReadInstanceResultsResponse extends 
-    AbstractReadInstanceResultsResponse.Companion[ReadInstanceResultsResponse] with 
-    I2b2Unmarshaller[ReadInstanceResultsResponse] with 
-    XmlUnmarshaller[ReadInstanceResultsResponse] {
-  
-  override def fromI2b2(nodeSeq: NodeSeq) = unmarshalFromI2b2(nodeSeq)
-
-  override def fromXml(nodeSeq: NodeSeq) = unmarshalFromXml(nodeSeq)
-}
+object ReadInstanceResultsResponse extends AbstractReadInstanceResultsResponse.Companion[ReadInstanceResultsResponse]

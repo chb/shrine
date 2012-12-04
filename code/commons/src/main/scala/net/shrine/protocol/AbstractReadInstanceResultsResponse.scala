@@ -4,6 +4,8 @@ import scala.xml.NodeSeq
 
 import net.shrine.util.XmlUtil
 
+import net.shrine.serialization.{ I2b2Unmarshaller, XmlUnmarshaller }
+
 /**
  * @author clint
  * @date Nov 30, 2012
@@ -59,10 +61,10 @@ object AbstractReadInstanceResultsResponse {
     }
   }
   
-  abstract class Companion[R <: AbstractReadInstanceResultsResponse : Creatable] {
+  abstract class Companion[R <: AbstractReadInstanceResultsResponse : Creatable] extends I2b2Unmarshaller[R] with XmlUnmarshaller[R] {
     private val createResponse = implicitly[Creatable[R]]
     
-    protected final def unmarshalFromI2b2(nodeSeq: NodeSeq): R = {
+    override def fromI2b2(nodeSeq: NodeSeq): R = {
       val results = (nodeSeq \ "message_body" \ "response" \ "query_result_instance").map(QueryResult.fromI2b2)
 
       //TODO - parsing error if no results - need to deal with "no result" cases
@@ -71,7 +73,7 @@ object AbstractReadInstanceResultsResponse {
       createResponse(shrineNetworkQueryId, results)
     }
 
-    protected final def unmarshalFromXml(nodeSeq: NodeSeq): R = {
+    override def fromXml(nodeSeq: NodeSeq): R = {
       val shrineNetworkQueryId = (nodeSeq \ "shrineNetworkQueryId").text.toLong
 
       val results = (nodeSeq \ "queryResults" \ "_").map(QueryResult.fromXml)
