@@ -12,6 +12,7 @@ import net.shrine.protocol.ReadQueryDefinitionResponse
 import net.shrine.protocol.DeleteQueryResponse
 import net.shrine.protocol.RenameQueryResponse
 import net.shrine.protocol.query.QueryDefinition
+import net.shrine.protocol.AggregatedRunQueryResponse
 
 /**
  *
@@ -26,7 +27,7 @@ trait ShrineClient {
 
   def readPreviousQueries(userId: String, fetchSize: Int): ReadPreviousQueriesResponse
 
-  def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition): RunQueryResponse
+  def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition): AggregatedRunQueryResponse
   
   def readQueryInstances(queryId: Long): ReadQueryInstancesResponse
   
@@ -43,5 +44,5 @@ trait ShrineClient {
   //Overloads for Java interop
   import scala.collection.JavaConverters._
 
-  def runQuery(topicId: String, outputTypes: java.util.Set[ResultOutputType], queryDefinition: QueryDefinition): RunQueryResponse = runQuery(topicId, outputTypes.asScala.toSet, queryDefinition)
+  def runQuery(topicId: String, outputTypes: java.util.Set[ResultOutputType], queryDefinition: QueryDefinition): AggregatedRunQueryResponse = runQuery(topicId, outputTypes.asScala.toSet, queryDefinition)
 }

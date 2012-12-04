@@ -17,6 +17,7 @@ import net.shrine.protocol.QueryResult
 import java.util.Date
 import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
 import net.shrine.client.ShrineClient
+import net.shrine.protocol.AggregatedRunQueryResponse
 
 /**
  * @author clint
@@ -29,7 +30,7 @@ final case class MockShrineClient(toReturn: Map[String, SingleInstitutionQueryRe
 
   override def readPreviousQueries(userId: String, fetchSize: Int): ReadPreviousQueriesResponse = null
 
-  override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDef: QueryDefinition): RunQueryResponse = {
+  override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDef: QueryDefinition): AggregatedRunQueryResponse = {
     this.queryDefinition = queryDef
 
     val now = NetworkTime.makeXMLGregorianCalendar(new Date)
@@ -42,7 +43,7 @@ final case class MockShrineClient(toReturn: Map[String, SingleInstitutionQueryRe
       }
     }
 
-    RunQueryResponse(987L, now, "some-user-id", "some-group-id", queryDefinition, 42L, queryResults.toSeq)
+    AggregatedRunQueryResponse(987L, now, "some-user-id", "some-group-id", queryDefinition, 42L, queryResults.toSeq)
   }
 
   override def readQueryInstances(queryId: Long): ReadQueryInstancesResponse = null

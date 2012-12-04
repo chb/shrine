@@ -23,23 +23,17 @@ final case class RunQueryResponse(
     override val groupId: String,
     override val requestXml: QueryDefinition,
     override val queryInstanceId: Long,
-    override val results: Seq[QueryResult]) extends AbstractRunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId) {
+    val singleNodeResult: QueryResult) extends AbstractRunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId) {
 
-  type ActualResponseType = RunQueryResponse
+  override type ActualResponseType = RunQueryResponse
   
   override def withId(id: Long) = this.copy(queryId = id)
 
   override def withInstanceId(id: Long) = this.copy(queryInstanceId = id)
 
-  override def withResults(seq: Seq[QueryResult]) = this.copy(results = seq)
+  override val results = Seq(singleNodeResult)
+  
+  def withResult(res: QueryResult): RunQueryResponse = this.copy(singleNodeResult = res)
 }
 
-object RunQueryResponse extends 
-    AbstractRunQueryResponse.Companion[RunQueryResponse] with 
-    I2b2Unmarshaller[RunQueryResponse] with 
-    XmlUnmarshaller[RunQueryResponse] {
-  
-  override def fromI2b2(nodeSeq: NodeSeq) = unmarshalFromI2b2(nodeSeq)
-  
-  override def fromXml(nodeSeq: NodeSeq) = unmarshalFromXml(nodeSeq)
-}
+object RunQueryResponse extends AbstractRunQueryResponse.Companion[RunQueryResponse]

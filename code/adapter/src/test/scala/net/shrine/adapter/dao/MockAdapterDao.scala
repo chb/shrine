@@ -12,6 +12,7 @@ import net.shrine.protocol.I2b2ResultEnvelope
 import net.shrine.protocol.query.Expression
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.adapter.dao.model.ShrineQuery
+import net.shrine.protocol.RawCrcRunQueryResponse
 
 /**
  * @author clint
@@ -20,7 +21,7 @@ import net.shrine.adapter.dao.model.ShrineQuery
 object MockAdapterDao extends AdapterDao {
   override def insertQuery(networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = 0
 
-  override def insertQueryResults(parentQueryId: Int, response: RunQueryResponse): Map[ResultOutputType, Seq[Int]] = Map.empty
+  override def insertQueryResults(parentQueryId: Int, response: RawCrcRunQueryResponse): Map[ResultOutputType, Seq[Int]] = Map.empty
   
   override def insertCountResult(resultId: Int, originalCount: Long, obfuscatedCount: Long): Unit = ()
   

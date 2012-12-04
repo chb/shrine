@@ -31,7 +31,7 @@ final class ObfuscatorTest extends TestCase with ShouldMatchers with AssertionsF
   }
   
   @Test
-  def testObfuscateSeqOfQueryResults {
+  def testObfuscateQueryResult {
     def queryResult(resultId: Long, setSize: Long) = {
       import ResultOutputType._
       
@@ -39,21 +39,15 @@ final class ObfuscatorTest extends TestCase with ShouldMatchers with AssertionsF
     }
 
     val resultId1 = 12345L
-    val resultId2 = 99999L
     
     val setSize1 = 123L
-    val setSize2 = 987L
-    
-    val results = Seq(queryResult(resultId1, setSize1), queryResult(resultId2, setSize2))  
     
     {
       val expectedObfuscationAmount = Some(1)
       
-      val Seq(QueryResult(_, _, _, obfscSetSize1, _, _, _, _, _, _), 
-              QueryResult(_, _, _, obfscSetSize2, _, _, _, _, _, _)) = Obfuscator.obfuscate(results)
+      val QueryResult(_, _, _, obfscSetSize1, _, _, _, _, _, _) = Obfuscator.obfuscate(queryResult(resultId1, setSize1))
               
       within3(setSize1, obfscSetSize1) should be(true)
-      within3(setSize2, obfscSetSize2) should be(true)
     }
   }
 }

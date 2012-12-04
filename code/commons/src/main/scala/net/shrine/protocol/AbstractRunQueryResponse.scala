@@ -9,6 +9,7 @@ import org.spin.tools.NetworkTime.makeXMLGregorianCalendar
 import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.util.XmlUtil
+import net.shrine.serialization.{I2b2Unmarshaller, XmlUnmarshaller}
 
 /**
  * @author clint
@@ -27,12 +28,8 @@ abstract class AbstractRunQueryResponse(
   def withId(id: Long): ActualResponseType
 
   def withInstanceId(id: Long): ActualResponseType
-
-  def withResults(seq: Seq[QueryResult]): ActualResponseType
   
   final def queryName = requestXml.name
-  
-  final def resultsPartitioned = results.partition(!_.isError)
   
   override protected final def i2b2MessageBody = XmlUtil.stripWhitespace(
     <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:master_instance_result_responseType">
@@ -87,17 +84,32 @@ object AbstractRunQueryResponse {
 
   private object Creatable {
     implicit val runQueryResponseIsCreatable: Creatable[RunQueryResponse] = new Creatable[RunQueryResponse] {
-      override def apply(queryId: Long, createDate: XMLGregorianCalendar, userId: String, groupId: String, requestXml: QueryDefinition, queryInstanceId: Long, results: Seq[QueryResult]) =
-        RunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId, results)
+      override def apply(queryId: Long, createDate: XMLGregorianCalendar, userId: String, groupId: String, requestXml: QueryDefinition, queryInstanceId: Long, results: Seq[QueryResult]) = {
+        RunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId, results.head)
+      }
+    }
+    
+    implicit val aggregatedRunQueryResponseIsCreatable: Creatable[AggregatedRunQueryResponse] = new Creatable[AggregatedRunQueryResponse] {
+      override def apply(queryId: Long, createDate: XMLGregorianCalendar, userId: String, groupId: String, requestXml: QueryDefinition, queryInstanceId: Long, results: Seq[QueryResult]) = {
+        AggregatedRunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId, results)
+      }
+    }
+    
+    implicit val rawCrcRunQueryResponseIsCreatable: Creatable[RawCrcRunQueryResponse] = new Creatable[RawCrcRunQueryResponse] {
+      override def apply(queryId: Long, createDate: XMLGregorianCalendar, userId: String, groupId: String, requestXml: QueryDefinition, queryInstanceId: Long, results: Seq[QueryResult]) = {
+        val queryResultMap = RawCrcRunQueryResponse.toQueryResultMap(results)
+        
+        RawCrcRunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId, queryResultMap)
+      }
     }
   }
 
-  abstract class Companion[R <: AbstractRunQueryResponse: Creatable] {
+  abstract class Companion[R <: AbstractRunQueryResponse: Creatable] extends I2b2Unmarshaller[R] with XmlUnmarshaller[R] {
     private val createResponse = implicitly[Creatable[R]]
 
     import org.spin.tools.NetworkTime.makeXMLGregorianCalendar
 
-    protected final def unmarshalFromI2b2(nodeSeq: NodeSeq) = {
+    override def fromI2b2(nodeSeq: NodeSeq): R = {
       def firstChild(nodeSeq: NodeSeq) = nodeSeq.head.asInstanceOf[Elem].child.head
 
       val results = (nodeSeq \ "message_body" \ "response" \ "query_result_instance").map(QueryResult.fromI2b2)
@@ -124,7 +136,7 @@ object AbstractRunQueryResponse {
       createResponse(queryId, makeXMLGregorianCalendar(createDate), userId, groupId, requestXml.get, queryInstanceId, results)
     }
 
-    protected final def unmarshalFromXml(nodeSeq: NodeSeq) = {
+    override def fromXml(nodeSeq: NodeSeq): R = {
       val results = (nodeSeq \ "queryResults" \ "_").map(QueryResult.fromXml)
 
       createResponse(

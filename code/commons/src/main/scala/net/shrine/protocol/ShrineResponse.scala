@@ -57,7 +57,12 @@ object ShrineResponse extends XmlUnmarshaller[Option[ShrineResponse]] {
         case "readQueryDefinitionResponse" => ReadQueryDefinitionResponse.fromXml(nodeSeq)
         case "readQueryInstancesResponse" => ReadQueryInstancesResponse.fromXml(nodeSeq)
         case "renameQueryResponse" => RenameQueryResponse.fromXml(nodeSeq)
-        case "runQueryResponse" => RunQueryResponse.fromXml(nodeSeq)
+        case "runQueryResponse" => {
+          (nodeSeq \ "queryResults" \ "_").size match {
+            case 1 => RunQueryResponse.fromXml(nodeSeq)
+            case _ => AggregatedRunQueryResponse.fromXml(nodeSeq)
+          }
+        }
         case "errorResponse" => ErrorResponse.fromXml(nodeSeq)
       }
     }

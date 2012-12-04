@@ -13,6 +13,7 @@ import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.query.Expression
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.adapter.dao.model.ShrineQuery
+import net.shrine.protocol.RawCrcRunQueryResponse
 
 /**
  * @author clint
@@ -26,7 +27,7 @@ trait AdapterDao {
 
   //Returns a Map of output types to Seqs of inserted ids, since the ERROR output type can be used for multiple query_result rows,
   //Say for a run query operation that results in multiple error responses from the CRC.
-  def insertQueryResults(parentQueryId: Int, response: RunQueryResponse): Map[ResultOutputType, Seq[Int]]
+  def insertQueryResults(parentQueryId: Int, response: RawCrcRunQueryResponse): Map[ResultOutputType, Seq[Int]]
   
   def insertCountResult(resultId: Int, originalCount: Long, obfuscatedCount: Long): Unit
   

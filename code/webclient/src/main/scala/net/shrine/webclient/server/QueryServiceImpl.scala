@@ -1,20 +1,19 @@
 package net.shrine.webclient.server
 
-import net.shrine.protocol.AuthenticationInfo
-import net.shrine.protocol.Credential
+import scala.collection.JavaConverters.mapAsJavaMapConverter
+
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Scope
+import org.springframework.stereotype.Service
+
+import net.shrine.client.ShrineClient
+import net.shrine.protocol.AggregatedRunQueryResponse
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.ResultOutputType
-import net.shrine.protocol.RunQueryResponse
-import net.shrine.protocol.query.Expression.fromXml
-import net.shrine.protocol.query.QueryDefinition
+import net.shrine.protocol.ResultOutputType.PATIENT_COUNT_XML
 import net.shrine.protocol.query.Expression
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.{Service, Component}
-import org.springframework.context.annotation.Scope
-import net.shrine.protocol.I2b2ResultEnvelope
+import net.shrine.protocol.query.QueryDefinition
 import net.shrine.webclient.shared.domain.MultiInstitutionQueryResult
-import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
-import net.shrine.client.ShrineClient
 
 /**
  * @author clint
@@ -50,7 +49,7 @@ final class QueryServiceImpl @Autowired()(private[this] val client: ShrineClient
     
     def toNamedResult(result: QueryResult) = (toInstName(result.description), makeSingleInstitutionQueryResult(result))
 
-    val response: RunQueryResponse = doQuery(expr)
+    val response: AggregatedRunQueryResponse = doQuery(expr)
     
     val results = response.results.map(toNamedResult).toMap
     

@@ -14,8 +14,8 @@ import java.util.Random
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 object Obfuscator {
-  def obfuscate(results: Seq[QueryResult]): Seq[QueryResult] = {
-    results.map(result => result.withSetSize(obfuscate(result.setSize)))
+  def obfuscate(result: QueryResult): QueryResult = {
+    result.withSetSize(obfuscate(result.setSize))
   }
 
   def obfuscate(l: Long): Long = {

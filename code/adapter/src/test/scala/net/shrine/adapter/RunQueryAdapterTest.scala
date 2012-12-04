@@ -1,15 +1,12 @@
 package net.shrine.adapter
 
 import java.util.GregorianCalendar
-
 import scala.Array.canBuildFrom
-
 import org.junit.Test
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.spin.tools.NetworkTime
 import org.spin.tools.crypto.signature.Identity
-
 import junit.framework.TestCase
 import net.shrine.adapter.dao.MockAdapterDao
 import net.shrine.adapter.translators.ExpressionTranslator
@@ -36,6 +33,8 @@ import net.shrine.protocol.query.Or
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import net.shrine.util.HttpClient
+import net.shrine.protocol.RunQueryResponse
+import net.shrine.protocol.RawCrcRunQueryResponse
 
 /**
  * @author Bill Simons
@@ -122,7 +121,9 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
     val outputTypes = justCounts
 
     val resp = doQuery(outputTypes) {
-      RunQueryResponse(queryId, now, userId, groupId, queryDef, instanceId, Seq(countQueryResult)).toI2b2String
+      import RawCrcRunQueryResponse.toQueryResultMap
+      
+      RawCrcRunQueryResponse(queryId, now, userId, groupId, queryDef, instanceId, toQueryResultMap(Seq(countQueryResult))).toI2b2String
     }
 
     dobasicRunQueryResponseTest(resp)
@@ -225,7 +226,11 @@ final class RunQueryAdapterTest extends TestCase with ShouldMatchersForJUnit {
             //I2b2 Project ID should be translated 
             req.projectId should equal(hiveCredentials.project)
             
-            RunQueryResponse(queryId, now, "userId", "groupId", queryDef, instanceId, Seq(countQueryResult) ++ breakdownQueryResults)
+            val queryResultMap = RawCrcRunQueryResponse.toQueryResultMap(countQueryResult +: breakdownQueryResults)
+            
+            val result = RawCrcRunQueryResponse(queryId, now, "userId", "groupId", queryDef, instanceId, queryResultMap)
+            
+            result
           }
           //NB: return a ReadResultResponse with new breakdown data each time, but will throw if the successfulBreakdowns
           //iterator is exhausted, simulating an error calling the CRC 

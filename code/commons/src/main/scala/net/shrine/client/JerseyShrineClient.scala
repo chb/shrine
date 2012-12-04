@@ -47,7 +47,7 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
   }
 
   override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition) = {
-    post[RunQueryResponse] {
+    post[AggregatedRunQueryResponse] {
       webResource.path("/shrine/queries").header("outputTypes", OutputTypeSet(outputTypes).serialized).header("topicId", topicId).entity(queryDefinition.toXmlString, MediaType.APPLICATION_XML)
     }
   }
@@ -129,6 +129,8 @@ object JerseyShrineClient {
     }
     
     private[client] implicit val runQueryResponseDeserializer: Deserializer[RunQueryResponse] = toDeserializer(RunQueryResponse.fromXml)
+    
+    private[client] implicit val aggregatedRunQueryResponseDeserializer: Deserializer[AggregatedRunQueryResponse] = toDeserializer(AggregatedRunQueryResponse.fromXml)
 
     private[client] implicit val readPreviousQueriesResponseDeserializer: Deserializer[ReadPreviousQueriesResponse] = toDeserializer(ReadPreviousQueriesResponse.fromXml)
 

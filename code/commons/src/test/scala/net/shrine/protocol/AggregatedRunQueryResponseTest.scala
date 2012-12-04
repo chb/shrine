@@ -18,7 +18,8 @@ import scala.xml.Text
  * @link http://chip.org
  * Date: 8/12/11
  */
-final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator {
+
+final class AggregatedRunQueryResponseTest extends ShrineResponseI2b2SerializableValidator {
   private val queryId = 1L
   private val queryName = "queryName"
   private val userId = "user"
@@ -79,6 +80,25 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
                             <description>FINISHED</description>
                           </query_status_type>
                         </query_result_instance>
+                        <query_result_instance>
+                          <result_instance_id>{ resultId2 }</result_instance_id>
+                          <query_instance_id>{ queryInstanceId }</query_instance_id>
+                          <query_result_type>
+                            <name>{ resultType2 }</name>
+                            <result_type_id>4</result_type_id>
+                            <display_type>CATNUM</display_type>
+                            <visual_attribute_type>LA</visual_attribute_type>
+                            <description>Number of patients</description>
+                          </query_result_type>
+                          <set_size>{ setSize }</set_size>
+                          <start_date>{ startDate }</start_date>
+                          <end_date>{ endDate }</end_date>
+                          <query_status_type>
+                            <name>{ statusType }</name>
+                            <status_type_id>3</status_type_id>
+                            <description>FINISHED</description>
+                          </query_status_type>
+                        </query_result_instance>
                       </ns5:response>
                     </message_body>
 
@@ -94,13 +114,15 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
       <requestXml>{ requestQueryDef.toXml }</requestXml>
       <createDate>{ createDate }</createDate>
       <queryResults>
-        { qr1.toXml }
+        {
+          Seq(qr1, qr2).map(_.toXml)
+        }
       </queryResults>
     </runQueryResponse>)
 
   @Test
   def testFromXml {
-    val actual = RunQueryResponse.fromXml(runQueryResponse)
+    val actual = AggregatedRunQueryResponse.fromXml(runQueryResponse)
 
     actual.queryId should equal(queryId)
     actual.createDate should equal(createDate)
@@ -108,18 +130,18 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
     actual.groupId should equal(groupId)
     actual.requestXml should equal(requestQueryDef)
     actual.queryInstanceId should equal(queryInstanceId)
-    actual.results should equal(Seq(qr1))
+    actual.results should equal(Seq(qr1, qr2))
     actual.queryName should equal(queryName)
   }
 
   @Test
   def testToXml {
-    RunQueryResponse(queryId, createDate, userId, groupId, requestQueryDef, queryInstanceId, qr1).toXmlString should equal(runQueryResponse.toString)
+    AggregatedRunQueryResponse(queryId, createDate, userId, groupId, requestQueryDef, queryInstanceId, Seq(qr1, qr2)).toXmlString should equal(runQueryResponse.toString)
   }
 
   @Test
   def testFromI2b2 {
-    val translatedResponse = RunQueryResponse.fromI2b2(response)
+    val translatedResponse = AggregatedRunQueryResponse.fromI2b2(response)
     
     translatedResponse.queryId should equal(queryId)
     translatedResponse.createDate should equal(createDate)
@@ -127,7 +149,7 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
     translatedResponse.groupId should equal(groupId)
     translatedResponse.requestXml should equal(requestQueryDef)
     translatedResponse.queryInstanceId should equal(queryInstanceId)
-    translatedResponse.results should equal(Seq(qr1))
+    translatedResponse.results should equal(Seq(qr1, qr2))
     translatedResponse.queryName should equal(queryName)
   }
 
@@ -207,7 +229,7 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
   }
 
   private def doTestFromI2b2(i2b2Response: NodeSeq, expectedQueryDef: AnyRef) {
-    val translatedResponse = RunQueryResponse.fromI2b2(i2b2Response)
+    val translatedResponse = AggregatedRunQueryResponse.fromI2b2(i2b2Response)
 
     translatedResponse.queryId should equal(queryId)
     translatedResponse.createDate should equal(createDate)
@@ -215,12 +237,53 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
     translatedResponse.groupId should equal(groupId)
     translatedResponse.requestXml should equal(expectedQueryDef)
     translatedResponse.queryInstanceId should equal(queryInstanceId)
-    translatedResponse.results should equal(Seq(qr1))
+    translatedResponse.results should equal(Seq(qr1, qr2))
     translatedResponse.queryName should equal(queryName)
   }
 
   @Test
+  def testResultsPartitioned {
+    val actual = AggregatedRunQueryResponse.fromXml(runQueryResponse)
+    
+    {
+      val (nonErrors, errors) = actual.resultsPartitioned
+      
+      nonErrors should equal(Seq(qr1, qr2))
+      errors.size should equal(0)
+    }
+    
+    def error = QueryResult.errorResult(None, "something broke")
+    
+    {
+      val withOnlyErrors = actual.withResults(Seq(error, error))
+      
+      val (nonErrors, errors) = withOnlyErrors.resultsPartitioned
+      
+      nonErrors.size should equal(0)
+      errors should equal(Seq(error, error))
+    }
+    
+    {
+      val withErrorsAndSuccesses = actual.withResults(actual.results ++ Seq(error, error))
+      
+      val (nonErrors, errors) = withErrorsAndSuccesses.resultsPartitioned
+      
+      nonErrors should equal(Seq(qr1, qr2))
+      errors should equal(Seq(error, error))
+    }
+    
+    {
+      val withNoResults = actual.withResults(Nil)
+      
+      val (nonErrors, errors) = withNoResults.resultsPartitioned
+      
+      nonErrors.size should equal(0)
+      errors.size should equal(0)
+    }
+  }
+  
+  @Test
   def testToI2b2 {
-    RunQueryResponse(queryId, createDate, userId, groupId, requestQueryDef, queryInstanceId, qr1).toI2b2String should equal(response.toString)
+    new AggregatedRunQueryResponse(queryId, createDate, userId, groupId, requestQueryDef, queryInstanceId, Seq(qr1, qr2)).toI2b2String should equal(response.toString)
   }
 }

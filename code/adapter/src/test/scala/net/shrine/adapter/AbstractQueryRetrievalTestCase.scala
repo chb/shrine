@@ -21,6 +21,7 @@ import net.shrine.protocol.ResultOutputType
 import net.shrine.util.Util
 import net.shrine.protocol.I2b2ResultEnvelope
 import net.shrine.protocol.RunQueryResponse
+import net.shrine.protocol.RawCrcRunQueryResponse
 import net.shrine.protocol.query.QueryDefinition
 
 /**
@@ -66,7 +67,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     import Util.now
     
     val breakdowns = Map(PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Map("a" -> 1L, "b" -> 2L)),
-    				     PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("x" -> 3L, "y" -> 4L)))
+    			 PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("x" -> 3L, "y" -> 4L)))
     				     
     val obfscBreakdowns = breakdowns.mapValues(_.mapValues(_ + 1))
     
@@ -78,14 +79,14 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     				     
     val idsByResultType = dao.insertQueryResults(
         dbQueryId, 
-    	RunQueryResponse(
+    	RawCrcRunQueryResponse(
     	    shrineNetworkQueryId, 
     	    now, 
-    		authn.username, 
-    		authn.domain, 
-    		QueryDefinition("some-query", queryExpr), 
-    		instanceId,
-    		countResult +: breakdownResults))
+    	    authn.username, 
+    	    authn.domain, 
+    	    QueryDefinition("some-query", queryExpr), 
+    	    instanceId,
+    	    RawCrcRunQueryResponse.toQueryResultMap(countResult +: breakdownResults)))
     		
     getResults should equal(emptyResponse(shrineNetworkQueryId))
     

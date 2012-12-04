@@ -7,6 +7,7 @@ import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.query.QueryDefinition
 import org.spin.message.Result
 import net.shrine.util.Util
+import net.shrine.protocol.AggregatedRunQueryResponse
 
 /**
  *
@@ -58,7 +59,7 @@ class RunQueryAggregator(
       }
     }
 
-    new RunQueryResponse(queryId, now, userId, groupId, requestQueryDefinition, invalidInstanceId, aggResults ++ errorResponses ++ invalidResponses)
+    AggregatedRunQueryResponse(queryId, now, userId, groupId, requestQueryDefinition, invalidInstanceId, aggResults ++ errorResponses ++ invalidResponses)
   }
 }
 

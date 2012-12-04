@@ -21,6 +21,7 @@ import java.util.Calendar
 import org.spin.tools.NetworkTime
 import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.adapter.dao.scalaquery.tables.DateHelpers
+import net.shrine.protocol.RawCrcRunQueryResponse
 
 /**
  * @author clint
@@ -148,7 +149,7 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
 
     val queryResult = QueryResult(999, 123, Option(PATIENT_COUNT_XML), resultSetSize, Option(now), Option(now), None, QueryResult.StatusType.Finished.name, None)
 
-    val insertedResultIds = dao.insertQueryResults(insertedQueryId, RunQueryResponse(networkQueryId, now, lockedOutId.getUsername, lockedOutId.getDomain, queryDef, 123, Seq(queryResult)))
+    val insertedResultIds = dao.insertQueryResults(insertedQueryId, RawCrcRunQueryResponse(networkQueryId, now, lockedOutId.getUsername, lockedOutId.getDomain, queryDef, 123, RawCrcRunQueryResponse.toQueryResultMap(Seq(queryResult))))
 
     dao.insertCountResult(insertedResultIds(PATIENT_COUNT_XML).head, resultSetSize, resultSetSize + 1)
     

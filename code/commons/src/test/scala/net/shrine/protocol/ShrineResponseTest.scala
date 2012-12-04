@@ -34,8 +34,12 @@ final class ShrineResponseTest extends TestCase with ShouldMatchersForJUnit {
     doTestFromXml(new ReadQueryDefinitionResponse(8457L, "name", "userId", now, "queryDefXml"))
     doTestFromXml(new ReadQueryInstancesResponse(12345L, "userId", "groupId", Seq.empty))
     doTestFromXml(new RenameQueryResponse(12345L, "name"))
+    doTestFromXml(new AggregatedRunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, Seq.empty))
     
-    doTestFromXml(new RunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, Seq.empty))
+    val queryResult1 = QueryResult(1L, 2342L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
+    
+    doTestFromXml(new RunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, queryResult1))
+    
     doTestFromXml(new ErrorResponse("errorMessage"))
   }
   

@@ -98,7 +98,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     val queryDef = QueryDefinition("foo", Term("nuh"))
 
-    def doTestRunQueryResponse(response: RunQueryResponse, expectedOutputTypes: Set[ResultOutputType]) {
+    def doTestRunQueryResponse(response: AggregatedRunQueryResponse, expectedOutputTypes: Set[ResultOutputType]) {
 
       response should not(be(null))
 
@@ -125,7 +125,6 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       val responseScalaSet = shrineClient.runQuery(topicId, outputTypes, queryDef)
 
       doTestRunQueryResponse(responseScalaSet, outputTypes)
-
 
       val responseJavaSet = shrineClient.runQuery(topicId, outputTypes, queryDef)
 
@@ -373,25 +372,25 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest): ShrineResponse = {
       readApprovedQueryTopicsParam = request
 
-      new ReadApprovedQueryTopicsResponse(Seq(new ApprovedTopic(123L, "some topic")))
+      ReadApprovedQueryTopicsResponse(Seq(new ApprovedTopic(123L, "some topic")))
     }
 
     override def readPreviousQueries(request: ReadPreviousQueriesRequest): ShrineResponse = {
       readPreviousQueriesParam = request
 
-      new ReadPreviousQueriesResponse("userId", "groupId", Seq.empty)
+      ReadPreviousQueriesResponse("userId", "groupId", Seq.empty)
     }
 
     override def readQueryInstances(request: ReadQueryInstancesRequest): ShrineResponse = {
       readQueryInstancesParam = request
 
-      new ReadQueryInstancesResponse(999L, "userId", "groupId", Seq.empty)
+      ReadQueryInstancesResponse(999L, "userId", "groupId", Seq.empty)
     }
 
     override def readInstanceResults(request: ReadInstanceResultsRequest): ShrineResponse = {
       readInstanceResultsParam = request
 
-      new ReadInstanceResultsResponse(1337L, Seq(new QueryResult(123L, 1337L, Some(ResultOutputType.PATIENT_COUNT_XML), 789L, None, None, Some("description"), "statusType", Some("statusMessage"))))
+      ReadInstanceResultsResponse(1337L, Seq(new QueryResult(123L, 1337L, Some(ResultOutputType.PATIENT_COUNT_XML), 789L, None, None, Some("description"), "statusType", Some("statusMessage"))))
     }
 
     override def readPdo(request: ReadPdoRequest): ShrineResponse = {
@@ -401,31 +400,31 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
   
       def paramResponse = new ParamResponse(randomString, randomString, randomString)
       
-      new ReadPdoResponse(Seq(new EventResponse("event", "patient", None, None, Seq.empty)), Seq(new PatientResponse("patientId", Seq(paramResponse))), Seq(new ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode",None,None,None,None,None,None,None, Seq(paramResponse))))
+      ReadPdoResponse(Seq(new EventResponse("event", "patient", None, None, Seq.empty)), Seq(new PatientResponse("patientId", Seq(paramResponse))), Seq(new ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode",None,None,None,None,None,None,None, Seq(paramResponse))))
     }
 
     override def readQueryDefinition(request: ReadQueryDefinitionRequest): ShrineResponse = {
       readQueryDefinitionParam = request
 
-      new ReadQueryDefinitionResponse(87456L, "name", "userId", now, "<foo/>")
+      ReadQueryDefinitionResponse(87456L, "name", "userId", now, "<foo/>")
     }
 
     override def runQuery(request: RunQueryRequest): ShrineResponse = {
       runQueryParam = request
 
-      new RunQueryResponse(123L, now, "userId", "groupId", request.queryDefinition, 456L, Seq.empty)
+      AggregatedRunQueryResponse(123L, now, "userId", "groupId", request.queryDefinition, 456L, Seq.empty)
     }
 
     override def deleteQuery(request: DeleteQueryRequest): ShrineResponse = {
       deleteQueryParam = request
 
-      new DeleteQueryResponse(56834756L)
+      DeleteQueryResponse(56834756L)
     }
 
     override def renameQuery(request: RenameQueryRequest): ShrineResponse = {
       renameQueryParam = request
 
-      new RenameQueryResponse(873468L, "some-name")
+      RenameQueryResponse(873468L, "some-name")
     }
     
     override def readResult(request: ReadResultRequest): ShrineResponse = {

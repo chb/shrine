@@ -38,21 +38,21 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     val qrCount = new QueryResult(1L, queryInstanceId, PATIENT_COUNT_XML, 10L, now, now, "Desc", "FINISHED")
     val qrSet = new QueryResult(2L, queryInstanceId, PATIENTSET, 10L, now, now, "Desc", "FINISHED")
 
-    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrCount, qrSet))
-    val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrCount, qrSet))
+    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrCount)
+    val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrSet)
 
     val result2 = new SpinResultEntry(rqr2.toXmlString, new Result(null, "description1", null, null))
     val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description2", null, null))
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, true)
     
-    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
+    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[AggregatedRunQueryResponse]
 
     actual.queryId should equal(queryId)
     actual.queryInstanceId should equal(-1L)
-    actual.results.size should equal(5)
-    actual.results.filter(_.resultTypeIs(PATIENT_COUNT_XML)).size should equal(3)
-    actual.results.filter(_.resultTypeIs(PATIENTSET)).size should equal(2)
+    actual.results.size should equal(3)
+    actual.results.filter(_.resultTypeIs(PATIENT_COUNT_XML)).size should equal(2) //1 for the actual count result, 1 for the aggregated total count 
+    actual.results.filter(_.resultTypeIs(PATIENTSET)).size should equal(1)
     actual.results.filter(hasTotalCount).size should equal(1)
     actual.results.filter(hasTotalCount).head.setSize should equal(20)
     actual.queryName should equal(queryName)
@@ -62,8 +62,8 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
   def testAggCount {
     val qrSet = new QueryResult(2L, queryInstanceId, PATIENTSET, 10L, now, now, "Desc", "FINISHED")
 
-    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrSet))
-    val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrSet))
+    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrSet)
+    val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrSet)
 
     val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description1", null, null))
     val result2 = new SpinResultEntry(rqr2.toXmlString, new Result(null, "description2", null, null))
@@ -71,7 +71,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, true)
     
     //TODO: test handling error responses
-    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
+    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[AggregatedRunQueryResponse]
     
     actual.results.filter(_.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")).head.setSize should equal(20)
   }
@@ -80,7 +80,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
   def testHandleErrorResponse {
     val qrCount = new QueryResult(1L, queryInstanceId, PATIENT_COUNT_XML, 10L, now, now, "Desc", "FINISHED")
 
-    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, List(qrCount))
+    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrCount)
     val errorMessage = "error message"
     val errorResponse = new ErrorResponse(errorMessage)
 
@@ -89,7 +89,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, true)
     
-    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[RunQueryResponse]
+    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[AggregatedRunQueryResponse]
     
     actual.results.size should equal(3)
     
@@ -114,9 +114,9 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     
     val qr2 = new QueryResult(2L, queryInstanceId, Some(PATIENT_COUNT_XML), 20L, Some(now), Some(now), Some("Desc"), "FINISHED", None, breakdowns2)
 
-    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, Seq(qr1))
+    val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qr1)
     
-    val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, Seq(qr2))
+    val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qr2)
 
     val result1 = new SpinResultEntry(rqr1.toXmlString, new Result(null, "description2", null, null))
     
@@ -124,7 +124,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
 
     val aggregator = new RunQueryAggregator(queryId, userId, groupId, requestQueryDef, true)
     
-    val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[RunQueryResponse]
+    val actual = aggregator.aggregate(Seq(result1, result2), Nil).asInstanceOf[AggregatedRunQueryResponse]
     
     actual.results.size should equal(3)
     actual.results.filter(hasTotalCount).size should equal(1)
@@ -142,4 +142,9 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
   }
   
   private def hasTotalCount(result: QueryResult) = result.description.getOrElse("").equalsIgnoreCase("TOTAL COUNT")
+  
+  private def toQueryResultMap(results: QueryResult*) = Map.empty ++ (for {
+    result <- results
+    resultType <- result.resultType
+  } yield (resultType, result))
 }

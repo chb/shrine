@@ -1,7 +1,7 @@
 package net.shrine.adapter
 
 import org.spin.tools.crypto.signature.Identity
-import net.shrine.protocol.{ BroadcastMessage, RunQueryResponse, RunQueryRequest }
+import net.shrine.protocol.{ BroadcastMessage, RunQueryResponse, RunQueryRequest, RawCrcRunQueryResponse }
 import xml.NodeSeq
 import net.shrine.adapter.translators.QueryDefinitionTranslator
 import net.shrine.config.{ HiveCredentials, ShrineConfig }
@@ -41,6 +41,8 @@ class RunQueryAdapter(
   config: ShrineConfig,
   doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, httpClient, hiveCredentials) {
 
+  override protected def parseShrineResponse(nodeSeq: NodeSeq) = RawCrcRunQueryResponse.fromI2b2(nodeSeq)
+  
   override protected[adapter] def translateNetworkToLocal(request: RunQueryRequest): RunQueryRequest = {
     request.mapQueryDefinition(conceptTranslator.translate)
   }
@@ -55,13 +57,15 @@ class RunQueryAdapter(
     
     val insertedQueryId = dao.insertQuery(runQueryReq.networkQueryId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
 
-    val originalRunQueryResponse = super.processRequest(identity, message).asInstanceOf[RunQueryResponse]
+    val rawRunQueryResponse = super.processRequest(identity, message).asInstanceOf[RawCrcRunQueryResponse]
     
-    val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, originalRunQueryResponse)
+    val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, rawRunQueryResponse)
 
-    val obfuscatedRunQueryResponse = obfuscateResponse(originalRunQueryResponse)
+    //val originalRunQueryResponse = rawRunQueryResponse.toRunQueryResponse
+    
+    val obfuscatedRunQueryResponse = obfuscateResponse(rawRunQueryResponse)
 
-    storeCountAndErrorResults(originalRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
+    storeCountAndErrorResults(rawRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
 
     def isBreakdown(result: QueryResult) = result.resultType.map(_.isBreakdown).getOrElse(false)
     
@@ -71,14 +75,14 @@ class RunQueryAdapter(
 
     val (successes, failures) = attemptsWithBreakDownCounts.partition { case (_, t) => t.isSuccess }
 
-    logBreakdownFailures(obfuscatedRunQueryResponse, failures)
+    logBreakdownFailures(rawRunQueryResponse, failures)
 
     val mergedBreakdowns = mergeAndStoreBreakdowns(successes, insertedQueryResultIds)
 
     //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
     val resultWithMergedBreakdowns = nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
     
-    obfuscatedRunQueryResponse.withResults(Seq(resultWithMergedBreakdowns))
+    obfuscatedRunQueryResponse.toRunQueryResponse.withResult(resultWithMergedBreakdowns)
   }
   
   private[adapter] def storeCountResults(insertedIds: Map[ResultOutputType, Seq[Int]], notErrors: Seq[QueryResult], obfuscatedNotErrors: Seq[QueryResult]) {
@@ -102,7 +106,7 @@ class RunQueryAdapter(
     }
   }
 
-  private[adapter] def storeCountAndErrorResults(response: RunQueryResponse, obfuscated: RunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
+  private[adapter] def storeCountAndErrorResults(response: RawCrcRunQueryResponse, obfuscated: RawCrcRunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
 
     val (errors, notErrors) = response.results.partition(_.isError)
     
@@ -131,11 +135,11 @@ class RunQueryAdapter(
     }
   }
   
-  private[adapter] def logBreakdownFailures(obfuscatedRunQueryResponse: RunQueryResponse, failures: Seq[(QueryResult, Try[QueryResult])]) {
+  private[adapter] def logBreakdownFailures(response: RawCrcRunQueryResponse, failures: Seq[(QueryResult, Try[QueryResult])]) {
     for {
       (origQueryResult, Failure(e)) <- failures
     } {
-      error(e, "Couldn't load breakdown for QueryResult with masterId: " + obfuscatedRunQueryResponse.queryId + ", instanceId: " + origQueryResult.instanceId + ", resultId: " + origQueryResult.resultId + ". Asked for result type: " + origQueryResult.resultType)
+      error(e, "Couldn't load breakdown for QueryResult with masterId: " + response.queryId + ", instanceId: " + origQueryResult.instanceId + ", resultId: " + origQueryResult.resultId + ". Asked for result type: " + origQueryResult.resultType)
     }
   }
 
@@ -152,12 +156,13 @@ class RunQueryAdapter(
     mergedBreakdowns
   }
   
-  override protected def parseShrineResponse(nodeSeq: NodeSeq) = RunQueryResponse.fromI2b2(nodeSeq)
-
-  protected def obfuscateResponse(response: RunQueryResponse): RunQueryResponse = {
+  protected def obfuscateResponse(response: RawCrcRunQueryResponse): RawCrcRunQueryResponse = {
     import net.shrine.adapter.Obfuscator.obfuscate
 
-    if (doObfuscation) response.withResults(obfuscate(response.results)) else response
+    doObfuscation match {
+      case true => response.withResults(response.singleNodeResults.values.flatMap(_.map(obfuscate)))
+      case false => response
+    }
   }
 
   private def isLockedOut(identity: Identity): Boolean = {
