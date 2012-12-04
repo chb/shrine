@@ -1,7 +1,7 @@
 package net.shrine.protocol
 
 import java.util.Calendar
-import org.spin.tools.NetworkTime._
+import org.spin.tools.NetworkTime.makeXMLGregorianCalendar
 import javax.xml.datatype.XMLGregorianCalendar
 import org.junit.Assert.assertTrue
 import org.junit.Test

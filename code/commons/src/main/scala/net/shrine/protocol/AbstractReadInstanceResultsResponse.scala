@@ -25,8 +25,6 @@ abstract class AbstractReadInstanceResultsResponse(
 
   def withId(id: Long): ActualResponseType
 
-  def withResults(seq: Seq[QueryResult]): ActualResponseType
-
   private def addIds(queryResult: QueryResult) = queryResult.withInstanceId(shrineNetworkQueryId)
 
   override protected final def i2b2MessageBody = XmlUtil.stripWhitespace(
@@ -58,6 +56,10 @@ object AbstractReadInstanceResultsResponse {
   private object Creatable {
     implicit val readInstanceResultsResponseIsCreatable: Creatable[ReadInstanceResultsResponse] = new Creatable[ReadInstanceResultsResponse] {
       override def apply(id: Long, results: Seq[QueryResult]) = ReadInstanceResultsResponse(id, results)
+    }
+    
+    implicit val aggregatedReadInstanceResultsResponseIsCreatable: Creatable[AggregatedReadInstanceResultsResponse] = new Creatable[AggregatedReadInstanceResultsResponse] {
+      override def apply(id: Long, results: Seq[QueryResult]) = AggregatedReadInstanceResultsResponse(id, results.head)
     }
   }
   

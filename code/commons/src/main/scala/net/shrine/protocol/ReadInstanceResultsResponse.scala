@@ -38,7 +38,7 @@ final case class ReadInstanceResultsResponse(
 
   override def withId(id: Long) = this.copy(shrineNetworkQueryId = id)
 
-  override def withResults(seq: Seq[QueryResult]) = this.copy(results = seq)
+  def withResults(seq: Seq[QueryResult]) = this.copy(results = seq)
 }
 
 object ReadInstanceResultsResponse extends AbstractReadInstanceResultsResponse.Companion[ReadInstanceResultsResponse]
