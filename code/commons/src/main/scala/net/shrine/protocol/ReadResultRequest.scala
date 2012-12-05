@@ -7,6 +7,7 @@ import net.shrine.serialization.XmlMarshaller
 import net.shrine.serialization.I2b2Marshaller
 import net.shrine.serialization.XmlUnmarshaller
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.util.Util.???
 
 /**
  * @author clint
@@ -22,7 +23,10 @@ final case class ReadResultRequest(
 
   override val requestType: CRCRequestType = ResultRequestType
 
-  override def handle(handler: ShrineRequestHandler): ShrineResponse = handler.readResult(this)
+  //TODO: This request is never sent through the broadcaster-aggregator/shrine service, so it doesn't make sense
+  //to have it be handled by a ShrineRequestHandler.  Should a subclass of ShrineRequest be introduced for Requests
+  //like this?
+  override def handle(handler: ShrineRequestHandler): ShrineResponse = ???
 
   override protected def i2b2MessageBody: NodeSeq = XmlUtil.stripWhitespace(
     <message_body>

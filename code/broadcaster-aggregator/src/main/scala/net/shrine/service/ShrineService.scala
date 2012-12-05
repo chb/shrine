@@ -201,5 +201,5 @@ class ShrineService(
 
   override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest) = authorizationService.readApprovedEntries(request)
 
-  override def readResult(request: ReadResultRequest): ShrineResponse = sys.error("TODO")
+  override def readQueryResult(request: ReadQueryResultRequest): ShrineResponse = Util.???
 }

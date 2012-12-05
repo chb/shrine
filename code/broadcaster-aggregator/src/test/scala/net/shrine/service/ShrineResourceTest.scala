@@ -11,6 +11,7 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import org.easymock.IArgumentMatcher
 import org.easymock.internal.ArgumentToString
+import org.junit.Test
 
 /**
  * @author Clint Gilbert
@@ -38,6 +39,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
 
   import ShrineResource.waitTimeMs
   
+  @Test
   def testReadApprovedQueryTopics {
     val expectedRequest = new ReadApprovedQueryTopicsRequest(projectId, waitTimeMs, authenticationInfo, userId)
     val expectedResponse = new ReadApprovedQueryTopicsResponse(Seq(new ApprovedTopic(123L, "foo")))
@@ -49,6 +51,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     }
   }
 
+  @Test
   def testReadPreviousQueries {
     def doTestReadPreviousQueries(fetchSize: Int, expectedFetchSize: Int) {
       //Call setUp again create a new mock and new ShrinResource;
@@ -71,6 +74,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     doTestReadPreviousQueries(100, 100)
   }
 
+  @Test
   def testRunQuery {
     val outputTypes = ResultOutputType.values.toSet
     val queryDef = QueryDefinition("foo", Term("nuh"))
@@ -112,6 +116,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     }
   }
 
+  @Test
   def testReadQueryInstances {
     val queryId = 999L
 
@@ -125,6 +130,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     }
   }
   
+  @Test
   def testReadInstanceResults {
     val instanceId = 123456789L
     
@@ -138,6 +144,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     }
   }
 
+  @Test
   def testReadPdo {
     val patientSetCollId = "123456789L"
     val optionsXml = <foo><bar/></foo>
@@ -155,6 +162,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     }
   }
 
+  @Test
   def testReadQueryDefinition {
     val queryId = 123456789L
     
@@ -170,6 +178,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     }
   }
 
+  @Test
   def testDeleteQuery {
     val queryId = 123456789L
     
@@ -184,6 +193,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     }
   }
 
+  @Test
   def testRenameQuery {
     val queryId = 123456789L
     val queryName = "asjkdhkahsf"
@@ -196,6 +206,20 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     
     execute {
       resource.renameQuery(projectId, authenticationInfo, queryId, queryName)
+    }
+  }
+  
+  def testReadQueryResult {
+    val queryId = 123456789L
+    
+    val expectedRequest = new ReadQueryResultRequest(projectId, waitTimeMs, authenticationInfo, queryId)
+    
+    val expectedResponse = new AggregatedReadQueryResultResponse(queryId, Seq.empty)
+    
+    setExpectations(_.readQueryResult, expectedRequest, expectedResponse)
+    
+    execute {
+      resource.readQueryResults(projectId, authenticationInfo, queryId)
     }
   }
   

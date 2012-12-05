@@ -29,5 +29,5 @@ trait ShrineRequestHandler {
 
   def renameQuery(request: RenameQueryRequest): ShrineResponse
   
-  def readResult(request: ReadResultRequest): ShrineResponse
+  def readQueryResult(request: ReadQueryResultRequest): ShrineResponse
 }

@@ -22,6 +22,7 @@ import scala.xml.NodeSeq
 import java.io.StringReader
 import javax.ws.rs.DELETE
 import net.shrine.protocol.query.QueryDefinition
+import scala.xml.XML
 
 /**
  * @author Bill Simons
@@ -51,6 +52,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
       @HeaderParam("Authorization") authorization: AuthenticationInfo,
       @PathParam("userId") userId: String): String = {
+    
     performAndSerialize(_.readApprovedQueryTopics(new ReadApprovedQueryTopicsRequest(projectId, waitTimeMs, authorization, userId)))
   }
 
@@ -62,7 +64,9 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       @HeaderParam("Authorization") authorization: AuthenticationInfo,
       @PathParam("userId") userId: String,
       @QueryParam("fetchSize") fetchSize: Int): String = {
+    
     val fSize = if(fetchSize != 0) fetchSize else 20
+    
     performAndSerialize(_.readPreviousQueries(new ReadPreviousQueriesRequest(projectId, waitTimeMs, authorization, userId, fSize)))
   }
 
@@ -77,7 +81,9 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       //outputTypes will be constructed by JAXRS using the String value of the 'outputTypes' header
       @HeaderParam("outputTypes") outputTypes: OutputTypeSet,
       queryDefinitionXml: String): String = {
-    val queryDef = QueryDefinition.fromXml(queryDefinitionXml).get //TODO: remove fragile .get call
+    
+    val queryDef = QueryDefinition.fromXml(queryDefinitionXml).get
+
     performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, Ids.nextLong, topicId, outputTypes.toSet, queryDef)))
   }
   
@@ -88,6 +94,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
       @HeaderParam("Authorization") authorization: AuthenticationInfo,
       @PathParam("queryId") queryId: Long): String = {
+    
     performAndSerialize(_.readQueryInstances(new ReadQueryInstancesRequest(projectId, waitTimeMs, authorization, queryId)))
   }
   
@@ -98,6 +105,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
       @HeaderParam("Authorization") authorization: AuthenticationInfo,
       @PathParam("instanceId") instanceId: Long): String = {
+    
     performAndSerialize(_.readInstanceResults(new ReadInstanceResultsRequest(projectId, waitTimeMs, authorization, instanceId))) 
   }
   
@@ -110,7 +118,10 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       @HeaderParam("Authorization") authorization: AuthenticationInfo, 
       @PathParam("patientSetCollId") patientSetCollId: String, 
       optionsXml: String): String = {
-    performAndSerialize(_.readPdo(new ReadPdoRequest(projectId, waitTimeMs, authorization, patientSetCollId, slurpXml(optionsXml))))
+    
+    import XML.loadString
+    
+    performAndSerialize(_.readPdo(new ReadPdoRequest(projectId, waitTimeMs, authorization, patientSetCollId, loadString(optionsXml))))
   }
   
   @GET
@@ -120,6 +131,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
       @HeaderParam("Authorization") authorization: AuthenticationInfo,
       @PathParam("queryId") queryId: Long): String = {
+    
     performAndSerialize(_.readQueryDefinition(new ReadQueryDefinitionRequest(projectId, waitTimeMs, authorization, queryId)))
   }
 
@@ -130,6 +142,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
       @HeaderParam("Authorization") authorization: AuthenticationInfo,
       @PathParam("queryId") queryId: Long): String = {
+    
     performAndSerialize(_.deleteQuery(new DeleteQueryRequest(projectId, waitTimeMs, authorization, queryId)))
   }
 
@@ -142,10 +155,21 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       @HeaderParam("Authorization") authorization: AuthenticationInfo,
       @PathParam("queryId") queryId: Long,
       queryName: String): String = {
+    
     performAndSerialize(_.renameQuery(new RenameQueryRequest(projectId, waitTimeMs, authorization, queryId, queryName)))
   }
   
-  private def slurpXml(xml: String): NodeSeq = scala.xml.XML.load(new StringReader(xml))
+  @GET
+  @Path("/queries/{queryId}/results")
+  @Consumes(Array(MediaType.TEXT_PLAIN))
+  def readQueryResults(
+      @HeaderParam("projectId") projectId: String, 
+      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+      @HeaderParam("Authorization") authorization: AuthenticationInfo,
+      @PathParam("queryId") queryId: Long): String = {
+    
+    performAndSerialize(_.readQueryResult(new ReadQueryResultRequest(projectId, waitTimeMs, authorization, queryId)))
+  }
   
   private def performAndSerialize[R <: ShrineResponse](op: ShrineRequestHandler => R): String = {
     op(shrineRequestHandler).toXmlString

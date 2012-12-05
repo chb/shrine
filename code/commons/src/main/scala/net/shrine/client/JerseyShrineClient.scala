@@ -91,8 +91,7 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
   
   override def readQueryResult(queryId: Long) = {
     get[AggregatedReadQueryResultResponse] {
-      //TODO
-      Util.???
+      webResource.path("/shrine/queries/" + queryId + "/results")
     }
   } 
 
@@ -109,7 +108,7 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
 
     val withNeededHeaders = webResource.header("Authorization", authorization.toHeader).header("projectId", projectId)
 
-    val xml = XML.load(new StringReader(httpVerb(withNeededHeaders)))
+    val xml = XML.loadString(httpVerb(withNeededHeaders))
 
     val deserialize = implicitly[Deserializer[T]]
 
