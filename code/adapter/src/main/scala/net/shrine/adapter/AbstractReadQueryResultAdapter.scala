@@ -22,7 +22,7 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     dao: AdapterDao, 
     doObfuscation: Boolean, 
     getQueryId: Req => Long,
-    toResponse: (Long, Seq[QueryResult]) => Rsp) extends Adapter {
+    toResponse: (Long, QueryResult) => Rsp) extends Adapter {
 
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
     val req = message.request.asInstanceOf[Req]

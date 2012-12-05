@@ -14,7 +14,6 @@ final class ReadQueryResultAdapterTest extends
 	AbstractQueryRetrievalTestCase(
 	    dao => new ReadQueryResultAdapter(dao, true), 
 	    queryId => ReadQueryResultRequest("some-project-id", 1000L, null, queryId), 
-	    queryId => ReadQueryResultResponse(queryId, Nil),
 	    ReadQueryResultResponse.unapply) {
   @Test
   def testProcessInvalidRequest = doTestProcessInvalidRequest

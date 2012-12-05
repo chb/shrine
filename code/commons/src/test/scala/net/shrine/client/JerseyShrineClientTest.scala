@@ -109,8 +109,6 @@ final class JerseyShrineClientTest extends TestCase with AssertionsForJUnit with
     
     val queryResult1 = QueryResult(1L, 456L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
     val queryResult2 = QueryResult(2L, 456L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
-
-    doTestDeserializer(new RunQueryResponse(123L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 456L, queryResult1), JerseyShrineClient.Deserializer.runQueryResponseDeserializer)
     
     doTestDeserializer(new AggregatedRunQueryResponse(123L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 456L, Seq(queryResult1, queryResult2)), JerseyShrineClient.Deserializer.aggregatedRunQueryResponseDeserializer)
 
@@ -120,7 +118,9 @@ final class JerseyShrineClientTest extends TestCase with AssertionsForJUnit with
 
     doTestDeserializer(new ReadQueryInstancesResponse(999L, "userId", "groupId", Seq.empty), JerseyShrineClient.Deserializer.readQueryInstancesResponseDeserializer)
 
-    doTestDeserializer(new ReadInstanceResultsResponse(1337L, Seq(dummyQueryResult(1337L))), JerseyShrineClient.Deserializer.readInstanceResultsResponseDeserializer)
+    doTestDeserializer(new AggregatedReadInstanceResultsResponse(1337L, Seq(dummyQueryResult(1337L))), JerseyShrineClient.Deserializer.aggregatedReadInstanceResultsResponseDeserializer)
+    
+    doTestDeserializer(new AggregatedReadQueryResultResponse(1337L, Seq(dummyQueryResult(1337L))), JerseyShrineClient.Deserializer.aggregatedReadQueryResultResponseDeserializer)
 
     doTestDeserializer(new ReadPdoResponse(Seq(new EventResponse("event", "patient", None, None, Seq.empty)), Seq(new PatientResponse("patientId", Seq(paramResponse))), Seq(new ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode",None,None,None,None,None,None,None, Seq(paramResponse)))), JerseyShrineClient.Deserializer.readPdoResponseDeserializer)
 

@@ -37,4 +37,9 @@ object XmlUtil {
     
     removeWhitespaceNodes(node).headOption.getOrElse(node)
   }
+  
+  def renameRootTag(newRootTagName: String)(xml: Node): Node = xml match {
+    case elem: Elem => elem.copy(label = newRootTagName)
+    case _ => xml
+  }
 }

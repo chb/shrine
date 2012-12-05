@@ -34,37 +34,40 @@ trait ShrineResponse extends XmlMarshaller with I2b2Marshaller {
       </message_header>
       <response_header>
         <result_status>
-          {status}
+          { status }
         </result_status>
       </response_header>
       <message_body>
-        {i2b2MessageBody}
+        { i2b2MessageBody }
       </message_body>
-    </ns4:response>
-  )
+    </ns4:response>)
 }
 
 object ShrineResponse extends XmlUnmarshaller[Option[ShrineResponse]] {
-  override def fromXml(nodeSeq: NodeSeq) = {
+  private val unmarshallers = Map[String, XmlUnmarshaller[_ <: ShrineResponse]](
+    "deleteQueryResponse" -> DeleteQueryResponse,
+    "readPreviousQueriesResponse" -> ReadPreviousQueriesResponse,
+    "readQueryDefinitionResponse" -> ReadQueryDefinitionResponse,
+    "readQueryInstancesResponse" -> ReadQueryInstancesResponse,
+    "renameQueryResponse" -> RenameQueryResponse,
+    "readInstanceResultsResponse" -> ReadInstanceResultsResponse,
+    "aggregatedReadInstanceResultsResponse" -> AggregatedReadInstanceResultsResponse,
+    "runQueryResponse" -> RunQueryResponse,
+    "aggregatedRunQueryResponse" -> AggregatedRunQueryResponse,
+    "readQueryResultResponse" -> ReadQueryResultResponse,
+    "aggregatedReadQueryResultResponse" -> AggregatedReadQueryResultResponse,
+    "errorResponse" -> ErrorResponse)
+
+  override def fromXml(nodeSeq: NodeSeq): Option[ShrineResponse] = {
     //.headOption handles possibly-empty NodeSeqs
     //.collect returns a Some of the result of the pattern match, or None if no cases match
     nodeSeq match {
       case null => None
-      case _ => nodeSeq.headOption.map(_.label).collect {
-        case "deleteQueryResponse" => DeleteQueryResponse.fromXml(nodeSeq)
-        case "readInstanceResultsResponse" => ReadInstanceResultsResponse.fromXml(nodeSeq)
-        case "readPreviousQueriesResponse" => ReadPreviousQueriesResponse.fromXml(nodeSeq)
-        case "readQueryDefinitionResponse" => ReadQueryDefinitionResponse.fromXml(nodeSeq)
-        case "readQueryInstancesResponse" => ReadQueryInstancesResponse.fromXml(nodeSeq)
-        case "renameQueryResponse" => RenameQueryResponse.fromXml(nodeSeq)
-        case "runQueryResponse" => {
-          (nodeSeq \ "queryResults" \ "_").size match {
-            case 1 => RunQueryResponse.fromXml(nodeSeq)
-            case _ => AggregatedRunQueryResponse.fromXml(nodeSeq)
-          }
-        }
-        case "errorResponse" => ErrorResponse.fromXml(nodeSeq)
-      }
+      case _ => for {
+        rootTag <- nodeSeq.headOption
+        rootTagName = rootTag.label
+        unmarshaller <- unmarshallers.get(rootTagName)
+      } yield unmarshaller.fromXml(nodeSeq)
     }
   }
 }

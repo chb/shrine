@@ -10,11 +10,12 @@ import net.shrine.protocol.ErrorResponse
  * @date Nov 6, 2012
  */
 object StoredQueries {
-  private[adapter] def retrieve(dao: AdapterDao, doObfuscation: Boolean, queryId: Long)(makeResponse: (Long, Seq[QueryResult]) => XmlMarshaller): XmlMarshaller = {
+  private[adapter] def retrieve(dao: AdapterDao, doObfuscation: Boolean, queryId: Long)(makeResponse: (Long, QueryResult) => XmlMarshaller): XmlMarshaller = {
     val response = for {
-      results <- dao.findResultsFor(queryId)
+      shrineResults <- dao.findResultsFor(queryId)
+      queryResult <- shrineResults.toQueryResults(doObfuscation)
     } yield {
-      makeResponse(queryId, results.toQueryResults(doObfuscation).toSeq)
+      makeResponse(queryId, queryResult)
     }
     
     response.getOrElse(ErrorResponse("Query with id '" + queryId + "' not found"))

@@ -1,12 +1,11 @@
 package net.shrine.aggregation
 
-import net.shrine.aggregation.BasicAggregator.Valid
+import scala.Option.option2Iterable
+import net.shrine.protocol.AggregatedReadQueryResultResponse
 import net.shrine.protocol.QueryResult
-import net.shrine.protocol.ShrineResponse
+import net.shrine.protocol.QueryResult.StatusType.Finished
+import net.shrine.protocol.ResultOutputType.PATIENT_COUNT_XML
 import net.shrine.protocol.ReadQueryResultResponse
-import net.shrine.protocol.ErrorResponse
-import net.shrine.protocol.ResultOutputType._
-import QueryResult.StatusType.Finished
 
 /**
  * @author clint
@@ -14,14 +13,14 @@ import QueryResult.StatusType.Finished
  */
 //TODO: TEST!!!
 final class ReadQueryResultAggregator(shrineNetworkQueryId: Long, showAggregation: Boolean) extends 
-    StoredResultsAggregator[ReadQueryResultResponse](
+    StoredResultsAggregator[ReadQueryResultResponse, AggregatedReadQueryResultResponse](
         shrineNetworkQueryId: Long, 
         showAggregation: Boolean,
         Some("No results available"), 
         Some("No results available")) {
   
   protected override def consolidateQueryResults(queryResultsFromAllValidResponses: Seq[(SpinResultEntry, Seq[QueryResult])]): Seq[QueryResult] = {
-    queryResultsFromAllValidResponses.flatMap { case (_, resultsFromOneResponse) => resultsFromOneResponse.headOption }
+    queryResultsFromAllValidResponses.unzip._2.flatten
   }
   
   protected override def makeAggregatedResult(queryResults: Seq[QueryResult]): Option[QueryResult] = {

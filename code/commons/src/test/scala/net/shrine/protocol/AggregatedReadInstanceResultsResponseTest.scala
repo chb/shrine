@@ -27,6 +27,12 @@ final class AggregatedReadInstanceResultsResponseTest extends TestCase with Shri
   val endDate2 = Util.now
   val result2 = new QueryResult(resultId2, shrineNetworkQueryId, type2, setSize, startDate2, endDate2, statusName2)
 
+  //resultType match {
+  //            case Some(PATIENTSET) => <result_type_id>1</result_type_id><display_type>LIST</display_type><visual_attribute_type>LA</visual_attribute_type><description>Patient list</description>
+  //            case Some(PATIENT_COUNT_XML) => <result_type_id>4</result_type_id><display_type>CATNUM</display_type><visual_attribute_type>LA</visual_attribute_type><description>Number of patients</description>
+  //            case _ => null
+  //          }
+  
   override def messageBody = <message_body>
                                <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:result_responseType">
                                  <status>
@@ -51,11 +57,30 @@ final class AggregatedReadInstanceResultsResponseTest extends TestCase with Shri
                                      <description>FINISHED</description>
                                    </query_status_type>
                                  </query_result_instance>
+                                 <query_result_instance>
+                                   <result_instance_id>{ resultId2 }</result_instance_id>
+                                   <query_instance_id>{ shrineNetworkQueryId }</query_instance_id>
+                                   <query_result_type>
+                                     <name>{ type2 }</name>
+                                     <result_type_id>4</result_type_id>
+                                     <display_type>CATNUM</display_type>
+                                     <visual_attribute_type>LA</visual_attribute_type>
+                                     <description>Number of patients</description>
+                                   </query_result_type>
+                                   <set_size>{ setSize }</set_size>
+                                   <start_date>{ startDate2 }</start_date>
+                                   <end_date>{ endDate2 }</end_date>
+                                   <query_status_type>
+                                     <name>{ statusName2 }</name>
+                                     <status_type_id>3</status_type_id>
+                                     <description>FINISHED</description>
+                                   </query_status_type>
+                                 </query_result_instance>
                                </ns5:response>
                              </message_body>
 
   private val readInstanceResultsResponse = XmlUtil.stripWhitespace(
-    <readInstanceResultsResponse>
+    <aggregatedReadInstanceResultsResponse>
       <shrineNetworkQueryId>{ shrineNetworkQueryId }</shrineNetworkQueryId>
       <queryResults>
         <queryResult>
@@ -77,23 +102,7 @@ final class AggregatedReadInstanceResultsResponseTest extends TestCase with Shri
           <status>{ statusName2 }</status>
         </queryResult>
       </queryResults>
-    </readInstanceResultsResponse>)
-
-  private val readInstanceResultsResponseOneResult = XmlUtil.stripWhitespace(
-    <readInstanceResultsResponse>
-      <shrineNetworkQueryId>{ shrineNetworkQueryId }</shrineNetworkQueryId>
-      <queryResults>
-        <queryResult>
-          <resultId>{ resultId1 }</resultId>
-          <instanceId>{ shrineNetworkQueryId }</instanceId>
-          <resultType>{ type1 }</resultType>
-          <setSize>{ setSize }</setSize>
-          <startDate>{ startDate1 }</startDate>
-          <endDate>{ endDate1 }</endDate>
-          <status>{ statusName1 }</status>
-        </queryResult>
-      </queryResults>
-    </readInstanceResultsResponse>)
+    </aggregatedReadInstanceResultsResponse>)
 
   @Test
   def testFromXml {
@@ -101,31 +110,33 @@ final class AggregatedReadInstanceResultsResponseTest extends TestCase with Shri
 
     actual.shrineNetworkQueryId should equal(shrineNetworkQueryId)
 
-    actual.singleNodeResult should equal(result1)
+    actual.results should equal(Seq(result1, result2))
   }
 
   @Test
   def testResults {
-    AggregatedReadInstanceResultsResponse(shrineNetworkQueryId, result2).results should equal(Seq(result2))
+    AggregatedReadInstanceResultsResponse(shrineNetworkQueryId, Seq(result1, result2)).results should equal(Seq(result1, result2))
   }
 
   @Test
   def testToXml {
     //we compare the string versions of the xml because Scala's xml equality does not always behave properly
-    new AggregatedReadInstanceResultsResponse(shrineNetworkQueryId, result1).toXmlString should equal(readInstanceResultsResponseOneResult.toString)
+    AggregatedReadInstanceResultsResponse(shrineNetworkQueryId, Seq(result1, result2)).toXmlString should equal(readInstanceResultsResponse.toString)
   }
 
   @Test
   def testFromI2b2 {
     val actual = AggregatedReadInstanceResultsResponse.fromI2b2(response)
+    
     actual.shrineNetworkQueryId should equal(shrineNetworkQueryId)
-    actual.singleNodeResult should equal(result1)
+    
+    actual.results should equal(Seq(result1, result2))
   }
 
   @Test
   def testToI2b2 {
     //we compare the string versions of the xml because Scala's xml equality does not always behave properly
-    val actual = new AggregatedReadInstanceResultsResponse(shrineNetworkQueryId, result1).toI2b2String
+    val actual = AggregatedReadInstanceResultsResponse(shrineNetworkQueryId, Seq(result1, result2)).toI2b2String
 
     actual should equal(response.toString)
   }

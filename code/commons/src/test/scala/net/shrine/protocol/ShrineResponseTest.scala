@@ -22,23 +22,26 @@ final class ShrineResponseTest extends TestCase with ShouldMatchersForJUnit {
     def doTestFromXml(response: ShrineResponse) {
       val unmarshalled = ShrineResponse.fromXml(response.toXml)
       
+      unmarshalled.get.getClass should equal(response.getClass)
       unmarshalled should not be(null)
       unmarshalled should equal(Some(response))
     }
     
     def now = (new NetworkTime).getXMLGregorianCalendar
     
+    val queryResult1 = QueryResult(1L, 2342L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
+    
+    doTestFromXml(new ReadQueryResultResponse(123L, queryResult1))
+    doTestFromXml(new AggregatedReadQueryResultResponse(123L, Seq(queryResult1)))
     doTestFromXml(new DeleteQueryResponse(123L))
-    doTestFromXml(new ReadInstanceResultsResponse(456L, Seq.empty))
+    doTestFromXml(new ReadInstanceResultsResponse(2342L, queryResult1))
+    doTestFromXml(new AggregatedReadInstanceResultsResponse(2342L, Seq(queryResult1)))
     doTestFromXml(new ReadPreviousQueriesResponse("userId", "groupId", Seq.empty))
     doTestFromXml(new ReadQueryDefinitionResponse(8457L, "name", "userId", now, "queryDefXml"))
     doTestFromXml(new ReadQueryInstancesResponse(12345L, "userId", "groupId", Seq.empty))
     doTestFromXml(new RenameQueryResponse(12345L, "name"))
-    doTestFromXml(new AggregatedRunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, Seq.empty))
-    
-    val queryResult1 = QueryResult(1L, 2342L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
-    
     doTestFromXml(new RunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, queryResult1))
+    doTestFromXml(new AggregatedRunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, Seq(queryResult1)))
     
     doTestFromXml(new ErrorResponse("errorMessage"))
   }

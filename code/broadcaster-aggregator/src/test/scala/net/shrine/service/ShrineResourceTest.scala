@@ -129,7 +129,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     val instanceId = 123456789L
     
     val expectedRequest = new ReadInstanceResultsRequest(projectId, waitTimeMs, authenticationInfo, instanceId)
-    val expectedResponse = new ReadInstanceResultsResponse(instanceId, Seq.empty)
+    val expectedResponse = new AggregatedReadInstanceResultsResponse(instanceId, Seq.empty)
     
     setExpectations(_.readInstanceResults, expectedRequest, expectedResponse)
     

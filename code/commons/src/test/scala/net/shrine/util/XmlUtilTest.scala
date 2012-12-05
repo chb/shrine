@@ -15,12 +15,20 @@ import xml.XML
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class XmlUtilTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
-
+final class XmlUtilTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
   @Test
-  def testStripWhitespace() {
+  def testStripWhitespace {
     val node = XML.loadString("<foo>\n\t<bar>  baz     </bar>\n</foo>")
+    
     XmlUtil.stripWhitespace(node).toString() should equal("<foo><bar>  baz     </bar></foo>")
   }
 
+  @Test
+  def testRenameRootTag {
+    val xml = <foo><bar><baz/></bar></foo>
+      
+    val expected = <blarg><bar><baz/></bar></blarg>
+      
+    XmlUtil.renameRootTag("blarg")(xml).toString should equal(expected.toString)
+  }
 }

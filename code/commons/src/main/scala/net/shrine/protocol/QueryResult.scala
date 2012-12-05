@@ -49,7 +49,7 @@ final case class QueryResult(
   //NB: Fragile, non-type-safe ==
   def isError = statusType == StatusType.Error.name
 
-  def toI2b2 = {
+  override def toI2b2 = {
     import ResultOutputType._
 
     XmlUtil.stripWhitespace(
@@ -93,7 +93,7 @@ final case class QueryResult(
       </query_result_instance>)
   }
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <queryResult>
       <resultId>{ resultId }</resultId>
       <instanceId>{ instanceId }</instanceId>
@@ -146,7 +146,7 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
 
   def extractLong(nodeSeq: NodeSeq)(elemName: String): Long = (nodeSeq \ elemName).text.toLong
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     def extract(elemName: String): Option[String] = {
       Option((nodeSeq \ elemName).text).filter(!_.trim.isEmpty)
     }
@@ -182,7 +182,7 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
     }
   }
 
-  def fromI2b2(nodeSeq: NodeSeq) = {
+  override def fromI2b2(nodeSeq: NodeSeq) = {
     def asLong = extractLong(nodeSeq) _
 
     def asText(elemNames: String*) = (elemNames.foldLeft(nodeSeq)(_ \ _)).text

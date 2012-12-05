@@ -23,7 +23,7 @@ final case class RunQueryResponse(
     override val groupId: String,
     override val requestXml: QueryDefinition,
     override val queryInstanceId: Long,
-    val singleNodeResult: QueryResult) extends AbstractRunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId) {
+    val singleNodeResult: QueryResult) extends AbstractRunQueryResponse("runQueryResponse", queryId, createDate, userId, groupId, requestXml, queryInstanceId) {
 
   override type ActualResponseType = RunQueryResponse
   

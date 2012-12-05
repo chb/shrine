@@ -11,6 +11,7 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.util.JerseyHttpClient.createJerseyClient
 import java.io.StringReader
 import java.net.{MalformedURLException, URL}
+import net.shrine.util.Util
 
 
 /**
@@ -59,7 +60,7 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
   }
 
   override def readInstanceResults(instanceId: Long) = {
-    get[ReadInstanceResultsResponse] {
+    get[AggregatedReadInstanceResultsResponse] {
       webResource.path("/shrine/instances/" + instanceId + "/results")
     }
   }
@@ -87,6 +88,13 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
       webResource.path("/shrine/queries/" + queryId + "/name").entity(queryName, MediaType.TEXT_PLAIN)
     }
   }
+  
+  override def readQueryResult(queryId: Long) = {
+    get[AggregatedReadQueryResultResponse] {
+      //TODO
+      Util.???
+    }
+  } 
 
   private type WebResourceLike = RequestBuilder[WebResource#Builder] with UniformInterface
 
@@ -128,7 +136,7 @@ object JerseyShrineClient {
       override def apply(xml: NodeSeq): T = f(xml) 
     }
     
-    private[client] implicit val runQueryResponseDeserializer: Deserializer[RunQueryResponse] = toDeserializer(RunQueryResponse.fromXml)
+    private[client] implicit val aggregatedReadQueryResultResponseDeserializer: Deserializer[AggregatedReadQueryResultResponse] = toDeserializer(AggregatedReadQueryResultResponse.fromXml)
     
     private[client] implicit val aggregatedRunQueryResponseDeserializer: Deserializer[AggregatedRunQueryResponse] = toDeserializer(AggregatedRunQueryResponse.fromXml)
 
@@ -138,7 +146,7 @@ object JerseyShrineClient {
 
     private[client] implicit val readQueryInstancesResponseDeserializer: Deserializer[ReadQueryInstancesResponse] = toDeserializer(ReadQueryInstancesResponse.fromXml)
 
-    private[client] implicit val readInstanceResultsResponseDeserializer: Deserializer[ReadInstanceResultsResponse] = toDeserializer(ReadInstanceResultsResponse.fromXml)
+    private[client] implicit val aggregatedReadInstanceResultsResponseDeserializer: Deserializer[AggregatedReadInstanceResultsResponse] = toDeserializer(AggregatedReadInstanceResultsResponse.fromXml)
 
     private[client] implicit val readPdoResponseDeserializer: Deserializer[ReadPdoResponse] = toDeserializer(ReadPdoResponse.fromXml)
 

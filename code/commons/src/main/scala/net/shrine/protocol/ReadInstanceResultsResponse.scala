@@ -32,13 +32,13 @@ final case class ReadInstanceResultsResponse(
      * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      */
     override val shrineNetworkQueryId: Long,
-    override val results: Seq[QueryResult]) extends AbstractReadInstanceResultsResponse(shrineNetworkQueryId) {
+    val singleNodeResult: QueryResult) extends AbstractReadInstanceResultsResponse("readInstanceResultsResponse", shrineNetworkQueryId) {
   
   override type ActualResponseType = ReadInstanceResultsResponse
 
   override def withId(id: Long) = this.copy(shrineNetworkQueryId = id)
-
-  def withResults(seq: Seq[QueryResult]) = this.copy(results = seq)
+  
+  override def results = Seq(singleNodeResult)
 }
 
 object ReadInstanceResultsResponse extends AbstractReadInstanceResultsResponse.Companion[ReadInstanceResultsResponse]

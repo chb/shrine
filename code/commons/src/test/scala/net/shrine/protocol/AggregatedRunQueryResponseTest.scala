@@ -106,7 +106,7 @@ final class AggregatedRunQueryResponseTest extends ShrineResponseI2b2Serializabl
   private val qr2 = new QueryResult(resultId2, queryInstanceId, resultType2, setSize, createDate, createDate, statusType)
 
   private val runQueryResponse = XmlUtil.stripWhitespace(
-    <runQueryResponse>
+    <aggregatedRunQueryResponse>
       <queryId>{ queryId }</queryId>
       <instanceId>{ queryInstanceId }</instanceId>
       <userId>{ userId }</userId>
@@ -118,7 +118,7 @@ final class AggregatedRunQueryResponseTest extends ShrineResponseI2b2Serializabl
           Seq(qr1, qr2).map(_.toXml)
         }
       </queryResults>
-    </runQueryResponse>)
+    </aggregatedRunQueryResponse>)
 
   @Test
   def testFromXml {

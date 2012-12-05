@@ -16,7 +16,7 @@ final case class AggregatedRunQueryResponse(
     override val groupId: String,
     override val requestXml: QueryDefinition,
     override val queryInstanceId: Long,
-    override val results: Seq[QueryResult]) extends AbstractRunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId) {
+    override val results: Seq[QueryResult]) extends AbstractRunQueryResponse("aggregatedRunQueryResponse", queryId, createDate, userId, groupId, requestXml, queryInstanceId) {
 
   override type ActualResponseType = AggregatedRunQueryResponse
   

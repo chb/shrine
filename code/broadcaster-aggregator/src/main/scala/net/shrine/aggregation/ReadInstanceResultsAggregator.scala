@@ -1,11 +1,15 @@
 package net.shrine.aggregation
 
-import net.shrine.aggregation.BasicAggregator.Valid
-import net.shrine.protocol.QueryResult
-import net.shrine.protocol.ReadInstanceResultsResponse
-import net.shrine.protocol.ResultOutputType
-import net.shrine.protocol.ShrineResponse
+import scala.Option.option2Iterable
+
 import org.spin.message.Result
+
+import net.shrine.protocol.ReadInstanceResultsResponse
+import net.shrine.protocol.AggregatedReadInstanceResultsResponse
+import net.shrine.protocol.QueryResult
+import net.shrine.protocol.ResultOutputType
+import net.shrine.protocol.ResultOutputType.PATIENTSET
+import net.shrine.protocol.ResultOutputType.PATIENT_COUNT_XML
 
 /**
  * @author Bill Simons
@@ -19,7 +23,7 @@ import org.spin.message.Result
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class ReadInstanceResultsAggregator(shrineNetworkQueryId: Long, showAggregation: Boolean) extends 
-    StoredResultsAggregator[ReadInstanceResultsResponse](
+    StoredResultsAggregator[ReadInstanceResultsResponse, AggregatedReadInstanceResultsResponse](
         shrineNetworkQueryId, 
         showAggregation,
         Some("No results available"), 
@@ -27,7 +31,7 @@ class ReadInstanceResultsAggregator(shrineNetworkQueryId: Long, showAggregation:
 
   import ResultOutputType._
   
-  private val setType = Some(PATIENTSET)
+  private val setType = Some(PATIENT_COUNT_XML)
   private val statusType = QueryResult.StatusType.Finished.name
   private val allowedSetTypes = ResultOutputType.values.toSet
 

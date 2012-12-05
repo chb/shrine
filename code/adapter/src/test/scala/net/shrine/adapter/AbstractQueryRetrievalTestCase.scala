@@ -31,8 +31,7 @@ import net.shrine.protocol.query.QueryDefinition
 abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     makeAdapter: AdapterDao => Adapter, 
     makeRequest: Long => ShrineRequest, 
-    emptyResponse: Long => R,
-    extractor: R => Option[(Long, Seq[QueryResult])]) extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
+    extractor: R => Option[(Long, QueryResult)]) extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
   
   lazy val adapter = makeAdapter(dao)
   
@@ -88,7 +87,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     	    instanceId,
     	    RawCrcRunQueryResponse.toQueryResultMap(countResult +: breakdownResults)))
     		
-    getResults should equal(emptyResponse(shrineNetworkQueryId))
+    getResults.isInstanceOf[ErrorResponse] should be(true)
     
     dao.insertCountResult(idsByResultType(PATIENT_COUNT_XML).head, setSize, obfSetSize)
     
@@ -96,7 +95,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     
     val result = getResults.asInstanceOf[R]
     
-    val Some((actualNetworkQueryId, Seq(actualQueryResult))) = extractor(result)
+    val Some((actualNetworkQueryId, actualQueryResult)) = extractor(result)
     
     actualNetworkQueryId should equal(shrineNetworkQueryId)
     

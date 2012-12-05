@@ -18,6 +18,8 @@ import java.util.Date
 import net.shrine.webclient.shared.domain.SingleInstitutionQueryResult
 import net.shrine.client.ShrineClient
 import net.shrine.protocol.AggregatedRunQueryResponse
+import net.shrine.protocol.AggregatedReadInstanceResultsResponse
+import net.shrine.protocol.AggregatedReadQueryResultResponse
 
 /**
  * @author clint
@@ -48,7 +50,7 @@ final case class MockShrineClient(toReturn: Map[String, SingleInstitutionQueryRe
 
   override def readQueryInstances(queryId: Long): ReadQueryInstancesResponse = null
 
-  override def readInstanceResults(instanceId: Long): ReadInstanceResultsResponse = null
+  override def readInstanceResults(instanceId: Long): AggregatedReadInstanceResultsResponse = null
 
   override def readPdo(patientSetCollId: String, optionsXml: NodeSeq): ReadPdoResponse = null
 
@@ -57,4 +59,6 @@ final case class MockShrineClient(toReturn: Map[String, SingleInstitutionQueryRe
   override def deleteQuery(queryId: Long): DeleteQueryResponse = null
 
   override def renameQuery(queryId: Long, queryName: String): RenameQueryResponse = null
+  
+  override def readQueryResult(queryId: Long): AggregatedReadQueryResultResponse = null
 }

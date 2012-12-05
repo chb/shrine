@@ -60,25 +60,6 @@ final class ReadInstanceResultsResponseTest extends TestCase with ShrineResponse
                     <description>FINISHED</description>
                 </query_status_type>
             </query_result_instance>
-            <query_result_instance>
-                <result_instance_id>{resultId2}</result_instance_id>
-                <query_instance_id>{shrineNetworkQueryId}</query_instance_id>
-                <query_result_type>
-                    <name>{type2}</name>
-                    <result_type_id>4</result_type_id>
-                    <display_type>CATNUM</display_type>
-                    <visual_attribute_type>LA</visual_attribute_type>
-                    <description>Number of patients</description>
-                </query_result_type>
-                <set_size>{setSize}</set_size>
-                <start_date>{startDate2}</start_date>
-                <end_date>{endDate2}</end_date>
-                <query_status_type>
-                    <name>{statusName2}</name>
-                    <status_type_id>3</status_type_id>
-                    <description>FINISHED</description>
-                </query_status_type>
-            </query_result_instance>
         </ns5:response>
     </message_body>
 
@@ -95,15 +76,6 @@ final class ReadInstanceResultsResponseTest extends TestCase with ShrineResponse
           <endDate>{endDate1}</endDate>
           <status>{statusName1}</status>
         </queryResult>
-        <queryResult>
-          <resultId>{resultId2}</resultId>
-          <instanceId>{shrineNetworkQueryId}</instanceId>
-          <resultType>{type2}</resultType>
-          <setSize>{setSize}</setSize>
-          <startDate>{startDate2}</startDate>
-          <endDate>{endDate2}</endDate>
-          <status>{statusName2}</status>
-        </queryResult>
       </queryResults>
     </readInstanceResultsResponse>)
 
@@ -113,29 +85,33 @@ final class ReadInstanceResultsResponseTest extends TestCase with ShrineResponse
     
     actual.shrineNetworkQueryId should equal(shrineNetworkQueryId)
     
-    assertTrue(actual.results.contains(result1))
-    assertTrue(actual.results.contains(result2))
+    actual.singleNodeResult should equal(result1)
   }
 
   @Test
   def testToXml {
     //we compare the string versions of the xml because Scala's xml equality does not always behave properly
-    new ReadInstanceResultsResponse(shrineNetworkQueryId, Seq(result1, result2)).toXml.toString should equal(readInstanceResultsResponse.toString)
+    new ReadInstanceResultsResponse(shrineNetworkQueryId, result1).toXmlString should equal(readInstanceResultsResponse.toString)
   }
 
   @Test
   def testFromI2b2 {
     val actual = ReadInstanceResultsResponse.fromI2b2(response)
+    
     actual.shrineNetworkQueryId should equal(shrineNetworkQueryId)
-    assertTrue(actual.results.contains(result1))
-    assertTrue(actual.results.contains(result2))
+    actual.singleNodeResult should equal(result1)
   }
 
   @Test
   def testToI2b2 {
     //we compare the string versions of the xml because Scala's xml equality does not always behave properly
-    val actual = new ReadInstanceResultsResponse(shrineNetworkQueryId, Seq(result1, result2)).toI2b2String
+    val actual = new ReadInstanceResultsResponse(shrineNetworkQueryId, result1).toI2b2String
     
     actual should equal(response.toString)
+  }
+  
+  @Test
+  def testResults {
+    ReadInstanceResultsResponse(shrineNetworkQueryId, result2).results should equal(Seq(result2))
   }
 }

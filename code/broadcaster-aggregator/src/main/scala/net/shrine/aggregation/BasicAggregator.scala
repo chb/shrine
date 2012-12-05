@@ -22,19 +22,19 @@ import net.shrine.util.Loggable
  *   the expected type
  *   Invokes an abstract method with the valid responses, errors, and
  *   invalid responses.
- * 
+ *
  * Needs to be an abstract class instead of a trait due to the view bound on T (: Manifest)
  */
-abstract class BasicAggregator[T <: ShrineResponse : Manifest] extends Aggregator with Loggable {
-  
+abstract class BasicAggregator[T <: ShrineResponse: Manifest] extends Aggregator with Loggable {
+
   private[aggregation] def isAggregatable(response: ShrineResponse): Boolean = {
     manifest[T].erasure.isAssignableFrom(response.getClass)
   }
-  
+
   import BasicAggregator._
-  
+
   override def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]) = {
-    
+
     val resultsOrErrors: Seq[ParsedResult[T]] =
       for {
         result <- spinCacheResults
@@ -48,23 +48,23 @@ abstract class BasicAggregator[T <: ShrineResponse : Manifest] extends Aggregato
     val invalidResponses = resultsOrErrors.collect { case invalid: Invalid => invalid }
 
     val validResponses = resultsOrErrors.collect { case valid: Valid[T] => valid }
-    
+
     val errorResponses = resultsOrErrors.collect { case error: Error => error }
-    
+
     //Log all parsing errors
     invalidResponses.map(_.errorMessage).foreach(this.error(_))
-    
+
     val previouslyDetectedErrors = errors.map(Error(None, _))
-    
+
     makeResponseFrom(validResponses, errorResponses ++ previouslyDetectedErrors, invalidResponses)
   }
-  
+
   private[aggregation] def makeResponseFrom(validResponses: Seq[Valid[T]], errorResponses: Seq[Error], invalidResponses: Seq[Invalid]): ShrineResponse
 }
 
 object BasicAggregator {
   private[aggregation] sealed abstract class ParsedResult[+T]
-  
+
   private[aggregation] final case class Valid[T](spinResult: SpinResultEntry, response: T) extends ParsedResult[T]
   private[aggregation] final case class Error(spinResult: Option[SpinResultEntry], esponse: ErrorResponse) extends ParsedResult[Nothing]
   private[aggregation] final case class Invalid(spinResult: SpinResultEntry, errorMessage: String) extends ParsedResult[Nothing]

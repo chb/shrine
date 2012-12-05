@@ -36,7 +36,6 @@ final class ReadInstanceResultsAdapterTest extends
 	AbstractQueryRetrievalTestCase(
 	    dao => new ReadInstanceResultsAdapter(dao, true), 
 	    queryId => ReadInstanceResultsRequest("some-project-id", 1000L, null, queryId), 
-	    queryId => ReadInstanceResultsResponse(queryId, Nil),
 	    ReadInstanceResultsResponse.unapply) {
   @Test
   def testProcessInvalidRequest = doTestProcessInvalidRequest

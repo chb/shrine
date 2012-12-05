@@ -16,7 +16,7 @@ final case class RawCrcRunQueryResponse(
     override val groupId: String,
     override val requestXml: QueryDefinition,
     override val queryInstanceId: Long,
-    val singleNodeResults: Map[ResultOutputType, Seq[QueryResult]]) extends AbstractRunQueryResponse(queryId, createDate, userId, groupId, requestXml, queryInstanceId) {
+    val singleNodeResults: Map[ResultOutputType, Seq[QueryResult]]) extends AbstractRunQueryResponse("rawCrcRunQueryResponse", queryId, createDate, userId, groupId, requestXml, queryInstanceId) {
 
   override type ActualResponseType = RawCrcRunQueryResponse
   
