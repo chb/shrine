@@ -1,11 +1,10 @@
 package net.shrine.aggregation
 
-import scala.Option.option2Iterable
+import net.shrine.protocol.ReadQueryResultResponse
 import net.shrine.protocol.AggregatedReadQueryResultResponse
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.QueryResult.StatusType.Finished
 import net.shrine.protocol.ResultOutputType.PATIENT_COUNT_XML
-import net.shrine.protocol.ReadQueryResultResponse
 
 /**
  * @author clint

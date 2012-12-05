@@ -17,7 +17,8 @@ import net.shrine.protocol.HasQueryResults
  * @author clint
  * @date Nov 9, 2012
  */
-abstract class StoredResultsAggregator[R <: ShrineResponse with HasQueryResults : Manifest, AR <: ShrineResponse : Aggregated](
+abstract class StoredResultsAggregator[R <: ShrineResponse with HasQueryResults : Manifest, 
+                                         AR <: ShrineResponse : Aggregated](
     shrineNetworkQueryId: Long,
     showAggregation: Boolean,
     errorMessage: Option[String] = None,
