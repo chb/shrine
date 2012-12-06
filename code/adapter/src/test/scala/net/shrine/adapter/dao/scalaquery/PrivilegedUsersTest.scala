@@ -179,7 +179,7 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
     }
   }
 
-  private def afterInsertingTestUser(body: => Any) = afterCreatingTables {
+  private def afterInsertingTestUser(body: => Any): Unit = afterCreatingTables {
     insertTestUser()
 
     body

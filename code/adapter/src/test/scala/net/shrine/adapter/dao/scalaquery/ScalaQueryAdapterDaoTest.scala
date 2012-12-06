@@ -48,30 +48,6 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
 
   private def now = Option(NetworkTime.makeXMLGregorianCalendar(new java.util.Date))
 
-  private def rows[A](table: ExtendedTable[A]): Query[_, A] = {
-    val d = driver
-    import d.Implicit._
-    
-    for (row <- table) yield row.*
-  }
-
-  private lazy val queryRows = rows(ShrineQueries)
-
-  private lazy val queryResultRows = rows(QueryResults)
-
-  private lazy val countResultRows = rows(CountResults)
-
-  private lazy val breakdownResultRows = rows(BreakdownResults)
-
-  private lazy val errorResultRows = rows(ErrorResults)
-
-  private def list[A, B](q: Query[A, B]): Seq[B] = {
-    val d = driver
-    import d.Implicit._
-
-    database.withSession { implicit session: Session => q.list }
-  }
-
   import ResultOutputType._
 
   private val count = 999L

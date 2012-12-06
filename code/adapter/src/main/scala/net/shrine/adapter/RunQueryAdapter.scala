@@ -33,20 +33,20 @@ import net.shrine.protocol.query.QueryDefinition
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class RunQueryAdapter(
-  crcUrl: String,
-  httpClient: HttpClient,
-  dao: AdapterDao,
-  override protected val hiveCredentials: HiveCredentials,
-  private[adapter] val conceptTranslator: QueryDefinitionTranslator,
-  config: ShrineConfig,
-  doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, httpClient, hiveCredentials) {
+    crcUrl: String,
+    httpClient: HttpClient,
+    dao: AdapterDao,
+    override protected val hiveCredentials: HiveCredentials,
+    private[adapter] val conceptTranslator: QueryDefinitionTranslator,
+    config: ShrineConfig,
+    doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, httpClient, hiveCredentials) {
 
   override protected def parseShrineResponse(nodeSeq: NodeSeq) = RawCrcRunQueryResponse.fromI2b2(nodeSeq)
-  
+
   override protected[adapter] def translateNetworkToLocal(request: RunQueryRequest): RunQueryRequest = {
     request.mapQueryDefinition(conceptTranslator.translate)
   }
-  
+
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): RunQueryResponse = {
     if (isLockedOut(identity)) {
       throw new AdapterLockoutException(identity)
@@ -54,37 +54,37 @@ class RunQueryAdapter(
 
     //TODO: Any way to avoid this cast?
     val runQueryReq = message.request.asInstanceOf[RunQueryRequest]
-    
+
     val insertedQueryId = dao.insertQuery(runQueryReq.networkQueryId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
 
     val rawRunQueryResponse = super.processRequest(identity, message).asInstanceOf[RawCrcRunQueryResponse]
-    
+
     val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, rawRunQueryResponse)
 
     //val originalRunQueryResponse = rawRunQueryResponse.toRunQueryResponse
-    
+
     val obfuscatedRunQueryResponse = obfuscateResponse(rawRunQueryResponse)
 
     storeCountAndErrorResults(rawRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
 
     def isBreakdown(result: QueryResult) = result.resultType.map(_.isBreakdown).getOrElse(false)
-    
+
     val (breakdownResults, nonBreakDownResults) = obfuscatedRunQueryResponse.results.partition(isBreakdown)
 
     val attemptsWithBreakDownCounts = attemptToRetrieveBreakdowns(runQueryReq, breakdownResults)
 
     val (successes, failures) = attemptsWithBreakDownCounts.partition { case (_, t) => t.isSuccess }
 
-    logBreakdownFailures(rawRunQueryResponse, failures)
+    logBreakdownFailures(rawRunQueryResponse, successes, failures, insertedQueryResultIds)
 
     val mergedBreakdowns = mergeAndStoreBreakdowns(successes, insertedQueryResultIds)
 
     //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
     val resultWithMergedBreakdowns = nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
-    
+
     obfuscatedRunQueryResponse.toRunQueryResponse.withResult(resultWithMergedBreakdowns)
   }
-  
+
   private[adapter] def storeCountResults(insertedIds: Map[ResultOutputType, Seq[Int]], notErrors: Seq[QueryResult], obfuscatedNotErrors: Seq[QueryResult]) {
     for {
       Seq(insertedCountQueryResultId) <- insertedIds.get(ResultOutputType.PATIENT_COUNT_XML)
@@ -109,7 +109,7 @@ class RunQueryAdapter(
   private[adapter] def storeCountAndErrorResults(response: RawCrcRunQueryResponse, obfuscated: RawCrcRunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
 
     val (errors, notErrors) = response.results.partition(_.isError)
-    
+
     val obfuscatedNotErrors = obfuscated.results.filter(!_.isError)
 
     storeCountResults(insertedIds, notErrors, obfuscatedNotErrors)
@@ -117,15 +117,12 @@ class RunQueryAdapter(
     //Store errors, if present
     storeErrorResults(insertedIds, errors)
   }
-  
+
   private[adapter] def attemptToRetrieveBreakdowns(runQueryReq: RunQueryRequest, breakdownResults: Seq[QueryResult]): Seq[(QueryResult, Try[QueryResult])] = {
     def readResultRequest(runQueryReq: RunQueryRequest, networkResultId: Long) = ReadResultRequest(hiveCredentials.project, runQueryReq.waitTimeMs, hiveCredentials.toAuthenticationInfo, networkResultId.toString)
-    
+
     breakdownResults.map { origBreakdownResult =>
       (origBreakdownResult, Try {
-        //NB: readResultRequest() goes back to the DB to translate the network resultId to a local one suitable for
-        //sending to the CRC.  This extra DB hit isn't ideal, but this was a simple way to proceed, and Id-translation
-        //will - hopefully - be gone soon, rendering this issue moot.
         val respXml = callCrc(readResultRequest(runQueryReq, origBreakdownResult.resultId))
 
         val breakdownData = ReadResultResponse.fromI2b2(respXml).data
@@ -134,8 +131,25 @@ class RunQueryAdapter(
       })
     }
   }
-  
-  private[adapter] def logBreakdownFailures(response: RawCrcRunQueryResponse, failures: Seq[(QueryResult, Try[QueryResult])]) {
+
+  private[adapter] def logBreakdownFailures(response: RawCrcRunQueryResponse,
+                                            breakdownSuccesses: Seq[(QueryResult, Try[QueryResult])],
+                                            failures: Seq[(QueryResult, Try[QueryResult])],
+                                            insertedIds: Map[ResultOutputType, Seq[Int]]) {
+    val successfulBreakdownTypes = (for {
+      (_, Success(queryResult)) <- breakdownSuccesses
+      resultType <- queryResult.resultType
+    } yield resultType).toSet
+
+    val failedBreakdownTypes = ResultOutputType.breakdownTypes.toSet -- successfulBreakdownTypes
+
+    for {
+      failedBreakdownType <- failedBreakdownTypes
+      Seq(resultId) <- insertedIds.get(failedBreakdownType)
+    } {
+      dao.insertErrorResult(resultId, "Couldn't retrieve breakdown of type '" + failedBreakdownType + "'")
+    }
+
     for {
       (origQueryResult, Failure(e)) <- failures
     } {
@@ -155,7 +169,7 @@ class RunQueryAdapter(
 
     mergedBreakdowns
   }
-  
+
   protected def obfuscateResponse(response: RawCrcRunQueryResponse): RawCrcRunQueryResponse = {
     import net.shrine.adapter.Obfuscator.obfuscate
 
