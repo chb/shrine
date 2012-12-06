@@ -91,8 +91,6 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
     
     dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
     
-    Thread.sleep(50)
-    
     dao.findRecentQueries(0) should equal(Nil)
     
     {
@@ -102,8 +100,6 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
     }
     
     dao.insertQuery(networkQueryId2, queryDef.name, authn, queryDef.expr)
-    
-    Thread.sleep(50)
     
     dao.insertQuery(networkQueryId3, queryDef.name, authn, queryDef.expr)
     
