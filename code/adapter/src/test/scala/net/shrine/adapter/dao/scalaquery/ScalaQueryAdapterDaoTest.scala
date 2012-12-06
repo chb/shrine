@@ -35,12 +35,13 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import net.shrine.adapter.AdapterDbTest
 import org.spin.tools.crypto.signature.Identity
+import net.shrine.util.Loggable
 
 /**
  * @author clint
  * @date Oct 24, 2012
  */
-final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
+final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit with Loggable {
 
   private val authn = AuthenticationInfo("some-domain", "some-user", Credential("laskhdakslhd", false))
 
@@ -83,7 +84,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   private val countAndBreakdownsRunQueryResponse = countRunQueryResponse.withResults(Seq(countQueryResult, breakdownQueryResult1, breakdownQueryResult2))
 
   private val onlyBreakdownsRunQueryResponse = countRunQueryResponse.withResults(Seq(breakdownQueryResult1, breakdownQueryResult2))
-
+  
   @Test
   def testFindPreviousQueries = afterCreatingTables {
     dao.findRecentQueries(0) should equal(Nil)
@@ -103,16 +104,8 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
     
     dao.insertQuery(networkQueryId3, queryDef.name, authn, queryDef.expr)
     
-    {
-      val Seq(query1, query2) = dao.findRecentQueries(2)
-      
-      //TODO: FIX FIX FIX
-      //Should come back with most recent queries first
-      /*query1.networkId should equal(networkQueryId3)
-      query2.networkId should equal(networkQueryId2)*/
-      query1.networkId should equal(networkQueryId1)
-      query2.networkId should equal(networkQueryId2)
-    }
+    //Should come back newest-queries-first
+    dao.findRecentQueries(2).map(_.networkId) should equal(Seq(networkQueryId3, networkQueryId2))
   }
   
   @Test
