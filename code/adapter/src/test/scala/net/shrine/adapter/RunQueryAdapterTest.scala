@@ -210,7 +210,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
     resp.requestXml should equal(queryDef)
   }
 
-  private def doQueryThatReturnsSpecifiedBreakdowns(outputTypes: Set[ResultOutputType], successfulBreakdowns: Seq[I2b2ResultEnvelope]): RunQueryResponse = afterCreatingTables {
+  private def doQueryThatReturnsSpecifiedBreakdowns(outputTypes: Set[ResultOutputType], successfulBreakdowns: Seq[I2b2ResultEnvelope]): RunQueryResponse = afterCreatingTablesReturn {
     val breakdownQueryResults = ResultOutputType.breakdownTypes.zipWithIndex.map {
       case (rt, i) =>
         countQueryResult.withId(resultId + i + 1).withResultType(rt)

@@ -61,9 +61,11 @@ trait AdapterDbTest { self: AbstractDependencyInjectionSpringContextTests =>
 
     database.withSession { implicit session: Session => q.first }
   }
-    
+  
+  protected def afterCreatingTables(body: => Any): Unit = afterCreatingTablesReturn(body)
+  
   //TODO: There /must/ be a better way
-  protected def afterCreatingTables[T](body: => T): T = {
+  protected def afterCreatingTablesReturn[T](body: => T): T = {
     def sqlLines(filename: String): Iterator[String] = {
       Source.fromInputStream(this.getClass.getClassLoader.getResourceAsStream(filename)).getLines.map(_.trim).filter(!_.isEmpty).filter(!_.startsWith("--"))
     }
