@@ -281,7 +281,9 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   def testInsertQueryResultsNoErrorsOneCountSomeBreakdowns = afterCreatingTables {
     val (resultIdsByType, resultRows) = doInsertQueryResultsTest(countAndBreakdownsRunQueryResponse)
 
-    //resultIdsByType should equal(Map(PATIENT_COUNT_XML -> Seq(1), PATIENT_AGE_COUNT_XML -> Seq(2), PATIENT_GENDER_COUNT_XML -> Seq(3)))
+    resultIdsByType.keySet should equal(Set(PATIENT_COUNT_XML, PATIENT_AGE_COUNT_XML, PATIENT_GENDER_COUNT_XML))
+    
+    resultIdsByType.values.forall(_.size == 1) should be(true)
 
     val countResultRow = resultRows.filter(_.resultType == PATIENT_COUNT_XML).head
     
