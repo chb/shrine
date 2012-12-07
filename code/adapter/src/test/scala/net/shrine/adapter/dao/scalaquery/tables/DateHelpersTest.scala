@@ -13,7 +13,7 @@ import javax.xml.datatype.XMLGregorianCalendar
 final class DateHelpersTest extends TestCase with ShouldMatchersForJUnit {
   val now = new java.util.Date
     
-  val sqlNow = new java.sql.Date(now.getTime)
+  val sqlNow = new java.sql.Timestamp(now.getTime)
   
   @Test
   def testToXmlGc {
@@ -23,17 +23,17 @@ final class DateHelpersTest extends TestCase with ShouldMatchersForJUnit {
   }
   
   @Test
-  def testToSqlDate {
+  def testToTimestamp {
     val xmlNow = NetworkTime.makeXMLGregorianCalendar(now)
     
-    DateHelpers.toSqlDate(xmlNow) should equal(sqlNow)
+    DateHelpers.toTimestamp(xmlNow) should equal(sqlNow)
   }
   
   @Test
-  def testSqlDateXmlGcRoundTrip {
+  def testTimestampXmlGcRoundTrip {
     val xmlNow = NetworkTime.makeXMLGregorianCalendar(now)
     
-    val roundTripped = DateHelpers.toXmlGc(DateHelpers.toSqlDate(xmlNow)) 
+    val roundTripped = DateHelpers.toXmlGc(DateHelpers.toTimestamp(xmlNow)) 
     
     roundTripped should equal(xmlNow)
     

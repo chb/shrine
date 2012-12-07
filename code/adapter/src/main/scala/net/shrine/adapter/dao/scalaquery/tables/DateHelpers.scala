@@ -4,7 +4,7 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.spin.tools.NetworkTime
 import org.scalaquery.ql.MappedTypeMapper
 import org.scalaquery.ql.TypeMapper
-import java.sql.Date
+import java.sql.Timestamp
 import org.scalaquery.ql.BaseTypeMapper
 import java.util.Calendar
 
@@ -13,11 +13,11 @@ import java.util.Calendar
  * @date Oct 16, 2012
  */
 object DateHelpers {
-  def toSqlDate(xmlGc: XMLGregorianCalendar) = {
-    new java.sql.Date(xmlGc.toGregorianCalendar.getTime.getTime)
+  def toTimestamp(xmlGc: XMLGregorianCalendar) = {
+    new java.sql.Timestamp(xmlGc.toGregorianCalendar.getTime.getTime)
   }
 
-  def toXmlGc(date: java.sql.Date): XMLGregorianCalendar = {
+  def toXmlGc(date: java.sql.Timestamp): XMLGregorianCalendar = {
     NetworkTime.makeXMLGregorianCalendar(new java.util.Date(date.getTime))
   }
 
@@ -32,7 +32,7 @@ object DateHelpers {
   object Implicit {
     //NB: this val's type must be BaseTypeMapper[T] instead of just TypeMapper[T] to allow
     //using mapped date columns with ===, =!=, <, >, etc in for-comprehensions.
-    implicit val xmlGregorianCalendar2JavaSqlDateMapper: BaseTypeMapper[XMLGregorianCalendar] =
-      MappedTypeMapper.base[XMLGregorianCalendar, Date](toSqlDate, toXmlGc)
+    implicit val xmlGregorianCalendar2JavaSqlTimeStampMapper: BaseTypeMapper[XMLGregorianCalendar] =
+      MappedTypeMapper.base[XMLGregorianCalendar, Timestamp](toTimestamp, toXmlGc)
   }
 }

@@ -92,6 +92,10 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
     
     dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
     
+    //Make next query happen 1 millisecond later, so we can distinguish it from the one we just inserted 
+    //(java.sql.Timestamps have 1ms resolution, it appears?)
+    Thread.sleep(1)
+    
     dao.findRecentQueries(0) should equal(Nil)
     
     {
@@ -101,6 +105,10 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
     }
     
     dao.insertQuery(networkQueryId2, queryDef.name, authn, queryDef.expr)
+    
+    //Make next query happen 1 millisecond later, so we can distinguish it from the one we just inserted 
+    //(java.sql.Timestamps, or perhaps XmlGregorianCalendars, have 1ms resolution?)
+    Thread.sleep(1)
     
     dao.insertQuery(networkQueryId3, queryDef.name, authn, queryDef.expr)
     
