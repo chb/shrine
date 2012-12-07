@@ -4,6 +4,7 @@ import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import junit.framework.TestCase
 import org.spin.tools.NetworkTime
+import javax.xml.datatype.XMLGregorianCalendar
 
 /**
  * @author clint
@@ -32,6 +33,12 @@ final class DateHelpersTest extends TestCase with ShouldMatchersForJUnit {
   def testSqlDateXmlGcRoundTrip {
     val xmlNow = NetworkTime.makeXMLGregorianCalendar(now)
     
-    DateHelpers.toXmlGc(DateHelpers.toSqlDate(xmlNow)) should equal(xmlNow)
+    val roundTripped = DateHelpers.toXmlGc(DateHelpers.toSqlDate(xmlNow)) 
+    
+    roundTripped should equal(xmlNow)
+    
+    def millis(xmlGc: XMLGregorianCalendar) = xmlGc.toGregorianCalendar.getTime.getTime 
+    
+    millis(roundTripped) should equal(millis(xmlNow)) 
   }
 }
