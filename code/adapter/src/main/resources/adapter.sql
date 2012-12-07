@@ -1,5 +1,3 @@
-use slicktest;
-
 create table SHRINE_QUERY(
   id int not null auto_increment,
   network_id bigint not null,
