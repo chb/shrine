@@ -20,13 +20,13 @@ import net.shrine.protocol.{QueryMaster, ReadPreviousQueriesResponse}
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadPreviousQueriesAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit with EasyMockSugar {
+final class ReadPreviousQueriesAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit with EasyMockSugar {
   private def newQueryMasterType(groupId: String, userId: String, masterId: String, name: String, createDate: XMLGregorianCalendar): QueryMaster = {
     new QueryMaster(masterId, name, userId, groupId, createDate)
   }
 
   @Test
-  def testOldestToNewest() {
+  def testOldestToNewest {
     val groupId = "groupId"
     val userId = "userId"
     val aggregator = new ReadPreviousQueriesAggregator(userId, groupId)
@@ -40,7 +40,7 @@ class ReadPreviousQueriesAggregatorTest extends AssertionsForJUnit with ShouldMa
   }
 
   @Test
-  def testNewestToOldest() {
+  def testNewestToOldest {
     val groupId = "groupId"
     val userId = "userId"
     val aggregator = new ReadPreviousQueriesAggregator(userId, groupId)
@@ -54,7 +54,7 @@ class ReadPreviousQueriesAggregatorTest extends AssertionsForJUnit with ShouldMa
   }
 
   @Test
-  def testAggregate() {
+  def testAggregate {
     val userId = "userId"
     val groupId = "groupId"
     val firstDate = new NetworkTime(Calendar.getInstance.getTime)

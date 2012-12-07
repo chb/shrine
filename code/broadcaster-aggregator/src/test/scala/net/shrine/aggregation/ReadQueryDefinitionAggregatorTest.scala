@@ -16,12 +16,12 @@ import net.shrine.protocol.ReadQueryDefinitionResponse
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadQueryDefinitionAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
+final class ReadQueryDefinitionAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
 
   val aggregator = new ReadQueryDefinitionAggregator()
 
   @Test
-  def testAggregate() {
+  def testAggregate {
     val queryId = 1L
     val userId = "userId"
     val queryName = "queryname"

@@ -47,9 +47,10 @@ abstract class StoredResultsAggregator[R <: ShrineResponse with HasQueryResults 
     val queryResults = consolidateQueryResults(allQueryResults)
 
     //Append the aggregated response, if any
-    val finalQueryResults =
+    val finalQueryResults = {
       if (showAggregation) queryResults ++ makeAggregatedResult(queryResults)
       else queryResults
+    }
 
     makeResponse(shrineNetworkQueryId, finalQueryResults ++ errorResponses ++ invalidResponses)
   }

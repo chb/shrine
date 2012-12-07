@@ -33,7 +33,7 @@ abstract class BasicAggregator[T <: ShrineResponse: Manifest] extends Aggregator
 
   import BasicAggregator._
 
-  override def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]) = {
+  override def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = {
 
     val resultsOrErrors: Seq[ParsedResult[T]] =
       for {
@@ -66,6 +66,6 @@ object BasicAggregator {
   private[aggregation] sealed abstract class ParsedResult[+T]
 
   private[aggregation] final case class Valid[T](spinResult: SpinResultEntry, response: T) extends ParsedResult[T]
-  private[aggregation] final case class Error(spinResult: Option[SpinResultEntry], esponse: ErrorResponse) extends ParsedResult[Nothing]
+  private[aggregation] final case class Error(spinResult: Option[SpinResultEntry], response: ErrorResponse) extends ParsedResult[Nothing]
   private[aggregation] final case class Invalid(spinResult: SpinResultEntry, errorMessage: String) extends ParsedResult[Nothing]
 }

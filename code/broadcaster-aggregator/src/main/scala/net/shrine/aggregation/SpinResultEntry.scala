@@ -12,4 +12,4 @@ import org.spin.message.Result
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class SpinResultEntry(val spinResultXml: String, val spinResultMetadata: Result)
+final case class SpinResultEntry(val spinResultXml: String, val spinResultMetadata: Result)

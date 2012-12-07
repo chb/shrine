@@ -15,20 +15,22 @@ import net.shrine.protocol.DeleteQueryResponse
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class DeleteQueryAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit{
+final class DeleteQueryAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit{
 
   @Test
   def testAggregate {
     val queryId = 12345l
     val response = new DeleteQueryResponse(queryId)
-    val result1 = new SpinResultEntry(response.toXml.toString(), null)
-    val result2 = new SpinResultEntry(response.toXml.toString(), null)
+    val result1 = new SpinResultEntry(response.toXmlString, null)
+    val result2 = new SpinResultEntry(response.toXmlString, null)
 
     val aggregator = new DeleteQueryAggregator
     
     //TODO: test handling error responses
     val deleteQueryResponse = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[DeleteQueryResponse]
+    
     assertNotNull(deleteQueryResponse)
+    
     assertEquals(queryId, deleteQueryResponse.queryId)
   }
 }
