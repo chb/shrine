@@ -138,12 +138,8 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
 
     val firstResult = resp.results.head
 
-    //TODO, NB: hard to compare QueryResults directly due to ID translation; use simpler test here once translation is no longer performed
-    firstResult.setSize should equal(countQueryResult.setSize)
-    firstResult.breakdowns.isEmpty should equal(true)
-    firstResult.resultType should equal(Some(ResultOutputType.PATIENT_COUNT_XML))
-    firstResult.description should equal(None)
-
+    firstResult should equal(countQueryResult)
+    
     resp.results.size should equal(1)
   }
 
@@ -157,7 +153,6 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
 
     val firstResult = resp.results.head
 
-    //TODO, NB: hard to compare QueryResults directly due to ID translation; use simpler test here once translation is no longer performed
     firstResult.resultType should equal(Some(PATIENT_COUNT_XML))
     firstResult.setSize should equal(setSize)
     firstResult.description should equal(None)
@@ -179,7 +174,6 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
 
     val firstResult = resp.results.head
 
-    //TODO, NB: hard to compare QueryResults directly due to ID translation; use simpler test here once translation is no longer performed
     firstResult.resultType should equal(Some(PATIENT_COUNT_XML))
     firstResult.setSize should equal(setSize)
     firstResult.description should equal(None)
