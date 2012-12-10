@@ -84,7 +84,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     
     val queryDef = QueryDefinition.fromXml(queryDefinitionXml).get
 
-    performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, Ids.nextLong, topicId, outputTypes.toSet, queryDef)))
+    performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, -1, topicId, outputTypes.toSet, queryDef)))
   }
   
   @GET

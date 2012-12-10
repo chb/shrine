@@ -25,6 +25,7 @@ import org.spin.tools.NetworkTime
 import net.shrine.util.Util
 import net.shrine.util.Try
 import net.shrine.util.Loggable
+import net.shrine.aggregation.ReadQueryResultAggregator
 
 /**
  * @author Bill Simons
@@ -161,13 +162,15 @@ class ShrineService(
 
     auditRunQueryRequest(identity, request)
 
-    val message = BroadcastMessage(request.networkQueryId, request)
+    val reqWithQueryIdAssigned = request.withNetworkQueryId(Ids.nextLong)
+    
+    val message = BroadcastMessage(reqWithQueryIdAssigned.networkQueryId, reqWithQueryIdAssigned)
 
     val aggregator = new RunQueryAggregator(
-      message.requestId, //TODO: Correct!?? used to be message.masterId.get
-      request.authn.username,
-      request.projectId,
-      request.queryDefinition,
+      message.requestId,
+      reqWithQueryIdAssigned.authn.username,
+      reqWithQueryIdAssigned.projectId,
+      reqWithQueryIdAssigned.queryDefinition,
       shrineConfig.isIncludeAggregateResult)
 
     executeRequest(identity, message, aggregator)
@@ -201,5 +204,5 @@ class ShrineService(
 
   override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest) = authorizationService.readApprovedEntries(request)
 
-  override def readQueryResult(request: ReadQueryResultRequest): ShrineResponse = Util.???
+  override def readQueryResult(request: ReadQueryResultRequest): ShrineResponse = executeRequest(request, new ReadQueryResultAggregator(request.queryId, shrineConfig.isIncludeAggregateResult))
 }

@@ -75,6 +75,8 @@ final case class RunQueryRequest(
   def withQueryDefinition(qDef: QueryDefinition) = this.copy(queryDefinition = qDef)
   
   def mapQueryDefinition(f: QueryDefinition => QueryDefinition) = this.withQueryDefinition(f(queryDefinition))
+  
+  def withNetworkQueryId(id: Long) = this.copy(networkQueryId = id)
 }
 
 object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequestUnmarshaller[RunQueryRequest] {
