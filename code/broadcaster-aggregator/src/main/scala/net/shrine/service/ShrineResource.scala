@@ -84,6 +84,8 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     
     val queryDef = QueryDefinition.fromXml(queryDefinitionXml).get
 
+    //NB: Create the RunQueryRequest with a dummy networkQueryId of '-1'; 
+    //this will be filled in with an appropriately-generated value by the ShrineRequestHandler
     performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, -1, topicId, outputTypes.toSet, queryDef)))
   }
   
