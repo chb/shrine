@@ -30,7 +30,6 @@ final case class QueryDefinition(name: String, expr: Expression) extends I2b2Mar
 
   def transform(f: Expression => Expression) = this.copy(expr = f(this.expr))
 
-
   override def toJson: JValue = ("name" -> name) ~ ("expression" -> expr.toJson)
 
   override def toXml: NodeSeq = {

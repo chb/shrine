@@ -9,6 +9,7 @@ import net.shrine.serialization.{ JsonUnmarshaller, JsonMarshaller, XmlMarshalle
 import net.liftweb.json.JsonAST._
 import net.shrine.util.Try
 import net.shrine.util.Failure
+import net.shrine.util.Util
 
 /**
  *
@@ -21,11 +22,13 @@ import net.shrine.util.Failure
  * @link http://www.gnu.org/licenses/lgpl.html
  *
  * Classes to form expression trees representing Shrine queries
- *
- * TODO: fromXml ?
  */
 sealed trait Expression extends XmlMarshaller with JsonMarshaller {
   def normalize: Expression = this
+
+  def hasDirectI2b2Representation: Boolean
+
+  def toExecutionPlan: ExecutionPlan //= SimpleQuery(this.normalize)
 }
 
 object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller[Try[Expression]] {
@@ -34,9 +37,9 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
 
   private val toOr = to(Or)
   private val toAnd = to(And)
-  
+
   import Try.sequence
-  
+
   def fromJson(json: JValue): Try[Expression] = {
     def dateFromJson(json: JValue): Try[XMLGregorianCalendar] = Try {
       json match {
@@ -60,7 +63,7 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
       case JField("occurs", value) => {
         val min = Try((value \ "min") match {
           case JInt(x) => x.intValue
-          case _ => throw new Exception("Cannot parse json") //TODO some sort of unmarshalling exception
+          case x => throw new Exception("Cannot parse json: " + x.toString) //TODO some sort of unmarshalling exception
         })
 
         for {
@@ -68,7 +71,7 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
           m <- min
         } yield OccuranceLimited(m, expr)
       }
-      case x => Failure(new Exception("Cannot parse json" + x.toString)) //TODO some sort of unmarshalling exception
+      case x => Failure(new Exception("Cannot parse json: " + x.toString)) //TODO some sort of unmarshalling exception
     }
   }
 
@@ -112,20 +115,34 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
               min <- Try((nodeSeq \ "min").text.toInt)
               //drop(1) to lose <min>
               //childTags.drop(2).head because only one child expr of <occurs> is allowed
-              expr <-fromXml(childTags.drop(1).head)
+              expr <- fromXml(childTags.drop(1).head)
             } yield OccuranceLimited(min, expr)
           }
         }
       }
     }
   }
+
+  private[query] def is[E: Manifest](x: AnyRef) = manifest[E].erasure.isAssignableFrom(x.getClass)
+}
+
+trait SimpleExpression extends Expression {
+  override def hasDirectI2b2Representation = true
+
+  override def toExecutionPlan = SimpleQuery(this)
 }
 
 //NOTE - refactoring the field name value will break json deserialization for this case class
-final case class Term(value: String) extends Expression {
+final case class Term(value: String) extends SimpleExpression {
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<term>{ value }</term>)
 
   override def toJson: JValue = ("term" -> value)
+}
+
+final case class Query(localMasterId: String) extends SimpleExpression {
+  override def toXml: NodeSeq = XmlUtil.stripWhitespace(<query>{ localMasterId }</query>)
+
+  override def toJson: JValue = ("query" -> localMasterId)
 }
 
 final case class Not(expr: Expression) extends Expression {
@@ -142,6 +159,10 @@ final case class Not(expr: Expression) extends Expression {
       case _ => this.withExpr(expr.normalize)
     }
   }
+
+  override def hasDirectI2b2Representation = expr.hasDirectI2b2Representation
+
+  override def toExecutionPlan = Util.??? //SimpleQuery(this.normalize)
 }
 
 trait HasSubExpressions extends Expression {
@@ -149,13 +170,15 @@ trait HasSubExpressions extends Expression {
 }
 
 abstract class ComposeableExpression[T <: HasSubExpressions: Manifest](Op: (Expression*) => T, override val exprs: Expression*) extends HasSubExpressions {
-  private def isT(x: AnyRef) = manifest[T].erasure.isAssignableFrom(x.getClass)
+  import Expression.is
+
+  def containsA[E: Manifest] = exprs.exists(is[E])
 
   override def normalize = exprs match {
     case x if x.isEmpty => this
     case Seq(expr) => expr.normalize
     case _ => Op(exprs.flatMap {
-      case op: T if isT(op) => op.exprs.map(_.normalize)
+      case op: T if is[T](op) => op.exprs.map(_.normalize)
       case e => Seq(e.normalize)
     }: _*)
   }
@@ -166,6 +189,17 @@ final case class And(override val exprs: Expression*) extends ComposeableExpress
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<and>{ exprs.map(_.toXml) }</and>)
 
   override def toJson: JValue = ("and" -> exprs.map(_.toJson))
+
+  override def hasDirectI2b2Representation = exprs.forall(_.hasDirectI2b2Representation)
+
+  override def toExecutionPlan: ExecutionPlan = {
+    //TODO: WRONG
+    //if (hasDirectI2b2Representation) {
+      SimpleQuery(this)
+    //} else {
+    //  CompoundQuery.And(exprs.map(_.toExecutionPlan): _*) //TODO: almost certainly wrong
+    //}
+  }
 }
 
 final case class Or(override val exprs: Expression*) extends ComposeableExpression[Or](Or, exprs: _*) {
@@ -173,6 +207,32 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<or>{ exprs.map(_.toXml) }</or>)
 
   override def toJson: JValue = ("or" -> exprs.map(_.toJson))
+
+  import Expression.is
+
+  override def hasDirectI2b2Representation: Boolean = exprs.forall(e => !is[And](e) && e.hasDirectI2b2Representation)
+
+  override def toExecutionPlan: ExecutionPlan = {
+    if (hasDirectI2b2Representation) {
+      SimpleQuery(this)
+    } else {
+      val (ands, notAnds) = exprs.partition(is[And])
+
+      val andPlans = ands.map(_.toExecutionPlan)
+
+      val notAndPlans = notAnds.map(_.toExecutionPlan)
+      
+      val andCompound = CompoundQuery.Or(andPlans: _*)
+      
+      if(notAndPlans.isEmpty) {
+        andCompound
+      } else if(andPlans.size == 1) {
+        CompoundQuery.Or((andPlans ++ notAndPlans): _*)
+      } else {
+        CompoundQuery.Or((andCompound +: notAndPlans): _*)
+      }
+    }
+  }
 }
 
 final case class DateBounded(start: Option[XMLGregorianCalendar], end: Option[XMLGregorianCalendar], expr: Expression) extends Expression {
@@ -204,6 +264,10 @@ final case class DateBounded(start: Option[XMLGregorianCalendar], end: Option[XM
       DateBounded(normalizedStart, normalizedEnd, normalizedSubExpr)
     }
   }
+
+  override def toExecutionPlan = Util.???
+
+  override def hasDirectI2b2Representation = expr.hasDirectI2b2Representation
 }
 
 final case class OccuranceLimited(min: Int, expr: Expression) extends Expression {
@@ -216,9 +280,13 @@ final case class OccuranceLimited(min: Int, expr: Expression) extends Expression
                                                           { expr.toXml }
                                                         </occurs>)
 
-  override def toJson: JValue = ("occurs" ->
-    ("min" -> min) ~
+  override def toJson: JValue = (
+    "occurs" -> ("min" -> min) ~
     ("expression" -> expr.toJson))
 
   override def normalize = if (min == 1) expr.normalize else this.withExpr(expr.normalize)
+
+  override def toExecutionPlan = Util.???
+
+  override def hasDirectI2b2Representation = expr.hasDirectI2b2Representation
 }

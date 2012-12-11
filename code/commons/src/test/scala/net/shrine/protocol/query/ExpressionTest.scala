@@ -10,6 +10,7 @@ import java.util.TimeZone
 import javax.xml.datatype.XMLGregorianCalendar
 import org.junit.Test
 import net.shrine.util.Try
+import org.scalatest.junit.ShouldMatchersForJUnit
 
 /**
  *
@@ -22,7 +23,7 @@ import net.shrine.util.Try
  * @link http://www.gnu.org/licenses/lgpl.html
  *
  */
-final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
+final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
   private[this] val t1 = Term("foo")
   private[this] val t2 = Term("bar")
   private[this] val t3 = Term("baz")
@@ -31,6 +32,45 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
   private[this] val t6 = Term("zuh")
 
   import Utils.now
+
+  @Test
+  def testOrToExectutionPlan {
+    //Plain old or, no need for sub-queries
+    {
+      val expr = Or(t1, t2)
+
+      val expected = SimpleQuery(Or(t1, t2))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //Or of 2 Ands
+    {
+      val expr = Or(And(t1, t2), And(t3, t4))
+
+      val expected = CompoundQuery(Conjunction.Or, SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4)))
+
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //And Ored with a Term 
+    {
+      val expr = Or(And(t1, t2), t3)
+
+      val expected = CompoundQuery(Conjunction.Or, SimpleQuery(And(t1, t2)), SimpleQuery(t3))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //And Ored with an Or
+    {
+      val expr = Or(And(t1, t2), Or(t3, t4))
+
+      val expected = CompoundQuery(Conjunction.Or, SimpleQuery(And(t1, t2)), SimpleQuery(Or(t3, t4)))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+  }
 
   private type HasWithExpr[T] = {
     val expr: Expression
@@ -62,7 +102,7 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
   private def roundTrip[T](expr: Expression, serialize: Expression => T, deserialize: T => Try[Expression]) {
     assert(deserialize(serialize(expr)).get === expr)
   }
-  
+
   @Test
   def testExpressionFromXml {
     def xmlRoundTrip(expr: Expression) {
@@ -248,7 +288,7 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
     assert(<occurs><min>99</min><term>{ t1.value }</term></occurs>.toString === OccuranceLimited(99, t1).toXml.toString)
   }
 
-  private def doTestNormalizeComposeable[T <: Expression](Op: (Expression *) => T) {
+  private def doTestNormalizeComposeable[T <: Expression](Op: (Expression*) => T) {
     val empty = Op()
 
     empty should be(empty.normalize)
@@ -301,7 +341,7 @@ final class ExpressionTest extends TestCase with AssertionsForJUnit with ShouldM
   private def jsonRoundTrip(expr: Expression) {
     roundTrip(expr, _.toJson, Expression.fromJson)
   }
-  
+
   @Test
   def testNotFromJson {
     jsonRoundTrip(Not(Term("hello expression")))
