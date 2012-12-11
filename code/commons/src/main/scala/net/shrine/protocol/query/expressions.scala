@@ -195,7 +195,7 @@ final case class And(override val exprs: Expression*) extends ComposeableExpress
   override def toExecutionPlan: ExecutionPlan = {
     //TODO: WRONG
     //if (hasDirectI2b2Representation) {
-      SimpleQuery(this)
+      SimpleQuery(this.normalize)
     //} else {
     //  CompoundQuery.And(exprs.map(_.toExecutionPlan): _*) //TODO: almost certainly wrong
     //}
@@ -214,19 +214,19 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
 
   override def toExecutionPlan: ExecutionPlan = {
     if (hasDirectI2b2Representation) {
-      SimpleQuery(this)
+      SimpleQuery(this.normalize)
     } else {
       val (ands, notAnds) = exprs.partition(is[And])
 
       val andPlans = ands.map(_.toExecutionPlan)
 
       val notAndPlans = notAnds.map(_.toExecutionPlan)
-      
+
       val andCompound = CompoundQuery.Or(andPlans: _*)
-      
-      if(notAndPlans.isEmpty) {
+
+      if (notAndPlans.isEmpty) {
         andCompound
-      } else if(andPlans.size == 1) {
+      } else if (andPlans.size == 1) {
         CompoundQuery.Or((andPlans ++ notAndPlans): _*)
       } else {
         CompoundQuery.Or((andCompound +: notAndPlans): _*)

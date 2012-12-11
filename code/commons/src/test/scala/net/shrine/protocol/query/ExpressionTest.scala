@@ -70,6 +70,24 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
       
       expr.toExecutionPlan should equal(expected)
     }
+    
+    //nested Ands should be normalized first 
+    {
+      val expr = And(And(t1, t2), And(t3, t4))
+      
+      val expected = SimpleQuery(And(t1, t2, t3, t4))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //nested Ors should be normalized first 
+    {
+      val expr = Or(Or(t1, t2), Or(t3, t4))
+      
+      val expected = SimpleQuery(Or(t1, t2, t3, t4))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
   }
 
   private type HasWithExpr[T] = {
