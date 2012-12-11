@@ -186,6 +186,8 @@ abstract class ComposeableExpression[T <: HasSubExpressions: Manifest](Op: (Expr
 
 final case class And(override val exprs: Expression*) extends ComposeableExpression[And](And, exprs: _*) {
 
+  override def toString = "And(" + exprs.mkString(",") + ")"
+  
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<and>{ exprs.map(_.toXml) }</and>)
 
   override def toJson: JValue = ("and" -> exprs.map(_.toJson))
@@ -195,7 +197,7 @@ final case class And(override val exprs: Expression*) extends ComposeableExpress
   override def toExecutionPlan: ExecutionPlan = {
     //TODO: WRONG
     //if (hasDirectI2b2Representation) {
-      SimpleQuery(this.normalize)
+    SimpleQuery(this.normalize)
     //} else {
     //  CompoundQuery.And(exprs.map(_.toExecutionPlan): _*) //TODO: almost certainly wrong
     //}
@@ -204,6 +206,8 @@ final case class And(override val exprs: Expression*) extends ComposeableExpress
 
 final case class Or(override val exprs: Expression*) extends ComposeableExpression[Or](Or, exprs: _*) {
 
+  override def toString = "Or(" + exprs.mkString(",") + ")"
+  
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<or>{ exprs.map(_.toXml) }</or>)
 
   override def toJson: JValue = ("or" -> exprs.map(_.toJson))
@@ -220,16 +224,21 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
 
       val andPlans = ands.map(_.toExecutionPlan)
 
-      val notAndPlans = notAnds.map(_.toExecutionPlan)
-
       val andCompound = CompoundQuery.Or(andPlans: _*)
 
-      if (notAndPlans.isEmpty) {
+      if (notAnds.isEmpty) {
         andCompound
-      } else if (andPlans.size == 1) {
-        CompoundQuery.Or((andPlans ++ notAndPlans): _*)
       } else {
-        CompoundQuery.Or((andCompound +: notAndPlans): _*)
+        val notAndPlans = notAnds.map(_.toExecutionPlan)
+
+        val consolidatedNotAndPlan = notAndPlans.reduce(_ or _)
+        
+        val components = andPlans.size match {
+          case 1 => andPlans :+ consolidatedNotAndPlan
+          case _ => Seq(andCompound, consolidatedNotAndPlan)
+        }
+        
+        CompoundQuery.Or(components: _*)
       }
     }
   }

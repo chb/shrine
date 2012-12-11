@@ -33,6 +33,10 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
 
   import Utils.now
 
+  private def doToExecutionPlanTest(expr: Expression, expected: ExecutionPlan) {
+    expr.toExecutionPlan should equal(expected)
+  }
+  
   @Test
   def testOrToExectutionPlan {
     //Plain old or, no need for sub-queries
@@ -71,20 +75,40 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
       expr.toExecutionPlan should equal(expected)
     }
     
-    //nested Ands should be normalized first 
-    {
-      val expr = And(And(t1, t2), And(t3, t4))
-      
-      val expected = SimpleQuery(And(t1, t2, t3, t4))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     //nested Ors should be normalized first 
     {
       val expr = Or(Or(t1, t2), Or(t3, t4))
       
       val expected = SimpleQuery(Or(t1, t2, t3, t4))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    {
+      val expr = Or(Or(t1, t2), And(t3, t4), Or(t5, t6))
+      
+      val expected = CompoundQuery(Conjunction.Or, SimpleQuery(And(t3, t4)), SimpleQuery(Or(t1, t2, t5, t6)))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+  }
+  
+  @Test
+  def testAndToExecutionPlan {
+    //Plain old And, no need for sub-queries
+    {
+      val expr = And(t1, t2)
+
+      val expected = SimpleQuery(And(t1, t2))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //nested Ands should be normalized first 
+    {
+      val expr = And(And(t1, t2), And(t3, t4))
+      
+      val expected = SimpleQuery(And(t1, t2, t3, t4))
       
       expr.toExecutionPlan should equal(expected)
     }
