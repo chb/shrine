@@ -24,12 +24,14 @@ import org.scalatest.junit.ShouldMatchersForJUnit
  *
  */
 final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
-  private[this] val t1 = Term("foo")
-  private[this] val t2 = Term("bar")
-  private[this] val t3 = Term("baz")
-  private[this] val t4 = Term("blarg")
-  private[this] val t5 = Term("nuh")
-  private[this] val t6 = Term("zuh")
+  private[this] val t1 = Term("1")
+  private[this] val t2 = Term("2")
+  private[this] val t3 = Term("3")
+  private[this] val t4 = Term("4")
+  private[this] val t5 = Term("5")
+  private[this] val t6 = Term("6")
+  private[this] val t7 = Term("7")
+  private[this] val t8 = Term("8")
 
   import Utils.now
 
@@ -48,33 +50,6 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
       expr.toExecutionPlan should equal(expected)
     }
     
-    //Or of 2 Ands
-    {
-      val expr = Or(And(t1, t2), And(t3, t4))
-
-      val expected = CompoundQuery(Conjunction.Or, SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4)))
-
-      expr.toExecutionPlan should equal(expected)
-    }
-    
-    //And Ored with a Term 
-    {
-      val expr = Or(And(t1, t2), t3)
-
-      val expected = CompoundQuery(Conjunction.Or, SimpleQuery(And(t1, t2)), SimpleQuery(t3))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
-    //And Ored with an Or
-    {
-      val expr = Or(And(t1, t2), Or(t3, t4))
-
-      val expected = CompoundQuery(Conjunction.Or, SimpleQuery(And(t1, t2)), SimpleQuery(Or(t3, t4)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     //nested Ors should be normalized first 
     {
       val expr = Or(Or(t1, t2), Or(t3, t4))
@@ -84,13 +59,98 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
       expr.toExecutionPlan should equal(expected)
     }
     
+    //Or of 2 Ands
     {
-      val expr = Or(Or(t1, t2), And(t3, t4), Or(t5, t6))
-      
-      val expected = CompoundQuery(Conjunction.Or, SimpleQuery(And(t3, t4)), SimpleQuery(Or(t1, t2, t5, t6)))
+      val expr = Or(And(t1, t2), And(t3, t4))
+
+      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4)))
+
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //And Ored with a Term 
+    {
+      val expr = Or(And(t1, t2), t3)
+
+      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(t3))
       
       expr.toExecutionPlan should equal(expected)
     }
+    
+    //And Ored with an Or
+    {
+      val expr = Or(And(t1, t2), Or(t3, t4))
+
+      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(Or(t3, t4)))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //Mix of Ors and Ands
+    {
+      val expr = Or(Or(t1, t2), And(t3, t4), Or(t5, t6))
+      
+      val expected = CompoundQuery.Or(SimpleQuery(And(t3, t4)), SimpleQuery(Or(t1, t2, t5, t6)))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //Mix with raw terms too
+    {
+      val expr = Or(Or(t1, t2), t3, And(t4, t5), t6, Or(t7, t8))
+      
+      val expected = CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7, t8)))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+  }
+  
+  @Test
+  def testOrToExecutionPlanMoreNesting {
+    //1 || ((2 && 3) || (4 && 5)) 
+    {
+      val expr = Or(t1, Or(And(t2, t3), And(t4, t5)))
+
+      val expected = CompoundQuery.Or(SimpleQuery(t1), CompoundQuery.Or(SimpleQuery(And(t2, t3)), SimpleQuery(And(t4, t5))))
+
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //And Ored with And Ored with a Term 
+    /*{
+      val expr = Or(And(t1, t2), t3)
+
+      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(t3))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //And Ored with an Or
+    {
+      val expr = Or(And(t1, t2), Or(t3, t4))
+
+      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(Or(t3, t4)))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //Mix of Ors and Ands
+    {
+      val expr = Or(Or(t1, t2), And(t3, t4), Or(t5, t6))
+      
+      val expected = CompoundQuery.Or(SimpleQuery(And(t3, t4)), SimpleQuery(Or(t1, t2, t5, t6)))
+      
+      expr.toExecutionPlan should equal(expected)
+    }
+    
+    //Mix with raw terms too
+    {
+      val expr = Or(Or(t1, t2), t3, And(t4, t5), t6, Or(t7, t8))
+      
+      val expected = CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7, t8)))
+      
+      expr.toExecutionPlan should equal(expected)
+    }*/
   }
   
   @Test

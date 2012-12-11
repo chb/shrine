@@ -22,7 +22,7 @@ final case class SimpleQuery(expr: Expression) extends ExecutionPlan {
 }
 
 final case class CompoundQuery(conjunction: Conjunction, components: ExecutionPlan*) extends ExecutionPlan {
-  override def toString = "CompoundQuery(" + conjunction + "," + components.mkString(",") + ")"
+  override def toString = "CompoundQuery." + conjunction + "(" + components.mkString(",") + ")"
   
   override def or(other: ExecutionPlan) = CompoundQuery.Or(this, other)
   

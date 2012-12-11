@@ -233,12 +233,15 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
 
         val consolidatedNotAndPlan = notAndPlans.reduce(_ or _)
         
-        val components = andPlans.size match {
+        val components: Seq[ExecutionPlan] = andPlans.size match {
           case 1 => andPlans :+ consolidatedNotAndPlan
-          case _ => Seq(andCompound, consolidatedNotAndPlan)
+          case _ => if(ands.isEmpty) Seq(consolidatedNotAndPlan) else Seq(andCompound, consolidatedNotAndPlan)
         }
         
-        CompoundQuery.Or(components: _*)
+        components match {
+          case Seq(plan: CompoundQuery) => plan
+          case _ => CompoundQuery.Or(components: _*)
+        }
       }
     }
   }
