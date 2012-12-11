@@ -107,7 +107,7 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
   
   @Test
   def testOrToExecutionPlanMoreNesting {
-    //1 || ((2 && 3) || (4 && 5)) 
+    // 1 || ((2 && 3) || (4 && 5)) 
     {
       val expr = Or(t1, Or(And(t2, t3), And(t4, t5)))
 
@@ -116,26 +116,26 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
       expr.toExecutionPlan should equal(expected)
     }
     
-    //And Ored with And Ored with a Term 
-    /*{
-      val expr = Or(And(t1, t2), t3)
+    // (1 && 2) || ((3 && 4) || 5) 
+    {
+      val expr = Or(And(t1, t2), Or(And(t3, t4), t5))
 
-      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(t3))
+      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), CompoundQuery.Or(SimpleQuery(And(t3, t4)), SimpleQuery(t5)))
       
       expr.toExecutionPlan should equal(expected)
     }
     
-    //And Ored with an Or
+    // (1 || 2) || ((3 && 4) || (5 || 6))
     {
-      val expr = Or(And(t1, t2), Or(t3, t4))
+      val expr = Or(Or(t1, t2), Or(And(t3, t4), Or(t5, t6)))
 
-      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(Or(t3, t4)))
+      val expected = CompoundQuery.Or(SimpleQuery(Or(t1, t2)), CompoundQuery.Or(SimpleQuery(And(t3, t4)), SimpleQuery(Or(t5, t6))))
       
       expr.toExecutionPlan should equal(expected)
     }
     
     //Mix of Ors and Ands
-    {
+    /*{
       val expr = Or(Or(t1, t2), And(t3, t4), Or(t5, t6))
       
       val expected = CompoundQuery.Or(SimpleQuery(And(t3, t4)), SimpleQuery(Or(t1, t2, t5, t6)))
