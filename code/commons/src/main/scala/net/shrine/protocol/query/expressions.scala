@@ -122,8 +122,6 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
       }
     }
   }
-
-  private[query] def is[E: Manifest](x: AnyRef) = manifest[E].erasure.isAssignableFrom(x.getClass)
 }
 
 trait SimpleExpression extends Expression {
@@ -170,7 +168,7 @@ trait HasSubExpressions extends Expression {
 }
 
 abstract class ComposeableExpression[T <: HasSubExpressions: Manifest](Op: (Expression*) => T, override val exprs: Expression*) extends HasSubExpressions {
-  import Expression.is
+  import ExpressionHelpers.is
 
   def containsA[E: Manifest] = exprs.exists(is[E])
 
@@ -212,7 +210,7 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
 
   override def toJson: JValue = ("or" -> exprs.map(_.toJson))
 
-  import Expression.is
+  import ExpressionHelpers.is
 
   override def hasDirectI2b2Representation: Boolean = exprs.forall(e => !is[And](e) && e.hasDirectI2b2Representation)
 
@@ -238,10 +236,12 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
           case _ => if(ands.isEmpty) Seq(consolidatedNotAndPlan) else Seq(andCompound, consolidatedNotAndPlan)
         }
         
-        components match {
+        val result = components match {
           case Seq(plan: CompoundQuery) => plan
           case _ => CompoundQuery.Or(components: _*)
         }
+        
+        result.normalize
       }
     }
   }
