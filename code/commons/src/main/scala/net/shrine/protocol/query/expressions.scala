@@ -185,9 +185,9 @@ abstract class ComposeableExpression[T <: HasSubExpressions: Manifest](Op: (Expr
 
   def containsA[E: Manifest] = exprs.exists(is[E])
 
-  def +(e: Expression) = Op((exprs :+ e): _*)
+  def ++(es: Iterable[Expression]) = Op((exprs ++ es): _*)
   
-  def ++(other: T): T = Op((exprs ++ other.exprs): _*)
+  def +(other: T): T = Op((exprs ++ other.exprs): _*)
   
   override def normalize = exprs match {
     case x if x.isEmpty => this

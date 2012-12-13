@@ -108,14 +108,12 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     //1 || ((2 || 3) || (4 && 5) || (6 || 7))
     doToExecutionPlanTest(
       Or(t1, Or(Or(t2, t3), And(t4, t5), Or(t6, t7))),
-      //TODO: Get to: CompoundPlan.Or(SimplePlan(And(t4, t5)), SimplePlan(Or(t1, t2, t3, t6, t7))))
-      CompoundPlan.Or(SimplePlan(t1), SimplePlan(And(t4, t5)), SimplePlan(Or(t2, t3, t6, t7))))
+      CompoundPlan.Or(SimplePlan(And(t4, t5)), SimplePlan(Or(t1, t2, t3, t6, t7))))
 
     //(1 || 2) || ((3 || 4) || (5 && 6) || (7 || 8))
     doToExecutionPlanTest(
       Or(Or(t1, t2), Or(Or(t3, t4), And(t5, t6), Or(t7, t8))),
-      CompoundPlan.Or(SimplePlan(Or(t1, t2)), SimplePlan(And(t5, t6)), SimplePlan(Or(t3, t4, t7, t8))))
-      //TODO: Get to: CompoundPlan.Or(SimplePlan(Or(t1, t2, t3, t4, t7, t8)), SimplePlan(And(t5, t6))))
+      CompoundPlan.Or(SimplePlan(Or(t1, t2, t3, t4, t7, t8)), SimplePlan(And(t5, t6))))
 
     //(1 && 2) || ((3 || 4) || (5 && 6) || (7 || 8))
     doToExecutionPlanTest(

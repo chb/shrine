@@ -63,24 +63,24 @@ final case class CompoundPlan(conjunction: Conjunction, components: ExecutionPla
             def ands = plans.collect { case SimplePlan(a: And) => a }
             def ors = plans.collect { case SimplePlan(o: Or) => o }
             
+            val otherPlans = plans.collect { case p @ SimplePlan(expr) if !is[And](expr) && !is[Or](expr) => p }
+            
+            val otherExprs = otherPlans.collect { case SimplePlan(expr) => expr }
+            
             val (orExprs: Seq[Or], andExprs: Seq[And]) = conj match {
               case Conjunction.Or => {
-                val consolidatedOrExpr = plans.collect { case SimplePlan(o: Or) => o }.foldLeft(Or())(_ ++ _)
-                (Seq(consolidatedOrExpr), ands)
+                val consolidatedOrExpr = plans.collect { case SimplePlan(o: Or) => o }.foldLeft(Or())(_ + _)
+                (Seq(consolidatedOrExpr ++ otherExprs), ands)
               }
               case Conjunction.And => {
-                val consolidatedAndExpr = plans.collect { case SimplePlan(a: And) => a }.foldLeft(And())(_ ++ _)
-                (ors, Seq(consolidatedAndExpr))
+                val consolidatedAndExpr = plans.collect { case SimplePlan(a: And) => a }.foldLeft(And())(_ + _)
+                (ors, Seq(consolidatedAndExpr ++ otherExprs))
               }
             }
+            
+            def toPlans[T <: HasSubExpressions](es: Seq[T]) = es.flatMap(e => if (e.exprs.isEmpty) Seq.empty else Seq(SimplePlan(e)))
 
-            val otherPlans = plans.collect { case p @ SimplePlan(expr) if !is[And](expr) && !is[Or](expr) => p }
-
-            val andPlans = andExprs.flatMap(and => if (and.exprs.isEmpty) Seq.empty else Seq(SimplePlan(and)))
-
-            val orPlans = orExprs.flatMap(or => if (or.exprs.isEmpty) Seq.empty else Seq(SimplePlan(or)))
-
-            orPlans ++ andPlans ++ otherPlans
+            toPlans(orExprs) ++ toPlans(andExprs) ++ otherPlans
           }
         }
         case c => Seq(c)
