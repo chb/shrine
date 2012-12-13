@@ -40,37 +40,37 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
   @Test
   def testOrToExectutionPlan {
     //Plain old or, no need for sub-queries
-    doToExecutionPlanTest(Or(t1, t2), SimpleQuery(Or(t1, t2)))
+    doToExecutionPlanTest(Or(t1, t2), SimplePlan(Or(t1, t2)))
 
     //nested Ors should be normalized first 
     doToExecutionPlanTest(
       Or(Or(t1, t2), Or(t3, t4)),
-      SimpleQuery(Or(t1, t2, t3, t4)))
+      SimplePlan(Or(t1, t2, t3, t4)))
 
     //Or of 2 Ands
     doToExecutionPlanTest(
       Or(And(t1, t2), And(t3, t4)),
-      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4))))
+      CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4))))
 
     //And Ored with a Term 
     doToExecutionPlanTest(
       Or(And(t1, t2), t3),
-      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(t3)))
+      CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(t3)))
 
     //And Ored with an Or
     doToExecutionPlanTest(
       Or(And(t1, t2), Or(t3, t4)),
-      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(Or(t3, t4))))
+      CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(Or(t3, t4))))
 
     //Mix of Ors and Ands
     doToExecutionPlanTest(
       Or(Or(t1, t2), And(t3, t4), Or(t5, t6)),
-      CompoundQuery.Or(SimpleQuery(And(t3, t4)), SimpleQuery(Or(t1, t2, t5, t6))))
+      CompoundPlan.Or(SimplePlan(And(t3, t4)), SimplePlan(Or(t1, t2, t5, t6))))
 
     //Mix with raw terms too
     doToExecutionPlanTest(
       Or(Or(t1, t2), t3, And(t4, t5), t6, Or(t7, t8)),
-      CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7, t8))))
+      CompoundPlan.Or(SimplePlan(And(t4, t5)), SimplePlan(Or(t1, t2, t3, t6, t7, t8))))
   }
 
   @Test
@@ -78,60 +78,60 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     // 1 || ((2 && 3) || (4 && 5)) 
     doToExecutionPlanTest(
       Or(t1, Or(And(t2, t3), And(t4, t5))),
-      CompoundQuery.Or(SimpleQuery(t1), SimpleQuery(And(t2, t3)), SimpleQuery(And(t4, t5))))
+      CompoundPlan.Or(SimplePlan(t1), SimplePlan(And(t2, t3)), SimplePlan(And(t4, t5))))
 
     // (1 && 2) || ((3 && 4) || 5) 
     doToExecutionPlanTest(
       Or(And(t1, t2), Or(And(t3, t4), t5)),
-      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4)), SimpleQuery(t5)))
+      CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4)), SimplePlan(t5)))
 
     // (1 || 2) || ((3 && 4) || (5 || 6))
     doToExecutionPlanTest(
       Or(Or(t1, t2), Or(And(t3, t4), Or(t5, t6))),
-      CompoundQuery.Or(SimpleQuery(Or(t1, t2)), SimpleQuery(And(t3, t4)), SimpleQuery(Or(t5, t6))))
+      CompoundPlan.Or(SimplePlan(Or(t1, t2)), SimplePlan(And(t3, t4)), SimplePlan(Or(t5, t6))))
 
     //1 || (2 || 3) || (4 && 5) || (6 || 7)
     doToExecutionPlanTest(
       Or(Or(t1, Or(t2, t3), And(t4, t5), Or(t6, t7))),
-      CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7))))
+      CompoundPlan.Or(SimplePlan(And(t4, t5)), SimplePlan(Or(t1, t2, t3, t6, t7))))
 
     //(1 || 2) || (3 || 4) || (5 && 6) || (7 || 8)
     doToExecutionPlanTest(
       Or(Or(t1, t2), Or(t3, t4), And(t5, t6), Or(t7, t8)),
-      CompoundQuery.Or(SimpleQuery(And(t5, t6)), SimpleQuery(Or(t1, t2, t3, t4, t7, t8))))
+      CompoundPlan.Or(SimplePlan(And(t5, t6)), SimplePlan(Or(t1, t2, t3, t4, t7, t8))))
 
     //(1 && 2) || (3 || 4) || (5 && 6) || (7 || 8)
     doToExecutionPlanTest(
       Or(And(t1, t2), Or(t3, t4), And(t5, t6), Or(t7, t8)),
-      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8))))
+      CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t5, t6)), SimplePlan(Or(t3, t4, t7, t8))))
 
     //1 || ((2 || 3) || (4 && 5) || (6 || 7))
     doToExecutionPlanTest(
       Or(t1, Or(Or(t2, t3), And(t4, t5), Or(t6, t7))),
-      //TODO: Get to: CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7))))
-      CompoundQuery.Or(SimpleQuery(t1), SimpleQuery(And(t4, t5)), SimpleQuery(Or(t2, t3, t6, t7))))
+      //TODO: Get to: CompoundPlan.Or(SimplePlan(And(t4, t5)), SimplePlan(Or(t1, t2, t3, t6, t7))))
+      CompoundPlan.Or(SimplePlan(t1), SimplePlan(And(t4, t5)), SimplePlan(Or(t2, t3, t6, t7))))
 
     //(1 || 2) || ((3 || 4) || (5 && 6) || (7 || 8))
     doToExecutionPlanTest(
       Or(Or(t1, t2), Or(Or(t3, t4), And(t5, t6), Or(t7, t8))),
-      CompoundQuery.Or(SimpleQuery(Or(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8))))
-      //TODO: Get to: CompoundQuery.Or(SimpleQuery(Or(t1, t2, t3, t4, t7, t8)), SimpleQuery(And(t5, t6))))
+      CompoundPlan.Or(SimplePlan(Or(t1, t2)), SimplePlan(And(t5, t6)), SimplePlan(Or(t3, t4, t7, t8))))
+      //TODO: Get to: CompoundPlan.Or(SimplePlan(Or(t1, t2, t3, t4, t7, t8)), SimplePlan(And(t5, t6))))
 
     //(1 && 2) || ((3 || 4) || (5 && 6) || (7 || 8))
     doToExecutionPlanTest(
       Or(And(t1, t2), Or(Or(t3, t4), And(t5, t6), Or(t7, t8))),
-      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8))))
+      CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t5, t6)), SimplePlan(Or(t3, t4, t7, t8))))
   }
 
   @Test
   def testAndToExecutionPlan {
     //Plain old And, no need for sub-queries
-    doToExecutionPlanTest(And(t1, t2), SimpleQuery(And(t1, t2)))
+    doToExecutionPlanTest(And(t1, t2), SimplePlan(And(t1, t2)))
 
     //nested Ands should be normalized first 
     doToExecutionPlanTest(
       And(And(t1, t2), And(t3, t4)),
-      SimpleQuery(And(t1, t2, t3, t4)))
+      SimplePlan(And(t1, t2, t3, t4)))
   }
 
   private def doToExecutionPlanTest(expr: Expression, expected: ExecutionPlan) {
@@ -140,10 +140,8 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     actual.getClass should equal(expected.getClass)
 
     actual match {
-      case SimpleQuery(e) => e should equal(expected.asInstanceOf[SimpleQuery].expr)
-      case CompoundQuery(conjunction, components @ _*) => {
-        val expectedCompound = expected.asInstanceOf[CompoundQuery]
-
+      case SimplePlan(e) => e should equal(expected.asInstanceOf[SimplePlan].expr)
+      case expectedCompound @ CompoundPlan(conjunction, components @ _*) => {
         conjunction should equal(expectedCompound.conjunction)
         //NB: Use toSet to disregard order
         components.toSet should equal(expectedCompound.components.toSet)

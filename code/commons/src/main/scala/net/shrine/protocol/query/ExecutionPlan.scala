@@ -8,10 +8,6 @@ import net.shrine.util.Util
  * @date Nov 29, 2012
  */
 sealed trait ExecutionPlan {
-  type ComponentType
-
-  type ContainerType
-
   def or(other: ExecutionPlan): ExecutionPlan
 
   def and(other: ExecutionPlan): ExecutionPlan
@@ -25,33 +21,25 @@ sealed trait ExecutionPlan {
   final def isCompound: Boolean = !isSimple
 }
 
-final case class SimpleQuery(expr: Expression) extends ExecutionPlan {
-  override type ComponentType = Expression
-
-  override type ContainerType = SimpleQuery
-
+final case class SimplePlan(expr: Expression) extends ExecutionPlan {
   override def or(other: ExecutionPlan) = combine(Conjunction.Or)(other)
 
   override def and(other: ExecutionPlan) = combine(Conjunction.And)(other)
 
   override def combine(conjunction: Conjunction)(other: ExecutionPlan): ExecutionPlan = other match {
-    case SimpleQuery(otherExpr) => SimpleQuery(conjunction.combine(expr, otherExpr).normalize)
-    case _: CompoundQuery => CompoundQuery(conjunction, this, other)
+    case SimplePlan(otherExpr) => SimplePlan(conjunction.combine(expr, otherExpr).normalize)
+    case _: CompoundPlan => CompoundPlan(conjunction, this, other)
   }
 
   override def isSimple: Boolean = true
 }
 
-final case class CompoundQuery(conjunction: Conjunction, components: ExecutionPlan*) extends ExecutionPlan {
-  override type ComponentType = Seq[ExecutionPlan]
+final case class CompoundPlan(conjunction: Conjunction, components: ExecutionPlan*) extends ExecutionPlan {
+  override def toString = "CompoundPlan." + conjunction + "(" + components.mkString(",") + ")"
 
-  override type ContainerType = CompoundQuery
+  override def or(other: ExecutionPlan) = CompoundPlan.Or(this, other)
 
-  override def toString = "CompoundQuery." + conjunction + "(" + components.mkString(",") + ")"
-
-  override def or(other: ExecutionPlan) = CompoundQuery.Or(this, other)
-
-  override def and(other: ExecutionPlan) = CompoundQuery.And(this, other)
+  override def and(other: ExecutionPlan) = CompoundPlan.And(this, other)
 
   override def combine(conj: Conjunction)(other: ExecutionPlan) = conj match {
     case Conjunction.Or => or(other)
@@ -65,32 +53,32 @@ final case class CompoundQuery(conjunction: Conjunction, components: ExecutionPl
   override def normalize: ExecutionPlan = {
     components match {
       case Seq(singlePlan) => singlePlan.normalize
-      case _ => CompoundQuery(conjunction, components.flatMap {
-        case xyz @ CompoundQuery(conj, comps @ _*) if comps.forall(_.isSimple) && conj == this.conjunction => {
-          val byExprType = comps.groupBy(p => p.asInstanceOf[SimpleQuery].expr.getClass)
+      case _ => CompoundPlan(conjunction, components.flatMap {
+        case xyz @ CompoundPlan(conj, comps @ _*) if comps.forall(_.isSimple) && conj == this.conjunction => {
+          val byExprType = comps.groupBy { case SimplePlan(expr) => expr.getClass }
 
-          val simpleQueriesByExprType = byExprType.map { case (_, plans) => plans.collect { case p: SimpleQuery => p } }
+          val simpleQueriesByExprType = byExprType.map { case (_, plans) => plans.collect { case p: SimplePlan => p } }
 
           simpleQueriesByExprType.flatMap { plans =>
-            def ands = plans.collect { case SimpleQuery(a: And) => a }
-            def ors = plans.collect { case SimpleQuery(o: Or) => o }
+            def ands = plans.collect { case SimplePlan(a: And) => a }
+            def ors = plans.collect { case SimplePlan(o: Or) => o }
             
             val (orExprs: Seq[Or], andExprs: Seq[And]) = conj match {
               case Conjunction.Or => {
-                val consolidatedOrExpr = plans.collect { case SimpleQuery(o: Or) => o }.foldLeft(Or())(_ ++ _)
+                val consolidatedOrExpr = plans.collect { case SimplePlan(o: Or) => o }.foldLeft(Or())(_ ++ _)
                 (Seq(consolidatedOrExpr), ands)
               }
               case Conjunction.And => {
-                val consolidatedAndExpr = plans.collect { case SimpleQuery(a: And) => a }.foldLeft(And())(_ ++ _)
+                val consolidatedAndExpr = plans.collect { case SimplePlan(a: And) => a }.foldLeft(And())(_ ++ _)
                 (ors, Seq(consolidatedAndExpr))
               }
             }
 
-            val otherPlans = plans.collect { case p @ SimpleQuery(expr) if !is[And](expr) && !is[Or](expr) => p }
+            val otherPlans = plans.collect { case p @ SimplePlan(expr) if !is[And](expr) && !is[Or](expr) => p }
 
-            val andPlans = andExprs.flatMap(and => if (and.exprs.isEmpty) Seq.empty else Seq(SimpleQuery(and)))
+            val andPlans = andExprs.flatMap(and => if (and.exprs.isEmpty) Seq.empty else Seq(SimplePlan(and)))
 
-            val orPlans = orExprs.flatMap(or => if (or.exprs.isEmpty) Seq.empty else Seq(SimpleQuery(or)))
+            val orPlans = orExprs.flatMap(or => if (or.exprs.isEmpty) Seq.empty else Seq(SimplePlan(or)))
 
             orPlans ++ andPlans ++ otherPlans
           }
@@ -101,8 +89,8 @@ final case class CompoundQuery(conjunction: Conjunction, components: ExecutionPl
   }
 }
 
-object CompoundQuery {
-  def Or(components: ExecutionPlan*) = CompoundQuery(Conjunction.Or, components: _*)
+object CompoundPlan {
+  def Or(components: ExecutionPlan*) = CompoundPlan(Conjunction.Or, components: _*)
 
-  def And(components: ExecutionPlan*) = CompoundQuery(Conjunction.And, components: _*)
+  def And(components: ExecutionPlan*) = CompoundPlan(Conjunction.And, components: _*)
 }

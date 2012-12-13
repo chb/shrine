@@ -29,7 +29,7 @@ sealed trait Expression extends XmlMarshaller with JsonMarshaller {
 
   def hasDirectI2b2Representation: Boolean
 
-  def toExecutionPlan: ExecutionPlan //= SimpleQuery(this.normalize)
+  def toExecutionPlan: ExecutionPlan //= SimplePlan(this.normalize)
 }
 
 object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller[Try[Expression]] {
@@ -131,7 +131,7 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
 abstract class SimpleExpression(val value: String) extends Expression {
   override def hasDirectI2b2Representation = true
 
-  override def toExecutionPlan = SimpleQuery(this)
+  override def toExecutionPlan = SimplePlan(this)
   
   def computeHLevel: Try[Int]
 }
@@ -173,7 +173,7 @@ final case class Not(expr: Expression) extends Expression {
 
   override def hasDirectI2b2Representation = expr.hasDirectI2b2Representation
 
-  override def toExecutionPlan = Util.??? //SimpleQuery(this.normalize)
+  override def toExecutionPlan = Util.??? //SimplePlan(this.normalize)
 }
 
 trait HasSubExpressions extends Expression {
@@ -212,9 +212,9 @@ final case class And(override val exprs: Expression*) extends ComposeableExpress
   override def toExecutionPlan: ExecutionPlan = {
     //TODO: WRONG
     //if (hasDirectI2b2Representation) {
-    SimpleQuery(this.normalize)
+    SimplePlan(this.normalize)
     //} else {
-    //  CompoundQuery.And(exprs.map(_.toExecutionPlan): _*) //TODO: almost certainly wrong
+    //  CompoundPlan.And(exprs.map(_.toExecutionPlan): _*) //TODO: almost certainly wrong
     //}
   }
 }
@@ -233,13 +233,13 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
 
   override def toExecutionPlan: ExecutionPlan = {
     if (hasDirectI2b2Representation) {
-      SimpleQuery(this.normalize)
+      SimplePlan(this.normalize)
     } else {
       val (ands, notAnds) = exprs.partition(is[And])
 
       val andPlans = ands.map(_.toExecutionPlan)
 
-      val andCompound = CompoundQuery.Or(andPlans: _*)
+      val andCompound = CompoundPlan.Or(andPlans: _*)
 
       if (notAnds.isEmpty) {
         andCompound
@@ -254,8 +254,8 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
         }
         
         val result = components match {
-          case Seq(plan: CompoundQuery) => plan
-          case _ => CompoundQuery.Or(components: _*)
+          case Seq(plan: CompoundPlan) => plan
+          case _ => CompoundPlan.Or(components: _*)
         }
         
         result.normalize
