@@ -14,7 +14,7 @@ sealed trait ExecutionPlan {
 
   def combine(conjunction: Conjunction)(other: ExecutionPlan): ExecutionPlan
 
-  def normalize: ExecutionPlan = this
+  def normalize: ExecutionPlan
 
   def isSimple: Boolean
 
@@ -30,6 +30,8 @@ final case class SimplePlan(expr: Expression) extends ExecutionPlan {
     case SimplePlan(otherExpr) => SimplePlan(conjunction.combine(expr, otherExpr).normalize)
     case _: CompoundPlan => CompoundPlan(conjunction, this, other)
   }
+
+  override def normalize: ExecutionPlan = this
 
   override def isSimple: Boolean = true
 }
@@ -48,37 +50,35 @@ final case class CompoundPlan(conjunction: Conjunction, components: ExecutionPla
 
   override def isSimple: Boolean = false
 
-  import ExpressionHelpers.is
+  private[query] def isSame(conj: Conjunction) = conj == this.conjunction
 
   override def normalize: ExecutionPlan = {
+    import CompoundPlan.Helpers._
+
     components match {
       case Seq(singlePlan) => singlePlan.normalize
       case _ => CompoundPlan(conjunction, components.flatMap {
-        case xyz @ CompoundPlan(conj, comps @ _*) if comps.forall(_.isSimple) && conj == this.conjunction => {
-          val byExprType = comps.groupBy { case SimplePlan(expr) => expr.getClass }
+        case CompoundPlan(conj, comps @ _*) if allSimple(comps) && isSame(conj) => {
 
-          val simpleQueriesByExprType = byExprType.map { case (_, plans) => plans.collect { case p: SimplePlan => p } }
+          val asSimplePlans = comps.collect { case p: SimplePlan => p }
 
-          simpleQueriesByExprType.flatMap { plans =>
-            def ands = plans.collect { case SimplePlan(a: And) => a }
-            def ors = plans.collect { case SimplePlan(o: Or) => o }
-            
-            val otherPlans = plans.collect { case p @ SimplePlan(expr) if !is[And](expr) && !is[Or](expr) => p }
-            
+          val simpleQueriesGroupedByExprType = asSimplePlans.groupBy(_.expr.getClass).values.toSeq
+
+          simpleQueriesGroupedByExprType.flatMap { plans =>
+            val otherPlans = neitherAndsNorOrs(plans)
+
             val otherExprs = otherPlans.map(_.expr)
-            
+
             val (orExprs: Seq[Or], andExprs: Seq[And]) = conj match {
               case Conjunction.Or => {
-                val consolidatedOrExpr = plans.collect { case SimplePlan(o: Or) => o }.foldLeft(Or())(_ + _)
-                (Seq(consolidatedOrExpr ++ otherExprs), ands)
+                val consolidatedOrExpr = flatten(ors(plans))
+                (Seq(consolidatedOrExpr ++ otherExprs), ands(plans))
               }
               case Conjunction.And => {
-                val consolidatedAndExpr = plans.collect { case SimplePlan(a: And) => a }.foldLeft(And())(_ + _)
-                (ors, Seq(consolidatedAndExpr ++ otherExprs))
+                val consolidatedAndExpr = flatten(ands(plans))
+                (ors(plans), Seq(consolidatedAndExpr ++ otherExprs))
               }
             }
-            
-            def toPlans[T <: HasSubExpressions](es: Seq[T]) = es.flatMap(e => if (e.exprs.isEmpty) Seq.empty else Seq(SimplePlan(e)))
 
             toPlans(orExprs) ++ toPlans(andExprs) ++ otherPlans
           }
@@ -90,7 +90,46 @@ final case class CompoundPlan(conjunction: Conjunction, components: ExecutionPla
 }
 
 object CompoundPlan {
-  def Or(components: ExecutionPlan*) = CompoundPlan(Conjunction.Or, components: _*)
+  def Or(components: ExecutionPlan*): CompoundPlan = CompoundPlan(Conjunction.Or, components: _*)
 
-  def And(components: ExecutionPlan*) = CompoundPlan(Conjunction.And, components: _*)
+  def And(components: ExecutionPlan*): CompoundPlan = CompoundPlan(Conjunction.And, components: _*)
+
+  private[query] object Helpers {
+    def allSimple(plans: Seq[ExecutionPlan]): Boolean = plans.forall(_.isSimple)
+
+    def ands(plans: Seq[SimplePlan]): Seq[And] = plans.collect { case SimplePlan(a: And) => a }
+
+    def ors(plans: Seq[SimplePlan]): Seq[Or] = plans.collect { case SimplePlan(o: Or) => o }
+
+    def neitherAndsNorOrs(plans: Seq[SimplePlan]): Seq[SimplePlan] = {
+      import ExpressionHelpers.is
+
+      def isNeitherAndNorOr(expr: Expression) = !is[And](expr) && !is[Or](expr)
+
+      plans.collect { case plan @ SimplePlan(expr) if isNeitherAndNorOr(expr) => plan }
+    }
+
+    private[this] trait HasZero[T] {
+      def zero: T
+    }
+
+    private[this] object HasZero {
+      import net.shrine.protocol.query.{ And => AndExpr }
+      import net.shrine.protocol.query.{ Or => OrExpr }
+
+      implicit val andHasZero: HasZero[AndExpr] = new HasZero[AndExpr] {
+        override def zero = AndExpr()
+      }
+
+      implicit val orHasZero: HasZero[OrExpr] = new HasZero[OrExpr] {
+        override def zero = OrExpr()
+      }
+    }
+
+    def flatten[T <: ComposeableExpression[T] with HasSubExpressions: HasZero](exprs: Seq[T]): T = {
+      exprs.foldLeft(implicitly[HasZero[T]].zero)(_ + _)
+    }
+
+    def toPlans[T <: HasSubExpressions](es: Seq[T]) = es.flatMap(e => if (e.exprs.isEmpty) Seq.empty else Seq(SimplePlan(e)))
+  }
 }

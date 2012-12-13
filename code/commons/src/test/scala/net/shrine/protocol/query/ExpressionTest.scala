@@ -39,14 +39,17 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
 
   @Test
   def testOrToExectutionPlan {
+    // 1 || 2
     //Plain old or, no need for sub-queries
     doToExecutionPlanTest(Or(t1, t2), SimplePlan(Or(t1, t2)))
 
+    //(1 || 2) || (3 || 4)
     //nested Ors should be normalized first 
     doToExecutionPlanTest(
       Or(Or(t1, t2), Or(t3, t4)),
       SimplePlan(Or(t1, t2, t3, t4)))
 
+    
     //Or of 2 Ands
     doToExecutionPlanTest(
       Or(And(t1, t2), And(t3, t4)),
@@ -130,11 +133,24 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     doToExecutionPlanTest(
       And(And(t1, t2), And(t3, t4)),
       SimplePlan(And(t1, t2, t3, t4)))
+      
+    //Nested ors should be fine
+    doToExecutionPlanTest(
+      And(Or(t1, t2), Or(t3, t4)),
+      SimplePlan(And(Or(t1, t2), Or(t3, t4))))
+      
+    /*doToExecutionPlanTest(
+      And(Or(And(t1, t2), And(t3, t4)), Or(And(t5, t6), And(t7, t8))), 
+      CompoundPlan.And(CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4))), CompoundPlan.Or(SimplePlan(And(t5, t6)), SimplePlan(And(t7, t8)))))*/
   }
 
   private def doToExecutionPlanTest(expr: Expression, expected: ExecutionPlan) {
     val actual = expr.toExecutionPlan
 
+    println("expr: " + expr)
+    println("expected: " + expected)
+    println("actual: " + actual)
+    
     actual.getClass should equal(expected.getClass)
 
     actual match {
