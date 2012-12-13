@@ -64,17 +64,6 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
     p1.invert.invert should equal(p1)
   }
   
-  def testComputeHLevel {
-    import Panel.computeHLevel
-    
-    computeHLevel(term1).get should be(5)
-    computeHLevel(term2).get should be(3)
-    computeHLevel(term3).get should be(3)
-    
-    computeHLevel(Term("foo")).get should be(0)
-    computeHLevel(Term("")).get should be(0)
-  }
-  
   def testWithStart {
     val time = Utils.now
     

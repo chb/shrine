@@ -10,6 +10,7 @@ import net.liftweb.json.JsonAST._
 import net.shrine.util.Try
 import net.shrine.util.Failure
 import net.shrine.util.Util
+import net.shrine.util.Success
 
 /**
  *
@@ -50,6 +51,7 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
 
     json.children.head match {
       case JField("term", JString(value)) => Try(Term(value))
+      case JField("query", JString(value)) => Try(Query(value))
       case JField("not", value) => fromJson(value).map(Not)
       case JField("and", value) => sequence(value.children.map(fromJson)).map(toAnd)
       case JField("or", value) => sequence(value.children.map(fromJson)).map(toOr)
@@ -80,7 +82,7 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
       if (dateString.trim.isEmpty) {
         None
       } else {
-        Option(NetworkTime.makeXMLGregorianCalendar(dateString))
+        Try(NetworkTime.makeXMLGregorianCalendar(dateString)).toOption
       }
     }
 
@@ -93,6 +95,7 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
 
         outerTag.label match {
           case "term" => Try(Term(outerTag.text))
+          case "query" => Try(Query(outerTag.text))
           //childTags.head because only one child expr of <not> is allowed
           case "not" => fromXml(childTags.head).map(Not)
           case "and" => {
@@ -118,29 +121,39 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
               expr <- fromXml(childTags.drop(1).head)
             } yield OccuranceLimited(min, expr)
           }
+          case _ => Failure(new Exception("Cannot parse xml: " + nodeSeq.toString)) //TODO some sort of unmarshalling exception
         }
       }
     }
   }
 }
 
-trait SimpleExpression extends Expression {
+abstract class SimpleExpression(val value: String) extends Expression {
   override def hasDirectI2b2Representation = true
 
   override def toExecutionPlan = SimpleQuery(this)
+  
+  def computeHLevel: Try[Int]
 }
 
 //NOTE - refactoring the field name value will break json deserialization for this case class
-final case class Term(value: String) extends SimpleExpression {
+final case class Term(override val value: String) extends SimpleExpression(value) {
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<term>{ value }</term>)
 
   override def toJson: JValue = ("term" -> value)
+  
+  override def computeHLevel: Try[Int] = {
+    //Super-dumb way: calculate nesting level by dropping prefix and counting \'s
+    Try(value.drop("\\\\SHRINE\\SHRINE\\".length).count(_ == '\\'))
+  }
 }
 
-final case class Query(localMasterId: String) extends SimpleExpression {
+final case class Query(localMasterId: String) extends SimpleExpression("masterid:" + localMasterId) {
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<query>{ localMasterId }</query>)
 
   override def toJson: JValue = ("query" -> localMasterId)
+  
+  override def computeHLevel = Success(0)
 }
 
 final case class Not(expr: Expression) extends Expression {
@@ -172,6 +185,10 @@ abstract class ComposeableExpression[T <: HasSubExpressions: Manifest](Op: (Expr
 
   def containsA[E: Manifest] = exprs.exists(is[E])
 
+  def +(e: Expression) = Op((exprs :+ e): _*)
+  
+  def ++(other: T): T = Op((exprs ++ other.exprs): _*)
+  
   override def normalize = exprs match {
     case x if x.isEmpty => this
     case Seq(expr) => expr.normalize

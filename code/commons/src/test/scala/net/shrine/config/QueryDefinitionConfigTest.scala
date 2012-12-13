@@ -42,8 +42,8 @@ class QueryDefinitionConfigTest extends TestCase with AssertionsForJUnit with Sh
     actual.inverted should be(true)
     actual.minOccurrences should equal(0)
     actual.terms.size should equal(2)
-    actual.terms should contain(Term("term1"))
-    actual.terms should contain(Term("term2"))
+    actual.terms.contains(Term("term1")) should be(true)
+    actual.terms.contains(Term("term2")) should be(true)
   }
 
   def clearTime(date: XMLGregorianCalendar): XMLGregorianCalendar = {
@@ -84,13 +84,13 @@ class QueryDefinitionConfigTest extends TestCase with AssertionsForJUnit with Sh
     panels(0).minOccurrences should equal(1)
     panels(0).start.get.toString should equal(startDate)
     panels(0).end.get.toString should equal(endDate)
-    panels(0).terms should contain(Term("term1"))
+    panels(0).terms.contains(Term("term1")) should be(true)
 
     panels(1).number should equal(2)
     panels(1).inverted should be(true)
     panels(1).start should equal(None)
     panels(1).end should equal(None)
-    panels(1).terms should contain(Term("term2"))
+    panels(1).terms.contains(Term("term2")) should be(true)
     panels(1).minOccurrences should equal(2)
   }
 

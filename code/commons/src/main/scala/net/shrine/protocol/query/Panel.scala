@@ -28,7 +28,7 @@ final case class Panel(
   minOccurrences: Int,
   start: Option[XMLGregorianCalendar],
   end: Option[XMLGregorianCalendar],
-  terms: Seq[Term]) extends I2b2Marshaller {
+  terms: Seq[SimpleExpression]) extends I2b2Marshaller {
 
   require(!terms.isEmpty)
 
@@ -56,14 +56,14 @@ final case class Panel(
       {
         terms.map { term =>
           <item>
-            <hlevel>{ computeHLevel(term).getOrElse(0) }</hlevel>
+            <hlevel>{ term.computeHLevel.getOrElse(0) }</hlevel>
             <item_name>{ term.value }</item_name>
             <item_key>{ term.value }</item_key>
             <tooltip>{ term.value }</tooltip>
             <class>ENC</class>
             <constrain_by_date>
-              { start.map(s => <date_from>{ s.toString }</date_from>).getOrElse(Nil) }
-              { end.map(e => <date_to>{ e.toString }</date_to>).getOrElse(Nil) }
+              { start.map(s => <date_from>{ s.toString }</date_from>).orNull }
+              { end.map(e => <date_to>{ e.toString }</date_to>).orNull }
             </constrain_by_date>
             <item_icon>LA</item_icon>
             <item_is_synonym>false</item_is_synonym>
@@ -103,10 +103,5 @@ object Panel {
 
       Panel(number, inverted, minOccurrences, start, end, terms)
     }
-  }
-
-  def computeHLevel(term: Term): Try[Int] = {
-    //Super-dumb way: calculate nesting level by dropping prefix and counting \'s
-    Try(term.value.drop("\\\\SHRINE\\SHRINE\\".length).count(_ == '\\'))
   }
 }

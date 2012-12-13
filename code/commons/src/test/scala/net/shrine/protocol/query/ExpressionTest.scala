@@ -11,6 +11,8 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.junit.Test
 import net.shrine.util.Try
 import org.scalatest.junit.ShouldMatchersForJUnit
+import net.shrine.util.Util
+import net.shrine.protocol.XmlRoundTripper
 
 /**
  *
@@ -35,182 +37,117 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
 
   import Utils.now
 
-  private def doToExecutionPlanTest(expr: Expression, expected: ExecutionPlan) {
-    expr.toExecutionPlan should equal(expected)
-  }
-  
   @Test
   def testOrToExectutionPlan {
     //Plain old or, no need for sub-queries
-    {
-      val expr = Or(t1, t2)
+    doToExecutionPlanTest(Or(t1, t2), SimpleQuery(Or(t1, t2)))
 
-      val expected = SimpleQuery(Or(t1, t2))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     //nested Ors should be normalized first 
-    {
-      val expr = Or(Or(t1, t2), Or(t3, t4))
-      
-      val expected = SimpleQuery(Or(t1, t2, t3, t4))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
+    doToExecutionPlanTest(
+      Or(Or(t1, t2), Or(t3, t4)),
+      SimpleQuery(Or(t1, t2, t3, t4)))
+
     //Or of 2 Ands
-    {
-      val expr = Or(And(t1, t2), And(t3, t4))
+    doToExecutionPlanTest(
+      Or(And(t1, t2), And(t3, t4)),
+      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4))))
 
-      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4)))
-
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     //And Ored with a Term 
-    {
-      val expr = Or(And(t1, t2), t3)
+    doToExecutionPlanTest(
+      Or(And(t1, t2), t3),
+      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(t3)))
 
-      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(t3))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     //And Ored with an Or
-    {
-      val expr = Or(And(t1, t2), Or(t3, t4))
+    doToExecutionPlanTest(
+      Or(And(t1, t2), Or(t3, t4)),
+      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(Or(t3, t4))))
 
-      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(Or(t3, t4)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     //Mix of Ors and Ands
-    {
-      val expr = Or(Or(t1, t2), And(t3, t4), Or(t5, t6))
-      
-      val expected = CompoundQuery.Or(SimpleQuery(And(t3, t4)), SimpleQuery(Or(t1, t2, t5, t6)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
+    doToExecutionPlanTest(
+      Or(Or(t1, t2), And(t3, t4), Or(t5, t6)),
+      CompoundQuery.Or(SimpleQuery(And(t3, t4)), SimpleQuery(Or(t1, t2, t5, t6))))
+
     //Mix with raw terms too
-    {
-      val expr = Or(Or(t1, t2), t3, And(t4, t5), t6, Or(t7, t8))
-      
-      val expected = CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7, t8)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
+    doToExecutionPlanTest(
+      Or(Or(t1, t2), t3, And(t4, t5), t6, Or(t7, t8)),
+      CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7, t8))))
   }
-  
+
   @Test
   def testOrToExecutionPlanMoreNesting {
     // 1 || ((2 && 3) || (4 && 5)) 
-    {
-      val expr = Or(t1, Or(And(t2, t3), And(t4, t5)))
+    doToExecutionPlanTest(
+      Or(t1, Or(And(t2, t3), And(t4, t5))),
+      CompoundQuery.Or(SimpleQuery(t1), SimpleQuery(And(t2, t3)), SimpleQuery(And(t4, t5))))
 
-      val expected = CompoundQuery.Or(SimpleQuery(t1), SimpleQuery(And(t2, t3)), SimpleQuery(And(t4, t5)))
-
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     // (1 && 2) || ((3 && 4) || 5) 
-    {
-      val expr = Or(And(t1, t2), Or(And(t3, t4), t5))
+    doToExecutionPlanTest(
+      Or(And(t1, t2), Or(And(t3, t4), t5)),
+      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4)), SimpleQuery(t5)))
 
-      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t3, t4)), SimpleQuery(t5))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     // (1 || 2) || ((3 && 4) || (5 || 6))
-    {
-      val expr = Or(Or(t1, t2), Or(And(t3, t4), Or(t5, t6)))
+    doToExecutionPlanTest(
+      Or(Or(t1, t2), Or(And(t3, t4), Or(t5, t6))),
+      CompoundQuery.Or(SimpleQuery(Or(t1, t2)), SimpleQuery(And(t3, t4)), SimpleQuery(Or(t5, t6))))
 
-      val expected = CompoundQuery.Or(SimpleQuery(Or(t1, t2)), SimpleQuery(And(t3, t4)), SimpleQuery(Or(t5, t6)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     //1 || (2 || 3) || (4 && 5) || (6 || 7)
-    {
-      val expr = Or(Or(t1, Or(t2, t3), And(t4, t5), Or(t6, t7)))
-      
-      val expected = CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
+    doToExecutionPlanTest(
+      Or(Or(t1, Or(t2, t3), And(t4, t5), Or(t6, t7))),
+      CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7))))
+
     //(1 || 2) || (3 || 4) || (5 && 6) || (7 || 8)
-    {
-      val expr = Or(Or(t1, t2), Or(t3, t4), And(t5, t6), Or(t7, t8))
-      
-      val expected = CompoundQuery.Or(SimpleQuery(And(t5, t6)), SimpleQuery(Or(t1, t2, t3, t4, t7, t8)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
+    doToExecutionPlanTest(
+      Or(Or(t1, t2), Or(t3, t4), And(t5, t6), Or(t7, t8)),
+      CompoundQuery.Or(SimpleQuery(And(t5, t6)), SimpleQuery(Or(t1, t2, t3, t4, t7, t8))))
+
     //(1 && 2) || (3 || 4) || (5 && 6) || (7 || 8)
-    {
-      val expr = Or(And(t1, t2), Or(t3, t4), And(t5, t6), Or(t7, t8))
-      
-      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
+    doToExecutionPlanTest(
+      Or(And(t1, t2), Or(t3, t4), And(t5, t6), Or(t7, t8)),
+      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8))))
+
     //1 || ((2 || 3) || (4 && 5) || (6 || 7))
-    {
-      val expr = Or(t1, Or(Or(t2, t3), And(t4, t5), Or(t6, t7)))
-      
-      //TODO: Get to this:
-      //val expected = CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7)))
-      val expected = CompoundQuery.Or(SimpleQuery(t1), SimpleQuery(And(t4, t5)), SimpleQuery(Or(t2, t3, t6, t7)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
+    doToExecutionPlanTest(
+      Or(t1, Or(Or(t2, t3), And(t4, t5), Or(t6, t7))),
+      //TODO: Get to: CompoundQuery.Or(SimpleQuery(And(t4, t5)), SimpleQuery(Or(t1, t2, t3, t6, t7))))
+      CompoundQuery.Or(SimpleQuery(t1), SimpleQuery(And(t4, t5)), SimpleQuery(Or(t2, t3, t6, t7))))
+
     //(1 || 2) || ((3 || 4) || (5 && 6) || (7 || 8))
-    {
-      val expr = Or(Or(t1, t2), Or(Or(t3, t4), And(t5, t6), Or(t7, t8)))
-      
-      //TODO: Get to this:
-      //val expected = CompoundQuery.Or(SimpleQuery(Or(t1, t2, t3, t4, t7, t8)), SimpleQuery(And(t5, t6)))
-      val expected = CompoundQuery.Or(SimpleQuery(Or(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
+    doToExecutionPlanTest(
+      Or(Or(t1, t2), Or(Or(t3, t4), And(t5, t6), Or(t7, t8))),
+      CompoundQuery.Or(SimpleQuery(Or(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8))))
+      //TODO: Get to: CompoundQuery.Or(SimpleQuery(Or(t1, t2, t3, t4, t7, t8)), SimpleQuery(And(t5, t6))))
+
     //(1 && 2) || ((3 || 4) || (5 && 6) || (7 || 8))
-    {
-      val expr = Or(And(t1, t2), Or(Or(t3, t4), And(t5, t6), Or(t7, t8)))
-      
-      val expected = CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8)))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
+    doToExecutionPlanTest(
+      Or(And(t1, t2), Or(Or(t3, t4), And(t5, t6), Or(t7, t8))),
+      CompoundQuery.Or(SimpleQuery(And(t1, t2)), SimpleQuery(And(t5, t6)), SimpleQuery(Or(t3, t4, t7, t8))))
   }
-  
+
   @Test
   def testAndToExecutionPlan {
     //Plain old And, no need for sub-queries
-    {
-      val expr = And(t1, t2)
+    doToExecutionPlanTest(And(t1, t2), SimpleQuery(And(t1, t2)))
 
-      val expected = SimpleQuery(And(t1, t2))
-      
-      expr.toExecutionPlan should equal(expected)
-    }
-    
     //nested Ands should be normalized first 
-    {
-      val expr = And(And(t1, t2), And(t3, t4))
-      
-      val expected = SimpleQuery(And(t1, t2, t3, t4))
-      
-      expr.toExecutionPlan should equal(expected)
+    doToExecutionPlanTest(
+      And(And(t1, t2), And(t3, t4)),
+      SimpleQuery(And(t1, t2, t3, t4)))
+  }
+
+  private def doToExecutionPlanTest(expr: Expression, expected: ExecutionPlan) {
+    val actual = expr.toExecutionPlan
+
+    actual.getClass should equal(expected.getClass)
+
+    actual match {
+      case SimpleQuery(e) => e should equal(expected.asInstanceOf[SimpleQuery].expr)
+      case CompoundQuery(conjunction, components @ _*) => {
+        val expectedCompound = expected.asInstanceOf[CompoundQuery]
+
+        conjunction should equal(expectedCompound.conjunction)
+        //NB: Use toSet to disregard order
+        components.toSet should equal(expectedCompound.components.toSet)
+      }
     }
   }
 
@@ -245,11 +182,13 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     assert(deserialize(serialize(expr)).get === expr)
   }
 
+  private def xmlRoundTrip(expr: Expression) {
+    roundTrip(expr, _.toXml, Expression.fromXml)
+  }
+  
   @Test
   def testExpressionFromXml {
-    def xmlRoundTrip(expr: Expression) {
-      roundTrip(expr, _.toXml, Expression.fromXml)
-    }
+    
 
     val expr = OccuranceLimited(99, And(Not(t1), Or(t2, t3, And(t4, t5), DateBounded(Some(now), Some(now), t6))))
 
@@ -501,11 +440,54 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
 
   @Test
   def testDateBoundedFromJson {
-    jsonRoundTrip(DateBounded(None, Some(new NetworkTime().getXMLGregorianCalendar), Term("hello")))
+    jsonRoundTrip(DateBounded(None, Some(Util.now), Term("hello")))
   }
 
   @Test
   def testOccurenceLimitedFromJson {
     jsonRoundTrip(OccuranceLimited(2, Term("hello")))
+  }
+
+  @Test
+  def testTermComputeHLevelTerm {
+    val term1 = Term("\\\\SHRINE\\SHRINE\\Diagnoses\\Congenital anomalies\\Cardiac and circulatory congenital anomalies\\Aortic valve stenosis\\Congenital stenosis of aortic valve\\")
+    val term2 = Term("\\\\SHRINE\\SHRINE\\Demographics\\Language\\Bosnian\\")
+    val term3 = Term("\\\\SHRINE\\SHRINE\\Demographics\\Age\18-34 years old\\30 years old\\")
+
+    term1.computeHLevel.get should be(5)
+    term2.computeHLevel.get should be(3)
+    term3.computeHLevel.get should be(3)
+
+    Term("foo").computeHLevel.get should be(0)
+    Term("").computeHLevel.get should be(0)
+  }
+
+  @Test
+  def testQueryComputeHLevelTerm {
+    val term1 = Query("\\\\SHRINE\\SHRINE\\Diagnoses\\Congenital anomalies\\Cardiac and circulatory congenital anomalies\\Aortic valve stenosis\\Congenital stenosis of aortic valve\\")
+    val term2 = Query("1234567")
+
+    term1.computeHLevel.get should be(0)
+    term2.computeHLevel.get should be(0)
+
+    Query("foo").computeHLevel.get should be(0)
+    Query("").computeHLevel.get should be(0)
+  }
+
+  @Test
+  def testQueryToAndFromXml {
+    Query("123456").toXmlString should equal(<query>123456</query>.toString)
+    
+    xmlRoundTrip(Query("98765"))
+  }
+
+  @Test
+  def testQueryToAndFromJson {
+	jsonRoundTrip(Query("123456"))
+  }
+
+  @Test
+  def testQueryValue {
+	Query("123456").value should equal("masterid:123456")
   }
 }

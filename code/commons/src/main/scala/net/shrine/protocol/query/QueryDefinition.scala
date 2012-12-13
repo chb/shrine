@@ -10,6 +10,7 @@ import net.liftweb.json.JsonDSL._
 import net.shrine.serialization.{JsonMarshaller, I2b2Marshaller, XmlMarshaller, XmlUnmarshaller}
 import net.shrine.util.Try
 import net.shrine.util.Success
+import net.shrine.util.Util
 
 
 /**
@@ -108,6 +109,7 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
     def panelWithDefaults(terms: Seq[Term]) = Panel(1, false, 1, None, None, terms)
 
     val resultPanels = expr.normalize match {
+      case q: Query => Util.???
       case t: Term => Seq(panelWithDefaults(Seq(t)))
       case Not(e) => toPanels(e).map(_.invert)
       case And(exprs@_*) => {
