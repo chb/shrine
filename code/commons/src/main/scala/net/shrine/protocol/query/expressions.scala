@@ -210,12 +210,11 @@ final case class And(override val exprs: Expression*) extends ComposeableExpress
   override def hasDirectI2b2Representation = exprs.forall(_.hasDirectI2b2Representation)
 
   override def toExecutionPlan: ExecutionPlan = {
-    //TODO: WRONG
-    //if (hasDirectI2b2Representation) {
-    SimplePlan(this.normalize)
-    //} else {
-    //  CompoundPlan.And(exprs.map(_.toExecutionPlan): _*) //TODO: almost certainly wrong
-    //}
+    if (hasDirectI2b2Representation) {
+      SimplePlan(this.normalize)
+    } else {
+      CompoundPlan.And(exprs.map(_.toExecutionPlan): _*).normalize //TODO: almost certainly wrong
+    }
   }
 }
 
