@@ -65,7 +65,7 @@ final case class CompoundPlan(conjunction: Conjunction, components: ExecutionPla
             
             val otherPlans = plans.collect { case p @ SimplePlan(expr) if !is[And](expr) && !is[Or](expr) => p }
             
-            val otherExprs = otherPlans.collect { case SimplePlan(expr) => expr }
+            val otherExprs = otherPlans.map(_.expr)
             
             val (orExprs: Seq[Or], andExprs: Seq[And]) = conj match {
               case Conjunction.Or => {
