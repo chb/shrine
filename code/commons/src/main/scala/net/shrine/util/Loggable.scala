@@ -20,5 +20,5 @@ trait Loggable {
   def info(s: => Any): Unit = if(log.isInfoEnabled) log.info(s)
   def warn(s: => Any): Unit = log.warn(s)
   def error(s: => Any): Unit = log.error(s)
-  def error(e: Throwable, s: => Any): Unit = log.error(s, e)
+  def error(s: => Any, e: Throwable): Unit = log.error(s, e)
 }

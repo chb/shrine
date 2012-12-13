@@ -153,7 +153,7 @@ class RunQueryAdapter(
     for {
       (origQueryResult, Failure(e)) <- failures
     } {
-      error(e, "Couldn't load breakdown for QueryResult with masterId: " + response.queryId + ", instanceId: " + origQueryResult.instanceId + ", resultId: " + origQueryResult.resultId + ". Asked for result type: " + origQueryResult.resultType)
+      error("Couldn't load breakdown for QueryResult with masterId: " + response.queryId + ", instanceId: " + origQueryResult.instanceId + ", resultId: " + origQueryResult.resultId + ". Asked for result type: " + origQueryResult.resultType, e)
     }
   }
 

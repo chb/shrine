@@ -19,7 +19,7 @@ object Util extends Loggable {
   def tryOrElse[T](default: => T)(f: => T): T = {
     try { f } catch {
       case e: Exception => {
-        error(e, "Exception: ")
+        error("Exception: ", e)
         
         default
       }
