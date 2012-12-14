@@ -213,7 +213,7 @@ final case class And(override val exprs: Expression*) extends ComposeableExpress
     if (hasDirectI2b2Representation) {
       SimplePlan(this.normalize)
     } else {
-      CompoundPlan.And(exprs.map(_.toExecutionPlan): _*).normalize //TODO: almost certainly wrong
+      CompoundPlan.And(exprs.map(_.toExecutionPlan): _*).normalize
     }
   }
 }

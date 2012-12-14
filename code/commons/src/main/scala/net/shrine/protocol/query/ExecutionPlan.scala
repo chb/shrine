@@ -62,26 +62,30 @@ final case class CompoundPlan(conjunction: Conjunction, components: ExecutionPla
 
           val asSimplePlans = comps.collect { case p: SimplePlan => p }
 
-          val simpleQueriesGroupedByExprType = asSimplePlans.groupBy(_.expr.getClass).values.toSeq
+          val simpleQueriesGroupedByExprType: Map[Class[_], Seq[SimplePlan]] = asSimplePlans.groupBy(_.expr.getClass)
+          
+          val andPlans = simpleQueriesGroupedByExprType.get(classOf[And]).getOrElse(Seq.empty)
 
-          simpleQueriesGroupedByExprType.flatMap { plans =>
-            val otherPlans = neitherAndsNorOrs(plans)
+          val orPlans = simpleQueriesGroupedByExprType.get(classOf[Or]).getOrElse(Seq.empty)
+          
+          val otherPlans = (simpleQueriesGroupedByExprType - classOf[And] - classOf[Or]).values.flatten.toSeq
 
-            val otherExprs = otherPlans.map(_.expr)
-
-            val (orExprs: Seq[Or], andExprs: Seq[And]) = conj match {
-              case Conjunction.Or => {
-                val consolidatedOrExpr = flatten(ors(plans))
-                (Seq(consolidatedOrExpr ++ otherExprs), ands(plans))
-              }
-              case Conjunction.And => {
-                val consolidatedAndExpr = flatten(ands(plans))
-                (ors(plans), Seq(consolidatedAndExpr ++ otherExprs))
-              }
+          val otherExprs = otherPlans.map(_.expr)
+          
+          val (orExprs: Seq[Or], andExprs: Seq[And]) = conj match {
+            case Conjunction.Or => {
+              val consolidatedOrExpr = flatten(ors(orPlans))
+              
+              (Seq(consolidatedOrExpr ++ otherExprs), ands(andPlans))
             }
-
-            toPlans(orExprs) ++ toPlans(andExprs) ++ otherPlans
+            case Conjunction.And => {
+              val consolidatedAndExpr = flatten(ands(andPlans))
+              
+              (ors(orPlans), Seq(consolidatedAndExpr ++ otherExprs))
+            }
           }
+
+          toPlans(orExprs) ++ toPlans(andExprs) ++ otherPlans
         }
         case c => Seq(c)
       }: _*)
