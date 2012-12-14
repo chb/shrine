@@ -170,14 +170,22 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
       And(And(t1, t2), t3, Or(t4, t5), t6, And(t7, t8)),
       SimplePlan(And(t1, t2, t3, Or(t4, t5), t6, t7, t8)))
   }
-  
+
   @Test
-  def testAndToExecutionPlanMoreNesting {
-	//((1 && 2) || (3 && 4)) && ((5 && 6) || (7 && 8))
+  def testAndToExecutionPlanYieldsCompoundPlans {
+    //((1 && 2) || (3 && 4)) && ((5 && 6) || (7 && 8))
     doToExecutionPlanTest(
       And(Or(And(t1, t2), And(t3, t4)), Or(And(t5, t6), And(t7, t8))), 
       CompoundPlan.And(CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4))), CompoundPlan.Or(SimplePlan(And(t5, t6)), SimplePlan(And(t7, t8)))))
       
+    //((1 && 2) || (3 && 4)) && ((5 || 6) && (7 || 8))
+    doToExecutionPlanTest(
+      And(Or(And(t1, t2), And(t3, t4)), Or(And(t5, t6), And(t7, t8))), 
+      CompoundPlan.And(CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4))), SimplePlan(And(Or(t5, t6), Or(t7, t8)))))
+  }
+  
+  @Test
+  def testAndToExecutionPlanMoreNesting {
       // 1 && ((2 || 3) && (4 || 5)) 
     doToExecutionPlanTest(
       And(t1, And(Or(t2, t3), Or(t4, t5))),
