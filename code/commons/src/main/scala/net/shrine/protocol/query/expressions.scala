@@ -30,6 +30,8 @@ sealed trait Expression extends XmlMarshaller with JsonMarshaller {
   def hasDirectI2b2Representation: Boolean
 
   def toExecutionPlan: ExecutionPlan //= SimplePlan(this.normalize)
+
+  def toIterable: Iterable[Expression] = Seq(this)
 }
 
 object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller[Try[Expression]] {
@@ -132,7 +134,7 @@ abstract class SimpleExpression(val value: String) extends Expression {
   override def hasDirectI2b2Representation = true
 
   override def toExecutionPlan = SimplePlan(this)
-  
+
   def computeHLevel: Try[Int]
 }
 
@@ -141,7 +143,7 @@ final case class Term(override val value: String) extends SimpleExpression(value
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<term>{ value }</term>)
 
   override def toJson: JValue = ("term" -> value)
-  
+
   override def computeHLevel: Try[Int] = {
     //Super-dumb way: calculate nesting level by dropping prefix and counting \'s
     Try(value.drop("\\\\SHRINE\\SHRINE\\".length).count(_ == '\\'))
@@ -152,7 +154,7 @@ final case class Query(localMasterId: String) extends SimpleExpression("masterid
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<query>{ localMasterId }</query>)
 
   override def toJson: JValue = ("query" -> localMasterId)
-  
+
   override def computeHLevel = Success(0)
 }
 
@@ -180,29 +182,47 @@ trait HasSubExpressions extends Expression {
   val exprs: Seq[Expression]
 }
 
-abstract class ComposeableExpression[T <: HasSubExpressions: Manifest](Op: (Expression*) => T, override val exprs: Expression*) extends HasSubExpressions {
+abstract class ComposeableExpression[T <: ComposeableExpression[T]: Manifest](Op: (Expression*) => T, override val exprs: Expression*) extends HasSubExpressions {
   import ExpressionHelpers.is
 
   def containsA[E: Manifest] = exprs.exists(is[E])
 
-  def ++(es: Iterable[Expression]) = Op((exprs ++ es): _*)
-  
-  def +(other: T): T = Op((exprs ++ other.exprs): _*)
-  
-  override def normalize = exprs match {
-    case x if x.isEmpty => this
-    case Seq(expr) => expr.normalize
-    case _ => Op(exprs.flatMap {
-      case op: T if is[T](op) => op.exprs.map(_.normalize)
-      case e => Seq(e.normalize)
-    }: _*)
+  override def toIterable: Iterable[Expression] = exprs
+
+  def ++(es: Iterable[Expression]): T = Op((exprs ++ es): _*)
+
+  /*def +(e: Expression): T = Op((exprs ++ (e match {
+    case op: T if is[T](op) => op.exprs
+    case _ => Seq(e)
+  })): _*)*/
+
+  def merge(other: T): T = Op((exprs ++ other.exprs): _*)
+
+  lazy val empty: T = Op()
+
+  private def toIterable(e: Expression): Iterable[Expression] = e match {
+    case op: T if is[T](op) => op.exprs
+    case _ => Seq(e)
+  }
+
+  override def normalize = {
+    val result = exprs.map(_.normalize) match {
+      case x if x.isEmpty => this
+      case Seq(expr) => expr
+      case es => es.foldLeft(empty)((acc, e) => acc ++ toIterable(e))
+    }
+    
+    result match {
+      case op: T if is[T](op) && op.containsA[T] => op.normalize
+      case _ => result
+    }
   }
 }
 
 final case class And(override val exprs: Expression*) extends ComposeableExpression[And](And, exprs: _*) {
 
   override def toString = "And(" + exprs.mkString(",") + ")"
-  
+
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<and>{ exprs.map(_.toXml) }</and>)
 
   override def toJson: JValue = ("and" -> exprs.map(_.toJson))
@@ -221,7 +241,7 @@ final case class And(override val exprs: Expression*) extends ComposeableExpress
 final case class Or(override val exprs: Expression*) extends ComposeableExpression[Or](Or, exprs: _*) {
 
   override def toString = "Or(" + exprs.mkString(",") + ")"
-  
+
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<or>{ exprs.map(_.toXml) }</or>)
 
   override def toJson: JValue = ("or" -> exprs.map(_.toJson))
@@ -246,17 +266,17 @@ final case class Or(override val exprs: Expression*) extends ComposeableExpressi
         val notAndPlans = notAnds.map(_.toExecutionPlan)
 
         val consolidatedNotAndPlan = notAndPlans.reduce(_ or _)
-        
+
         val components: Seq[ExecutionPlan] = andPlans.size match {
           case 1 => andPlans :+ consolidatedNotAndPlan
-          case _ => if(ands.isEmpty) Seq(consolidatedNotAndPlan) else Seq(andCompound, consolidatedNotAndPlan)
+          case _ => if (ands.isEmpty) Seq(consolidatedNotAndPlan) else Seq(andCompound, consolidatedNotAndPlan)
         }
-        
+
         val result = components match {
           case Seq(plan: CompoundPlan) => plan
           case _ => CompoundPlan.Or(components: _*)
         }
-        
+
         result.normalize
       }
     }

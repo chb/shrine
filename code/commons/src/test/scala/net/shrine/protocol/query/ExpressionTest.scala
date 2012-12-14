@@ -199,7 +199,7 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     // (1 && 2) && ((3 || 4) && (5 && 6))
     doToExecutionPlanTest(
       And(And(t1, t2), And(Or(t3, t4), And(t5, t6))),
-      SimplePlan(And(t1, t2, Or(t3, t4), And(t5, t6))))
+      SimplePlan(And(t1, t2, Or(t3, t4), t5, t6)))
 
     //1 && (2 && 3) && (4 || 5) && (6 && 7)
     doToExecutionPlanTest(
@@ -219,20 +219,17 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     //1 && ((2 && 3) && (4 || 5) && (6 && 7))
     doToExecutionPlanTest(
       And(t1, And(And(t2, t3), Or(t4, t5), And(t6, t7))),
-      //TODO: Would be nice to get to: And(t1, t2, t3, Or(t4, t5), t6, t7))
-      SimplePlan(And(t1, And(t2, t3), Or(t4, t5), And(t6, t7))))
+      SimplePlan(And(t1, t2, t3, Or(t4, t5), t6, t7)))
 
     //(1 && 2) && ((3 && 4) && (5 || 6) && (7 && 8))
     doToExecutionPlanTest(
       And(And(t1, t2), And(And(t3, t4), Or(t5, t6), And(t7, t8))),
-      //TODO: Would be nice to get to: And(t1, t2, t3, t4, Or(t5, t6), t7, t8))
-      SimplePlan(And(t1, t2, And(t3, t4), Or(t5, t6), And(t7, t8))))
+      SimplePlan(And(t1, t2, t3, t4, Or(t5, t6), t7, t8)))
 
     //(1 || 2) && ((3 && 4) && (5 || 6) && (7 && 8))
     doToExecutionPlanTest(
       And(Or(t1, t2), And(And(t3, t4), Or(t5, t6), And(t7, t8))),
-      //TODO: Would be nice to get to: And(Or(t1, t2), And(t3, t4, Or(t5, t6), t7, t8))
-      SimplePlan(And(Or(t1, t2), And(t3, t4), Or(t5, t6), And(t7, t8))))
+      SimplePlan(And(Or(t1, t2), t3, t4, Or(t5, t6), t7, t8)))
   }
 
   private def doToExecutionPlanTest(expr: Expression, expected: ExecutionPlan) {
@@ -360,6 +357,18 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     val mixed6 = Or(Or(t1), Or(t2, t3), And(t4, t5), Or(t6, t7), t8)
     
     assert(Or(t1, t2, t3, And(t4, t5), t6, t7, t8) === mixed6.normalize)
+    
+    val mixed7 = And(t1, And(And(t2, t3), Or(t4, t5), And(t6, t7)))
+      
+    assert(And(t1, t2, t3, Or(t4, t5), t6, t7) === mixed7.normalize)
+
+    val mixed8 = And(And(t1, t2), And(And(t3, t4), Or(t5, t6), And(t7, t8)))
+    
+    assert(And(t1, t2, t3, t4, Or(t5, t6), t7, t8) === mixed8.normalize)
+
+    val mixed9 = And(Or(t1, t2), And(And(t3, t4), Or(t5, t6), And(t7, t8)))
+    
+    assert(And(Or(t1, t2), t3, t4, Or(t5, t6), t7, t8) === mixed9.normalize)
   }
 
   @Test

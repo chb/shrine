@@ -31,7 +31,12 @@ final case class SimplePlan(expr: Expression) extends ExecutionPlan {
     case _: CompoundPlan => CompoundPlan(conjunction, this, other)
   }
 
-  override def normalize: ExecutionPlan = this
+  def withExpr(e: Expression): SimplePlan = {
+    if(e == expr) this
+    else SimplePlan(e)
+  }
+  
+  override def normalize: ExecutionPlan = withExpr(expr.normalize)
 
   override def isSimple: Boolean = true
 }
@@ -131,7 +136,7 @@ object CompoundPlan {
     }
 
     def flatten[T <: ComposeableExpression[T] : HasZero](exprs: Seq[T]): T = {
-      exprs.foldLeft(implicitly[HasZero[T]].zero)(_ + _)
+      exprs.foldLeft(implicitly[HasZero[T]].zero)(_ merge _)
     }
 
     def toPlans(es: Seq[Expression]) = es.map(_.toExecutionPlan)
