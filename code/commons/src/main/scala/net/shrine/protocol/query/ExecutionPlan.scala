@@ -130,7 +130,7 @@ object CompoundPlan {
       }
     }
 
-    def flatten[T <: ComposeableExpression[T] with HasSubExpressions: HasZero](exprs: Seq[T]): T = {
+    def flatten[T <: ComposeableExpression[T] : HasZero](exprs: Seq[T]): T = {
       exprs.foldLeft(implicitly[HasZero[T]].zero)(_ + _)
     }
 

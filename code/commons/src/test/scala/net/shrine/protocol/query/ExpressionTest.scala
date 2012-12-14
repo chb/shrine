@@ -139,13 +139,13 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     doToExecutionPlanTest(
       And(And(t1, t2), And(t3, t4)),
       SimplePlan(And(t1, t2, t3, t4)))
-      
+
     //(1 || 2) && (3 || 4)
     //Nested ors should be fine
     doToExecutionPlanTest(
       And(Or(t1, t2), Or(t3, t4)),
       SimplePlan(And(Or(t1, t2), Or(t3, t4))))
-    
+
     // (1 || 2) && 3
     //And Ored with a Term 
     doToExecutionPlanTest(
@@ -175,18 +175,18 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
   def testAndToExecutionPlanYieldsCompoundPlans {
     //((1 && 2) || (3 && 4)) && ((5 && 6) || (7 && 8))
     doToExecutionPlanTest(
-      And(Or(And(t1, t2), And(t3, t4)), Or(And(t5, t6), And(t7, t8))), 
+      And(Or(And(t1, t2), And(t3, t4)), Or(And(t5, t6), And(t7, t8))),
       CompoundPlan.And(CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4))), CompoundPlan.Or(SimplePlan(And(t5, t6)), SimplePlan(And(t7, t8)))))
-      
+
     //((1 && 2) || (3 && 4)) && ((5 || 6) && (7 || 8))
     doToExecutionPlanTest(
-      And(Or(And(t1, t2), And(t3, t4)), Or(And(t5, t6), And(t7, t8))), 
+      And(Or(And(t1, t2), And(t3, t4)), Or(And(t5, t6), And(t7, t8))),
       CompoundPlan.And(CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4))), SimplePlan(And(Or(t5, t6), Or(t7, t8)))))
   }
-  
+
   @Test
   def testAndToExecutionPlanMoreNesting {
-      // 1 && ((2 || 3) && (4 || 5)) 
+    // 1 && ((2 || 3) && (4 || 5)) 
     doToExecutionPlanTest(
       And(t1, And(Or(t2, t3), Or(t4, t5))),
       SimplePlan(And(t1, Or(t2, t3), Or(t4, t5))))
@@ -200,7 +200,7 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     doToExecutionPlanTest(
       And(And(t1, t2), And(Or(t3, t4), And(t5, t6))),
       SimplePlan(And(t1, t2, Or(t3, t4), And(t5, t6))))
-      
+
     //1 && (2 && 3) && (4 || 5) && (6 && 7)
     doToExecutionPlanTest(
       And(And(t1, And(t2, t3), Or(t4, t5), And(t6, t7))),
@@ -255,7 +255,7 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     def withExpr(expr: Expression): T
   }
 
-  private def doTestWithExpr[T <: AnyRef with HasWithExpr[T]](o: HasWithExpr[T]) {
+  private def doTestWithExpr[T <: HasWithExpr[T]](o: HasWithExpr[T]) {
     val withSameExpr = o.withExpr(o.expr)
 
     assert((withSameExpr eq o) === true)
@@ -284,10 +284,9 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
   private def xmlRoundTrip(expr: Expression) {
     roundTrip(expr, _.toXml, Expression.fromXml)
   }
-  
+
   @Test
   def testExpressionFromXml {
-    
 
     val expr = OccuranceLimited(99, And(Not(t1), Or(t2, t3, And(t4, t5), DateBounded(Some(now), Some(now), t6))))
 
@@ -353,6 +352,14 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     val mixed4 = And(Or(t1, t2), And(t3, t4))
 
     assert(And(Or(t1, t2), t3, t4) === mixed4.normalize)
+    
+    val mixed5 = And(And(t1), And(t2, t3), Or(t4, t5), And(t6, t7), t8)
+    
+    assert(And(t1, t2, t3, Or(t4, t5), t6, t7, t8) === mixed5.normalize)
+    
+    val mixed6 = Or(Or(t1), Or(t2, t3), And(t4, t5), Or(t6, t7), t8)
+    
+    assert(Or(t1, t2, t3, And(t4, t5), t6, t7, t8) === mixed6.normalize)
   }
 
   @Test
@@ -516,6 +523,18 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
     val deeplyNested2 = Op(Op(Op(Op(Op(t1, t2)))))
 
     assert(Op(t1, t2) === deeplyNested2.normalize)
+
+    val mixed1 = Op(t1, Op(t2, t3))
+
+    assert(Op(t1, t2, t3) === mixed1.normalize)
+
+    val mixed2 = Op(Op(t2, t3), t4)
+
+    assert(Op(t2, t3, t4) === mixed2.normalize)
+
+    val mixed3 = Op(t1, Op(t2, t3), t4)
+
+    assert(Op(t1, t2, t3, t4) === mixed3.normalize)
   }
 
   private def jsonRoundTrip(expr: Expression) {
@@ -576,17 +595,17 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
   @Test
   def testQueryToAndFromXml {
     Query("123456").toXmlString should equal(<query>123456</query>.toString)
-    
+
     xmlRoundTrip(Query("98765"))
   }
 
   @Test
   def testQueryToAndFromJson {
-	jsonRoundTrip(Query("123456"))
+    jsonRoundTrip(Query("123456"))
   }
 
   @Test
   def testQueryValue {
-	Query("123456").value should equal("masterid:123456")
+    Query("123456").value should equal("masterid:123456")
   }
 }
