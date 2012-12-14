@@ -49,27 +49,31 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
       Or(Or(t1, t2), Or(t3, t4)),
       SimplePlan(Or(t1, t2, t3, t4)))
 
-    
+    // (1 && 2) || (3 && 4)
     //Or of 2 Ands
     doToExecutionPlanTest(
       Or(And(t1, t2), And(t3, t4)),
       CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4))))
 
+    // (1 && 2) || 3
     //And Ored with a Term 
     doToExecutionPlanTest(
       Or(And(t1, t2), t3),
       CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(t3)))
 
+    // (1 && 2) || (3 || 4)
     //And Ored with an Or
     doToExecutionPlanTest(
       Or(And(t1, t2), Or(t3, t4)),
       CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(Or(t3, t4))))
 
+    //(1 || 2) || (3 && 4) || (5 || 6)
     //Mix of Ors and Ands
     doToExecutionPlanTest(
       Or(Or(t1, t2), And(t3, t4), Or(t5, t6)),
       CompoundPlan.Or(SimplePlan(And(t3, t4)), SimplePlan(Or(t1, t2, t5, t6))))
 
+    //(1 || 2) || 3 || (4 && 5) || 6 || (7 || 8)
     //Mix with raw terms too
     doToExecutionPlanTest(
       Or(Or(t1, t2), t3, And(t4, t5), t6, Or(t7, t8)),
@@ -126,23 +130,101 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
 
   @Test
   def testAndToExecutionPlan {
+    // 1 && 2
     //Plain old And, no need for sub-queries
     doToExecutionPlanTest(And(t1, t2), SimplePlan(And(t1, t2)))
 
+    // (1 && 2) && (3 && 4)
     //nested Ands should be normalized first 
     doToExecutionPlanTest(
       And(And(t1, t2), And(t3, t4)),
       SimplePlan(And(t1, t2, t3, t4)))
       
+    //(1 || 2) && (3 || 4)
     //Nested ors should be fine
     doToExecutionPlanTest(
       And(Or(t1, t2), Or(t3, t4)),
       SimplePlan(And(Or(t1, t2), Or(t3, t4))))
     
-    //
+    // (1 || 2) && 3
+    //And Ored with a Term 
+    doToExecutionPlanTest(
+      And(Or(t1, t2), t3),
+      SimplePlan(And(Or(t1, t2), t3)))
+
+    // (1 || 2) && (3 && 4)
+    //And Ored with an Or
+    doToExecutionPlanTest(
+      And(Or(t1, t2), And(t3, t4)),
+      SimplePlan(And(Or(t1, t2), t3, t4)))
+
+    //(1 && 2) && (3 || 4) && (5 && 6)
+    //Mix of Ors and Ands
+    doToExecutionPlanTest(
+      And(And(t1, t2), Or(t3, t4), And(t5, t6)),
+      SimplePlan(And(t1, t2, Or(t3, t4), t5, t6)))
+
+    //(1 && 2) && 3 && (4 || 5) && 6 && (7 && 8)
+    //Mix with raw terms too
+    doToExecutionPlanTest(
+      And(And(t1, t2), t3, Or(t4, t5), t6, And(t7, t8)),
+      SimplePlan(And(t1, t2, t3, Or(t4, t5), t6, t7, t8)))
+  }
+  
+  @Test
+  def testAndToExecutionPlanMoreNesting {
+	//((1 && 2) || (3 && 4)) && ((5 && 6) || (7 && 8))
     doToExecutionPlanTest(
       And(Or(And(t1, t2), And(t3, t4)), Or(And(t5, t6), And(t7, t8))), 
       CompoundPlan.And(CompoundPlan.Or(SimplePlan(And(t1, t2)), SimplePlan(And(t3, t4))), CompoundPlan.Or(SimplePlan(And(t5, t6)), SimplePlan(And(t7, t8)))))
+      
+      // 1 && ((2 || 3) && (4 || 5)) 
+    doToExecutionPlanTest(
+      And(t1, And(Or(t2, t3), Or(t4, t5))),
+      SimplePlan(And(t1, Or(t2, t3), Or(t4, t5))))
+
+    // (1 || 2) && ((3 || 4) && 5) 
+    doToExecutionPlanTest(
+      And(Or(t1, t2), And(Or(t3, t4), t5)),
+      SimplePlan(And(Or(t1, t2), Or(t3, t4), t5)))
+
+    // (1 && 2) && ((3 || 4) && (5 && 6))
+    doToExecutionPlanTest(
+      And(And(t1, t2), And(Or(t3, t4), And(t5, t6))),
+      SimplePlan(And(t1, t2, Or(t3, t4), And(t5, t6))))
+      
+    //1 && (2 && 3) && (4 || 5) && (6 && 7)
+    doToExecutionPlanTest(
+      And(And(t1, And(t2, t3), Or(t4, t5), And(t6, t7))),
+      SimplePlan(And(t1, t2, t3, Or(t4, t5), t6, t7)))
+
+    //(1 && 2) && (3 && 4) && (5 || 6) && (7 && 8)
+    doToExecutionPlanTest(
+      And(And(t1, t2), And(t3, t4), Or(t5, t6), And(t7, t8)),
+      SimplePlan(And(t1, t2, t3, t4, Or(t5, t6), t7, t8)))
+
+    //(1 || 2) && (3 && 4) && (5 || 6) && (7 && 8)
+    doToExecutionPlanTest(
+      And(Or(t1, t2), And(t3, t4), And(t5, t6), And(t7, t8)),
+      SimplePlan(And(Or(t1, t2), t3, t4, t5, t6, t7, t8)))
+
+    //1 && ((2 && 3) && (4 || 5) && (6 && 7))
+    doToExecutionPlanTest(
+      And(t1, And(And(t2, t3), Or(t4, t5), And(t6, t7))),
+      //TODO: Would be nice to get to: And(t1, t2, t3, Or(t4, t5), t6, t7))
+      SimplePlan(And(t1, And(t2, t3), Or(t4, t5), And(t6, t7))))
+
+    //(1 && 2) && ((3 && 4) && (5 || 6) && (7 && 8))
+    doToExecutionPlanTest(
+      And(And(t1, t2), And(And(t3, t4), Or(t5, t6), And(t7, t8))),
+      //TODO: Would be nice to get to: And(t1, t2, t3, t4, Or(t5, t6), t7, t8))
+      SimplePlan(And(t1, t2, And(t3, t4), Or(t5, t6), And(t7, t8))))
+
+    //(1 || 2) && ((3 && 4) && (5 || 6) && (7 && 8))
+    doToExecutionPlanTest(
+      And(Or(t1, t2), And(And(t3, t4), Or(t5, t6), And(t7, t8))),
+      //TODO: Would be nice to get to: And(Or(t1, t2), And(t3, t4, Or(t5, t6), t7, t8))
+      SimplePlan(And(Or(t1, t2), And(t3, t4), Or(t5, t6), And(t7, t8))))
   }
 
   private def doToExecutionPlanTest(expr: Expression, expected: ExecutionPlan) {
