@@ -134,6 +134,6 @@ object CompoundPlan {
       exprs.foldLeft(implicitly[HasZero[T]].zero)(_ + _)
     }
 
-    def toPlans[T <: HasSubExpressions](es: Seq[T]) = es.flatMap(e => if (e.exprs.isEmpty) Seq.empty else Seq(SimplePlan(e)))
+    def toPlans(es: Seq[Expression]) = es.map(_.toExecutionPlan)
   }
 }
