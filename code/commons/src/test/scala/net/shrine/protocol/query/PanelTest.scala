@@ -12,6 +12,7 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
   private val term1 = Term("\\\\SHRINE\\SHRINE\\Diagnoses\\Congenital anomalies\\Cardiac and circulatory congenital anomalies\\Aortic valve stenosis\\Congenital stenosis of aortic valve\\")
   private val term2 = Term("\\\\SHRINE\\SHRINE\\Demographics\\Language\\Bosnian\\")
   private val term3 = Term("\\\\SHRINE\\SHRINE\\Demographics\\Age\18-34 years old\\30 years old\\")
+  private val query1 = Query("12345")
   
   private val p1 = Panel(1, true, 1, None, None, Seq(t1))
     
@@ -26,6 +27,8 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
   
   private val p4 = Panel(4, false, 0, startDate, endDate, Seq(term1, term2, term3))
   
+  private val p5 = Panel(1, false, 1, None, None, Seq(term1, query1))
+  
   def testToExpression {
     assert(Panel(1, false, 0, None, None, Seq(t1)).toExpression === t1)
     
@@ -34,7 +37,7 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
     assert(p2.toExpression === t1)
     
     assert(p3.toExpression === OccuranceLimited(99, DateBounded(startDate, endDate, Not(Or(term1, term2, term3)))))
-    
+    t1
     assert(p4.toExpression === DateBounded(startDate, endDate, Or(term1, term2, term3)))
   }
   
@@ -129,6 +132,13 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
     (p1.toI2b2 \ "item" \ "constrain_by_date").toString should equal(XmlUtil.stripWhitespace(<constrain_by_date></constrain_by_date>).toString)
     (p1.toI2b2 \ "item" \ "constrain_by_date" \ "date_from") should equal(NodeSeq.Empty)
     (p1.toI2b2 \ "item" \ "constrain_by_date" \ "date_to") should equal(NodeSeq.Empty)
+    
+    //Query-in-query
+    {
+      val referencesQuery = p5.toI2b2
+      
+      (referencesQuery \ "item").map(i => (i \ "item_key").text) should equal(Seq(term1.value, query1.value))
+    }
     
     //dates
     {
