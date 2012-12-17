@@ -195,7 +195,7 @@ abstract class ComposeableExpression[T <: ComposeableExpression[T]: Manifest](Op
 
   def merge(other: T): T = Op((exprs ++ other.exprs): _*)
 
-  lazy val empty: T = Op()
+  private[query] lazy val empty: T = Op()
 
   private[query] def toIterable(e: Expression): Iterable[Expression] = e match {
     case op: T if is[T](op) => op.exprs
