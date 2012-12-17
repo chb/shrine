@@ -29,9 +29,7 @@ sealed trait Expression extends XmlMarshaller with JsonMarshaller {
 
   def hasDirectI2b2Representation: Boolean
 
-  def toExecutionPlan: ExecutionPlan //= SimplePlan(this.normalize)
-
-  def toIterable: Iterable[Expression] = Seq(this)
+  def toExecutionPlan: ExecutionPlan
 }
 
 object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller[Try[Expression]] {
@@ -193,15 +191,13 @@ abstract class ComposeableExpression[T <: ComposeableExpression[T]: Manifest](Op
 
   def containsA[E: Manifest] = exprs.exists(is[E])
 
-  override def toIterable: Iterable[Expression] = exprs
-
   def ++(es: Iterable[Expression]): T = Op((exprs ++ es): _*)
 
   def merge(other: T): T = Op((exprs ++ other.exprs): _*)
 
   lazy val empty: T = Op()
 
-  private def toIterable(e: Expression): Iterable[Expression] = e match {
+  private[query] def toIterable(e: Expression): Iterable[Expression] = e match {
     case op: T if is[T](op) => op.exprs
     case _ => Seq(e)
   }
@@ -210,7 +206,7 @@ abstract class ComposeableExpression[T <: ComposeableExpression[T]: Manifest](Op
     val result = exprs.map(_.normalize) match {
       case x if x.isEmpty => this
       case Seq(expr) => expr
-      case es => es.foldLeft(empty)((acc, e) => acc ++ toIterable(e))
+      case es => es.foldLeft(empty)((accumulator, expr) => accumulator ++ toIterable(expr))
     }
     
     result match {
