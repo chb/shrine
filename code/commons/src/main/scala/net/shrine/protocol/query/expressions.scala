@@ -150,12 +150,18 @@ final case class Term(override val value: String) extends SimpleExpression(value
   }
 }
 
-final case class Query(localMasterId: String) extends SimpleExpression("masterid:" + localMasterId) {
+final case class Query(localMasterId: String) extends SimpleExpression(Query.prefix + localMasterId) {
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(<query>{ localMasterId }</query>)
 
   override def toJson: JValue = ("query" -> localMasterId)
 
   override def computeHLevel = Success(0)
+}
+
+object Query {
+  val prefix = "masterid:"
+  
+  val prefixRegex = ("^" + prefix + "(.+?)").r
 }
 
 final case class Not(expr: Expression) extends Expression {
@@ -190,11 +196,6 @@ abstract class ComposeableExpression[T <: ComposeableExpression[T]: Manifest](Op
   override def toIterable: Iterable[Expression] = exprs
 
   def ++(es: Iterable[Expression]): T = Op((exprs ++ es): _*)
-
-  /*def +(e: Expression): T = Op((exprs ++ (e match {
-    case op: T if is[T](op) => op.exprs
-    case _ => Seq(e)
-  })): _*)*/
 
   def merge(other: T): T = Op((exprs ++ other.exprs): _*)
 

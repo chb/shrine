@@ -42,7 +42,7 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
   }
   
   def testFromI2b2 {
-    for(panel <- Seq(p1, p2, p3)) {
+    for(panel <- Seq(p1, p2, p3, p4, p5)) {
       val i2b2Xml = panel.toI2b2
       
       val unmarshalled = Panel.fromI2b2(i2b2Xml).get

@@ -87,21 +87,21 @@ final case class Panel(
 
 object Panel {
   def fromI2b2(nodeSeq: NodeSeq): Try[Panel] = {
-    def toXmlGc(lexicalRep: String) = NetworkTime.makeXMLGregorianCalendar(lexicalRep)
+    import NetworkTime.makeXMLGregorianCalendar
 
-    def toXmlGcOption(xml: NodeSeq) = xml.headOption.view.map(_.text).map(toXmlGc).headOption
+    def toXmlGcOption(xml: NodeSeq) = xml.headOption.view.map(_.text).map(makeXMLGregorianCalendar).headOption
 
-    Try {
-      val outerTag = nodeSeq.head
-
-      val number = (outerTag \ "panel_number").text.toInt
-      val inverted = (outerTag \ "invert").text.toInt == 1
-      val minOccurrences = (outerTag \ "total_item_occurrences").text.toInt
-      val start = toXmlGcOption(outerTag \ "panel_date_from")
-      val end = toXmlGcOption(outerTag \ "panel_date_to")
-      val terms = (outerTag \ "item").view.map(_ \ "item_key").map(_.text).map(Term).force
-
-      Panel(number, inverted, minOccurrences, start, end, terms)
-    }
+    for {
+      outerTag <- Try(nodeSeq.head)
+      number <- Try((outerTag \ "panel_number").text.toInt)
+      inverted <- Try((outerTag \ "invert").text.toInt == 1)
+      minOccurrences <- Try((outerTag \ "total_item_occurrences").text.toInt)
+      start = toXmlGcOption(outerTag \ "panel_date_from")
+      end = toXmlGcOption(outerTag \ "panel_date_to")
+      terms = (outerTag \ "item").view.map(_ \ "item_key").map(_.text).map {
+        case Query.prefixRegex(id) => Query(id)
+        case x => Term(x)
+      }.force
+    } yield Panel(number, inverted, minOccurrences, start, end, terms)
   }
 }
