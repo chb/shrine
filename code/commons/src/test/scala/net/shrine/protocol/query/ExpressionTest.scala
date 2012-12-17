@@ -617,4 +617,83 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
   def testQueryValue {
     Query("123456").value should equal("masterid:123456")
   }
+  
+  @Test
+  def testComposeableExpressionToIterable {
+    val emptyAnd = And()
+    val emptyOr = Or()
+    
+    val q1 = Query("8394723")
+    
+    for(expr <- Seq(t1, q1, Not(q1), DateBounded(Some(Util.now), Some(Util.now), t1), OccuranceLimited(42, q1))) {
+      emptyAnd.toIterable(expr) should equal(Seq(expr))
+      emptyOr.toIterable(expr) should equal(Seq(expr))
+    }
+    
+    emptyAnd.toIterable(And(t1, q1)) should equal(Seq(t1, q1))
+    emptyAnd.toIterable(Or(t1, q1)) should equal(Seq(Or(t1, q1)))
+    
+    emptyAnd.toIterable(And(Or(t1, q1))) should equal(Seq(Or(t1, q1)))
+    emptyAnd.toIterable(And(t1, q1, Or(t1, q1))) should equal(Seq(t1, q1, Or(t1, q1)))
+    emptyAnd.toIterable(And(t1, q1, And(t1, q1))) should equal(Seq(t1, q1, And(t1, q1)))
+    
+    emptyOr.toIterable(Or(t1, q1)) should equal(Seq(t1, q1))
+    emptyOr.toIterable(And(t1, q1)) should equal(Seq(And(t1, q1)))
+    
+    emptyOr.toIterable(Or(And(t1, q1))) should equal(Seq(And(t1, q1)))
+    emptyOr.toIterable(Or(t1, q1, And(t1, q1))) should equal(Seq(t1, q1, And(t1, q1)))
+    emptyOr.toIterable(Or(t1, q1, Or(t1, q1))) should equal(Seq(t1, q1, Or(t1, q1)))
+  }
+  
+  @Test
+  def testComposeableExpressionEmpty {
+    (And()).empty.getClass should equal(classOf[And])
+    (And()).empty should equal(And())
+    (And()).empty.exprs.isEmpty should be(true)
+    
+    (Or()).empty.getClass should equal(classOf[Or])
+    (Or()).empty should equal(Or())
+    (Or()).empty.exprs.isEmpty should be(true)
+  }
+  
+  
+  @Test
+  def testComposeableExpressionMerge {
+    val q1 = Query("8394723")
+    
+    And() merge And() should equal(And())
+    And(t1) merge And(q1) should equal(And(t1, q1))
+    And() merge And(t1, q1) should equal(And(t1, q1))
+    And(t1, q1) merge And() should equal(And(t1, q1))
+    
+    Or() merge Or() should equal(Or())
+    Or(t1) merge Or(q1) should equal(Or(t1, q1))
+    Or() merge Or(t1, q1) should equal(Or(t1, q1))
+    Or(t1, q1) merge Or() should equal(Or(t1, q1))
+  }
+  
+  @Test
+  def testComposeableExpressionPlusPlus {
+    val q1 = Query("8394723")
+    
+    And() ++ Nil should equal(And())
+    And(t1) ++ Seq(q1) should equal(And(t1, q1))
+    And() ++ Seq(t1, q1) should equal(And(t1, q1))
+    And(t1, q1) ++ Nil should equal(And(t1, q1))
+    
+    Or() ++ Nil should equal(Or())
+    Or(t1) ++ Seq(q1) should equal(Or(t1, q1))
+    Or() ++ Seq(t1, q1) should equal(Or(t1, q1))
+    Or(t1, q1) ++ Nil should equal(Or(t1, q1))
+  }
+  
+  @Test
+  def testComposeableExpressionContainsA {
+    val expr = And(t1, t2, Or(t3, Query("12345")))
+    
+    expr.containsA[And] should be(false)
+    expr.containsA[Query] should be(false)
+    expr.containsA[Term] should be(true)
+    expr.containsA[Or] should be(true)
+  }
 }
