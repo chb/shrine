@@ -21,6 +21,10 @@ sealed trait ExecutionPlan {
   final def isCompound: Boolean = !isSimple
 }
 
+/**
+ * @author clint
+ * @date Nov 29, 2012
+ */
 final case class SimplePlan(expr: Expression) extends ExecutionPlan {
   override def or(other: ExecutionPlan) = combine(Conjunction.Or)(other)
 
@@ -41,6 +45,10 @@ final case class SimplePlan(expr: Expression) extends ExecutionPlan {
   override def isSimple: Boolean = true
 }
 
+/**
+ * @author clint
+ * @date Nov 29, 2012
+ */
 final case class CompoundPlan(conjunction: Conjunction, components: ExecutionPlan*) extends ExecutionPlan {
   override def toString = "CompoundPlan." + conjunction + "(" + components.mkString(",") + ")"
 
@@ -118,11 +126,11 @@ object CompoundPlan {
       plans.collect { case plan @ SimplePlan(expr) if isNeitherAndNorOr(expr) => plan }
     }
 
-    private[this] trait HasZero[T] {
+    private[query] trait HasZero[T] {
       def zero: T
     }
 
-    private[this] object HasZero {
+    private[query] object HasZero {
       import net.shrine.protocol.query.{ And => AndExpr }
       import net.shrine.protocol.query.{ Or => OrExpr }
 
