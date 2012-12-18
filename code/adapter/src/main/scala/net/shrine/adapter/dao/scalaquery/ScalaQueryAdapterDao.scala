@@ -82,9 +82,9 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
     result
   }
 
-  override def insertQuery(networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = {
+  override def insertQuery(localMasterId: String, networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = {
     database.withSession { implicit session: Session =>
-      ShrineQueries.withoutGeneratedColumns.insert(networkId, name, authn.username, authn.domain, queryExpr)
+      ShrineQueries.withoutGeneratedColumns.insert(localMasterId, networkId, name, authn.username, authn.domain, queryExpr)
 
       sequenceHelper.lastInsertedQueryId
     }
@@ -116,7 +116,7 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
         //TODO: under what circumstances can QueryResults NOT have start and end dates set?
         elapsed = execTime(result)
       } yield {
-        QueryResults.withoutGeneratedColumns.insert(parentQueryId, resultType, statusType, elapsed)
+        QueryResults.withoutGeneratedColumns.insert(result.resultId, parentQueryId, resultType, statusType, elapsed)
 
         (resultType, sequenceHelper.lastInsertedQueryResultId)
       }
@@ -182,8 +182,8 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
   def transactional: AdapterDao = new AdapterDao {
     private val outer = ScalaQueryAdapterDao.this
 
-    override def insertQuery(networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = {
-      database.withTransaction(outer.insertQuery(networkId, name, authn, queryExpr))
+    override def insertQuery(localMasterId: String, networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = {
+      database.withTransaction(outer.insertQuery(localMasterId, networkId, name, authn, queryExpr))
     }
 
     override def insertQueryResults(parentQueryId: Int, response: RawCrcRunQueryResponse): Map[ResultOutputType, Seq[Int]] = {

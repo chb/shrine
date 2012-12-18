@@ -24,7 +24,9 @@ final class ShrineQueryResultTest extends TestCase with ShouldMatchersForJUnit {
 
   private def someId = RandomTool.randomInt
 
-  private def queryResultRow(resultType: ResultOutputType) = QueryResultRow(someId,
+  private def queryResultRow(resultType: ResultOutputType) = QueryResultRow(
+    someId,
+    someId.toLong,
     queryId,
     resultType,
     (if (resultType.isError) StatusType.Error else StatusType.Finished),
@@ -55,8 +57,8 @@ final class ShrineQueryResultTest extends TestCase with ShouldMatchersForJUnit {
     val Some(shrineQueryResult) = ShrineQueryResult.fromRows(resultRows, countRows, breakdownRows, errorRows)
 
     for (doObfuscation <- Seq(true, false)) {
-      def obfuscate(i: Int) = if(doObfuscation) i + 1 else i
-      
+      def obfuscate(i: Int) = if (doObfuscation) i + 1 else i
+
       shrineQueryResult.copy(count = None).toQueryResults(doObfuscation) should equal(Option(errorRows.head.toQueryResult))
       shrineQueryResult.copy(count = None, errors = Nil).toQueryResults(doObfuscation) should equal(None)
 

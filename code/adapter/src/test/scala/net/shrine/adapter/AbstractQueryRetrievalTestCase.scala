@@ -44,6 +44,8 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
   
   def doTestProcessRequest = afterCreatingTables {
 
+    val localMasterId = "alksjdkalsdjlasdjlkjsad"
+    
     val shrineNetworkQueryId = 123L
     
     val errorResponse = ErrorResponse("Query with id '" + shrineNetworkQueryId + "' not found")
@@ -58,7 +60,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     val authn = AuthenticationInfo("some-domain", "some-user", Credential("alskdjlkasd", false))
     val queryExpr = Term("foo")
     
-    val dbQueryId = dao.insertQuery(shrineNetworkQueryId, "some-query", authn, queryExpr)
+    val dbQueryId = dao.insertQuery(localMasterId, shrineNetworkQueryId, "some-query", authn, queryExpr)
     
     getResults should equal(errorResponse)
     

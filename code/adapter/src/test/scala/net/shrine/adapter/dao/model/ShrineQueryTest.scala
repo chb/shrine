@@ -14,10 +14,11 @@ import net.shrine.util.Util
 final class ShrineQueryTest extends TestCase with ShouldMatchersForJUnit {
   @Test
   def testToQueryMaster {
-    val shrineQuery = ShrineQuery(123, 456L, "some-query-name", "foo", "bar", Term("nuh"), Util.now)
+    val shrineQuery = ShrineQuery(123, "master-id", 456L, "some-query-name", "foo", "bar", Term("nuh"), Util.now)
     
     val queryMaster = shrineQuery.toQueryMaster
     
+    //TODO: Should this be the real i2b2 master id now?  That would break previous queries, though
     queryMaster.queryMasterId.toLong should equal(shrineQuery.networkId)
     queryMaster.name should equal(shrineQuery.name)
     queryMaster.userId should equal(shrineQuery.username)

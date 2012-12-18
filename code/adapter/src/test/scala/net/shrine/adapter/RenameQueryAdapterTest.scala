@@ -34,7 +34,7 @@ final class RenameQueryAdapterTest extends AbstractDependencyInjectionSpringCont
     }
     
     //add a query to the db
-    dao.insertQuery(queryId, name, authn, Term("foo"))
+    dao.insertQuery(localMasterId, queryId, name, authn, Term("foo"))
 
     //sanity check that it's there
     {

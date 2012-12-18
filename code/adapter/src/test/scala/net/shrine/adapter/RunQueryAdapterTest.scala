@@ -57,6 +57,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
   private val broadcastMessageId = 1234563789L
   private val queryId = 123L
   private val expectedNetworkQueryId = 999L
+  private val expectedLocalMasterId = queryId.toString
   private val masterId = 99L
   private val instanceId = 456L
   private val resultId = 42L
@@ -276,6 +277,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
       queryRow.dateCreated should not be (null)
       queryRow.domain should equal(authn.domain)
       queryRow.name should equal(queryDef.name)
+      queryRow.localId should equal(expectedLocalMasterId)
       queryRow.networkId should equal(expectedNetworkQueryId)
       queryRow.username should equal(authn.username)
       queryRow.queryExpr should equal(expectedNetworkTerm)

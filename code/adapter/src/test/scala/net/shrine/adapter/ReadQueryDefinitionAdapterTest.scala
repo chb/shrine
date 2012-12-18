@@ -31,7 +31,7 @@ final class ReadQueryDefinitionAdapterTest extends AbstractDependencyInjectionSp
     }
 
     //Add a query
-    dao.insertQuery(queryId, name, authn, expr)
+    dao.insertQuery(localMasterId, queryId, name, authn, expr)
 
     //sanity check that it's there
     {

@@ -1,5 +1,6 @@
 create table shrine_query(
   id int not null,
+  local_id varchar(255) not null,
   network_id int not null,
   username varchar(255) not null,
   domain varchar(255) not null,
@@ -15,6 +16,7 @@ increment by 1;
 
 create table query_result(
   id int not null,
+  local_id varchar(255) not null,
   query_id int not null,
   type varchar(255) not null check (type in ('PATIENTSET','PATIENT_COUNT_XML','PATIENT_AGE_COUNT_XML','PATIENT_RACE_COUNT_XML','PATIENT_VITALSTATUS_COUNT_XML','PATIENT_GENDER_COUNT_XML','ERROR')),
   status varchar(255) not null check (status in ('FINISHED', 'ERROR', 'PROCESSING', 'QUEUED')),

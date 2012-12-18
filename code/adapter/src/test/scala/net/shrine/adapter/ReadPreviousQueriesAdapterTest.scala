@@ -22,35 +22,19 @@ import net.shrine.protocol.QueryMaster
 final class ReadPreviousQueriesAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
   @Test
   def testProcessRequest {
-    val Seq((queryId1, name1, authn1, expr1), (queryId2, name2, authn2, expr2)) = (1 to 2).map(i => (i, "query" + i, AuthenticationInfo("some-domain", "user" + i, Credential("salkhfkjas", false)), Term(i.toString)))
+    val Seq((masterId1, queryId1, name1, authn1, expr1), (masterId2, queryId2, name2, authn2, expr2)) = (1 to 2).map(i => ("masterid:" + i, i, "query" + i, AuthenticationInfo("some-domain", "user" + i, Credential("salkhfkjas", false)), Term(i.toString)))
     
+    val masterId3 = "kalsjdklasdjklasdlkjaldsagtuegthasgf"
     val queryId3 = queryId1 + 42
     
     //2 queries for authn1, 1 for authn2
-    dao.insertQuery(queryId1, name1, authn1, expr1)
-    dao.insertQuery(queryId2, name2, authn2, expr2)
-    dao.insertQuery(queryId3, name1, authn1, expr1)
+    dao.insertQuery(masterId1, queryId1, name1, authn1, expr1)
+    dao.insertQuery(masterId2, queryId2, name2, authn2, expr2)
+    dao.insertQuery(masterId3, queryId3, name1, authn1, expr1)
     
     val adapter = new ReadPreviousQueriesAdapter(dao)
     
     def toIdentity(authn: AuthenticationInfo) = new Identity(authn.domain, authn.username)
-    
-    //final case class ReadPreviousQueriesResponse(val userId: String, val groupId: String, val queryMasters: Seq[QueryMaster]) extends ShrineResponse {
-    
-    //ReadPreviousQueriesResponse(identity.getUsername, identity.getDomain, previousQueries.map(_.toQueryMaster))
-    
-    /*
-     * case class QueryMaster (
-    val queryMasterId: String,
-    val name: String,
-    val userId: String,
-    val groupId: String,
-    val createDate: XMLGregorianCalendar)
-     */
-    
-    /*
-    QueryMaster(networkId.toString, name, username, domain, dateCreated)
-     */
     
     {
       //bogus id

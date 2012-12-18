@@ -23,7 +23,7 @@ trait AdapterDao {
   /**
    * @return the id column of the inserted row
    */
-  def insertQuery(networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int
+  def insertQuery(masterId: String, networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int
 
   //Returns a Map of output types to Seqs of inserted ids, since the ERROR output type can be used for multiple query_result rows,
   //Say for a run query operation that results in multiple error responses from the CRC.

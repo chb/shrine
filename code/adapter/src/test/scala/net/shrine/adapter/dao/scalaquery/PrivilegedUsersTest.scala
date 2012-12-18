@@ -67,7 +67,7 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
   def testIsUserLockedOut = afterInsertingTestUser {
     dao.isUserLockedOut(testId, defaultThreshold) should be(false)
 
-    logCountQueryResult(0, testId, 42)
+    logCountQueryResult("masterId:0", 0, testId, 42)
 
     dao.isUserLockedOut(testId, defaultThreshold) should be(false)
 
@@ -84,7 +84,7 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
   def testIsUserLockedOutWithResultSetSizeOfZero = afterInsertingTestUser {
     dao.isUserLockedOut(testId, defaultThreshold) should be(false)
 
-    logCountQueryResult(0, testId, 0)
+    logCountQueryResult("masterId:0", 0, testId, 0)
 
     dao.isUserLockedOut(testId, defaultThreshold) should be(false)
 
@@ -130,11 +130,11 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
   
   private def lockoutUser(lockedOutId: Identity, resultSetSize: Int) {
     for (i <- 1 until testThreshold + 2) {
-      logCountQueryResult(i, lockedOutId, resultSetSize)
+      logCountQueryResult("masterId:" + i, i, lockedOutId, resultSetSize)
     }
   }
 
-  private def logCountQueryResult(networkQueryId: Int, lockedOutId: Identity, resultSetSize: Int) {
+  private def logCountQueryResult(masterId: String, networkQueryId: Int, lockedOutId: Identity, resultSetSize: Int) {
     val now = Util.now
 
     val expr = Term("blah")
@@ -143,7 +143,7 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
 
     val authn = AuthenticationInfo(lockedOutId.getDomain, lockedOutId.getUsername, Credential("asjkhdad", false))
 
-    val insertedQueryId = dao.insertQuery(networkQueryId, "foo", authn, expr)
+    val insertedQueryId = dao.insertQuery(masterId, networkQueryId, "foo", authn, expr)
 
     import ResultOutputType.PATIENT_COUNT_XML;
 

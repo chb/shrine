@@ -10,6 +10,7 @@ import javax.xml.datatype.XMLGregorianCalendar
  */
 final case class QueryResultRow(
     id: Int,
+    localId: Long,
     queryId: Int,
     resultType: ResultOutputType,
     status: StatusType,

@@ -19,7 +19,7 @@ import net.shrine.protocol.RawCrcRunQueryResponse
  * @date Oct 19, 2012
  */
 object MockAdapterDao extends AdapterDao {
-  override def insertQuery(networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = 0
+  override def insertQuery(localMasterId: String, networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = 0
 
   override def insertQueryResults(parentQueryId: Int, response: RawCrcRunQueryResponse): Map[ResultOutputType, Seq[Int]] = Map.empty
   

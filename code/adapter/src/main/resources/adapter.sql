@@ -1,5 +1,6 @@
 create table SHRINE_QUERY(
   id int not null auto_increment,
+  local_id varchar(255) not null,
   network_id bigint not null,
   username varchar(255) not null,
   domain varchar(255) not null,
@@ -11,6 +12,7 @@ create table SHRINE_QUERY(
 
 create table QUERY_RESULT(
   id int not null auto_increment,
+  local_id varchar(255) not null,
   query_id int not null,
   type enum('PATIENTSET','PATIENT_COUNT_XML','PATIENT_AGE_COUNT_XML','PATIENT_RACE_COUNT_XML','PATIENT_VITALSTATUS_COUNT_XML','PATIENT_GENDER_COUNT_XML','ERROR') not null,
   status enum('FINISHED', 'ERROR', 'PROCESSING', 'QUEUED') not null,

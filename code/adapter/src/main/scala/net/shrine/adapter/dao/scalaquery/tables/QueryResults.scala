@@ -14,7 +14,8 @@ import javax.xml.datatype.XMLGregorianCalendar
  * @author clint
  * @date Oct 12, 2012
  */
-object QueryResults extends Table[QueryResultRow]("QUERY_RESULT") with HasId {
+object QueryResults extends Table[QueryResultRow]("QUERY_RESULT") with HasId with HasLocalId {
+  def localId = localIdColumn[Long]
   def queryId = column[Int]("QUERY_ID", O.NotNull)
   def resultType = column[ResultOutputType]("TYPE", O.NotNull)
   def status = column[StatusType]("STATUS", O.NotNull)
@@ -25,7 +26,7 @@ object QueryResults extends Table[QueryResultRow]("QUERY_RESULT") with HasId {
     column[XMLGregorianCalendar]("LAST_UPDATED", O.NotNull)
   }
   
-  def withoutGeneratedColumns = queryId ~ resultType ~ status ~ elapsed.?
+  def withoutGeneratedColumns = localId ~ queryId ~ resultType ~ status ~ elapsed.?
   
   import ProjectionHelpers._
   

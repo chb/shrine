@@ -55,9 +55,9 @@ class RunQueryAdapter(
     //TODO: Any way to avoid this cast?
     val runQueryReq = message.request.asInstanceOf[RunQueryRequest]
 
-    val insertedQueryId = dao.insertQuery(runQueryReq.networkQueryId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
-
     val rawRunQueryResponse = super.processRequest(identity, message).asInstanceOf[RawCrcRunQueryResponse]
+    
+    val insertedQueryId = dao.insertQuery(rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
 
     val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, rawRunQueryResponse)
 

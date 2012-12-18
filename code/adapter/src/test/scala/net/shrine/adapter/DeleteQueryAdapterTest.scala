@@ -30,7 +30,7 @@ final class DeleteQueryAdapterTest extends AbstractDependencyInjectionSpringCont
     }
 
     //Add a query
-    dao.insertQuery(queryId, "some-query", authn, Term("foo"))
+    dao.insertQuery(localMasterId, queryId, "some-query", authn, Term("foo"))
 
     //sanity check that it's there
     {

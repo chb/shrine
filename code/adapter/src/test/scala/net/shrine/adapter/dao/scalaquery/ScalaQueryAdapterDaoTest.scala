@@ -66,6 +66,10 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   private val networkQueryId1 = 123L
   private val networkQueryId2 = 456L
   private val networkQueryId3 = 999L
+  
+  private val masterId1 = "abc"
+  private val masterId2 = "def"
+  private val masterId3 = "ghi"
 
   private val countQueryResult = QueryResult(resultId, instanceId, Some(PATIENT_COUNT_XML), count, now, now, desc, QueryResult.StatusType.Finished.name, None, Map.empty)
 
@@ -90,7 +94,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
     dao.findRecentQueries(0) should equal(Nil)
     dao.findRecentQueries(1) should equal(Nil)
     
-    dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
     
     //Make next query happen 1 millisecond later, so we can distinguish it from the one we just inserted 
     //(java.sql.Timestamps have 1ms resolution, it appears?)
@@ -104,13 +108,13 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
       query.networkId should equal(networkQueryId1)
     }
     
-    dao.insertQuery(networkQueryId2, queryDef.name, authn, queryDef.expr)
+    dao.insertQuery(masterId2, networkQueryId2, queryDef.name, authn, queryDef.expr)
     
     //Make next query happen 1 millisecond later, so we can distinguish it from the one we just inserted 
     //(java.sql.Timestamps, or perhaps XmlGregorianCalendars, have 1ms resolution?)
     Thread.sleep(1)
     
-    dao.insertQuery(networkQueryId3, queryDef.name, authn, queryDef.expr)
+    dao.insertQuery(masterId3, networkQueryId3, queryDef.name, authn, queryDef.expr)
     
     //Should come back newest-queries-first
     dao.findRecentQueries(2).map(_.networkId) should equal(Seq(networkQueryId3, networkQueryId2))
@@ -143,7 +147,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   
   @Test
   def testRenameQuery = afterCreatingTables {
-    dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
     
     {
       val Some(query) = dao.findQueryByNetworkId(networkQueryId1)
@@ -170,12 +174,13 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   def testInsertQueryAndFindQueryByNetworkId = afterCreatingTables {
     dao.findQueryByNetworkId(networkQueryId1) should be(None)
 
-    dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
     {
-      val Some(ShrineQuery(id, actualNetworkId, name, username, domain, expr, dateCreated)) = dao.findQueryByNetworkId(networkQueryId1)
+      val Some(ShrineQuery(id, localMasterId, actualNetworkId, name, username, domain, expr, dateCreated)) = dao.findQueryByNetworkId(networkQueryId1)
 
       id should be(1)
+      localMasterId should equal(masterId1)
       actualNetworkId should equal(networkQueryId1)
       name should equal(queryDef.name)
       username should equal(authn.username)
@@ -185,13 +190,14 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
     }
 
     //Inserting a query with the same values should be allowed, it should just create a new row with a new id
-    dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
     {
       //However, the first shrine_query row with the passed networkQueryId should be returned, not the one we just inserted 
-      val Some(ShrineQuery(id, actualNetworkId, name, username, domain, expr, dateCreated)) = dao.findQueryByNetworkId(networkQueryId1)
+      val Some(ShrineQuery(id, localMasterId, actualNetworkId, name, username, domain, expr, dateCreated)) = dao.findQueryByNetworkId(networkQueryId1)
 
       id should be(1)
+      localMasterId should equal(masterId1)
       actualNetworkId should equal(networkQueryId1)
       username should equal(authn.username)
       domain should equal(authn.domain)
@@ -204,8 +210,8 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   def testFindQueriesByUserAndDomain: Unit = afterCreatingTables {
     dao.findQueriesByUserAndDomain("", "") should equal(Nil)
 
-    dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
-    dao.insertQuery(networkQueryId2, queryDef.name, authn, queryDef.expr)
+    dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
+    dao.insertQuery(masterId2, networkQueryId2, queryDef.name, authn, queryDef.expr)
 
     dao.findQueriesByUserAndDomain("", "") should equal(Nil)
 
@@ -213,22 +219,25 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
 
     foundQuery1.domain should equal(authn.domain)
     foundQuery1.username should equal(authn.username)
+    foundQuery1.localId should equal(masterId1)
     foundQuery1.networkId should equal(networkQueryId1)
     foundQuery1.queryExpr should equal(queryDef.expr)
 
     foundQuery2.domain should equal(authn.domain)
     foundQuery2.username should equal(authn.username)
+    foundQuery2.localId should equal(masterId2)
     foundQuery2.networkId should equal(networkQueryId2)
     foundQuery2.queryExpr should equal(queryDef.expr)
   }
 
   @Test
   def testInsertQuery = afterCreatingTables {
-    val ids = for (i <- 1 to 2) yield dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    val ids = for (i <- 1 to 2) yield dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
     ids should equal(Seq(1, 2))
 
     def testRow(r: ShrineQuery) {
+      r.localId should equal(masterId1)
       r.networkId should equal(networkQueryId1)
       r.dateCreated should not be (null) // :/
       r.domain should equal(authn.domain)
@@ -297,7 +306,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   private def doInsertQueryResultsTest(response: RawCrcRunQueryResponse): (Map[ResultOutputType, Seq[Int]], Seq[QueryResultRow]) = {
     list(queryResultRows).isEmpty should be(true)
 
-    val queryId = dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    val queryId = dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
     val resultIdsByType = dao.insertQueryResults(queryId, response)
 
@@ -320,7 +329,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
 
   @Test
   def testInsertCountResult = afterCreatingTables {
-    val queryId = dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    val queryId = dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
     val response = RawCrcRunQueryResponse(networkQueryId1, now.get, authn.username, authn.domain, queryDef, instanceId, toQueryResultMap(Seq(countQueryResult)))
 
@@ -389,7 +398,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
 
   @Test
   def testInsertErrorResult = afterCreatingTables {
-    val queryId = dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    val queryId = dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
     val response = countRunQueryResponse.withResults(Seq(errorQueryResult1))
 
@@ -536,7 +545,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   private def doTestFindResultsFor(response: RawCrcRunQueryResponse)(inserts: Map[ResultOutputType, Seq[Int]] => Any)(validate: (Map[ResultOutputType, Seq[Int]], ShrineQueryResult) => Any) = {
     dao.findResultsFor(networkQueryId1) should be(None)
 
-    val queryId = dao.insertQuery(networkQueryId1, queryDef.name, authn, queryDef.expr)
+    val queryId = dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
     val resultIdsByType = dao.insertQueryResults(queryId, response)
 

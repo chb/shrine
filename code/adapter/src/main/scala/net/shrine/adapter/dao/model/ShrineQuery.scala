@@ -11,6 +11,7 @@ import net.shrine.protocol.query.Expression
  */
 final case class ShrineQuery(
   id: Int,
+  localId: String,
   networkId: Long,
   name: String,
   username: String,

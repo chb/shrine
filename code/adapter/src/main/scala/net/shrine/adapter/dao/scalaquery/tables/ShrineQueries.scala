@@ -15,12 +15,13 @@ import net.shrine.adapter.dao.model.ShrineQuery
  *
  * NB: Named 'shrine_query' since 'query' is a reserved word in Oracle's SQL dialect. :/
  */
-object ShrineQueries extends Table[ShrineQuery]("SHRINE_QUERY") with HasId with HasUsernameAndDomain with HasCreationDate {
+object ShrineQueries extends Table[ShrineQuery]("SHRINE_QUERY") with HasId with HasLocalId with HasUsernameAndDomain with HasCreationDate {
+  def localId = localIdColumn[String]
   def networkId = column[Long]("NETWORK_ID", O.NotNull)
   def name = column[String]("QUERY_NAME", O.NotNull)
   def queryExpr = column[Expression]("QUERY_EXPRESSION", O.NotNull)
   
-  def withoutGeneratedColumns = networkId ~ name ~ username ~ domain ~ queryExpr
+  def withoutGeneratedColumns = localId ~ networkId ~ name ~ username ~ domain ~ queryExpr
   
   import ProjectionHelpers._
   
