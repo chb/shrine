@@ -219,7 +219,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
     
     val successfulBreakdownTypes = successfulBreakdownsByType.keySet
     
-    val breakdownQueryResultsByResultId = breakdownQueryResults.filter(qr => successfulBreakdownTypes(qr.resultType.get)).map(qr => qr.resultId -> qr).toMap
+    val breakdownQueryResultsByResultId = breakdownQueryResults.collect { case qr if successfulBreakdownTypes(qr.resultType.get) => qr.resultId -> qr }.toMap
     
     val breakdownsToBeReturnedByResultId = breakdownQueryResultsByResultId.map {
       case (resultId, queryResult) => (resultId, successfulBreakdownsByType(queryResult.resultType.get))
@@ -260,12 +260,12 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
 
     val result = doQuery(outputTypes, dao, httpClient)
 
-    validateDb(successfulBreakdowns)
+    validateDb(successfulBreakdowns, breakdownQueryResultsByResultId)
     
     result
   }
   
-  private def validateDb(breakdownsReturned: Seq[I2b2ResultEnvelope]) {
+  private def validateDb(breakdownsReturned: Seq[I2b2ResultEnvelope], breakdownQueryResultsByResultId: Map[Long, QueryResult]) {
     val expectedNetworkTerm = Term("foo")
     
     import ObfuscatorTest.within3
@@ -303,10 +303,18 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
     {
       import ResultOutputType._
 
-      queryResults.find(_.resultType == PATIENT_COUNT_XML).get.queryId should equal(queryRow.id)
+      val countQueryResultRow = queryResults.find(_.resultType == PATIENT_COUNT_XML).get
+      
+      countQueryResultRow.localId should equal(countQueryResult.resultId)
+      countQueryResultRow.queryId should equal(queryRow.id)
+      
+      val resultIdsByResultType = breakdownQueryResultsByResultId.map { case (resultId, queryResult) => queryResult.resultType.get -> resultId }.toMap
 
       for (breakdownType <- ResultOutputType.breakdownTypes) {
-        queryResults.find(_.resultType == breakdownType).get.queryId should equal(queryRow.id)
+        val breakdownQueryResultRow = queryResults.find(_.resultType == breakdownType).get
+        
+        breakdownQueryResultRow.queryId should equal(queryRow.id)
+        breakdownQueryResultRow.localId should equal(resultIdsByResultType(breakdownQueryResultRow.resultType))
       }
     }
     
