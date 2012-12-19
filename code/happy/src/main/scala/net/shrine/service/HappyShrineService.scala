@@ -178,7 +178,7 @@ class HappyShrineService @Autowired() (
       "happyProject",
       180000,
       new AuthenticationInfo("happyDomain", "happy", new Credential("", false)),
-      Ids.nextLong,
+      BroadcastMessage.Ids.next,
       "",
       Set(ResultOutputType.PATIENT_COUNT_XML),
       queryDefinition)

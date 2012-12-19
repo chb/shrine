@@ -135,13 +135,13 @@ final case class QueryResult(
 }
 
 object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[QueryResult] {
-  final class StatusType(val name: String) extends StatusType.Value
+  final class StatusType(val name: String, val isDone: Boolean) extends StatusType.Value
   
   object StatusType extends SEnum[StatusType] {
-    val Error = new StatusType("ERROR")
-    val Finished = new StatusType("FINISHED")
-    val Processing = new StatusType("PROCESSING")
-    val Queued = new StatusType("QUEUED")
+    val Error = new StatusType("ERROR", true)
+    val Finished = new StatusType("FINISHED", true)
+    val Processing = new StatusType("PROCESSING", false)
+    val Queued = new StatusType("QUEUED", false)
   }
 
   def extractLong(nodeSeq: NodeSeq)(elemName: String): Long = (nodeSeq \ elemName).text.toLong

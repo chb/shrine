@@ -16,6 +16,10 @@ import net.shrine.util.Try
  */
 final case class BroadcastMessage(requestId: Long, request: ShrineRequest) extends XmlMarshaller {
 
+  def withRequestId(id: Long) = this.copy(requestId = id)
+
+  def withRequest(req: ShrineRequest) = this.copy(request = req)
+
   override def toXml = XmlUtil.stripWhitespace(
     <broadcastMessage>
       <requestId>{ requestId }</requestId>
@@ -24,6 +28,18 @@ final case class BroadcastMessage(requestId: Long, request: ShrineRequest) exten
 }
 
 object BroadcastMessage extends XmlUnmarshaller[BroadcastMessage] {
+  def apply(request: ShrineRequest): BroadcastMessage = BroadcastMessage(Ids.next, request)
+
+  /**
+   * @author clint
+   * @date Nov 29, 2012
+   */
+  object Ids {
+    private val random = new java.util.Random
+
+    def next = random.nextLong.abs
+  }
+
   override def fromXml(nodeSeq: NodeSeq) = {
     BroadcastMessage(
       (nodeSeq \ "requestId").text.toLong,

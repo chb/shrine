@@ -314,7 +314,11 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
         val breakdownQueryResultRow = queryResults.find(_.resultType == breakdownType).get
         
         breakdownQueryResultRow.queryId should equal(queryRow.id)
-        breakdownQueryResultRow.localId should equal(resultIdsByResultType(breakdownQueryResultRow.resultType))
+        
+        //We'll have a result id if this breakdown type didn't fail
+        if(resultIdsByResultType.contains(breakdownQueryResultRow.resultType)) {
+          breakdownQueryResultRow.localId should equal(resultIdsByResultType(breakdownQueryResultRow.resultType))
+        }
       }
     }
     

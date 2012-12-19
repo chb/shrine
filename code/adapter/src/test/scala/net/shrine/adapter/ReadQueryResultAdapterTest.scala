@@ -12,7 +12,7 @@ import org.junit.Test
  */
 final class ReadQueryResultAdapterTest extends 
 	AbstractQueryRetrievalTestCase(
-	    dao => new ReadQueryResultAdapter(dao, true), 
+	    dao => new ReadQueryResultAdapter("", MockHttpClient, AbstractQueryRetrievalTestCase.hiveCredentials, dao, true), 
 	    queryId => ReadQueryResultRequest("some-project-id", 1000L, null, queryId), 
 	    ReadQueryResultResponse.unapply) {
   @Test

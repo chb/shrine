@@ -1,6 +1,7 @@
 package net.shrine.adapter
 
 import org.spin.tools.crypto.signature.Identity
+
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.Credential
 

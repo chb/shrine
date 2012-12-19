@@ -23,6 +23,7 @@ import net.shrine.protocol.I2b2ResultEnvelope
 import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.RawCrcRunQueryResponse
 import net.shrine.protocol.query.QueryDefinition
+import net.shrine.config.HiveCredentials
 
 /**
  * @author clint
@@ -113,6 +114,8 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
 }
 
 object AbstractQueryRetrievalTestCase {
+  val hiveCredentials = HiveCredentials("some-hive-domain", "hive-username", "hive-password", "hive-project")
+  
   final class BogusRequest extends ShrineRequest("fooProject", 1000L, null) {
     override protected def i2b2MessageBody: NodeSeq = <foo></foo>
 

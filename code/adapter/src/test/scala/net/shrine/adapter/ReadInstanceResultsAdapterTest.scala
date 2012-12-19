@@ -34,7 +34,7 @@ import net.shrine.adapter.dao.scalaquery.ScalaQueryAdapterDao
  */
 final class ReadInstanceResultsAdapterTest extends 
 	AbstractQueryRetrievalTestCase(
-	    dao => new ReadInstanceResultsAdapter(dao, true), 
+	    dao => new ReadInstanceResultsAdapter("", MockHttpClient, AbstractQueryRetrievalTestCase.hiveCredentials, dao, true), 
 	    queryId => ReadInstanceResultsRequest("some-project-id", 1000L, null, queryId), 
 	    ReadInstanceResultsResponse.unapply) {
   @Test

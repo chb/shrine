@@ -10,6 +10,7 @@ import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.ShrineResponse
 import net.shrine.protocol.ErrorResponse
 import net.shrine.serialization.XmlMarshaller
+import net.shrine.util.HttpClient
 
 /**
  * @author Bill Simons
@@ -21,10 +22,18 @@ import net.shrine.serialization.XmlMarshaller
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadInstanceResultsAdapter(dao: AdapterDao, doObfuscation: Boolean) extends 
-    AbstractReadQueryResultAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](
-        dao,
-        doObfuscation,
-        _.shrineNetworkQueryId,
-        ReadInstanceResultsResponse(_, _))
+class ReadInstanceResultsAdapter(
+    crcUrl: String,
+    httpClient: HttpClient,
+    hiveCredentials: HiveCredentials,
+    dao: AdapterDao, 
+    doObfuscation: Boolean) extends 
+    	AbstractReadQueryResultAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](
+    	    crcUrl,
+    	    httpClient,
+    	    hiveCredentials,
+    		dao,
+    		doObfuscation,
+    		_.shrineNetworkQueryId,
+    		ReadInstanceResultsResponse(_, _))
 
