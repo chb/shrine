@@ -107,8 +107,8 @@ final class JerseyShrineClientTest extends TestCase with AssertionsForJUnit with
       roundTripped should equal(response)
     }
     
-    val queryResult1 = QueryResult(1L, 456L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
-    val queryResult2 = QueryResult(2L, 456L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
+    val queryResult1 = QueryResult(1L, 456L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished, None, Map.empty)
+    val queryResult2 = QueryResult(2L, 456L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished, None, Map.empty)
     
     doTestDeserializer(new AggregatedRunQueryResponse(123L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 456L, Seq(queryResult1, queryResult2)), JerseyShrineClient.Deserializer.aggregatedRunQueryResponseDeserializer)
 
@@ -135,7 +135,7 @@ final class JerseyShrineClientTest extends TestCase with AssertionsForJUnit with
 
   import ResultOutputType._
   
-  private def dummyQueryResult(enclosingInstanceId: Long) = new QueryResult(123L, enclosingInstanceId, Some(PATIENT_COUNT_XML), 789L, None, None, Some("description"), "statusType", Some("statusMessage"), Map.empty)
+  private def dummyQueryResult(enclosingInstanceId: Long) = new QueryResult(123L, enclosingInstanceId, Some(PATIENT_COUNT_XML), 789L, None, None, Some("description"), QueryResult.StatusType.Finished, Some("statusMessage"), Map.empty)
 
   private def paramResponse = new ParamResponse(randomString, randomString, randomString)
 }

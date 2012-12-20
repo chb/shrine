@@ -35,7 +35,7 @@ final class ObfuscatorTest extends TestCase with ShouldMatchers with AssertionsF
     def queryResult(resultId: Long, setSize: Long) = {
       import ResultOutputType._
       
-      QueryResult(resultId, 123L, Some(PATIENT_COUNT_XML), setSize, None, None, None, QueryResult.StatusType.Finished.name, None)
+      QueryResult(resultId, 123L, Some(PATIENT_COUNT_XML), setSize, None, None, None, QueryResult.StatusType.Finished, None)
     }
 
     val resultId1 = 12345L

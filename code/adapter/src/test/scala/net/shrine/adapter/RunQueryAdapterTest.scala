@@ -71,7 +71,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
 
   private val now = NetworkTime.makeXMLGregorianCalendar(new GregorianCalendar)
 
-  private val countQueryResult = QueryResult(resultId, instanceId, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, Some(now), Some(now), None, QueryResult.StatusType.Finished.name, None)
+  private val countQueryResult = QueryResult(resultId, instanceId, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, Some(now), Some(now), None, QueryResult.StatusType.Finished, None)
 
   private val dummyBreakdownData = Map("x" -> 1L, "y" -> 2L, "z" -> 3L)
 

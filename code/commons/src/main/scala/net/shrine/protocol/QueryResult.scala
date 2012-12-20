@@ -27,15 +27,15 @@ final case class QueryResult(
   val startDate: Option[XMLGregorianCalendar],
   val endDate: Option[XMLGregorianCalendar],
   val description: Option[String],
-  val statusType: String, //Should this be a QueryResult.StatusType?
+  val statusType: QueryResult.StatusType,
   val statusMessage: Option[String],
   val breakdowns: Map[ResultOutputType, I2b2ResultEnvelope] = Map.empty) extends XmlMarshaller with I2b2Marshaller {
 
-  def this(resultId: Long, instanceId: Long, resultType: ResultOutputType, setSize: Long, startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar, statusType: String) = {
+  def this(resultId: Long, instanceId: Long, resultType: ResultOutputType, setSize: Long, startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar, statusType: QueryResult.StatusType) = {
     this(resultId, instanceId, Option(resultType), setSize, Option(startDate), Option(endDate), None, statusType, None)
   }
 
-  def this(resultId: Long, instanceId: Long, resultType: ResultOutputType, setSize: Long, startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar, description: String, statusType: String) = {
+  def this(resultId: Long, instanceId: Long, resultType: ResultOutputType, setSize: Long, startDate: XMLGregorianCalendar, endDate: XMLGregorianCalendar, description: String, statusType: QueryResult.StatusType) = {
     this(resultId, instanceId, Option(resultType), setSize, Option(startDate), Option(endDate), Option(description), statusType, None)
   }
 
@@ -47,7 +47,7 @@ final case class QueryResult(
   import QueryResult._
 
   //NB: Fragile, non-type-safe ==
-  def isError = statusType == StatusType.Error.name
+  def isError = statusType == StatusType.Error
 
   override def toI2b2 = {
     import ResultOutputType._
@@ -82,11 +82,11 @@ final case class QueryResult(
             import StatusType._
             
             //TODO: What to do for the catch-all case?  Treat it as an error?  Just fail loudly, like we do now?
-            StatusType.valueOf(statusType) match {
-              case Some(Finished) => <status_type_id>3</status_type_id><description>{ Finished.name }</description>
+            statusType match {
+              case Finished => <status_type_id>3</status_type_id><description>{ Finished.name }</description>
               //TODO: Can we use the same <status_type_id> for both Queued and Processing?
-              case Some(Processing) | Some(Queued) => <status_type_id>2</status_type_id><description>{ Processing.name }</description>
-              case Some(Error) => statusMessage.map(x => <description>{ x }</description>).orNull
+              case Processing | Queued => <status_type_id>2</status_type_id><description>{ Processing.name }</description>
+              case Error => statusMessage.map(x => <description>{ x }</description>).orNull
             }
           }
         </query_status_type>
@@ -169,7 +169,7 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
       extractDate("startDate"),
       extractDate("endDate"),
       extract("description"),
-      (nodeSeq \ "status").text,
+      StatusType.valueOf((nodeSeq \ "status").text).get, //TODO: Avoid fragile .get call
       extract("statusMessage"),
       extractBreakdowns("resultEnvelope"))
   }
@@ -205,12 +205,12 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
       asXmlGc("start_date"),
       asXmlGc("end_date"),
       None, //no description
-      asText("query_status_type", "name"),
+      StatusType.valueOf(asText("query_status_type", "name")).get, //TODO: Avoid fragile .get call
       //no status message
       None)
   }
 
   def errorResult(description: Option[String], statusMessage: String) = {
-    QueryResult(0L, 0L, None, 0L, None, None, description, "ERROR", Option(statusMessage))
+    QueryResult(0L, 0L, None, 0L, None, None, description, StatusType.Error, Option(statusMessage))
   }
 }

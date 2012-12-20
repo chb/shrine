@@ -41,7 +41,7 @@ final case class MockShrineClient(toReturn: Map[String, SingleInstitutionQueryRe
       case (instName, instResult) => {
         val statusType = if(instResult.isError) QueryResult.StatusType.Error else QueryResult.StatusType.Finished
         
-        QueryResult(123L, 456L, Option(ResultOutputType.PATIENT_COUNT_XML), instResult.getCount, Some(now), Some(now), Some(instName), statusType.name, None)
+        QueryResult(123L, 456L, Option(ResultOutputType.PATIENT_COUNT_XML), instResult.getCount, Some(now), Some(now), Some(instName), statusType, None)
       }
     }
 

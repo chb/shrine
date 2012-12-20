@@ -15,14 +15,14 @@ final class AggregatedReadInstanceResultsResponseTest extends TestCase with Shri
   val resultId1 = 1111111L
   val setSize = 12
   val type1 = ResultOutputType.PATIENTSET
-  val statusName1 = "FINISHED"
+  val statusName1 = QueryResult.StatusType.Finished
   val startDate1 = Util.now
   val endDate1 = Util.now
   val result1 = new QueryResult(resultId1, shrineNetworkQueryId, type1, setSize, startDate1, endDate1, statusName1)
 
   val resultId2 = 222222L
   val type2 = ResultOutputType.PATIENT_COUNT_XML
-  val statusName2 = "FINISHED"
+  val statusName2 = QueryResult.StatusType.Finished
   val startDate2 = Util.now
   val endDate2 = Util.now
   val result2 = new QueryResult(resultId2, shrineNetworkQueryId, type2, setSize, startDate2, endDate2, statusName2)

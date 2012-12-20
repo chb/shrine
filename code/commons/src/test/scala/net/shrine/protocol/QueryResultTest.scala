@@ -30,7 +30,7 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
   private val statusType = QueryResult.StatusType.Finished
   private val description = "description"
   private val statusMessage = "lakjdalsjd"
-  private val queryResult = new QueryResult(resultId, instanceId, Some(resultType), setSize, Option(date), Option(date), Option(description), statusType.name, Option(statusMessage))
+  private val queryResult = new QueryResult(resultId, instanceId, Some(resultType), setSize, Option(date), Option(date), Option(description), statusType, Option(statusMessage))
 
   import ResultOutputType._
 
@@ -134,9 +134,9 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
   def testIsError {
     queryResult.isError should be(false)
 
-    queryResult.copy(statusType = QueryResult.StatusType.Processing.name).isError should be(false)
+    queryResult.copy(statusType = QueryResult.StatusType.Processing).isError should be(false)
 
-    queryResult.copy(statusType = QueryResult.StatusType.Error.name).isError should be(true)
+    queryResult.copy(statusType = QueryResult.StatusType.Error).isError should be(true)
   }
 
   @Test
@@ -259,7 +259,7 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
 
   @Test
   def testToI2b2QueuedAndProcessing {
-    def doTest(statusType: String) {
+    def doTest(statusType: QueryResult.StatusType) {
       val expectedI2b2XmlWithStillProcessing = XmlUtil.stripWhitespace(
         <query_result_instance>
           <result_instance_id>{ resultId }</result_instance_id>
@@ -283,8 +283,8 @@ final class QueryResultTest extends TestCase with XmlRoundTripper[QueryResult] w
       result.toI2b2String should equal(expectedI2b2XmlWithStillProcessing)
     }
 
-    doTest(QueryResult.StatusType.Queued.name)
-    doTest(QueryResult.StatusType.Processing.name)
+    doTest(QueryResult.StatusType.Queued)
+    doTest(QueryResult.StatusType.Processing)
   }
 
   @Test

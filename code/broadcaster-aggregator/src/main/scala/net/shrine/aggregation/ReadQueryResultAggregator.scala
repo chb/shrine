@@ -25,6 +25,6 @@ final class ReadQueryResultAggregator(shrineNetworkQueryId: Long, showAggregatio
   protected override def makeAggregatedResult(queryResults: Seq[QueryResult]): Option[QueryResult] = {
     val totalSize = queryResults.map(_.setSize).sum
           
-    queryResults.headOption.map(_.copy(instanceId = shrineNetworkQueryId, resultType = Some(PATIENT_COUNT_XML), setSize = totalSize, description = Some("Aggregated Count"), statusType = Finished.name, statusMessage = None))
+    queryResults.headOption.map(_.copy(instanceId = shrineNetworkQueryId, resultType = Some(PATIENT_COUNT_XML), setSize = totalSize, description = Some("Aggregated Count"), statusType = Finished, statusMessage = None))
   }
 }

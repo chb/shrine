@@ -27,8 +27,8 @@ final class ReadQueryResultAggregatorTest extends TestCase with ShouldMatchersFo
   private val setSize2 = 456L
   private val totalSetSize = setSize1 + setSize2
 
-  private val queryResult1 = QueryResult(1L, 2L, Some(PATIENT_COUNT_XML), setSize1, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
-  private val queryResult2 = QueryResult(1L, 2L, Some(PATIENT_COUNT_XML), setSize2, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
+  private val queryResult1 = QueryResult(1L, 2L, Some(PATIENT_COUNT_XML), setSize1, None, None, None, QueryResult.StatusType.Finished, None, Map.empty)
+  private val queryResult2 = QueryResult(1L, 2L, Some(PATIENT_COUNT_XML), setSize2, None, None, None, QueryResult.StatusType.Finished, None, Map.empty)
 
   private val response1 = ReadQueryResultResponse(queryId, queryResult1)
   private val response2 = ReadQueryResultResponse(queryId, queryResult2)

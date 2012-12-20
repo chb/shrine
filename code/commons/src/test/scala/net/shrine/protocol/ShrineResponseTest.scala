@@ -29,7 +29,7 @@ final class ShrineResponseTest extends TestCase with ShouldMatchersForJUnit {
     
     def now = (new NetworkTime).getXMLGregorianCalendar
     
-    val queryResult1 = QueryResult(1L, 2342L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished.name, None, Map.empty)
+    val queryResult1 = QueryResult(1L, 2342L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished, None, Map.empty)
     
     doTestFromXml(new ReadQueryResultResponse(123L, queryResult1))
     doTestFromXml(new AggregatedReadQueryResultResponse(123L, Seq(queryResult1)))

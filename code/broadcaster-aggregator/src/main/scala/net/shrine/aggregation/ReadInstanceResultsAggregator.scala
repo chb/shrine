@@ -32,7 +32,7 @@ class ReadInstanceResultsAggregator(shrineNetworkQueryId: Long, showAggregation:
   import ResultOutputType._
   
   private val setType = Some(PATIENT_COUNT_XML)
-  private val statusType = QueryResult.StatusType.Finished.name
+  private val statusType = QueryResult.StatusType.Finished
   private val allowedSetTypes = ResultOutputType.values.toSet
 
   protected override def consolidateQueryResults(queryResultsFromAllValidResponses: Seq[(SpinResultEntry, Seq[QueryResult])]): Seq[QueryResult] = {

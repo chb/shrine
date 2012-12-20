@@ -34,7 +34,7 @@ final class RunQueryResponseTest extends ShrineResponseI2b2SerializableValidator
   private val resultId2 = 4L
   private val resultType1 = ResultOutputType.PATIENTSET
   private val resultType2 = ResultOutputType.PATIENT_COUNT_XML
-  private val statusType = "FINISHED"
+  private val statusType = QueryResult.StatusType.Finished
 
   override def messageBody = <message_body>
                       <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:master_instance_result_responseType">

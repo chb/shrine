@@ -35,8 +35,8 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
 
   @Test
   def testAggregate {
-    val qrCount = new QueryResult(1L, queryInstanceId, PATIENT_COUNT_XML, 10L, now, now, "Desc", "FINISHED")
-    val qrSet = new QueryResult(2L, queryInstanceId, PATIENTSET, 10L, now, now, "Desc", "FINISHED")
+    val qrCount = new QueryResult(1L, queryInstanceId, PATIENT_COUNT_XML, 10L, now, now, "Desc", QueryResult.StatusType.Finished)
+    val qrSet = new QueryResult(2L, queryInstanceId, PATIENTSET, 10L, now, now, "Desc", QueryResult.StatusType.Finished)
 
     val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrCount)
     val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrSet)
@@ -60,7 +60,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
 
   @Test
   def testAggCount {
-    val qrSet = new QueryResult(2L, queryInstanceId, PATIENTSET, 10L, now, now, "Desc", "FINISHED")
+    val qrSet = new QueryResult(2L, queryInstanceId, PATIENTSET, 10L, now, now, "Desc", QueryResult.StatusType.Finished)
 
     val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrSet)
     val rqr2 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrSet)
@@ -78,7 +78,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
 
   @Test
   def testHandleErrorResponse {
-    val qrCount = new QueryResult(1L, queryInstanceId, PATIENT_COUNT_XML, 10L, now, now, "Desc", "FINISHED")
+    val qrCount = new QueryResult(1L, queryInstanceId, PATIENT_COUNT_XML, 10L, now, now, "Desc", QueryResult.StatusType.Finished)
 
     val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qrCount)
     val errorMessage = "error message"
@@ -94,7 +94,7 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
     actual.results.size should equal(3)
     
     actual.results.filter(_.resultTypeIs(PATIENT_COUNT_XML)).head.setSize should equal(10)
-    actual.results.filter(_.statusType.equalsIgnoreCase("ERROR")).head.statusMessage should equal(Some(errorMessage))
+    actual.results.filter(_.statusType == QueryResult.StatusType.Error).head.statusMessage should equal(Some(errorMessage))
     actual.results.filter(hasTotalCount).head.setSize should equal(10)
   }
 
@@ -110,9 +110,9 @@ final class RunQueryAggregatorTest extends TestCase with AssertionsForJUnit with
       resultType -> I2b2ResultEnvelope(resultType, (11 to 20).map(toColumnTuple).toMap)
     }
     
-    val qr1 = new QueryResult(1L, queryInstanceId, Some(PATIENT_COUNT_XML), 10L, Some(now), Some(now), Some("Desc"), "FINISHED", None, breakdowns1)
+    val qr1 = new QueryResult(1L, queryInstanceId, Some(PATIENT_COUNT_XML), 10L, Some(now), Some(now), Some("Desc"), QueryResult.StatusType.Finished, None, breakdowns1)
     
-    val qr2 = new QueryResult(2L, queryInstanceId, Some(PATIENT_COUNT_XML), 20L, Some(now), Some(now), Some("Desc"), "FINISHED", None, breakdowns2)
+    val qr2 = new QueryResult(2L, queryInstanceId, Some(PATIENT_COUNT_XML), 20L, Some(now), Some(now), Some("Desc"), QueryResult.StatusType.Finished, None, breakdowns2)
 
     val rqr1 = new RunQueryResponse(queryId, now, userId, groupId, requestQueryDef, queryInstanceId, qr1)
     

@@ -112,11 +112,10 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
       val typeToIdTuples = for {
         result <- response.results
         resultType = result.resultType.getOrElse(ResultOutputType.ERROR)
-        statusType = StatusType.valueOf(result.statusType).getOrElse(StatusType.Error)
         //TODO: under what circumstances can QueryResults NOT have start and end dates set?
         elapsed = execTime(result)
       } yield {
-        QueryResults.withoutGeneratedColumns.insert(result.resultId, parentQueryId, resultType, statusType, elapsed)
+        QueryResults.withoutGeneratedColumns.insert(result.resultId, parentQueryId, resultType, result.statusType, elapsed)
 
         (resultType, sequenceHelper.lastInsertedQueryResultId)
       }

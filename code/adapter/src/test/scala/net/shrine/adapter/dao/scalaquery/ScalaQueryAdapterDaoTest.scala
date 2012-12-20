@@ -71,13 +71,13 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   private val masterId2 = "def"
   private val masterId3 = "ghi"
 
-  private val countQueryResult = QueryResult(resultId, instanceId, Some(PATIENT_COUNT_XML), count, now, now, desc, QueryResult.StatusType.Finished.name, None, Map.empty)
+  private val countQueryResult = QueryResult(resultId, instanceId, Some(PATIENT_COUNT_XML), count, now, now, desc, QueryResult.StatusType.Finished, None, Map.empty)
 
   private val errorQueryResult1 = QueryResult.errorResult(desc, message1)
   private val errorQueryResult2 = QueryResult.errorResult(desc, message2)
 
-  private val breakdownQueryResult1 = QueryResult(resultId, instanceId, Some(PATIENT_AGE_COUNT_XML), countQueryResult.setSize, now, now, desc, QueryResult.StatusType.Finished.name, None, onlyAgeBreakdown)
-  private val breakdownQueryResult2 = QueryResult(resultId, instanceId, Some(PATIENT_GENDER_COUNT_XML), countQueryResult.setSize, now, now, desc, QueryResult.StatusType.Finished.name, None, onlyGenderBreakdown)
+  private val breakdownQueryResult1 = QueryResult(resultId, instanceId, Some(PATIENT_AGE_COUNT_XML), countQueryResult.setSize, now, now, desc, QueryResult.StatusType.Finished, None, onlyAgeBreakdown)
+  private val breakdownQueryResult2 = QueryResult(resultId, instanceId, Some(PATIENT_GENDER_COUNT_XML), countQueryResult.setSize, now, now, desc, QueryResult.StatusType.Finished, None, onlyGenderBreakdown)
 
   import RawCrcRunQueryResponse.toQueryResultMap
   

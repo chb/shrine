@@ -30,6 +30,6 @@ final class CountTest extends TestCase with ShouldMatchersForJUnit {
     queryResult.resultType should equal(Some(ResultOutputType.PATIENT_COUNT_XML))
     queryResult.setSize should equal(obfsc)
     queryResult.statusMessage should be(None)
-    queryResult.statusType should equal(QueryResult.StatusType.Finished.name)
+    queryResult.statusType should equal(QueryResult.StatusType.Finished)
   }
 }

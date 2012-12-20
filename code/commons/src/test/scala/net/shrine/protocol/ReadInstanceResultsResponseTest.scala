@@ -24,14 +24,14 @@ final class ReadInstanceResultsResponseTest extends TestCase with ShrineResponse
   val resultId1 = 1111111L
   val setSize = 12
   val type1 = ResultOutputType.PATIENTSET
-  val statusName1 = "FINISHED"
+  val statusName1 = QueryResult.StatusType.Finished
   val startDate1 = makeXMLGregorianCalendar(Calendar.getInstance.getTime)
   val endDate1 = makeXMLGregorianCalendar(Calendar.getInstance.getTime)
   val result1 = new QueryResult(resultId1, shrineNetworkQueryId, type1, setSize, startDate1, endDate1, statusName1)
 
   val resultId2 = 222222L
   val type2 = ResultOutputType.PATIENT_COUNT_XML
-  val statusName2 = "FINISHED"
+  val statusName2 = QueryResult.StatusType.Finished
   val startDate2 = makeXMLGregorianCalendar(Calendar.getInstance.getTime)
   val endDate2 = makeXMLGregorianCalendar(Calendar.getInstance.getTime)
   val result2 = new QueryResult(resultId2, shrineNetworkQueryId, type2, setSize, startDate2, endDate2, statusName2)

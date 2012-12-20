@@ -28,7 +28,7 @@ final case class Count(
                 None, //TODO: Have a real start date here?
                 None, //TODO: Have a real end date here?
                 None, //no desc
-                QueryResult.StatusType.Finished.name,
+                QueryResult.StatusType.Finished,
                 // no status message
                 None)
   }

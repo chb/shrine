@@ -17,7 +17,7 @@ final class ReadQueryResultResponseTest extends TestCase with ShouldMatchersForJ
     None,
     None,
     None,
-    "FINISHED",
+    QueryResult.StatusType.Finished,
     None,
     Map(ResultOutputType.PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(ResultOutputType.PATIENT_AGE_COUNT_XML, Map("x" -> 123, "y" -> 214))))
 

@@ -29,8 +29,8 @@ final class ReadInstanceResultsAggregatorTest extends TestCase with AssertionsFo
     val startDate = Util.now
     val endDate = Util.now
     
-    val queryResult1 = new QueryResult(1L, instanceId, PATIENT_COUNT_XML, 12, startDate, endDate, "FINISHED")
-    val queryResult2 = new QueryResult(2L, instanceId, PATIENTSET, 14, startDate, endDate, "FINISHED")
+    val queryResult1 = new QueryResult(1L, instanceId, PATIENT_COUNT_XML, 12, startDate, endDate, QueryResult.StatusType.Finished)
+    val queryResult2 = new QueryResult(2L, instanceId, PATIENTSET, 14, startDate, endDate, QueryResult.StatusType.Finished)
 
     val aggregator = new ReadInstanceResultsAggregator(instanceId, true)
     val aggregatorNoAggregate = new ReadInstanceResultsAggregator(instanceId, false)
@@ -77,7 +77,7 @@ final class ReadInstanceResultsAggregatorTest extends TestCase with AssertionsFo
     val instanceId = 123L
     val startDate = (new NetworkTime).getXMLGregorianCalendar
     val endDate = (new NetworkTime).getXMLGregorianCalendar
-    val queryResult = new QueryResult(1L, instanceId, PATIENT_COUNT_XML, 12, startDate, endDate, "FINISHED")
+    val queryResult = new QueryResult(1L, instanceId, PATIENT_COUNT_XML, 12, startDate, endDate, QueryResult.StatusType.Finished)
     val aggregator = new ReadInstanceResultsAggregator(instanceId, true)
     val errorMessage = "you are an error"
 

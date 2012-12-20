@@ -44,7 +44,7 @@ final class HelpersTest extends TestCase with AssertionsForJUnit with ShouldMatc
     
     val setSize = 12345L 
     
-    val queryResult = QueryResult(123L, 999L, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, None, None, None, "", None)
+    val queryResult = QueryResult(123L, 999L, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, None, None, None, QueryResult.StatusType.Finished, None)
     
     val actual = Helpers.makeSingleInstitutionQueryResult(queryResult)
     

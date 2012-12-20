@@ -51,7 +51,7 @@ class RunQueryAggregator(
 
     val aggResults = {
       if (doAggregation) {
-        val sumResult = new QueryResult(0L, invalidInstanceId, PATIENT_COUNT_XML, counts.sum, now, now, "TOTAL COUNT", "FINISHED")
+        val sumResult = new QueryResult(0L, invalidInstanceId, PATIENT_COUNT_XML, counts.sum, now, now, "TOTAL COUNT", QueryResult.StatusType.Finished)
 
         results :+ sumResult
       } else {

@@ -73,7 +73,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     				     
     val obfscBreakdowns = breakdowns.mapValues(_.mapValues(_ + 1))
     
-    val countResult = QueryResult(456L, instanceId, Some(PATIENT_COUNT_XML), setSize, Option(now), Option(now), Some("results from node X"), QueryResult.StatusType.Finished.name, None, breakdowns)
+    val countResult = QueryResult(456L, instanceId, Some(PATIENT_COUNT_XML), setSize, Option(now), Option(now), Some("results from node X"), QueryResult.StatusType.Finished, None, breakdowns)
     
     val breakdownResults = breakdowns.map { case (resultType, data) =>
       countResult.withBreakdowns(Map(resultType -> data)).withResultType(resultType)
@@ -107,7 +107,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     actualQueryResult.startDate should be(None) //TODO: This is probably wrong
     actualQueryResult.endDate should be(None) //TODO: This is probably wrong
     actualQueryResult.description should be(None) //TODO: This is probably wrong
-    actualQueryResult.statusType should equal(QueryResult.StatusType.Finished.name)
+    actualQueryResult.statusType should equal(QueryResult.StatusType.Finished)
     actualQueryResult.statusMessage should be(None)
     actualQueryResult.breakdowns should equal(obfscBreakdowns)
   }

@@ -40,9 +40,7 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     StoredQueries.retrieve(dao, doObfuscation, queryId) match {
       case Some(queryResult) => {
         //TODO: Replace QueryResult.statusType with an actual enum
-        val statusType = QueryResult.StatusType.valueOf(queryResult.statusType).get
-        
-        if(statusType.isDone) {
+        if(queryResult.statusType.isDone) {
           toResponse(queryId, queryResult)
         } else {
           //TODO: This is WRONG, will not get breakdowns, since we don't have their resultIds here. :(
