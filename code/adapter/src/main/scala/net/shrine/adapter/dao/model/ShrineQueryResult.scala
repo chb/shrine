@@ -6,6 +6,7 @@ import net.shrine.adapter.dao.scalaquery.rows.QueryResultRow
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.I2b2ResultEnvelope
+import net.shrine.adapter.dao.scalaquery.rows.CountRow
 
 /**
  * @author clint
@@ -14,6 +15,8 @@ import net.shrine.protocol.I2b2ResultEnvelope
  * NB: Named ShrineQueryResult to avoid clashes with net.shrine.protocol.QueryResult
  */
 final case class ShrineQueryResult(
+  networkQueryId: Long,
+  localId: String,
   count: Option[Count],
   breakdowns: Seq[Breakdown],
   errors: Seq[ShrineError]) {
@@ -44,15 +47,25 @@ final case class ShrineQueryResult(
 }
 
 object ShrineQueryResult {
-  def fromRows(resultRows: Seq[QueryResultRow], countRows: Seq[Count], breakdownRows: Map[ResultOutputType, Seq[BreakdownResultRow]], errorRows: Seq[ShrineError]): Option[ShrineQueryResult] = {
+  //TODO: TEST!!! 
+  def fromRows(queryRow: ShrineQuery, resultRows: Seq[QueryResultRow], countRowOption: Option[CountRow], breakdownRows: Map[ResultOutputType, Seq[BreakdownResultRow]], errorRows: Seq[ShrineError]): Option[ShrineQueryResult] = {
     if(resultRows.isEmpty) {
       None
     } else {
-      val count = countRows.headOption
-    
-      val breakdowns = breakdownRows.flatMap { case (resultType, rows) => Breakdown.fromRows(resultType, rows) }.toSeq
-    
-      Some(ShrineQueryResult(count, breakdowns, errorRows))
+      val resultRowsByType = resultRows.map(r => r.resultType -> r).toMap
+      
+      val count = for {
+        countRow <- countRowOption
+        resultRow <- resultRowsByType.get(ResultOutputType.PATIENT_COUNT_XML)
+      } yield Count.fromCountRow(resultRow.localId, countRow)
+      
+      val breakdowns = (for {
+        (resultType, resultRow) <- resultRowsByType
+        rows <- breakdownRows.get(resultType)
+        breakdown <- Breakdown.fromRows(resultType, resultRow.localId, rows)
+      } yield breakdown).toSeq
+      
+      Some(ShrineQueryResult(queryRow.networkId, queryRow.localId, count, breakdowns, errorRows))
     }
   }
 }

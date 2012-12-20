@@ -4,6 +4,7 @@ import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.adapter.dao.scalaquery.tables.DateHelpers
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.ResultOutputType
+import net.shrine.adapter.dao.scalaquery.rows.CountRow
 
 /**
  * @author clint
@@ -11,7 +12,8 @@ import net.shrine.protocol.ResultOutputType
  */
 final case class Count(
     id: Int,
-    resultId: Int, 
+    resultId: Int,
+    localId: Long,
     originalValue: Long, 
     obfuscatedValue: Long, 
     creationDate: XMLGregorianCalendar) extends HasResultId {
@@ -21,7 +23,7 @@ final case class Count(
   private val resultType = Some(PATIENT_COUNT_XML)
 
   def toQueryResult: QueryResult = {
-    QueryResult(resultId, //Is this ok?  This field is supposed to be an i2b2 resultId, but we're passing in an id from the new Shrine adapter DB
+    QueryResult(localId, //Is this ok?  This field is supposed to be an i2b2 resultId, but we're passing in an id from the new Shrine adapter DB
                 resultId, //Is this ok?  This field is supposed to be an i2b2 instanceId, but we're passing in an id from the new Shrine adapter DB
                 resultType,
                 obfuscatedValue,
@@ -33,3 +35,11 @@ final case class Count(
                 None)
   }
 }
+
+object Count {
+  //TODO: TEST!!!
+  def fromCountRow(localResultId: Long, row: CountRow): Count = {
+    Count(row.id, row.resultId, localResultId, row.originalValue, row.obfuscatedValue, row.creationDate)
+  }
+}
+

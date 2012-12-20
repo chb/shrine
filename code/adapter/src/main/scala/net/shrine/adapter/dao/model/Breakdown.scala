@@ -7,10 +7,10 @@ import net.shrine.protocol.ResultOutputType
  * @author clint
  * @date Oct 16, 2012
  */
-final case class Breakdown(resultId: Int, resultType: ResultOutputType, data: Map[String, ObfuscatedPair]) extends HasResultId
+final case class Breakdown(resultId: Int, localId: Long, resultType: ResultOutputType, data: Map[String, ObfuscatedPair]) extends HasResultId
 
 object Breakdown {
-  def fromRows(resultType: ResultOutputType, rows: Seq[BreakdownResultRow]): Option[Breakdown] = {
+  def fromRows(resultType: ResultOutputType, localId: Long, rows: Seq[BreakdownResultRow]): Option[Breakdown] = {
     require(resultType.isBreakdown)
     
     if(rows.isEmpty) {
@@ -18,7 +18,7 @@ object Breakdown {
     } else {
       val entries = rows.map(r => (r.dataKey, ObfuscatedPair(r.originalValue, r.obfuscatedValue)))
       
-      Some(Breakdown(rows.head.resultId, resultType, entries.toMap))
+      Some(Breakdown(rows.head.resultId, localId, resultType, entries.toMap))
     }
   }
 }

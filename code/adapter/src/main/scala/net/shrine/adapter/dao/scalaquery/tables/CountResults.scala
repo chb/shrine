@@ -5,12 +5,13 @@ import org.scalaquery.ql.TypeMapper._
 import org.scalaquery.ql.extended.{ExtendedTable => Table}
 import java.sql.Date
 import net.shrine.adapter.dao.model.Count
+import net.shrine.adapter.dao.scalaquery.rows.CountRow
 
 /**
  * @author clint
  * @date Oct 12, 2012
  */
-object CountResults extends Table[Count]("COUNT_RESULT") with HasId with HasResultId with HasCreationDate {
+object CountResults extends Table[CountRow]("COUNT_RESULT") with HasId with HasResultId with HasCreationDate {
   def originalCount = column[Long]("ORIGINAL_COUNT", O.NotNull)
   def obfuscatedCount = column[Long]("OBFUSCATED_COUNT", O.NotNull)
   
@@ -18,5 +19,5 @@ object CountResults extends Table[Count]("COUNT_RESULT") with HasId with HasResu
   
   import ProjectionHelpers._
   
-  override def * = id ~~ withoutGeneratedColumns ~ creationDate <> (Count, Count.unapply _)
+  override def * = id ~~ withoutGeneratedColumns ~ creationDate <> (CountRow, CountRow.unapply _)
 }

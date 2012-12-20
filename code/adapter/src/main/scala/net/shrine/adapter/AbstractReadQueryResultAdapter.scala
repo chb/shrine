@@ -16,6 +16,7 @@ import net.shrine.util.HttpClient
 import net.shrine.protocol.ReadInstanceResultsRequest
 import net.shrine.protocol.ReadInstanceResultsResponse
 import scala.xml.NodeSeq
+import net.shrine.adapter.dao.model.ShrineQueryResult
 
 
 /**
@@ -37,7 +38,15 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     
     val queryId = getQueryId(req)
     
-    StoredQueries.retrieve(dao, doObfuscation, queryId) match {
+    //TODO:
+    /*StoredQueries.retrieve(dao, queryId) match {
+      case Some(shrineQueryResult: ShrineQueryResult) => {
+        //shrineQueryResult.
+      }
+      case None => ErrorResponse("Query with id '" + queryId + "' not found")
+    }*/
+    
+    StoredQueries.retrieveAsQueryResult(dao, doObfuscation, queryId) match {
       case Some(queryResult) => {
         //TODO: Replace QueryResult.statusType with an actual enum
         if(queryResult.statusType.isDone) {

@@ -167,7 +167,10 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
   override def findResultsFor(networkQueryId: Long): Option[ShrineQueryResult] = {
     val breakdownRowsByType = allResults(Queries.breakdownResults(networkQueryId)).groupBy(_._1).mapValues(_.map { case (_, rows) => rows })
 
-    ShrineQueryResult.fromRows(allResults(Queries.resultsForQuery(networkQueryId)), allResults(Queries.countResults(networkQueryId)), breakdownRowsByType, allResults(Queries.errorResults(networkQueryId)))
+    for { 
+      queryRow <- firstResultOption(Queries.queriesByNetworkId(networkQueryId))
+      shrineQueryResult <- ShrineQueryResult.fromRows(queryRow, allResults(Queries.resultsForQuery(networkQueryId)), firstResultOption(Queries.countResults(networkQueryId)), breakdownRowsByType, allResults(Queries.errorResults(networkQueryId)))
+    } yield shrineQueryResult
   }
 
   private def firstResultOption[T](queryToRun: MutatingUnitInvoker[T]): Option[T] = {
