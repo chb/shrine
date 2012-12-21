@@ -6,6 +6,7 @@ import org.junit.Test
 import net.shrine.util.Util
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.QueryResult
+import net.shrine.adapter.dao.scalaquery.rows.CountRow
 
 /**
  * @author clint
@@ -32,5 +33,22 @@ final class CountTest extends TestCase with ShouldMatchersForJUnit {
     queryResult.setSize should equal(obfsc)
     queryResult.statusMessage should be(None)
     queryResult.statusType should equal(QueryResult.StatusType.Finished)
+  }
+  
+  @Test
+  def testFromCountRow { 
+    val row = CountRow(123, 456, 19L, 20L, Util.now)
+    
+    val localResultId = 789L
+    
+    val count = Count.fromCountRow(localResultId, row)
+    
+    count should not be(null)
+    count.creationDate should equal(row.creationDate)
+    count.id should equal(row.id)
+    count.localId should equal(localResultId)
+    count.obfuscatedValue should equal(row.obfuscatedValue)
+    count.originalValue should equal(row.originalValue)
+    count.resultId should equal(row.resultId)
   }
 }
