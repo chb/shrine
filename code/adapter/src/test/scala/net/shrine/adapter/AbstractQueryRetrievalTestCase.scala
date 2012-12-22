@@ -24,6 +24,8 @@ import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.RawCrcRunQueryResponse
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.config.HiveCredentials
+import javax.xml.datatype.XMLGregorianCalendar
+import net.shrine.util.XmlGcEnrichments
 
 /**
  * @author clint
@@ -73,17 +75,28 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     				     
     val obfscBreakdowns = breakdowns.mapValues(_.mapValues(_ + 1))
     
-    val countResult = QueryResult(456L, instanceId, Some(PATIENT_COUNT_XML), setSize, Option(now), Option(now), Some("results from node X"), QueryResult.StatusType.Finished, None, breakdowns)
+    val startDate = now
+    val elapsed = 100L
+    
+    val endDate = {
+      import XmlGcEnrichments._
+      
+      startDate + elapsed.milliseconds
+    }
+    
+    val countResult = QueryResult(456L, instanceId, Some(PATIENT_COUNT_XML), setSize, Option(startDate), Option(endDate), Some("results from node X"), QueryResult.StatusType.Finished, None, breakdowns)
     
     val breakdownResults = breakdowns.map { case (resultType, data) =>
       countResult.withBreakdowns(Map(resultType -> data)).withResultType(resultType)
     }.toSeq
+    
+    val queryStartDate = now
     				     
     val idsByResultType = dao.insertQueryResults(
         dbQueryId, 
     	RawCrcRunQueryResponse(
     	    shrineNetworkQueryId, 
-    	    now, 
+    	    startDate, 
     	    authn.username, 
     	    authn.domain, 
     	    QueryDefinition("some-query", queryExpr), 
@@ -104,12 +117,21 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     
     actualQueryResult.resultType should equal(Some(PATIENT_COUNT_XML))
     actualQueryResult.setSize should equal(obfSetSize)
-    actualQueryResult.startDate should be(None) //TODO: This is probably wrong
-    actualQueryResult.endDate should be(None) //TODO: This is probably wrong
     actualQueryResult.description should be(None) //TODO: This is probably wrong
     actualQueryResult.statusType should equal(QueryResult.StatusType.Finished)
     actualQueryResult.statusMessage should be(None)
     actualQueryResult.breakdowns should equal(obfscBreakdowns)
+    
+    def toMillis(xmlGc: XMLGregorianCalendar): Long = xmlGc.toGregorianCalendar.getTimeInMillis
+    
+    for {
+      startDate <- actualQueryResult.startDate
+      endDate <- actualQueryResult.endDate
+    } {
+      val actualElapsed = toMillis(endDate) - toMillis(startDate)
+      
+      actualElapsed should equal(elapsed)
+    }
   }
 }
 

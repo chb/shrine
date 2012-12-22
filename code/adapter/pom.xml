@@ -11,6 +11,9 @@
         <artifactId>shrine-base</artifactId>
         <version>1.14-SNAPSHOT</version>
     </parent>
+    <properties>
+    	<akka-version>2.0.4</akka-version>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -19,6 +22,13 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+    	<repository>
+			<id>typesafe</id>
+			<name>Typesafe Repository</name>
+			<url>http://repo.typesafe.com/typesafe/releases/</url>
+		</repository>
+    </repositories>
     <dependencies>
         <dependency>
 	    <groupId>org.scalaquery</groupId>
@@ -32,6 +42,11 @@
             <version>0.11.1</version>
         </dependency>
 	-->
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor</artifactId>
+            <version>${akka-version}</version>
+		</dependency>
         <dependency>
             <groupId>net.shrine</groupId>
             <artifactId>shrine-commons</artifactId>

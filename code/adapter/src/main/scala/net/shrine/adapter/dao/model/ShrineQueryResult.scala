@@ -21,6 +21,8 @@ final case class ShrineQueryResult(
   breakdowns: Seq[Breakdown],
   errors: Seq[ShrineError]) {
   
+  lazy val isDone = count.map(_.statusType.isDone).getOrElse(false)
+  
   def toQueryResults(doObfuscation: Boolean): Option[QueryResult] = {
     val countResult = count.map(_.toQueryResult).map { countQueryResult =>
       //add breakdowns
@@ -57,7 +59,7 @@ object ShrineQueryResult {
       val count = for {
         countRow <- countRowOption
         resultRow <- resultRowsByType.get(ResultOutputType.PATIENT_COUNT_XML)
-      } yield Count.fromCountRow(resultRow.localId, countRow)
+      } yield Count.fromRows(resultRow, countRow)
       
       val breakdowns = (for {
         (resultType, resultRow) <- resultRowsByType

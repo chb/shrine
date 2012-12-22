@@ -17,55 +17,123 @@ import net.shrine.protocol.ReadInstanceResultsRequest
 import net.shrine.protocol.ReadInstanceResultsResponse
 import scala.xml.NodeSeq
 import net.shrine.adapter.dao.model.ShrineQueryResult
-
+import net.shrine.protocol.ReadResultRequest
+import net.shrine.protocol.ReadResultResponse
+import net.shrine.adapter.dao.model.Breakdown
+import net.shrine.protocol.ResultOutputType
+import net.shrine.util.Try
+import akka.dispatch.ExecutionContexts
+import akka.dispatch.Future
+import akka.dispatch.Await
+import akka.dispatch.ExecutionContext
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import net.shrine.util.Success
+import net.shrine.util.Failure
 
 /**
  * @author clint
  * @date Nov 2, 2012
- * 
+ *
  */
 abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](
-    crcUrl: String,
-    httpClient: HttpClient,
-    hiveCredentials: HiveCredentials,
-    dao: AdapterDao, 
-    doObfuscation: Boolean, 
-    getQueryId: Req => Long,
-    toResponse: (Long, QueryResult) => Rsp) extends Adapter {
+  crcUrl: String,
+  httpClient: HttpClient,
+  hiveCredentials: HiveCredentials,
+  dao: AdapterDao,
+  doObfuscation: Boolean,
+  getQueryId: Req => Long,
+  toResponse: (Long, QueryResult) => Rsp) extends Adapter {
+
+  private lazy val executorService = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors + 1)
+
+  override def destroy() {
+    executorService.shutdown()
+
+    executorService.awaitTermination(5, TimeUnit.SECONDS)
+
+    executorService.shutdownNow()
+
+    super.destroy()
+  }
 
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
     val req = message.request.asInstanceOf[Req]
-    
+
     val queryId = getQueryId(req)
-    
-    //TODO:
-    /*StoredQueries.retrieve(dao, queryId) match {
+
+    def errorResponse = ErrorResponse("Query with id '" + queryId + "' not found")
+
+    def countRequest(localResultId: Long) = ReadInstanceResultsRequest(req.projectId, req.waitTimeMs, req.authn, localResultId)
+
+    def breakdownRequest(localResultId: Long) = ReadResultRequest(req.projectId, req.waitTimeMs, req.authn, localResultId.toString)
+
+    StoredQueries.retrieve(dao, queryId) match {
+      case None => errorResponse
       case Some(shrineQueryResult: ShrineQueryResult) => {
-        //shrineQueryResult.
-      }
-      case None => ErrorResponse("Query with id '" + queryId + "' not found")
-    }*/
-    
-    StoredQueries.retrieveAsQueryResult(dao, doObfuscation, queryId) match {
-      case Some(queryResult) => {
-        //TODO: Replace QueryResult.statusType with an actual enum
-        if(queryResult.statusType.isDone) {
-          toResponse(queryId, queryResult)
-        } else {
-          //TODO: This is WRONG, will not get breakdowns, since we don't have their resultIds here. :(
-          //Need to get raw results from AdapterDB to get ALL result ids, for count and breakdown results
-          val resultRequest = ReadInstanceResultsRequest(req.projectId, req.waitTimeMs, req.authn, queryResult.resultId)
-        
-          val response = delegateAdapter.processRequest(identity, BroadcastMessage(resultRequest)).asInstanceOf[ReadInstanceResultsResponse]
-          
-          toResponse(queryId, response.singleNodeResult)
+        if (shrineQueryResult.isDone) shrineQueryResult.toQueryResults(doObfuscation).map(toResponse(queryId, _)).getOrElse(errorResponse)
+        else {
+          implicit val executionContext = ExecutionContext.fromExecutorService(executorService)
+
+          val futureCountAttempts = Future.sequence(for {
+            count <- shrineQueryResult.count.toSeq
+          } yield Future {
+            Try(delegateCountAdapter.process(identity, countRequest(count.localId)))
+          })
+
+          val futureBreakdownAttempts = Future.sequence(for {
+            Breakdown(_, localResultId, resultType, data) <- shrineQueryResult.breakdowns
+          } yield Future {
+            Try(delegateBreakdownAdapter.process(identity, breakdownRequest(localResultId)))
+          })
+
+          val futureResponses = for {
+            countResponseAttempts: Seq[Try[ReadInstanceResultsResponse]] <- futureCountAttempts
+            breakdownResponseAttempts: Seq[Try[ReadResultResponse]] <- futureBreakdownAttempts
+          } yield {
+            (countResponseAttempts, breakdownResponseAttempts)
+          }
+
+          import akka.util.duration._
+
+          val (countResponseAttempts, breakdownResponseAttempts) = Await.result(futureResponses, req.waitTimeMs.milliseconds)
+
+          val responseAttempt = for {
+            countResponses: Seq[ReadInstanceResultsResponse] <- Try.sequence(countResponseAttempts)
+            countResponse: ReadInstanceResultsResponse <- Try(countResponses.head)
+            breakdownResponses: Seq[ReadResultResponse] <- Try.sequence(breakdownResponseAttempts)
+          } yield {
+            val localCountResultId = countResponse.shrineNetworkQueryId
+
+            val countQueryResult = countResponse.singleNodeResult
+
+            val breakdownsByType = (for {
+              response <- breakdownResponses
+              resultType <- response.metadata.resultType
+            } yield resultType -> response.data).toMap
+
+            val queryResultToReturn = countQueryResult.withBreakdowns(breakdownsByType)
+
+            toResponse(queryId, queryResultToReturn)
+          }
+
+          responseAttempt match {
+            case Success(response) => response
+            case Failure(e) => ErrorResponse("Couldn't retrieve query with id '" + queryId + "' from the CRC: exception message follows: " + e.getMessage + " stack trace: " + e.getStackTrace)
+          }
         }
       }
-      case None => ErrorResponse("Query with id '" + queryId + "' not found")
     }
   }
-  
-  private lazy val delegateAdapter = new CrcAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](crcUrl, httpClient, hiveCredentials) {
-    override protected def parseShrineResponse(xml: NodeSeq): ShrineResponse = ReadInstanceResultsResponse.fromI2b2(xml)
+
+  private final class DelegateAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](unmarshal: NodeSeq => Rsp) extends CrcAdapter[Req, Rsp](crcUrl, httpClient, hiveCredentials) {
+    def process(identity: Identity, req: Req): Rsp = processRequest(identity, BroadcastMessage(req)).asInstanceOf[Rsp]
+
+    override protected def parseShrineResponse(xml: NodeSeq): ShrineResponse = unmarshal(xml)
   }
+
+  private lazy val delegateCountAdapter = new DelegateAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](ReadInstanceResultsResponse.fromI2b2)
+
+  private lazy val delegateBreakdownAdapter = new DelegateAdapter[ReadResultRequest, ReadResultResponse](ReadResultResponse.fromI2b2)
 }

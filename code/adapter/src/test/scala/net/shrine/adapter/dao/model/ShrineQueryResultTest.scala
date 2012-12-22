@@ -66,7 +66,7 @@ final class ShrineQueryResultTest extends TestCase with ShouldMatchersForJUnit {
       shrineQueryResult.copy(count = None).toQueryResults(doObfuscation) should equal(Option(errorRows.head.toQueryResult))
       shrineQueryResult.copy(count = None, errors = Nil).toQueryResults(doObfuscation) should equal(None)
 
-      val expected = countRowOption.map(Count.fromCountRow(countQueryResultRow.localId, _)).map(_.toQueryResult.withBreakdowns(Map(
+      val expected = countRowOption.map(Count.fromRows(countQueryResultRow, _)).map(_.toQueryResult.withBreakdowns(Map(
         PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Map("x" -> obfuscate(1), "y" -> obfuscate(2))),
         PATIENT_GENDER_COUNT_XML -> I2b2ResultEnvelope(PATIENT_GENDER_COUNT_XML, Map("a" -> obfuscate(9), "b" -> obfuscate(10))))))
 
@@ -81,7 +81,7 @@ final class ShrineQueryResultTest extends TestCase with ShouldMatchersForJUnit {
 
     val Some(shrineQueryResult) = ShrineQueryResult.fromRows(queryRow, resultRows, countRowOption, breakdownRows, errorRows)
 
-    shrineQueryResult.count should equal(countRowOption.map(Count.fromCountRow(countQueryResultRow.localId, _)))
+    shrineQueryResult.count should equal(countRowOption.map(Count.fromRows(countQueryResultRow, _)))
     shrineQueryResult.errors should equal(errorRows)
     shrineQueryResult.breakdowns.toSet should equal(Set(
     		Breakdown(breakdownQueryResultRow1.id, breakdownQueryResultRow1.localId, PATIENT_AGE_COUNT_XML, Map("x" -> ObfuscatedPair(1, 2), "y" -> ObfuscatedPair(2, 3))),
