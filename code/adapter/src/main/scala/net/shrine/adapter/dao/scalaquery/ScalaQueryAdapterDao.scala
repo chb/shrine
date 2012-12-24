@@ -58,6 +58,11 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
 
   override def deleteQuery(networkQueryId: Long) {
     database.withSession { implicit session: Session =>
+      //TODO: Find another way besides .mutate(_.delete()) here;
+      //apparently this relies on a slow and potentially fragile
+      //JDBC ResultSet API, instead of generating DELETE FROM ...
+      //SQL.  However, it appears nothing else works with parameterized
+      //queries. :\
       Queries.queriesByNetworkId(networkQueryId).mutate(_.delete())
     }
   }
