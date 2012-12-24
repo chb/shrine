@@ -61,6 +61,23 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
       Queries.queriesByNetworkId(networkQueryId).mutate(_.delete())
     }
   }
+  
+  def deleteQueryResultsFor(networkQueryId: Long) {
+    database.withSession { implicit session: Session =>
+      //TODO: Find another way besides .mutate(_.delete()) here;
+      //apparently this relies on a slow and potentially fragile
+      //JDBC ResultSet API, instead of generating DELETE FROM ...
+      //SQL.  However, it appears nothing else works with parameterized
+      //queries. :\
+      Queries.breakdownResults(networkQueryId).mutate(_.delete())
+      
+      Queries.errorResults(networkQueryId).mutate(_.delete())
+      
+      Queries.countResults(networkQueryId).mutate(_.delete())
+      
+      Queries.resultsForQuery(networkQueryId).mutate(_.delete())
+    }
+  }
 
   override def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean = Util.tryOrElse(false) {
     val privilegedUserOption = firstResultOption(Queries.privilegedUsers(id.getUsername, id.getDomain))
