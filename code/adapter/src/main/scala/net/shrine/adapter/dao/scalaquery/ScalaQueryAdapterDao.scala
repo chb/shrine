@@ -69,12 +69,6 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
       //JDBC ResultSet API, instead of generating DELETE FROM ...
       //SQL.  However, it appears nothing else works with parameterized
       //queries. :\
-      Queries.breakdownResults(networkQueryId).mutate(_.delete())
-      
-      Queries.errorResults(networkQueryId).mutate(_.delete())
-      
-      Queries.countResults(networkQueryId).mutate(_.delete())
-      
       Queries.resultsForQuery(networkQueryId).mutate(_.delete())
     }
   }
