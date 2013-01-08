@@ -85,22 +85,16 @@ class RunQueryAdapter(
     obfuscatedRunQueryResponse.toRunQueryResponse.withResult(resultWithMergedBreakdowns)
   }
 
-  private[adapter] def storeCountResults(insertedIds: Map[ResultOutputType, Seq[Int]], notErrors: Seq[QueryResult], obfuscatedNotErrors: Seq[QueryResult]) {
-    for {
-      Seq(insertedCountQueryResultId) <- insertedIds.get(ResultOutputType.PATIENT_COUNT_XML)
-      //NB: Take the count/setSize from the FIRST QueryResult, though the same count should be there for all of them, if there are more than one
-      origQueryResult <- notErrors.headOption
-      obfscQueryResult <- obfuscatedNotErrors.headOption
-    } {
-      dao.insertCountResult(insertedCountQueryResultId, origQueryResult.setSize, obfscQueryResult.setSize)
-    }
+  private[adapter] def storeCountResults(insertedCountQueryResultId: Int, origQueryResult: QueryResult, obfscQueryResult: QueryResult) {
+    dao.insertCountResult(insertedCountQueryResultId, origQueryResult.setSize, obfscQueryResult.setSize)
   }
 
-  private[adapter] def storeErrorResults(insertedIds: Map[ResultOutputType, Seq[Int]], errors: Seq[QueryResult]) {
-    val errorResultIds = insertedIds.filter { case (resultType, _) => resultType.isError }.values
-
+  private[adapter] def storeErrorResults(errorResultIds: Seq[Int], errors: Seq[QueryResult]) {
     for {
-      (Seq(insertedErrorResultId), errorQueryResult) <- errorResultIds zip errors
+      //TODO: Eh? Why assume there's 1 element in the Seq of id's we're unpacking? 
+      //Doesn't that mean that there can only ever be 1 error QueryResult? 
+      //If that's the case, shouldn't the errors param be an Option[QueryResult]? 
+      (insertedErrorResultId, errorQueryResult) <- errorResultIds zip errors
     } {
       dao.insertErrorResult(insertedErrorResultId, errorQueryResult.statusMessage.getOrElse("Unknown failure"))
     }
@@ -112,10 +106,17 @@ class RunQueryAdapter(
 
     val obfuscatedNotErrors = obfuscated.results.filter(!_.isError)
 
-    storeCountResults(insertedIds, notErrors, obfuscatedNotErrors)
-
+    //NB: Take the count/setSize from the FIRST QueryResult, though the same count should be there for all of them, if there are more than one
+    for {
+      Seq(insertedCountQueryResultId) <- insertedIds.get(ResultOutputType.PATIENT_COUNT_XML)
+      notError <- notErrors.headOption
+      obfuscatedNotError <- obfuscatedNotErrors.headOption
+    } {
+      storeCountResults(insertedCountQueryResultId, notError, obfuscatedNotError)
+    }
+    
     //Store errors, if present
-    storeErrorResults(insertedIds, errors)
+    storeErrorResults(insertedIds.get(ResultOutputType.ERROR).getOrElse(Nil), errors)
   }
 
   private[adapter] def attemptToRetrieveBreakdowns(runQueryReq: RunQueryRequest, breakdownResults: Seq[QueryResult]): Seq[(QueryResult, Try[QueryResult])] = {
