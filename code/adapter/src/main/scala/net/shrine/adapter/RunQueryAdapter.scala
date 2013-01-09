@@ -41,6 +41,8 @@ class RunQueryAdapter(
     config: ShrineConfig,
     doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, httpClient, hiveCredentials) {
 
+  import RunQueryAdapter._
+
   override protected def parseShrineResponse(nodeSeq: NodeSeq) = RawCrcRunQueryResponse.fromI2b2(nodeSeq)
 
   override protected[adapter] def translateNetworkToLocal(request: RunQueryRequest): RunQueryRequest = {
@@ -52,20 +54,11 @@ class RunQueryAdapter(
       throw new AdapterLockoutException(identity)
     }
 
-    //TODO: Any way to avoid this cast?
     val runQueryReq = message.request.asInstanceOf[RunQueryRequest]
 
     val rawRunQueryResponse = super.processRequest(identity, message).asInstanceOf[RawCrcRunQueryResponse]
-    
-    val insertedQueryId = dao.insertQuery(rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
-
-    val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, rawRunQueryResponse)
-
-    //val originalRunQueryResponse = rawRunQueryResponse.toRunQueryResponse
 
     val obfuscatedRunQueryResponse = obfuscateResponse(rawRunQueryResponse)
-
-    storeCountAndErrorResults(rawRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
 
     def isBreakdown(result: QueryResult) = result.resultType.map(_.isBreakdown).getOrElse(false)
 
@@ -75,9 +68,32 @@ class RunQueryAdapter(
 
     val (successes, failures) = attemptsWithBreakDownCounts.partition { case (_, t) => t.isSuccess }
 
-    logBreakdownFailures(rawRunQueryResponse, successes, failures, insertedQueryResultIds)
+    val (mergedBreakdowns, obfuscatedBreakdowns) = {
+      val withBreakdownCounts = successes.collect { case (_, Success(queryResultWithBreakdowns)) => queryResultWithBreakdowns }
 
-    val mergedBreakdowns = mergeAndStoreBreakdowns(successes, insertedQueryResultIds)
+      val mergedBreakdowns = withBreakdownCounts.map(_.breakdowns).fold(Map.empty)(_ ++ _)
+
+      val obfuscatedBreakdowns = obfuscateBreakdowns(mergedBreakdowns)
+
+      (mergedBreakdowns, obfuscatedBreakdowns)
+    }
+
+    {
+      val insertedQueryId = dao.insertQuery(rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
+
+      val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, rawRunQueryResponse)
+
+      storeCountResults(rawRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
+
+      storeErrorResults(rawRunQueryResponse, insertedQueryResultIds)
+
+      logBreakdownFailures(rawRunQueryResponse, failures)
+
+      storeBreakdownFailures(failures, insertedQueryResultIds)
+
+      //Store breakdowns (plain and obfuscated) in the DB
+      dao.insertBreakdownResults(insertedQueryResultIds, mergedBreakdowns, obfuscatedBreakdowns)
+    }
 
     //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
     val resultWithMergedBreakdowns = nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
@@ -91,16 +107,13 @@ class RunQueryAdapter(
 
   private[adapter] def storeErrorResults(errorResultIds: Seq[Int], errors: Seq[QueryResult]) {
     for {
-      //TODO: Eh? Why assume there's 1 element in the Seq of id's we're unpacking? 
-      //Doesn't that mean that there can only ever be 1 error QueryResult? 
-      //If that's the case, shouldn't the errors param be an Option[QueryResult]? 
       (insertedErrorResultId, errorQueryResult) <- errorResultIds zip errors
     } {
       dao.insertErrorResult(insertedErrorResultId, errorQueryResult.statusMessage.getOrElse("Unknown failure"))
     }
   }
 
-  private[adapter] def storeCountAndErrorResults(response: RawCrcRunQueryResponse, obfuscated: RawCrcRunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
+  private[adapter] def storeCountResults(response: RawCrcRunQueryResponse, obfuscated: RawCrcRunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
 
     val (errors, notErrors) = response.results.partition(_.isError)
 
@@ -114,9 +127,16 @@ class RunQueryAdapter(
     } {
       storeCountResults(insertedCountQueryResultId, notError, obfuscatedNotError)
     }
-    
+  }
+
+  private[adapter] def storeErrorResults(response: RawCrcRunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
+
+    val (errors, notErrors) = response.results.partition(_.isError)
+
     //Store errors, if present
-    storeErrorResults(insertedIds.get(ResultOutputType.ERROR).getOrElse(Nil), errors)
+    val insertedErrorResultIds = insertedIds.get(ResultOutputType.ERROR).getOrElse(Nil)
+
+    storeErrorResults(insertedErrorResultIds, errors)
   }
 
   private[adapter] def attemptToRetrieveBreakdowns(runQueryReq: RunQueryRequest, breakdownResults: Seq[QueryResult]): Seq[(QueryResult, Try[QueryResult])] = {
@@ -134,23 +154,7 @@ class RunQueryAdapter(
   }
 
   private[adapter] def logBreakdownFailures(response: RawCrcRunQueryResponse,
-                                            breakdownSuccesses: Seq[(QueryResult, Try[QueryResult])],
-                                            failures: Seq[(QueryResult, Try[QueryResult])],
-                                            insertedIds: Map[ResultOutputType, Seq[Int]]) {
-    val successfulBreakdownTypes = (for {
-      (_, Success(queryResult)) <- breakdownSuccesses
-      resultType <- queryResult.resultType
-    } yield resultType).toSet
-
-    val failedBreakdownTypes = ResultOutputType.breakdownTypes.toSet -- successfulBreakdownTypes
-
-    for {
-      failedBreakdownType <- failedBreakdownTypes
-      Seq(resultId) <- insertedIds.get(failedBreakdownType)
-    } {
-      dao.insertErrorResult(resultId, "Couldn't retrieve breakdown of type '" + failedBreakdownType + "'")
-    }
-
+                                            failures: Seq[(QueryResult, Try[QueryResult])]) {
     for {
       (origQueryResult, Failure(e)) <- failures
     } {
@@ -158,17 +162,15 @@ class RunQueryAdapter(
     }
   }
 
-  private[adapter] def mergeAndStoreBreakdowns(breakdownSuccesses: Seq[(QueryResult, Try[QueryResult])], insertedQueryResultIds: Map[ResultOutputType, Seq[Int]]) = {
-    val withBreakdownCounts = breakdownSuccesses.collect { case (_, Success(queryResultWithBreakdowns)) => queryResultWithBreakdowns }
-
-    val mergedBreakdowns = withBreakdownCounts.map(_.breakdowns).fold(Map.empty)(_ ++ _)
-
-    val obfuscatedBreakdowns = RunQueryAdapter.obfuscateBreakdowns(mergedBreakdowns)
-
-    //Store breakdowns (plain and obfuscated) in the DB
-    dao.insertBreakdownResults(insertedQueryResultIds, mergedBreakdowns, obfuscatedBreakdowns)
-
-    mergedBreakdowns
+  private[adapter] def storeBreakdownFailures(failures: Seq[(QueryResult, Try[QueryResult])],
+                                              insertedIds: Map[ResultOutputType, Seq[Int]]) {
+    for {
+      (queryResult, _) <- failures
+      failedBreakdownType <- queryResult.resultType
+      Seq(resultId) <- insertedIds.get(failedBreakdownType)
+    } {
+      dao.insertErrorResult(resultId, "Couldn't retrieve breakdown of type '" + failedBreakdownType + "'")
+    }
   }
 
   protected def obfuscateResponse(response: RawCrcRunQueryResponse): RawCrcRunQueryResponse = {
