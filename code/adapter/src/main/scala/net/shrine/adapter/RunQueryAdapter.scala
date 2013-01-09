@@ -68,6 +68,8 @@ class RunQueryAdapter(
 
     val (successes, failures) = attemptsWithBreakDownCounts.partition { case (_, t) => t.isSuccess }
 
+    logBreakdownFailures(rawRunQueryResponse, failures)
+    
     val (mergedBreakdowns, obfuscatedBreakdowns) = {
       val withBreakdownCounts = successes.collect { case (_, Success(queryResultWithBreakdowns)) => queryResultWithBreakdowns }
 
@@ -86,8 +88,6 @@ class RunQueryAdapter(
       storeCountResults(rawRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
 
       storeErrorResults(rawRunQueryResponse, insertedQueryResultIds)
-
-      logBreakdownFailures(rawRunQueryResponse, failures)
 
       storeBreakdownFailures(failures, insertedQueryResultIds)
 
