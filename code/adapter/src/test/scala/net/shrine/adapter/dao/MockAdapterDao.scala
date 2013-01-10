@@ -13,6 +13,7 @@ import net.shrine.protocol.query.Expression
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.adapter.dao.model.ShrineQuery
 import net.shrine.protocol.RawCrcRunQueryResponse
+import net.shrine.util.Try
 
 /**
  * @author clint
@@ -22,24 +23,34 @@ object MockAdapterDao extends AdapterDao {
   override def insertQuery(localMasterId: String, networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = 0
 
   override def insertQueryResults(parentQueryId: Int, results: Seq[QueryResult]): Map[ResultOutputType, Seq[Int]] = Map.empty
-  
+
   override def insertCountResult(resultId: Int, originalCount: Long, obfuscatedCount: Long): Unit = ()
-  
+
   override def insertBreakdownResults(parentResultIds: Map[ResultOutputType, Seq[Int]], originalBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope], obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]): Unit = ()
-  
+
   override def insertErrorResult(parentResultId: Int, errormessage: String): Unit = ()
-  
+
   override def findQueryByNetworkId(networkQueryId: Long): Option[ShrineQuery] = None
-  
+
   override def findQueriesByUserAndDomain(domain: String, username: String): Seq[ShrineQuery] = Nil
-  
+
   override def findResultsFor(networkQueryId: Long): Option[ShrineQueryResult] = None
-  
+
   override def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean = false
-  
+
   override def renameQuery(networkQueryId: Long, newName: String): Unit = ()
-  
+
   override def deleteQuery(networkQueryId: Long): Unit = ()
-  
+
   override def findRecentQueries(howMany: Int): Seq[ShrineQuery] = Nil
+
+  override def storeResults(authn: AuthenticationInfo,
+                            masterId: String,
+                            networkQueryId: Long,
+                            queryDefinition: QueryDefinition,
+                            rawQueryResults: Seq[QueryResult],
+                            obfuscatedQueryResults: Seq[QueryResult],
+                            breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
+                            mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
+                            obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]): Unit = ()
 }

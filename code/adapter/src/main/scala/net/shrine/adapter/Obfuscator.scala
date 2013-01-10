@@ -25,6 +25,10 @@ object Obfuscator {
 
     determineObfuscatedSetSize(l, obfuscationAmount)
   }
+  
+  def obfuscateResults(doObfuscation: Boolean)(results: Seq[QueryResult]): Seq[QueryResult] = {
+    if(doObfuscation) results.map(obfuscate) else results
+  }
 
   /**
    * [ SUMMARY ]

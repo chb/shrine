@@ -32,6 +32,8 @@ import net.shrine.protocol.query.Expression
 import net.shrine.util.Util
 import net.shrine.util.Loggable
 import net.shrine.protocol.RawCrcRunQueryResponse
+import net.shrine.protocol.query.QueryDefinition
+import net.shrine.util.Try
 
 /**
  * @author clint
@@ -40,10 +42,69 @@ import net.shrine.protocol.RawCrcRunQueryResponse
 final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, sequenceHelper: SequenceHelper) extends AdapterDao with Loggable {
   import driver.Implicit._
 
-  override def inTransaction[T](f: => T): T = {
-    database.withTransaction { f }
-  } 
-  
+  override def storeResults(authn: AuthenticationInfo,
+                             masterId: String,
+                             networkQueryId: Long,
+                             queryDefinition: QueryDefinition,
+                             rawQueryResults: Seq[QueryResult],
+                             obfuscatedQueryResults: Seq[QueryResult],
+                             breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
+                             mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
+                             obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) {
+
+    val insertedQueryId = insertQuery(masterId, networkQueryId, queryDefinition.name, authn, queryDefinition.expr)
+
+    val insertedQueryResultIds = insertQueryResults(insertedQueryId, rawQueryResults)
+
+    storeCountResults(rawQueryResults, obfuscatedQueryResults, insertedQueryResultIds)
+
+    storeErrorResults(rawQueryResults, insertedQueryResultIds)
+
+    storeBreakdownFailures(breakdownFailures, insertedQueryResultIds)
+
+    insertBreakdownResults(insertedQueryResultIds, mergedBreakdowns, obfuscatedBreakdowns)
+  }
+
+  private[adapter] def storeCountResults(raw: Seq[QueryResult], obfuscated: Seq[QueryResult], insertedIds: Map[ResultOutputType, Seq[Int]]) {
+
+    val (errors, notErrors) = raw.partition(_.isError)
+
+    val obfuscatedNotErrors = obfuscated.filter(!_.isError)
+
+    //NB: Take the count/setSize from the FIRST QueryResult, though the same count should be there for all of them, if there are more than one
+    for {
+      Seq(insertedCountQueryResultId) <- insertedIds.get(ResultOutputType.PATIENT_COUNT_XML)
+      notError <- notErrors.headOption
+      obfuscatedNotError <- obfuscatedNotErrors.headOption
+    } {
+      insertCountResult(insertedCountQueryResultId, notError.setSize, obfuscatedNotError.setSize)
+    }
+  }
+
+  private[adapter] def storeErrorResults(results: Seq[QueryResult], insertedIds: Map[ResultOutputType, Seq[Int]]) {
+
+    val (errors, _) = results.partition(_.isError)
+
+    val insertedErrorResultIds = insertedIds.get(ResultOutputType.ERROR).getOrElse(Nil)
+
+    for {
+      (insertedErrorResultId, errorQueryResult) <- insertedErrorResultIds zip errors
+    } {
+      insertErrorResult(insertedErrorResultId, errorQueryResult.statusMessage.getOrElse("Unknown failure"))
+    }
+  }
+
+  private[adapter] def storeBreakdownFailures(failures: Seq[(QueryResult, Try[QueryResult])],
+                                              insertedIds: Map[ResultOutputType, Seq[Int]]) {
+    for {
+      (queryResult, _) <- failures
+      failedBreakdownType <- queryResult.resultType
+      Seq(resultId) <- insertedIds.get(failedBreakdownType)
+    } {
+      insertErrorResult(resultId, "Couldn't retrieve breakdown of type '" + failedBreakdownType + "'")
+    }
+  }
+
   override def findRecentQueries(howMany: Int): Seq[ShrineQuery] = {
     allResults(Queries.queriesForAllUsers.take(howMany))
   }
@@ -70,7 +131,7 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
       Queries.queriesByNetworkId(networkQueryId).mutate(_.delete())
     }
   }
-  
+
   def deleteQueryResultsFor(networkQueryId: Long) {
     database.withSession { implicit session: Session =>
       //TODO: Find another way besides .mutate(_.delete()) here;
@@ -96,9 +157,9 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
     val repeatedResultCount = counts.lastOption.getOrElse(0)
 
     val result = repeatedResultCount > threshold
-    
+
     debug("User " + id.getDomain + ":" + id.getUsername + " locked out? " + result)
-    
+
     result
   }
 
@@ -187,7 +248,7 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
   override def findResultsFor(networkQueryId: Long): Option[ShrineQueryResult] = {
     val breakdownRowsByType = allResults(Queries.breakdownResults(networkQueryId)).groupBy(_._1).mapValues(_.map { case (_, rows) => rows })
 
-    for { 
+    for {
       queryRow <- firstResultOption(Queries.queriesByNetworkId(networkQueryId))
       shrineQueryResult <- ShrineQueryResult.fromRows(queryRow, allResults(Queries.resultsForQuery(networkQueryId)), firstResultOption(Queries.countResults(networkQueryId)), breakdownRowsByType, allResults(Queries.errorResults(networkQueryId)))
     } yield shrineQueryResult
@@ -201,7 +262,7 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
     database.withSession { implicit session: Session => queryToRun.list }
   }
 
-  def transactional: AdapterDao = new AdapterDao {
+  override def transactional: AdapterDao = new AdapterDao {
     private val outer = ScalaQueryAdapterDao.this
 
     override def insertQuery(localMasterId: String, networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = {
@@ -251,6 +312,19 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
     override def findRecentQueries(howMany: Int): Seq[ShrineQuery] = {
       database.withTransaction(outer.findRecentQueries(howMany))
     }
+    
+    override def storeResults(authn: AuthenticationInfo,
+                   masterId: String,
+                   networkQueryId: Long,
+                   queryDefinition: QueryDefinition,
+                   rawQueryResults: Seq[QueryResult],
+                   obfuscatedQueryResults: Seq[QueryResult],
+                   breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
+                   mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
+                   obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) {
+      
+      database.withTransaction(outer.storeResults(authn, masterId, networkQueryId, queryDefinition, rawQueryResults, obfuscatedQueryResults, breakdownFailures, mergedBreakdowns, obfuscatedBreakdowns))
+    }
   }
 
   /**
@@ -282,7 +356,7 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
 
     val queriesForAllUsers = {
       import DateHelpers.Implicit._
-      
+
       for {
         query <- ShrineQueries
         _ <- Query.orderBy(query.creationDate.desc)

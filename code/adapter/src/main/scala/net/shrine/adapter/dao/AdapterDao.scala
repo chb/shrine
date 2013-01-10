@@ -14,6 +14,7 @@ import net.shrine.protocol.query.Expression
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.adapter.dao.model.ShrineQuery
 import net.shrine.protocol.RawCrcRunQueryResponse
+import net.shrine.util.Try
 
 /**
  * @author clint
@@ -51,5 +52,15 @@ trait AdapterDao {
   
   def findRecentQueries(howMany: Int): Seq[ShrineQuery]
   
-  def inTransaction[T](f: => T): T = f
+  def storeResults(authn: AuthenticationInfo,
+                   masterId: String,
+                   networkQueryId: Long,
+                   queryDefinition: QueryDefinition,
+                   rawQueryResults: Seq[QueryResult],
+                   obfuscatedQueryResults: Seq[QueryResult],
+                   breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
+                   mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
+                   obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]): Unit
+
+  def transactional: AdapterDao = this                   
 }

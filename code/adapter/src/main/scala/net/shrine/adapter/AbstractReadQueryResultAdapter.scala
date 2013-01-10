@@ -31,13 +31,15 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import net.shrine.util.Success
 import net.shrine.util.Failure
+import net.shrine.protocol.HasQueryResults
+import net.shrine.adapter.Obfuscator.obfuscateResults
 
 /**
  * @author clint
  * @date Nov 2, 2012
  *
  */
-abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](
+abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse with HasQueryResults](
   crcUrl: String,
   httpClient: HttpClient,
   hiveCredentials: HiveCredentials,
@@ -49,13 +51,15 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
   private lazy val executorService = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors + 1)
 
   override def destroy() {
-    executorService.shutdown()
+    try {
+      executorService.shutdown()
+      
+      executorService.awaitTermination(5, TimeUnit.SECONDS)
+    } finally {
+      executorService.shutdownNow()
 
-    executorService.awaitTermination(5, TimeUnit.SECONDS)
-
-    executorService.shutdownNow()
-
-    super.destroy()
+      super.destroy()
+    }
   }
 
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
@@ -119,12 +123,25 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
           }
 
           responseAttempt match {
-            case Success(response) => response
+            case Success(response) => {
+              /*val rawResults = response.results
+              val obfuscatedResults = obfuscateResults(response.results)
+              
+              dao.transactional.storeResults(authn, masterId, networkQueryId, queryDefinition, rawQueryResults, obfuscatedQueryResults, breakdownFailures, mergedBreakdowns, obfuscatedBreakdowns)*/
+              
+              response
+            }
             case Failure(e) => ErrorResponse("Couldn't retrieve query with id '" + queryId + "' from the CRC: exception message follows: " + e.getMessage + " stack trace: " + e.getStackTrace)
           }
         }
       }
     }
+  }
+  
+  private def obfuscateResults(results: Seq[QueryResult]): Seq[QueryResult] = {
+    import net.shrine.adapter.Obfuscator.obfuscate
+
+    if(doObfuscation) results.map(obfuscate) else results
   }
 
   private final class DelegateAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](unmarshal: NodeSeq => Rsp) extends CrcAdapter[Req, Rsp](crcUrl, httpClient, hiveCredentials) {
