@@ -149,7 +149,7 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
 
     val queryResult = QueryResult(999, 123, Option(PATIENT_COUNT_XML), resultSetSize, Option(now), Option(now), None, QueryResult.StatusType.Finished, None)
 
-    val insertedResultIds = dao.insertQueryResults(insertedQueryId, RawCrcRunQueryResponse(networkQueryId, now, lockedOutId.getUsername, lockedOutId.getDomain, queryDef, 123, RawCrcRunQueryResponse.toQueryResultMap(Seq(queryResult))))
+    val insertedResultIds = dao.insertQueryResults(insertedQueryId, Seq(queryResult))
 
     dao.insertCountResult(insertedResultIds(PATIENT_COUNT_XML).head, resultSetSize, resultSetSize + 1)
     

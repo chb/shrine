@@ -114,7 +114,7 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
    * Insert rows into QueryResults, one for each QueryResult in the passed RunQueryResponse
    * Inserted rows are 'children' of the passed ShrineQuery (ie, they are the results of the query)
    */
-  override def insertQueryResults(parentQueryId: Int, response: RawCrcRunQueryResponse): Map[ResultOutputType, Seq[Int]] = {
+  override def insertQueryResults(parentQueryId: Int, results: Seq[QueryResult]): Map[ResultOutputType, Seq[Int]] = {
     //TODO: Is there a better way?  Is the elapsed time available somewhere?
     def execTime(result: QueryResult): Option[Long] = {
       //TODO: How are locales handled here?  Do we care?
@@ -130,7 +130,7 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
 
     database.withSession { implicit session: Session =>
       val typeToIdTuples = for {
-        result <- response.results
+        result <- results
         resultType = result.resultType.getOrElse(ResultOutputType.ERROR)
         //TODO: under what circumstances can QueryResults NOT have start and end dates set?
         elapsed = execTime(result)
@@ -208,8 +208,8 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
       database.withTransaction(outer.insertQuery(localMasterId, networkId, name, authn, queryExpr))
     }
 
-    override def insertQueryResults(parentQueryId: Int, response: RawCrcRunQueryResponse): Map[ResultOutputType, Seq[Int]] = {
-      database.withTransaction(outer.insertQueryResults(parentQueryId, response))
+    override def insertQueryResults(parentQueryId: Int, results: Seq[QueryResult]): Map[ResultOutputType, Seq[Int]] = {
+      database.withTransaction(outer.insertQueryResults(parentQueryId, results))
     }
 
     override def insertCountResult(resultId: Int, originalCount: Long, obfuscatedCount: Long) {

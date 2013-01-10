@@ -259,7 +259,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
   def testInsertQueryResultsOnlyCount = afterCreatingTables {
     intercept[Exception] {
       //Should fail due to foreign key constraint
-      dao.insertQueryResults(-1, countRunQueryResponse)
+      dao.insertQueryResults(-1, countRunQueryResponse.results)
     }
 
     val (resultIdsByType, resultRows) = doInsertQueryResultsTest(countRunQueryResponse)
@@ -308,7 +308,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
 
     val queryId = dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
-    val resultIdsByType = dao.insertQueryResults(queryId, response)
+    val resultIdsByType = dao.insertQueryResults(queryId, response.results)
 
     val resultRows = list(queryResultRows)
 
@@ -333,7 +333,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
 
     val response = RawCrcRunQueryResponse(networkQueryId1, now.get, authn.username, authn.domain, queryDef, instanceId, toQueryResultMap(Seq(countQueryResult)))
 
-    val resultIdsByType = dao.insertQueryResults(queryId, response)
+    val resultIdsByType = dao.insertQueryResults(queryId, response.results)
 
     val Seq(resultRow) = list(queryResultRows)
 
@@ -402,7 +402,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
 
     val response = countRunQueryResponse.withResults(Seq(errorQueryResult1))
 
-    val resultIdsByType = dao.insertQueryResults(queryId, response)
+    val resultIdsByType = dao.insertQueryResults(queryId, response.results)
 
     val Seq(resultRow) = list(queryResultRows)
 
@@ -547,7 +547,7 @@ final class ScalaQueryAdapterDaoTest extends AbstractDependencyInjectionSpringCo
 
     val queryId = dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
 
-    val resultIdsByType = dao.insertQueryResults(queryId, response)
+    val resultIdsByType = dao.insertQueryResults(queryId, response.results)
 
     inserts(resultIdsByType)
 

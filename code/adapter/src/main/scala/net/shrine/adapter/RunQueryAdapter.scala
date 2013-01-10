@@ -20,6 +20,7 @@ import net.shrine.util.Success
 import net.shrine.util.HttpClient
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.protocol.query.QueryDefinition
+import net.shrine.protocol.AuthenticationInfo
 
 /**
  * @author Bill Simons
@@ -58,11 +59,11 @@ class RunQueryAdapter(
 
     val rawRunQueryResponse = super.processRequest(identity, message).asInstanceOf[RawCrcRunQueryResponse]
 
-    val obfuscatedRunQueryResponse = obfuscateResponse(rawRunQueryResponse)
+    val obfuscatedQueryResults = obfuscateResults(rawRunQueryResponse.results)
 
     def isBreakdown(result: QueryResult) = result.resultType.map(_.isBreakdown).getOrElse(false)
 
-    val (breakdownResults, nonBreakDownResults) = obfuscatedRunQueryResponse.results.partition(isBreakdown)
+    val (breakdownResults, nonBreakDownResults) = obfuscatedQueryResults.partition(isBreakdown)
 
     val attemptsWithBreakDownCounts = attemptToRetrieveBreakdowns(runQueryReq, breakdownResults)
 
@@ -80,28 +81,31 @@ class RunQueryAdapter(
       (mergedBreakdowns, obfuscatedBreakdowns)
     }
 
-    storeResults(runQueryReq, rawRunQueryResponse, obfuscatedRunQueryResponse, failures, mergedBreakdowns, obfuscatedBreakdowns)
+    storeResults(runQueryReq.authn, rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition, rawRunQueryResponse.results, obfuscatedQueryResults, failures, mergedBreakdowns, obfuscatedBreakdowns)
 
     //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
     val resultWithMergedBreakdowns = nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
 
-    obfuscatedRunQueryResponse.toRunQueryResponse.withResult(resultWithMergedBreakdowns)
+    rawRunQueryResponse.toRunQueryResponse.withResult(resultWithMergedBreakdowns)
   }
 
-  private[adapter] def storeResults(runQueryReq: RunQueryRequest,
-                                    rawRunQueryResponse: RawCrcRunQueryResponse,
-                                    obfuscatedRunQueryResponse: RawCrcRunQueryResponse,
+  private[adapter] def storeResults(authn: AuthenticationInfo,
+		  							masterId: String,
+		  							networkQueryId: Long,
+		  							queryDefinition: QueryDefinition,
+                                    rawQueryResults: Seq[QueryResult],
+                                    obfuscatedQueryResults: Seq[QueryResult],
                                     breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
                                     mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
                                     obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) {
     dao.inTransaction {
-      val insertedQueryId = dao.insertQuery(rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
+      val insertedQueryId = dao.insertQuery(masterId, networkQueryId, queryDefinition.name, authn, queryDefinition.expr)
 
-      val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, rawRunQueryResponse)
+      val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, rawQueryResults)
 
-      storeCountResults(rawRunQueryResponse, obfuscatedRunQueryResponse, insertedQueryResultIds)
+      storeCountResults(rawQueryResults, obfuscatedQueryResults, insertedQueryResultIds)
 
-      storeErrorResults(rawRunQueryResponse, insertedQueryResultIds)
+      storeErrorResults(rawQueryResults, insertedQueryResultIds)
 
       storeBreakdownFailures(breakdownFailures, insertedQueryResultIds)
 
@@ -113,19 +117,11 @@ class RunQueryAdapter(
     dao.insertCountResult(insertedCountQueryResultId, origQueryResult.setSize, obfscQueryResult.setSize)
   }
 
-  private[adapter] def storeErrorResults(errorResultIds: Seq[Int], errors: Seq[QueryResult]) {
-    for {
-      (insertedErrorResultId, errorQueryResult) <- errorResultIds zip errors
-    } {
-      dao.insertErrorResult(insertedErrorResultId, errorQueryResult.statusMessage.getOrElse("Unknown failure"))
-    }
-  }
+  private[adapter] def storeCountResults(raw: Seq[QueryResult], obfuscated: Seq[QueryResult], insertedIds: Map[ResultOutputType, Seq[Int]]) {
 
-  private[adapter] def storeCountResults(response: RawCrcRunQueryResponse, obfuscated: RawCrcRunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
+    val (errors, notErrors) = raw.partition(_.isError)
 
-    val (errors, notErrors) = response.results.partition(_.isError)
-
-    val obfuscatedNotErrors = obfuscated.results.filter(!_.isError)
+    val obfuscatedNotErrors = obfuscated.filter(!_.isError)
 
     //NB: Take the count/setSize from the FIRST QueryResult, though the same count should be there for all of them, if there are more than one
     for {
@@ -137,14 +133,17 @@ class RunQueryAdapter(
     }
   }
 
-  private[adapter] def storeErrorResults(response: RawCrcRunQueryResponse, insertedIds: Map[ResultOutputType, Seq[Int]]) {
+  private[adapter] def storeErrorResults(results: Seq[QueryResult], insertedIds: Map[ResultOutputType, Seq[Int]]) {
+    
+    val (errors, _) = results.partition(_.isError)
 
-    val (errors, notErrors) = response.results.partition(_.isError)
-
-    //Store errors, if present
     val insertedErrorResultIds = insertedIds.get(ResultOutputType.ERROR).getOrElse(Nil)
 
-    storeErrorResults(insertedErrorResultIds, errors)
+    for {
+      (insertedErrorResultId, errorQueryResult) <- insertedErrorResultIds zip errors
+    } {
+      dao.insertErrorResult(insertedErrorResultId, errorQueryResult.statusMessage.getOrElse("Unknown failure"))
+    }
   }
 
   private[adapter] def attemptToRetrieveBreakdowns(runQueryReq: RunQueryRequest, breakdownResults: Seq[QueryResult]): Seq[(QueryResult, Try[QueryResult])] = {
@@ -181,13 +180,10 @@ class RunQueryAdapter(
     }
   }
 
-  protected def obfuscateResponse(response: RawCrcRunQueryResponse): RawCrcRunQueryResponse = {
+  protected def obfuscateResults(results: Seq[QueryResult]): Seq[QueryResult]= {
     import net.shrine.adapter.Obfuscator.obfuscate
 
-    doObfuscation match {
-      case true => response.withResults(response.singleNodeResults.values.flatMap(_.map(obfuscate)))
-      case false => response
-    }
+    if(doObfuscation) results.map(obfuscate) else results
   }
 
   private def isLockedOut(identity: Identity): Boolean = {

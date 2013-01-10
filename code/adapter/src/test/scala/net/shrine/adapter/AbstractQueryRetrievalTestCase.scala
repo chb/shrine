@@ -92,16 +92,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     
     val queryStartDate = now
     				     
-    val idsByResultType = dao.insertQueryResults(
-        dbQueryId, 
-    	RawCrcRunQueryResponse(
-    	    shrineNetworkQueryId, 
-    	    startDate, 
-    	    authn.username, 
-    	    authn.domain, 
-    	    QueryDefinition("some-query", queryExpr), 
-    	    instanceId,
-    	    RawCrcRunQueryResponse.toQueryResultMap(countResult +: breakdownResults)))
+    val idsByResultType = dao.insertQueryResults(dbQueryId, countResult +: breakdownResults)
     		
     getResults.isInstanceOf[ErrorResponse] should be(true)
     
