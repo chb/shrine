@@ -50,4 +50,6 @@ trait AdapterDao {
   def deleteQuery(networkQueryId: Long): Unit
   
   def findRecentQueries(howMany: Int): Seq[ShrineQuery]
+  
+  def inTransaction[T](f: => T): T = f
 }

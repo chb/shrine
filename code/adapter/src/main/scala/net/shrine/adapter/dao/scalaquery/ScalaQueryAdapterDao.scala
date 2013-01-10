@@ -40,6 +40,10 @@ import net.shrine.protocol.RawCrcRunQueryResponse
 final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, sequenceHelper: SequenceHelper) extends AdapterDao with Loggable {
   import driver.Implicit._
 
+  override def inTransaction[T](f: => T): T = {
+    database.withTransaction { f }
+  } 
+  
   override def findRecentQueries(howMany: Int): Seq[ShrineQuery] = {
     allResults(Queries.queriesForAllUsers.take(howMany))
   }
