@@ -69,7 +69,7 @@ class RunQueryAdapter(
     val (successes, failures) = attemptsWithBreakDownCounts.partition { case (_, t) => t.isSuccess }
 
     logBreakdownFailures(rawRunQueryResponse, failures)
-    
+
     val (mergedBreakdowns, obfuscatedBreakdowns) = {
       val withBreakdownCounts = successes.collect { case (_, Success(queryResultWithBreakdowns)) => queryResultWithBreakdowns }
 
@@ -80,7 +80,21 @@ class RunQueryAdapter(
       (mergedBreakdowns, obfuscatedBreakdowns)
     }
 
-    {
+    storeResults(runQueryReq, rawRunQueryResponse, obfuscatedRunQueryResponse, failures, mergedBreakdowns, obfuscatedBreakdowns)
+
+    //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
+    val resultWithMergedBreakdowns = nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
+
+    obfuscatedRunQueryResponse.toRunQueryResponse.withResult(resultWithMergedBreakdowns)
+  }
+
+  private[adapter] def storeResults(runQueryReq: RunQueryRequest,
+                                    rawRunQueryResponse: RawCrcRunQueryResponse,
+                                    obfuscatedRunQueryResponse: RawCrcRunQueryResponse,
+                                    breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
+                                    mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
+                                    obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) {
+    dao.inTransaction {
       val insertedQueryId = dao.insertQuery(rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition.name, runQueryReq.authn, runQueryReq.queryDefinition.expr)
 
       val insertedQueryResultIds = dao.insertQueryResults(insertedQueryId, rawRunQueryResponse)
@@ -89,16 +103,10 @@ class RunQueryAdapter(
 
       storeErrorResults(rawRunQueryResponse, insertedQueryResultIds)
 
-      storeBreakdownFailures(failures, insertedQueryResultIds)
+      storeBreakdownFailures(breakdownFailures, insertedQueryResultIds)
 
-      //Store breakdowns (plain and obfuscated) in the DB
       dao.insertBreakdownResults(insertedQueryResultIds, mergedBreakdowns, obfuscatedBreakdowns)
     }
-
-    //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
-    val resultWithMergedBreakdowns = nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)
-
-    obfuscatedRunQueryResponse.toRunQueryResponse.withResult(resultWithMergedBreakdowns)
   }
 
   private[adapter] def storeCountResults(insertedCountQueryResultId: Int, origQueryResult: QueryResult, obfscQueryResult: QueryResult) {
