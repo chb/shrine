@@ -33,6 +33,7 @@ import net.shrine.util.Success
 import net.shrine.util.Failure
 import net.shrine.protocol.HasQueryResults
 import net.shrine.adapter.Obfuscator.obfuscateResults
+import net.shrine.protocol.query.QueryDefinition
 
 /**
  * @author clint
@@ -40,20 +41,20 @@ import net.shrine.adapter.Obfuscator.obfuscateResults
  *
  */
 abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse with HasQueryResults](
-  crcUrl: String,
-  httpClient: HttpClient,
-  hiveCredentials: HiveCredentials,
-  dao: AdapterDao,
-  doObfuscation: Boolean,
-  getQueryId: Req => Long,
-  toResponse: (Long, QueryResult) => Rsp) extends Adapter {
+    crcUrl: String,
+    httpClient: HttpClient,
+    hiveCredentials: HiveCredentials,
+    dao: AdapterDao,
+    doObfuscation: Boolean,
+    getQueryId: Req => Long,
+    toResponse: (Long, QueryResult) => Rsp) extends Adapter {
 
   private lazy val executorService = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors + 1)
 
   override def destroy() {
     try {
       executorService.shutdown()
-      
+
       executorService.awaitTermination(5, TimeUnit.SECONDS)
     } finally {
       executorService.shutdownNow()
@@ -124,11 +125,33 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
 
           responseAttempt match {
             case Success(response) => {
-              /*val rawResults = response.results
-              val obfuscatedResults = obfuscateResults(response.results)
-              
-              dao.transactional.storeResults(authn, masterId, networkQueryId, queryDefinition, rawQueryResults, obfuscatedQueryResults, breakdownFailures, mergedBreakdowns, obfuscatedBreakdowns)*/
-              
+
+              val responseIsDone = response.results.forall(_.statusType.isDone)
+
+              //Re-Store the results, if necessary
+              if (responseIsDone) {
+                val rawResults = response.results
+                val obfuscatedResults = obfuscateResults(response.results)
+
+                for {
+                  shrineQuery <- dao.findQueryByNetworkId(queryId)
+                  queryResult <- rawResults.headOption
+                  obfuscatedQueryResult <- obfuscatedResults.headOption
+                } {
+                  val queryDefinition = QueryDefinition(shrineQuery.name, shrineQuery.queryExpr)
+
+                  val successfulBreakdownTypes = breakdownResponseAttempts.collect { case Success(ReadResultResponse(_, metadata, _)) => metadata.resultType }.flatten
+
+                  val failedBreakdownTypes = ResultOutputType.breakdownTypes.toSet -- successfulBreakdownTypes
+
+                  dao.inTransaction {
+                    dao.deleteQuery(queryId)
+
+                    dao.transactional.storeResults(req.authn, shrineQueryResult.localId, queryId, queryDefinition, rawResults, obfuscatedResults, failedBreakdownTypes.toSeq, queryResult.breakdowns, obfuscatedQueryResult.breakdowns)
+                  }
+                }
+              }
+
               response
             }
             case Failure(e) => ErrorResponse("Couldn't retrieve query with id '" + queryId + "' from the CRC: exception message follows: " + e.getMessage + " stack trace: " + e.getStackTrace)
@@ -137,11 +160,11 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
       }
     }
   }
-  
+
   private def obfuscateResults(results: Seq[QueryResult]): Seq[QueryResult] = {
     import net.shrine.adapter.Obfuscator.obfuscate
 
-    if(doObfuscation) results.map(obfuscate) else results
+    if (doObfuscation) results.map(obfuscate) else results
   }
 
   private final class DelegateAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](unmarshal: NodeSeq => Rsp) extends CrcAdapter[Req, Rsp](crcUrl, httpClient, hiveCredentials) {

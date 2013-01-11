@@ -82,7 +82,11 @@ class RunQueryAdapter(
       (mergedBreakdowns, obfuscatedBreakdowns)
     }
 
-    dao.transactional.storeResults(runQueryReq.authn, rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition, rawRunQueryResponse.results, obfuscatedQueryResults, failures, mergedBreakdowns, obfuscatedBreakdowns)
+    {
+      val failedBreakdownTypes = failures.flatMap { case (queryResult, _) => queryResult.resultType }
+      
+      dao.transactional.storeResults(runQueryReq.authn, rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition, rawRunQueryResponse.results, obfuscatedQueryResults, failedBreakdownTypes, mergedBreakdowns, obfuscatedBreakdowns)
+    }
 
     //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
     val resultWithMergedBreakdowns = nonBreakDownResults.head.withBreakdowns(mergedBreakdowns)

@@ -42,13 +42,15 @@ import net.shrine.util.Try
 final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, sequenceHelper: SequenceHelper) extends AdapterDao with Loggable {
   import driver.Implicit._
 
+  override def inTransaction[T](f: => T): T = database.withTransaction { f }
+  
   override def storeResults(authn: AuthenticationInfo,
                              masterId: String,
                              networkQueryId: Long,
                              queryDefinition: QueryDefinition,
                              rawQueryResults: Seq[QueryResult],
                              obfuscatedQueryResults: Seq[QueryResult],
-                             breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
+                             failedBreakdownTypes: Seq[ResultOutputType],
                              mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
                              obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) {
 
@@ -60,7 +62,7 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
 
     storeErrorResults(rawQueryResults, insertedQueryResultIds)
 
-    storeBreakdownFailures(breakdownFailures, insertedQueryResultIds)
+    storeBreakdownFailures(failedBreakdownTypes, insertedQueryResultIds)
 
     insertBreakdownResults(insertedQueryResultIds, mergedBreakdowns, obfuscatedBreakdowns)
   }
@@ -94,11 +96,10 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
     }
   }
 
-  private[adapter] def storeBreakdownFailures(failures: Seq[(QueryResult, Try[QueryResult])],
-                                              insertedIds: Map[ResultOutputType, Seq[Int]]) {
+  private[adapter] def storeBreakdownFailures(failures: Seq[ResultOutputType],
+                                               insertedIds: Map[ResultOutputType, Seq[Int]]) {
     for {
-      (queryResult, _) <- failures
-      failedBreakdownType <- queryResult.resultType
+      failedBreakdownType <- failures
       Seq(resultId) <- insertedIds.get(failedBreakdownType)
     } {
       insertErrorResult(resultId, "Couldn't retrieve breakdown of type '" + failedBreakdownType + "'")
@@ -319,11 +320,11 @@ final class ScalaQueryAdapterDao(database: Database, driver: ExtendedProfile, se
                    queryDefinition: QueryDefinition,
                    rawQueryResults: Seq[QueryResult],
                    obfuscatedQueryResults: Seq[QueryResult],
-                   breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
+                   failedBreakdownTypes: Seq[ResultOutputType],
                    mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
                    obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) {
       
-      database.withTransaction(outer.storeResults(authn, masterId, networkQueryId, queryDefinition, rawQueryResults, obfuscatedQueryResults, breakdownFailures, mergedBreakdowns, obfuscatedBreakdowns))
+      database.withTransaction(outer.storeResults(authn, masterId, networkQueryId, queryDefinition, rawQueryResults, obfuscatedQueryResults, failedBreakdownTypes, mergedBreakdowns, obfuscatedBreakdowns))
     }
   }
 

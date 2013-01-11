@@ -58,9 +58,11 @@ trait AdapterDao {
                    queryDefinition: QueryDefinition,
                    rawQueryResults: Seq[QueryResult],
                    obfuscatedQueryResults: Seq[QueryResult],
-                   breakdownFailures: Seq[(QueryResult, Try[QueryResult])],
+                   failedBreakdownTypes: Seq[ResultOutputType],
                    mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
                    obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]): Unit
 
-  def transactional: AdapterDao = this                   
+  def transactional: AdapterDao = this
+  
+  def inTransaction[T](f: => T): T = f
 }
