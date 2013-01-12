@@ -34,6 +34,7 @@ import net.shrine.util.Failure
 import net.shrine.protocol.HasQueryResults
 import net.shrine.adapter.Obfuscator.obfuscateResults
 import net.shrine.protocol.query.QueryDefinition
+import net.shrine.protocol.AuthenticationInfo
 
 /**
  * @author clint
@@ -125,32 +126,7 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
 
           responseAttempt match {
             case Success(response) => {
-
-              val responseIsDone = response.results.forall(_.statusType.isDone)
-
-              //Re-Store the results, if necessary
-              if (responseIsDone) {
-                val rawResults = response.results
-                val obfuscatedResults = obfuscateResults(response.results)
-
-                for {
-                  shrineQuery <- dao.findQueryByNetworkId(queryId)
-                  queryResult <- rawResults.headOption
-                  obfuscatedQueryResult <- obfuscatedResults.headOption
-                } {
-                  val queryDefinition = QueryDefinition(shrineQuery.name, shrineQuery.queryExpr)
-
-                  val successfulBreakdownTypes = breakdownResponseAttempts.collect { case Success(ReadResultResponse(_, metadata, _)) => metadata.resultType }.flatten
-
-                  val failedBreakdownTypes = ResultOutputType.breakdownTypes.toSet -- successfulBreakdownTypes
-
-                  dao.inTransaction {
-                    dao.deleteQuery(queryId)
-
-                    dao.transactional.storeResults(req.authn, shrineQueryResult.localId, queryId, queryDefinition, rawResults, obfuscatedResults, failedBreakdownTypes.toSeq, queryResult.breakdowns, obfuscatedQueryResult.breakdowns)
-                  }
-                }
-              }
+              storeResultIfNecessary(shrineQueryResult, response, req.authn, queryId, getFailedBreakdownTypes(breakdownResponseAttempts))
 
               response
             }
@@ -161,10 +137,37 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     }
   }
 
-  private def obfuscateResults(results: Seq[QueryResult]): Seq[QueryResult] = {
-    import net.shrine.adapter.Obfuscator.obfuscate
+  private def getFailedBreakdownTypes(attempts: Seq[Try[ReadResultResponse]]): Set[ResultOutputType] = {
+    val successfulBreakdownTypes = attempts.collect { case Success(ReadResultResponse(_, metadata, _)) => metadata.resultType }.flatten
 
-    if (doObfuscation) results.map(obfuscate) else results
+    ResultOutputType.breakdownTypes.toSet -- successfulBreakdownTypes
+  }
+
+  private def storeResultIfNecessary(shrineQueryResult: ShrineQueryResult, response: Rsp, authn: AuthenticationInfo, queryId: Long, failedBreakdownTypes: Set[ResultOutputType]) {
+    val responseIsDone = response.results.forall(_.statusType.isDone)
+
+    if (responseIsDone) {
+      storeResult(shrineQueryResult, response, authn, queryId, failedBreakdownTypes)
+    }
+  }
+
+  private def storeResult(shrineQueryResult: ShrineQueryResult, response: Rsp, authn: AuthenticationInfo, queryId: Long, failedBreakdownTypes: Set[ResultOutputType]) {
+    val rawResults = response.results
+    val obfuscatedResults = obfuscateResults(doObfuscation)(response.results)
+
+    for {
+      shrineQuery <- dao.findQueryByNetworkId(queryId)
+      queryResult <- rawResults.headOption
+      obfuscatedQueryResult <- obfuscatedResults.headOption
+    } {
+      val queryDefinition = QueryDefinition(shrineQuery.name, shrineQuery.queryExpr)
+
+      dao.inTransaction {
+        dao.deleteQuery(queryId)
+
+        dao.storeResults(authn, shrineQueryResult.localId, queryId, queryDefinition, rawResults, obfuscatedResults, failedBreakdownTypes.toSeq, queryResult.breakdowns, obfuscatedQueryResult.breakdowns)
+      }
+    }
   }
 
   private final class DelegateAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](unmarshal: NodeSeq => Rsp) extends CrcAdapter[Req, Rsp](crcUrl, httpClient, hiveCredentials) {
