@@ -1,5 +1,7 @@
 package net.shrine.util
 
+import scala.collection.generic.CanBuildFrom
+
 /**
  * The `Try` type represents a computation that may either result in an exception, or return a
  * successfully computed value. It's similar to, but semantically different from the [[scala.util.Either]] type.
@@ -141,12 +143,19 @@ object Try {
     }
   }
 
-  def sequence[T](tries: Seq[Try[T]]): Try[Seq[T]] = {
-    val firstFailure: Option[Try[T]] = tries.find(_.isFailure)
+  def sequence[T, C[T] <: Traversable[T]](tries: C[Try[T]])(implicit cbf: CanBuildFrom[C[T], T, C[T]]): Try[C[T]] = {
+    val firstFailure: Option[Failure[T]] = tries.find(_.isFailure).collect { case f: Failure[T] => f }
 
     firstFailure match {
-      case Some(failure) => failure.map(Seq(_))
-      case _ => Try(tries.map(_.get))
+      case Some(failure) => failure.map(_ => cbf().result)
+      //Otherwise, there are no failures
+      case _ => Try {
+        val builder = cbf()
+        
+        builder ++= tries.map(_.get)
+        
+        builder.result
+      }
     }
   }
 }
