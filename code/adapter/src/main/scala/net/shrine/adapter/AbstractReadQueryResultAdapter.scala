@@ -35,6 +35,7 @@ import net.shrine.protocol.HasQueryResults
 import net.shrine.adapter.Obfuscator.obfuscateResults
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.AuthenticationInfo
+import akka.util.Duration
 
 /**
  * @author clint
@@ -71,58 +72,14 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
 
     def errorResponse = ErrorResponse("Query with id '" + queryId + "' not found")
 
-    def countRequest(localResultId: Long) = ReadInstanceResultsRequest(req.projectId, req.waitTimeMs, req.authn, localResultId)
-
-    def breakdownRequest(localResultId: Long) = ReadResultRequest(req.projectId, req.waitTimeMs, req.authn, localResultId.toString)
-
     StoredQueries.retrieve(dao, queryId) match {
       case None => errorResponse
-      case Some(shrineQueryResult: ShrineQueryResult) => {
+      case Some(shrineQueryResult) => {
         if (shrineQueryResult.isDone) shrineQueryResult.toQueryResults(doObfuscation).map(toResponse(queryId, _)).getOrElse(errorResponse)
         else {
-          implicit val executionContext = ExecutionContext.fromExecutorService(executorService)
+          val futureResponses = scatter(identity, req, shrineQueryResult)
 
-          val futureCountAttempts = Future.sequence(for {
-            count <- shrineQueryResult.count.toSeq
-          } yield Future {
-            Try(delegateCountAdapter.process(identity, countRequest(count.localId)))
-          })
-
-          val futureBreakdownAttempts = Future.sequence(for {
-            Breakdown(_, localResultId, resultType, data) <- shrineQueryResult.breakdowns
-          } yield Future {
-            Try(delegateBreakdownAdapter.process(identity, breakdownRequest(localResultId)))
-          })
-
-          val futureResponses = for {
-            countResponseAttempts: Seq[Try[ReadInstanceResultsResponse]] <- futureCountAttempts
-            breakdownResponseAttempts: Seq[Try[ReadResultResponse]] <- futureBreakdownAttempts
-          } yield {
-            (countResponseAttempts, breakdownResponseAttempts)
-          }
-
-          import akka.util.duration._
-
-          val (countResponseAttempts, breakdownResponseAttempts) = Await.result(futureResponses, req.waitTimeMs.milliseconds)
-
-          val responseAttempt = for {
-            countResponses: Seq[ReadInstanceResultsResponse] <- Try.sequence(countResponseAttempts)
-            countResponse: ReadInstanceResultsResponse <- countResponses.headOption
-            breakdownResponses: Seq[ReadResultResponse] <- Try.sequence(breakdownResponseAttempts)
-          } yield {
-            val localCountResultId = countResponse.shrineNetworkQueryId
-
-            val countQueryResult = countResponse.singleNodeResult
-
-            val breakdownsByType = (for {
-              response <- breakdownResponses
-              resultType <- response.metadata.resultType
-            } yield resultType -> response.data).toMap
-
-            val queryResultToReturn = countQueryResult.withBreakdowns(breakdownsByType)
-
-            toResponse(queryId, queryResultToReturn)
-          }
+          val (responseAttempt, breakdownResponseAttempts) = gather(queryId, futureResponses, req.waitTimeMs)
 
           responseAttempt match {
             case Success(response) => {
@@ -135,6 +92,61 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
         }
       }
     }
+  }
+
+  private def scatter(identity: Identity, req: Req, shrineQueryResult: ShrineQueryResult): Future[(Option[Try[ReadInstanceResultsResponse]], Seq[Try[ReadResultResponse]])] = {
+
+    def countRequest(localResultId: Long) = ReadInstanceResultsRequest(req.projectId, req.waitTimeMs, req.authn, localResultId)
+
+    def breakdownRequest(localResultId: Long) = ReadResultRequest(req.projectId, req.waitTimeMs, req.authn, localResultId.toString)
+
+    implicit val executionContext = ExecutionContext.fromExecutorService(executorService)
+
+    val futureCountAttempts = Future.sequence(for {
+      count <- shrineQueryResult.count.toSeq
+    } yield Future {
+      Try(delegateCountAdapter.process(identity, countRequest(count.localId)))
+    }).map(_.headOption)
+
+    val futureBreakdownAttempts = Future.sequence(for {
+      Breakdown(_, localResultId, resultType, data) <- shrineQueryResult.breakdowns
+    } yield Future {
+      Try(delegateBreakdownAdapter.process(identity, breakdownRequest(localResultId)))
+    })
+
+    for {
+      countResponseAttempts: Option[Try[ReadInstanceResultsResponse]] <- futureCountAttempts
+      breakdownResponseAttempts: Seq[Try[ReadResultResponse]] <- futureBreakdownAttempts
+    } yield {
+      (countResponseAttempts, breakdownResponseAttempts)
+    }
+  }
+
+  private def gather(queryId: Long, futureResponses: Future[(Option[Try[ReadInstanceResultsResponse]], Seq[Try[ReadResultResponse]])], waitTimeMs: Long): (Try[Rsp], Seq[Try[ReadResultResponse]]) = {
+    import akka.util.duration._
+    
+    val (countResponseAttempts, breakdownResponseAttempts) = Await.result(futureResponses, waitTimeMs.milliseconds)
+
+    val responseAttempt = for {
+      countResponses: Option[ReadInstanceResultsResponse] <- Try.sequence(countResponseAttempts)
+      countResponse: ReadInstanceResultsResponse <- countResponses
+      breakdownResponses: Seq[ReadResultResponse] <- Try.sequence(breakdownResponseAttempts)
+    } yield {
+      val localCountResultId = countResponse.shrineNetworkQueryId
+
+      val countQueryResult = countResponse.singleNodeResult
+
+      val breakdownsByType = (for {
+        response <- breakdownResponses
+        resultType <- response.metadata.resultType
+      } yield resultType -> response.data).toMap
+
+      val queryResultToReturn = countQueryResult.withBreakdowns(breakdownsByType)
+
+      toResponse(queryId, queryResultToReturn)
+    }
+    
+    (responseAttempt, breakdownResponseAttempts)
   }
 
   private def getFailedBreakdownTypes(attempts: Seq[Try[ReadResultResponse]]): Set[ResultOutputType] = {

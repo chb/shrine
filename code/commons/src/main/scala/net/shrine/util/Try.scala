@@ -149,7 +149,12 @@ object Try {
       case NonFatal(e) => Failure(e)
     }
   }
-
+  
+  def sequence[T](tryOption: Option[Try[T]]): Try[Option[T]] = tryOption match {
+    case Some(attempt) => attempt.map(Option(_))
+    case None => Try(None)
+  }
+  
   def sequence[T, C[T] <: Traversable[T]](tries: C[Try[T]])(implicit cbf: CanBuildFrom[C[T], T, C[T]]): Try[C[T]] = {
     val firstFailure: Option[Failure[T]] = tries.find(_.isFailure).collect { case f: Failure[T] => f }
 
