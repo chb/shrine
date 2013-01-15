@@ -144,14 +144,6 @@ object Try {
   
   implicit def try2Option[T](o: Try[T]): Option[T] = o.toOption
   
-  def foo {
-    val x = for {
-      x <- Try(1)
-      y <- Some(2)
-      z <- Try(3)
-    } yield x + y + z
-  }
-  
   def apply[T](r: => T): Try[T] = {
     try { Success(r) } catch {
       case NonFatal(e) => Failure(e)
