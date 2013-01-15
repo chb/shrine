@@ -107,7 +107,7 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
 
           val responseAttempt = for {
             countResponses: Seq[ReadInstanceResultsResponse] <- Try.sequence(countResponseAttempts)
-            countResponse: ReadInstanceResultsResponse <- Try(countResponses.head)
+            countResponse: ReadInstanceResultsResponse <- countResponses.headOption
             breakdownResponses: Seq[ReadResultResponse] <- Try.sequence(breakdownResponseAttempts)
           } yield {
             val localCountResultId = countResponse.shrineNetworkQueryId
