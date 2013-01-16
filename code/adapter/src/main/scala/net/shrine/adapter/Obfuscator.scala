@@ -14,7 +14,6 @@ import java.util.Random
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 object Obfuscator {
-  //TODO: TEST BREAKDOWN OBFUSCATION
   def obfuscate(result: QueryResult): QueryResult = {
     val obfuscatedBreakdowns = result.breakdowns.mapValues(_.mapValues(obfuscate))
     
