@@ -189,13 +189,19 @@
     </bean>
 
     <bean id="instancesByIDQuery" class="net.shrine.adapter.ReadInstanceResultsAdapter">
-        <constructor-arg ref="adapterDao"/>
-        <constructor-arg value="true"/>
+    	<constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="httpClient"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="3" ref="adapterDao"/>
+        <constructor-arg index="4" value="true"/>
     </bean>
     
     <bean id="readQueryResultAdapter" class="net.shrine.adapter.ReadQueryResultAdapter">
-        <constructor-arg ref="adapterDao"/>
-        <constructor-arg value="true"/>
+        <constructor-arg index="0" ref="realCRCEndpoint"/>
+        <constructor-arg index="1" ref="httpClient"/>
+        <constructor-arg index="2" ref="hiveCredentials"/>
+        <constructor-arg index="3" ref="adapterDao"/>
+        <constructor-arg index="4" value="true"/>
     </bean>
 
     <bean id="mastersByUserQuery" class="net.shrine.adapter.ReadPreviousQueriesAdapter">
