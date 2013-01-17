@@ -15,9 +15,14 @@ import java.util.Random
  */
 object Obfuscator {
   def obfuscate(result: QueryResult): QueryResult = {
-    val obfuscatedBreakdowns = result.breakdowns.mapValues(_.mapValues(obfuscate))
+    val withObfscSetSize = result.withSetSize(obfuscate(result.setSize))
     
-    result.withSetSize(obfuscate(result.setSize)).withBreakdowns(obfuscatedBreakdowns)
+    if(withObfscSetSize.breakdowns.isEmpty) { withObfscSetSize }
+    else {
+      val obfuscatedBreakdowns = result.breakdowns.mapValues(_.mapValues(obfuscate))
+      
+      withObfscSetSize.withBreakdowns(obfuscatedBreakdowns)
+    }
   }
 
   def obfuscate(l: Long): Long = {
