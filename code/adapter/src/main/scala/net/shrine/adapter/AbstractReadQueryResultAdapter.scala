@@ -88,11 +88,7 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
 
               response
             }
-            case Failure(e) => {
-              e.printStackTrace()
-              
-              ErrorResponse("Couldn't retrieve query with id '" + queryId + "' from the CRC: exception message follows: " + e.getMessage + " stack trace: " + e.getStackTrace)
-            }
+            case Failure(e) => ErrorResponse("Couldn't retrieve query with id '" + queryId + "' from the CRC: exception message follows: " + e.getMessage + " stack trace: " + e.getStackTrace)
           }
         }
       }
@@ -187,21 +183,13 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     }
   }
 
-  private final class DelegateAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](unmarshaller: I2b2Unmarshaller[Rsp])(obfuscate: Rsp => Rsp) extends CrcAdapter[Req, Rsp](crcUrl, httpClient, hiveCredentials) {
-    def process(identity: Identity, req: Req): Rsp = {
-      val result = processRequest(identity, BroadcastMessage(req)).asInstanceOf[Rsp]
-      
-      if(doObfuscation) obfuscate(result) else result
-    }
+  private final class DelegateAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](unmarshaller: I2b2Unmarshaller[Rsp])extends CrcAdapter[Req, Rsp](crcUrl, httpClient, hiveCredentials) {
+    def process(identity: Identity, req: Req): Rsp = processRequest(identity, BroadcastMessage(req)).asInstanceOf[Rsp]
 
     override protected def parseShrineResponse(xml: NodeSeq): ShrineResponse = unmarshaller.fromI2b2(xml)
   }
 
-  private lazy val delegateCountAdapter = new DelegateAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](ReadInstanceResultsResponse)(resp => {
-    resp.withQueryResult(Obfuscator.obfuscate(resp.singleNodeResult))
-  }) 
+  private lazy val delegateCountAdapter = new DelegateAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](ReadInstanceResultsResponse)
 
-  private lazy val delegateBreakdownAdapter = new DelegateAdapter[ReadResultRequest, ReadResultResponse](ReadResultResponse)(resp => {
-    resp
-  })
+  private lazy val delegateBreakdownAdapter = new DelegateAdapter[ReadResultRequest, ReadResultResponse](ReadResultResponse)
 }

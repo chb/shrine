@@ -110,13 +110,9 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
       override def post(input: String, url: String): String = {
         val response = ShrineRequest.fromI2b2(input) match {
           case req: ReadInstanceResultsRequest => {
-            println("ReadInstanceResultsRequest: " + req.toXmlString)
-            
             ReadInstanceResultsResponse(shrineNetworkQueryId, incompleteCountResult.copy(statusType = QueryResult.StatusType.Finished))
           }
           case req: ReadResultRequest => {
-            println("ReadResultRequest: " + req.toXmlString)
-            
             ReadResultResponse(123L, breakdownResult, breakdowns.head._2)
           }
           case _ => sys.error("Unknown input: " + input)
@@ -153,12 +149,18 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     
     actualNetworkQueryId should equal(shrineNetworkQueryId)
     
+    import ObfuscatorTest.within3
+    
     actualQueryResult.resultType should equal(Some(PATIENT_COUNT_XML))
-    actualQueryResult.setSize should equal(obfSetSize)
+    within3(setSize, actualQueryResult.setSize) should be(true)
     actualQueryResult.description should be(None) //TODO: This is probably wrong
     actualQueryResult.statusType should equal(QueryResult.StatusType.Finished)
     actualQueryResult.statusMessage should be(None)
-    actualQueryResult.breakdowns should equal(obfscBreakdowns)
+    actualQueryResult.breakdowns.foreach { 
+      case (rt, I2b2ResultEnvelope(_, data)) => {
+        data.forall { case (key, value) => within3(value, breakdowns.get(rt).get.data.get(key).get) } 
+      }
+    }
     
     for {
       startDate <- actualQueryResult.startDate
