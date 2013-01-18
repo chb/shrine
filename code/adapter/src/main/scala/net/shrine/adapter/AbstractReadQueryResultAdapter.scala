@@ -36,6 +36,7 @@ import net.shrine.adapter.Obfuscator.obfuscateResults
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.AuthenticationInfo
 import akka.util.Duration
+import net.shrine.serialization.I2b2Unmarshaller
 
 /**
  * @author clint
@@ -75,7 +76,7 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     StoredQueries.retrieve(dao, queryId) match {
       case None => errorResponse
       case Some(shrineQueryResult) => {
-        if (shrineQueryResult.isDone) shrineQueryResult.toQueryResults(doObfuscation).map(toResponse(queryId, _)).getOrElse(errorResponse)
+        if (shrineQueryResult.isDone) { shrineQueryResult.toQueryResults(doObfuscation).map(toResponse(queryId, _)).getOrElse(errorResponse) }
         else {
           val futureResponses = scatter(identity, req, shrineQueryResult)
 
@@ -87,7 +88,11 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
 
               response
             }
-            case Failure(e) => ErrorResponse("Couldn't retrieve query with id '" + queryId + "' from the CRC: exception message follows: " + e.getMessage + " stack trace: " + e.getStackTrace)
+            case Failure(e) => {
+              e.printStackTrace()
+              
+              ErrorResponse("Couldn't retrieve query with id '" + queryId + "' from the CRC: exception message follows: " + e.getMessage + " stack trace: " + e.getStackTrace)
+            }
           }
         }
       }
@@ -182,13 +187,21 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     }
   }
 
-  private final class DelegateAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](unmarshal: NodeSeq => Rsp) extends CrcAdapter[Req, Rsp](crcUrl, httpClient, hiveCredentials) {
-    def process(identity: Identity, req: Req): Rsp = processRequest(identity, BroadcastMessage(req)).asInstanceOf[Rsp]
+  private final class DelegateAdapter[Req <: ShrineRequest, Rsp <: ShrineResponse](unmarshaller: I2b2Unmarshaller[Rsp])(obfuscate: Rsp => Rsp) extends CrcAdapter[Req, Rsp](crcUrl, httpClient, hiveCredentials) {
+    def process(identity: Identity, req: Req): Rsp = {
+      val result = processRequest(identity, BroadcastMessage(req)).asInstanceOf[Rsp]
+      
+      if(doObfuscation) obfuscate(result) else result
+    }
 
-    override protected def parseShrineResponse(xml: NodeSeq): ShrineResponse = unmarshal(xml)
+    override protected def parseShrineResponse(xml: NodeSeq): ShrineResponse = unmarshaller.fromI2b2(xml)
   }
 
-  private lazy val delegateCountAdapter = new DelegateAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](ReadInstanceResultsResponse.fromI2b2)
+  private lazy val delegateCountAdapter = new DelegateAdapter[ReadInstanceResultsRequest, ReadInstanceResultsResponse](ReadInstanceResultsResponse)(resp => {
+    resp.withQueryResult(Obfuscator.obfuscate(resp.singleNodeResult))
+  }) 
 
-  private lazy val delegateBreakdownAdapter = new DelegateAdapter[ReadResultRequest, ReadResultResponse](ReadResultResponse.fromI2b2)
+  private lazy val delegateBreakdownAdapter = new DelegateAdapter[ReadResultRequest, ReadResultResponse](ReadResultResponse)(resp => {
+    resp
+  })
 }

@@ -34,12 +34,18 @@ import net.shrine.adapter.dao.scalaquery.ScalaQueryAdapterDao
  */
 final class ReadInstanceResultsAdapterTest extends 
 	AbstractQueryRetrievalTestCase(
-	    dao => new ReadInstanceResultsAdapter("", MockHttpClient, AbstractQueryRetrievalTestCase.hiveCredentials, dao, true), 
-	    queryId => ReadInstanceResultsRequest("some-project-id", 1000L, null, queryId), 
+	    (dao, httpClient) => new ReadInstanceResultsAdapter("", httpClient, AbstractQueryRetrievalTestCase.hiveCredentials, dao, true), 
+	    (queryId, authn) => ReadInstanceResultsRequest("some-project-id", 1000L, authn, queryId), 
 	    ReadInstanceResultsResponse.unapply) {
   @Test
   def testProcessInvalidRequest = doTestProcessInvalidRequest
   
   @Test
   def testProcessRequest = doTestProcessRequest
+  
+  @Test
+  def testProcessRequestMissingQuery = doTestProcessRequestMissingQuery
+  
+  @Test
+  def testProcessRequestIncompleteQuery = doTestProcessRequestIncompleteQuery
 }

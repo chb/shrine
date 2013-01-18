@@ -12,7 +12,9 @@ import net.shrine.adapter.dao.model.ShrineQueryResult
  */
 object StoredQueries {
   private[adapter] def retrieve(dao: AdapterDao, queryId: Long): Option[ShrineQueryResult] = {
-    dao.findResultsFor(queryId)
+    val result = dao.findResultsFor(queryId)
+    
+    result
   }
   
   private[adapter] def retrieveAsQueryResult(dao: AdapterDao, doObfuscation: Boolean, queryId: Long): Option[QueryResult] = {

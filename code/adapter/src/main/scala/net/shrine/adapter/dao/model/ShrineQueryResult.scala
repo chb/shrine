@@ -21,7 +21,8 @@ final case class ShrineQueryResult(
   breakdowns: Seq[Breakdown],
   errors: Seq[ShrineError]) {
   
-  lazy val isDone = count.map(_.statusType.isDone).getOrElse(false)
+  //TODO: include breakdowns as well?  What if they're PROCESSING while the count is FINISHED?  Can this even happen?
+  val isDone = count.map(_.statusType.isDone).getOrElse(false)
   
   def toQueryResults(doObfuscation: Boolean): Option[QueryResult] = {
     val countResult = count.map(_.toQueryResult).map { countQueryResult =>

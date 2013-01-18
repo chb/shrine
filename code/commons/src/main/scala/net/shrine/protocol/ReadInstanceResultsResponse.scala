@@ -38,6 +38,8 @@ final case class ReadInstanceResultsResponse(
 
   override def withId(id: Long) = this.copy(shrineNetworkQueryId = id)
   
+  def withQueryResult(qr: QueryResult) = this.copy(singleNodeResult = qr)
+  
   override def results = Seq(singleNodeResult)
 }
 

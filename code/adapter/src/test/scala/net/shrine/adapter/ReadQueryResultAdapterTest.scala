@@ -12,12 +12,18 @@ import org.junit.Test
  */
 final class ReadQueryResultAdapterTest extends 
 	AbstractQueryRetrievalTestCase(
-	    dao => new ReadQueryResultAdapter("", MockHttpClient, AbstractQueryRetrievalTestCase.hiveCredentials, dao, true), 
-	    queryId => ReadQueryResultRequest("some-project-id", 1000L, null, queryId), 
+	    (dao, httpClient) => new ReadQueryResultAdapter("", httpClient, AbstractQueryRetrievalTestCase.hiveCredentials, dao, true), 
+	    (queryId, authn) => ReadQueryResultRequest("some-project-id", 1000L, authn, queryId), 
 	    ReadQueryResultResponse.unapply) {
   @Test
   def testProcessInvalidRequest = doTestProcessInvalidRequest
   
   @Test
   def testProcessRequest = doTestProcessRequest
+  
+  @Test
+  def testProcessRequestMissingQuery = doTestProcessRequestMissingQuery
+  
+  @Test
+  def testProcessRequestIncompleteQuery = doTestProcessRequestIncompleteQuery
 }

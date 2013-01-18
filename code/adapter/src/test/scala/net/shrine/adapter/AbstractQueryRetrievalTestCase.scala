@@ -26,42 +26,157 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.config.HiveCredentials
 import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.util.XmlGcEnrichments
+import net.shrine.util.HttpClient
+import net.shrine.protocol.RunQueryRequest
+import net.shrine.protocol.ReadInstanceResultsRequest
+import net.shrine.protocol.ReadResultRequest
+import net.shrine.protocol.ReadInstanceResultsResponse
+import net.shrine.protocol.ReadResultResponse
 
 /**
  * @author clint
  * @date Nov 8, 2012
  */
 abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
-    makeAdapter: AdapterDao => Adapter, 
-    makeRequest: Long => ShrineRequest, 
+    makeAdapter: (AdapterDao, HttpClient) => Adapter, 
+    makeRequest: (Long, AuthenticationInfo) => ShrineRequest, 
     extractor: R => Option[(Long, QueryResult)]) extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
   
-  lazy val adapter = makeAdapter(dao)
+  private val authn = AuthenticationInfo("some-domain", "some-user", Credential("alskdjlkasd", false))
+  
+  def doTestProcessRequestMissingQuery {
+    val adapter = makeAdapter(dao, MockHttpClient)
+    
+    val response = adapter.processRequest(null, BroadcastMessage(0L, makeRequest(-1L, authn)))
+    
+    response.isInstanceOf[ErrorResponse] should be(true)
+  }
   
   def doTestProcessInvalidRequest {
-    intercept[ClassCastException] {
+    val adapter = makeAdapter(dao, MockHttpClient)
+    
+    intercept[ClassCastException] {null
       //request must be a type of request we can handle
-      adapter.processRequest(null, new BroadcastMessage(0L, new AbstractQueryRetrievalTestCase.BogusRequest))
+      adapter.processRequest(null, BroadcastMessage(0L, new AbstractQueryRetrievalTestCase.BogusRequest))
+    }
+  }
+  
+  private val localMasterId = "alksjdkalsdjlasdjlkjsad"
+    
+  private val shrineNetworkQueryId = 123L
+    
+  private val errorResponse = ErrorResponse("Query with id '" + shrineNetworkQueryId + "' not found")
+  
+  private def doGetResults(adapter: Adapter) = adapter.processRequest(null, BroadcastMessage(shrineNetworkQueryId, makeRequest(shrineNetworkQueryId, authn)))
+  
+  private def toMillis(xmlGc: XMLGregorianCalendar): Long = xmlGc.toGregorianCalendar.getTimeInMillis
+  
+  private val instanceId = 999L
+  private val setSize = 12345L
+  private val obfSetSize = setSize + 1
+  private val queryExpr = Term("foo")
+  
+  def doTestProcessRequestIncompleteQuery = afterCreatingTables {
+    
+    val dbQueryId = dao.insertQuery(localMasterId, shrineNetworkQueryId, "some-query", authn, queryExpr)
+    
+    import ResultOutputType._
+    import Util.now
+    
+    val breakdowns = Map(PATIENT_AGE_COUNT_XML -> I2b2ResultEnvelope(PATIENT_AGE_COUNT_XML, Map("a" -> 1L, "b" -> 2L)))
+    				     
+    val obfscBreakdowns = breakdowns.mapValues(_.mapValues(_ + 1))
+    
+    val startDate = now
+    val elapsed = 100L
+    
+    val endDate = {
+      import XmlGcEnrichments._
+      
+      startDate + elapsed.milliseconds
+    }
+    
+    val incompleteCountResult = QueryResult(456L, instanceId, Some(PATIENT_COUNT_XML), setSize, Option(startDate), Option(endDate), Some("results from node X"), QueryResult.StatusType.Processing, None, breakdowns)
+    
+    val breakdownResult = breakdowns.head match { 
+      case (resultType, data) => incompleteCountResult.withBreakdowns(Map(resultType -> data)).withResultType(resultType)
+    }
+    
+    val queryStartDate = now
+    				     
+    val idsByResultType = dao.insertQueryResults(dbQueryId, incompleteCountResult :: breakdownResult :: Nil)
+    
+    final class AlwaysWorksMockHttpClient extends HttpClient {
+      override def post(input: String, url: String): String = {
+        val response = ShrineRequest.fromI2b2(input) match {
+          case req: ReadInstanceResultsRequest => {
+            println("ReadInstanceResultsRequest: " + req.toXmlString)
+            
+            ReadInstanceResultsResponse(shrineNetworkQueryId, incompleteCountResult.copy(statusType = QueryResult.StatusType.Finished))
+          }
+          case req: ReadResultRequest => {
+            println("ReadResultRequest: " + req.toXmlString)
+            
+            ReadResultResponse(123L, breakdownResult, breakdowns.head._2)
+          }
+          case _ => sys.error("Unknown input: " + input)
+        }
+        
+        response.toI2b2String
+      }
+    }
+    
+    val adapter = makeAdapter(dao, new AlwaysWorksMockHttpClient)
+    
+    def getResults = doGetResults(adapter)
+    
+    getResults.isInstanceOf[ErrorResponse] should be(true)
+    
+    dao.insertCountResult(idsByResultType(PATIENT_COUNT_XML).head, setSize, obfSetSize)
+    
+    dao.insertBreakdownResults(idsByResultType, breakdowns, obfscBreakdowns)
+    
+    //The query shouldn't be 'done', since its status is PROCESSING
+    dao.findResultsFor(shrineNetworkQueryId).get.isDone should be(false)
+    
+    //Now, calling processRequest (via getResults) should cause the query to be re-retrieved from the CRC
+
+    val result = getResults.asInstanceOf[R]
+    
+    //Which should casue the query to be re-stored with a 'done' status (since that's what our mock CRC returns)
+    
+    println(dao.findResultsFor(shrineNetworkQueryId).get)
+    
+    dao.findResultsFor(shrineNetworkQueryId).get.isDone should be(true)
+    
+    val Some((actualNetworkQueryId, actualQueryResult)) = extractor(result)
+    
+    actualNetworkQueryId should equal(shrineNetworkQueryId)
+    
+    actualQueryResult.resultType should equal(Some(PATIENT_COUNT_XML))
+    actualQueryResult.setSize should equal(obfSetSize)
+    actualQueryResult.description should be(None) //TODO: This is probably wrong
+    actualQueryResult.statusType should equal(QueryResult.StatusType.Finished)
+    actualQueryResult.statusMessage should be(None)
+    actualQueryResult.breakdowns should equal(obfscBreakdowns)
+    
+    for {
+      startDate <- actualQueryResult.startDate
+      endDate <- actualQueryResult.endDate
+    } {
+      val actualElapsed = toMillis(endDate) - toMillis(startDate)
+      
+      actualElapsed should equal(elapsed)
     }
   }
   
   def doTestProcessRequest = afterCreatingTables {
 
-    val localMasterId = "alksjdkalsdjlasdjlkjsad"
+    val adapter = makeAdapter(dao, MockHttpClient)
     
-    val shrineNetworkQueryId = 123L
-    
-    val errorResponse = ErrorResponse("Query with id '" + shrineNetworkQueryId + "' not found")
-    
-    def getResults = adapter.processRequest(null, new BroadcastMessage(shrineNetworkQueryId, makeRequest(shrineNetworkQueryId)))
+    def getResults = doGetResults(adapter)
     
     getResults should equal(errorResponse)
-    
-    val instanceId = 999L
-    val setSize = 12345L
-    val obfSetSize = setSize + 1
-    val authn = AuthenticationInfo("some-domain", "some-user", Credential("alskdjlkasd", false))
-    val queryExpr = Term("foo")
     
     val dbQueryId = dao.insertQuery(localMasterId, shrineNetworkQueryId, "some-query", authn, queryExpr)
     
@@ -112,8 +227,6 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     actualQueryResult.statusType should equal(QueryResult.StatusType.Finished)
     actualQueryResult.statusMessage should be(None)
     actualQueryResult.breakdowns should equal(obfscBreakdowns)
-    
-    def toMillis(xmlGc: XMLGregorianCalendar): Long = xmlGc.toGregorianCalendar.getTimeInMillis
     
     for {
       startDate <- actualQueryResult.startDate
