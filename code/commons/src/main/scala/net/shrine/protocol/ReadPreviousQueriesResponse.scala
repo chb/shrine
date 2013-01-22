@@ -55,7 +55,7 @@ final case class ReadPreviousQueriesResponse(val userId: String, val groupId: St
 }
 
 object ReadPreviousQueriesResponse extends I2b2Unmarshaller[ReadPreviousQueriesResponse] with XmlUnmarshaller[ReadPreviousQueriesResponse] {
-  override def fromI2b2(nodeSeq: NodeSeq) = {
+  override def fromI2b2(nodeSeq: NodeSeq): ReadPreviousQueriesResponse = {
     val queryMasters = (nodeSeq \ "message_body" \ "response" \ "query_master").map { x =>
       val queryMasterId = (x \ "query_master_id").text
       val name = (x \ "name").text
@@ -65,12 +65,13 @@ object ReadPreviousQueriesResponse extends I2b2Unmarshaller[ReadPreviousQueriesR
 
       QueryMaster(queryMasterId, name, userId, groupId, createDate)
     }
+    
     val firstMaster = queryMasters.head //TODO - parsing error if no masters - need to deal with "no result" case
 
     ReadPreviousQueriesResponse(firstMaster.userId, firstMaster.groupId, queryMasters)
   }
 
-  override def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq): ReadPreviousQueriesResponse = {
     val userId = (nodeSeq \ "userId").text
     val groupId = (nodeSeq \ "groupId").text
 
