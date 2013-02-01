@@ -13,7 +13,6 @@ import net.shrine.protocol.query.Expression
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.adapter.dao.model.ShrineQuery
 import net.shrine.protocol.RawCrcRunQueryResponse
-import net.shrine.util.Try
 
 /**
  * @author clint

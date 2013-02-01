@@ -9,7 +9,7 @@ import java.util.GregorianCalendar
 import java.util.TimeZone
 import javax.xml.datatype.XMLGregorianCalendar
 import org.junit.Test
-import net.shrine.util.Try
+import scala.util.Try
 import org.scalatest.junit.ShouldMatchersForJUnit
 import net.shrine.util.Util
 import net.shrine.protocol.XmlRoundTripper

@@ -7,10 +7,10 @@ import net.shrine.util.XmlUtil
 import net.liftweb.json.JsonDSL._
 import net.shrine.serialization.{ JsonUnmarshaller, JsonMarshaller, XmlMarshaller, XmlUnmarshaller }
 import net.liftweb.json.JsonAST._
-import net.shrine.util.Try
-import net.shrine.util.Failure
 import net.shrine.util.Util
-import net.shrine.util.Success
+import scala.util.Try
+import scala.util.Failure
+import scala.util.Success
 
 /**
  *
@@ -39,8 +39,8 @@ object Expression extends XmlUnmarshaller[Try[Expression]] with JsonUnmarshaller
   private val toOr = to(Or)
   private val toAnd = to(And)
 
-  import Try.sequence
-
+  import Util.Tries.sequence
+  
   def fromJson(json: JValue): Try[Expression] = {
     def dateFromJson(json: JValue): Try[XMLGregorianCalendar] = Try {
       json match {

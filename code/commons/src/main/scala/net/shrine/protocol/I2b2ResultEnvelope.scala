@@ -16,7 +16,7 @@ import net.shrine.serialization.JsonMarshaller
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
 import net.shrine.serialization.JsonUnmarshaller
-import net.shrine.util.Try
+import scala.util.Try
 
 
 /**

@@ -4,7 +4,7 @@ import net.shrine.serialization.XmlMarshaller
 import net.shrine.util.XmlUtil
 import scala.xml.NodeSeq
 import net.shrine.serialization.XmlUnmarshaller
-import net.shrine.util.Try
+import scala.util.Try
 
 /**
  * @author clint

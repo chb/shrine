@@ -13,10 +13,10 @@ import net.shrine.protocol.RunQueryRequest
 import net.shrine.protocol.RunQueryRequest
 import net.shrine.protocol.AsRunQueryRequest
 import net.shrine.protocol.I2b2ResultEnvelope
-import net.shrine.util.Try
-import net.shrine.util.Failure
+import scala.util.Try
+import scala.util.Failure
+import scala.util.Success
 import net.shrine.util.Loggable
-import net.shrine.util.Success
 import net.shrine.util.HttpClient
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.protocol.query.QueryDefinition

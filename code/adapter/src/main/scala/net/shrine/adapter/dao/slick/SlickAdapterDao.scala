@@ -20,7 +20,6 @@ import net.shrine.util.Util
 import net.shrine.util.Loggable
 import net.shrine.protocol.RawCrcRunQueryResponse
 import net.shrine.protocol.query.QueryDefinition
-import net.shrine.util.Try
 import scala.slick.session.Database
 import scala.slick.driver.ExtendedProfile
 import scala.slick.session.Session

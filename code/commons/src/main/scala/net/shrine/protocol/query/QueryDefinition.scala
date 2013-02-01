@@ -8,9 +8,8 @@ import net.shrine.util.XmlUtil
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
 import net.shrine.serialization.{JsonMarshaller, I2b2Marshaller, XmlMarshaller, XmlUnmarshaller}
-import net.shrine.util.Try
-import net.shrine.util.Success
 import net.shrine.util.Util
+import scala.util.Try
 
 
 /**
@@ -82,7 +81,9 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
 
     val panelsXml = outerTag \ "panel"
     
-    val panels = Try.sequence(panelsXml.map(Panel.fromI2b2))
+    import Util.Tries.sequence
+    
+    val panels = sequence(panelsXml.map(Panel.fromI2b2))
 
     val exprs = panels.map(ps => ps.map(_.toExpression))
     

@@ -2,7 +2,6 @@ package net.shrine.webclient.server
 
 import org.springframework.security.core.context.SecurityContextHolder
 import net.shrine.i2b2.protocol.pm.User
-import net.shrine.util.Try
 
 /**
  * @author clint

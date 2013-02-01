@@ -7,7 +7,7 @@ import util.Random
 import org.spin.message.serializer.BasicSerializer
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.{ XmlMarshaller, XmlUnmarshaller }
-import net.shrine.util.Try
+import scala.util.Try
 
 /**
  * @author Bill Simons

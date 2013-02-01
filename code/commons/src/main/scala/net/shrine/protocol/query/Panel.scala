@@ -9,7 +9,7 @@ import net.shrine.serialization.{ JsonUnmarshaller, I2b2Marshaller }
 import net.liftweb.json.JsonAST._
 import scala.None
 import net.liftweb.json.DefaultFormats
-import net.shrine.util.Try
+import scala.util.Try
 
 /**
  *

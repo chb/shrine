@@ -22,7 +22,7 @@ import org.spin.client.TimeoutException
 import java.net.MalformedURLException
 import org.spin.tools.NetworkTime
 import net.shrine.util.Util
-import net.shrine.util.Try
+import scala.util.Try
 import net.shrine.util.Loggable
 import net.shrine.aggregation.ReadQueryResultAggregator
 

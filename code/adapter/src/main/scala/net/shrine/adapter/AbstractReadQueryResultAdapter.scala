@@ -21,12 +21,12 @@ import net.shrine.protocol.ReadResultRequest
 import net.shrine.protocol.ReadResultResponse
 import net.shrine.adapter.dao.model.Breakdown
 import net.shrine.protocol.ResultOutputType
-import net.shrine.util.Try
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import net.shrine.util.Success
-import net.shrine.util.Failure
 import net.shrine.protocol.HasQueryResults
 import net.shrine.adapter.Obfuscator.obfuscateResults
 import net.shrine.protocol.query.QueryDefinition
@@ -35,6 +35,7 @@ import net.shrine.serialization.I2b2Unmarshaller
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Await
+import net.shrine.util.Util
 
 /**
  * @author clint
@@ -126,10 +127,13 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     
     val (countResponseAttempts, breakdownResponseAttempts) = Await.result(futureResponses, waitTimeMs.milliseconds)
 
+    import Util.Tries.sequence
+    import Util.Tries.Implicits._
+    
     val responseAttempt = for {
-      countResponses: Option[ReadInstanceResultsResponse] <- Try.sequence(countResponseAttempts)
+      countResponses: Option[ReadInstanceResultsResponse] <- sequence(countResponseAttempts)
       countResponse: ReadInstanceResultsResponse <- countResponses
-      breakdownResponses: Seq[ReadResultResponse] <- Try.sequence(breakdownResponseAttempts)
+      breakdownResponses: Seq[ReadResultResponse] <- sequence(breakdownResponseAttempts)
     } yield {
       val localCountResultId = countResponse.shrineNetworkQueryId
 
