@@ -19,7 +19,9 @@ import net.shrine.util.Try
  * @author clint
  * @date Oct 19, 2012
  */
-object MockAdapterDao extends AdapterDao {
+object MockAdapterDao extends MockAdapterDao
+
+trait MockAdapterDao extends AdapterDao {
   override def insertQuery(localMasterId: String, networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = 0
 
   override def insertQueryResults(parentQueryId: Int, results: Seq[QueryResult]): Map[ResultOutputType, Seq[Int]] = Map.empty

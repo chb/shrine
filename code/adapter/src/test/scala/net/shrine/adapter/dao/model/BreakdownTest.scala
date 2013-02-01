@@ -4,7 +4,7 @@ import junit.framework.TestCase
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
 import net.shrine.protocol.ResultOutputType
-import net.shrine.adapter.dao.scalaquery.rows.BreakdownResultRow
+import net.shrine.adapter.dao.slick.rows.BreakdownResultRow
 
 /**
  * @author clint

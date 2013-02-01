@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
-
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.SingleConnectionDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
@@ -16,27 +13,24 @@
         <property name="password" value=""/>
         <property name="suppressClose" value="true"/>
     </bean>
-
-    <bean id="transactionManager"
-          class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory"/>
-        </property>
+    
+    <bean id="slickDatabase" class="scala.slick.session.Database" factory-method="forDataSource">
+        <constructor-arg ref="dataSource"/>
     </bean>
-
-    <bean id="auditDAO" class="net.shrine.broadcaster.dao.hibernate.HibernateAuditDAO"/>
-
-    <bean id="sessionFactory"
-          class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="net.shrine.broadcaster.dao.hibernate"/>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
-                <prop key="hibernate.hbm2ddl.auto">create</prop>
-            </props>
-        </property>
+    
+    <bean id="slickSpringWorkarounds" class="net.shrine.dao.slick.workarounds.SpringWorkarounds">
+        <constructor-arg value="h2"/>
     </bean>
-
+    
+    <bean id="slickDriver" factory-bean="slickSpringWorkarounds" factory-method="driver"/>
+    
+    <bean id="slickTables" class="net.shrine.broadcaster.dao.slick.tables.Tables">
+    	<constructor-arg ref="slickDriver"/>
+    </bean>
+    
+    <bean id="auditDao" class="net.shrine.broadcaster.dao.slick.SlickAuditDao">
+        <constructor-arg ref="slickDatabase"/>
+        <constructor-arg ref="slickTables"/>
+    </bean>
 
 </beans>

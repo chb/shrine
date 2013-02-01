@@ -26,7 +26,6 @@ import net.shrine.protocol.ErrorResponse
 import net.shrine.protocol.ReadInstanceResultsResponse
 import net.shrine.config.HiveCredentials
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests
-import net.shrine.adapter.dao.scalaquery.ScalaQueryAdapterDao
 
 /**
  * @author clint

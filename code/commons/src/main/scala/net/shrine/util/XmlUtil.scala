@@ -26,6 +26,7 @@ object XmlUtil {
     }
   }
 
+  //NB: As of Scala 2.10, now collapses elements like <foo></foo> to <foo/> :\
   def stripWhitespace(node: Node): Node = {
     def removeWhitespaceNodes(node: Node): NodeSeq = {
       node match {

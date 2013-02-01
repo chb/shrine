@@ -3,7 +3,7 @@ package net.shrine.adapter.dao.model
 import junit.framework.TestCase
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import net.shrine.adapter.dao.scalaquery.rows.PatientSetRow
+import net.shrine.adapter.dao.slick.rows.PatientSetRow
 
 /**
  * @author clint

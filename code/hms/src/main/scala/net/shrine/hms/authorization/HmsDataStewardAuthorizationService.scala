@@ -124,7 +124,8 @@ object HmsDataStewardAuthorizationService extends Loggable {
   def escapeQueryText(queryText: String): String = {
     val queryXml = XML.loadString(queryText)
     val trimmedXml = XmlUtil.stripWhitespace(queryXml)
-    val escapedText = Utility.escape(trimmedXml.toString())
+    val escapedText = Utility.escape(trimmedXml.toString)
+
     escapedText.replace("\\", "\\\\")
   }
 }

@@ -37,7 +37,7 @@ final class PanelTest extends TestCase with AssertionsForJUnit with ShouldMatche
     assert(p2.toExpression === t1)
     
     assert(p3.toExpression === OccuranceLimited(99, DateBounded(startDate, endDate, Not(Or(term1, term2, term3)))))
-    t1
+    
     assert(p4.toExpression === DateBounded(startDate, endDate, Or(term1, term2, term3)))
   }
   

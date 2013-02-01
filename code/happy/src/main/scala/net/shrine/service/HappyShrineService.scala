@@ -1,9 +1,6 @@
 package net.shrine.service
 
 import java.io.StringWriter
-import scala.collection.JavaConversions.asScalaBuffer
-import scala.collection.JavaConversions.asScalaSet
-import scala.collection.JavaConversions.collectionAsScalaIterable
 import scala.xml.NodeSeq
 import scala.xml.XML
 import org.spin.client.SpinAgent
@@ -25,10 +22,9 @@ import org.spin.tools.crypto.XMLSignatureUtil
 import org.spin.tools.JAXBUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import javax.xml.bind.JAXBContext
 import net.shrine.adapter.dao.AdapterDao
-import net.shrine.broadcaster.dao.AuditDAO
+import net.shrine.broadcaster.dao.AuditDao
 import net.shrine.config.ShrineConfig
 import net.shrine.config.HiveCredentials
 import net.shrine.i2b2.protocol.pm.GetUserConfigurationRequest
@@ -45,6 +41,7 @@ import net.shrine.protocol.RunQueryRequest
 import net.shrine.util.XmlUtil
 import net.shrine.util.Versions
 import net.shrine.util.HttpClient
+import scala.collection.JavaConverters._
 
 /**
  * @author Bill Simons
@@ -62,7 +59,7 @@ class HappyShrineService @Autowired() (
   hiveCredentials: HiveCredentials,
   pmEndpoint: String,
   spinClient: SpinAgent,
-  auditDao: AuditDAO,
+  auditDao: AuditDao,
   adapterDao: AdapterDao,
   httpClient: HttpClient) extends HappyShrineRequestHandler {
 
@@ -82,7 +79,7 @@ class HappyShrineService @Autowired() (
         </certId>
         <importedCerts>
           {
-            pki.getImportedCertsCopy map { cert =>
+            pki.getImportedCertsCopy.asScala.map { cert =>
               <cert>
                 <name>{ cert.getCertID.getName }</name>
                 <serial>{ cert.getCertID.getSerial.toString }</serial>
@@ -123,15 +120,15 @@ class HappyShrineService @Autowired() (
     </spin>).toString
 
   private[service] def partitionSpinResults(resultSet: ResultSet): (Seq[Result], Seq[Failure]) = {
-    val results = resultSet.getResults.toSeq
+    val results = resultSet.getResults.asScala.toSeq
 
-    val failures = resultSet.getFailures.toSeq
+    val failures = resultSet.getFailures.asScala.toSeq
 
     (results, failures)
   }
 
   private[service] def generateSpinReport(routingTable: RoutingTableConfig): String = {
-    val peerGroupOption = routingTable.getPeerGroups find (_.getGroupName == shrineConfig.getBroadcasterPeerGroupToQuery)
+    val peerGroupOption = routingTable.getPeerGroups.asScala.find (_.getGroupName == shrineConfig.getBroadcasterPeerGroupToQuery)
 
     if (!peerGroupOption.isDefined) {
       return invalidSpinConfig
@@ -231,7 +228,7 @@ class HappyShrineService @Autowired() (
     </failure>
   }
 
-  @Transactional(readOnly = true)
+  //TODO: @Transactional(readOnly = true)
   override def auditReport: String = {
     val recentEntries = auditDao.findRecentEntries(10)
     XmlUtil.stripWhitespace(
@@ -239,16 +236,16 @@ class HappyShrineService @Autowired() (
         {
           recentEntries map { entry =>
             <entry>
-              <id>{ entry.getAuditEntryId }</id>
-              <time>{ entry.getTime }</time>
-              <username>{ entry.getUsername }</username>
+              <id>{ entry.auditEntryId }</id>
+              <time>{ entry.time }</time>
+              <username>{ entry.username }</username>
             </entry>
           }
         }
       </recentAuditEntries>).toString
   }
 
-  @Transactional(readOnly = true)
+  //TODO: @Transactional(readOnly = true)
   override def queryReport: String = {
     val recentQueries = adapterDao.findRecentQueries(10)
     
@@ -276,7 +273,7 @@ class HappyShrineService @Autowired() (
       </versionInfo>).toString
   }
 
-  @Transactional(readOnly = true)
+  //TODO: @Transactional(readOnly = true)
   override def all: String = {
     new StringBuilder("<all>")
       .append(versionReport)

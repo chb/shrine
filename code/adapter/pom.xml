@@ -11,14 +11,22 @@
         <artifactId>shrine-base</artifactId>
         <version>1.14-SNAPSHOT</version>
     </parent>
-    <properties>
-    	<akka-version>2.0.4</akka-version>
-    </properties>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
+            </plugin>
+	    <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -30,23 +38,16 @@
 		</repository>
     </repositories>
     <dependencies>
-        <dependency>
-	    <groupId>org.scalaquery</groupId>
-  	    <artifactId>scalaquery_${lift-scala-version}</artifactId>
-    	    <version>0.10.0-M1</version>
-        </dependency>
-        <!--
 	<dependency>
-            <groupId>com.typesafe</groupId>
-            <artifactId>slick_${scala-version}</artifactId>
-            <version>0.11.1</version>
+            <groupId>com.typesafe.slick</groupId>
+            <artifactId>slick_${slick-scala-version}</artifactId>
+            <version>${slick-version}</version>
         </dependency>
-	-->
-		<dependency>
-			<groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-actor</artifactId>
-            <version>${akka-version}</version>
-		</dependency>
+        <dependency>
+            <groupId>net.shrine</groupId>
+            <artifactId>shrine-data-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.shrine</groupId>
             <artifactId>shrine-commons</artifactId>
@@ -67,54 +68,6 @@
             <artifactId>spin-node-api</artifactId>
             <version>${spin-node-version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>transaction-api</artifactId>
-            <version>1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>3.3.2.GA</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.4.0.GA</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-commons-annotations</artifactId>
-            <version>3.3.0.ga</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
-        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
@@ -131,26 +84,17 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.12</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb-api-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb-impl-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jsr173_api</artifactId>
-            <version>1.0</version>
+            <version>${log4j-version}</version>
         </dependency>
 
         <!--Test scoped dependencies below this comment-->
+
+	<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+	    <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>net.shrine</groupId>
             <artifactId>shrine-commons</artifactId>
@@ -174,12 +118,6 @@
             <artifactId>easymock</artifactId>
             <version>3.0</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.3.02</version>
         </dependency>
     </dependencies>
 </project>

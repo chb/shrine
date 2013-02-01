@@ -446,42 +446,42 @@ final class ExpressionTest extends TestCase with ShouldMatchersForJUnit {
 
   @Test
   def testTermToXml {
-    assert(<term>{ t1.value }</term>.toString === t1.toXml.toString)
+    assert(<term>{ t1.value }</term>.toString === t1.toXmlString)
   }
 
   @Test
   def testNotToXml {
-    assert(<not><term>{ t1.value }</term></not>.toString === Not(t1).toXml.toString)
+    assert(<not><term>{ t1.value }</term></not>.toString === Not(t1).toXmlString)
   }
 
   @Test
   def testAndToXml {
-    assert(<and/>.toString === And().toXml.toString)
-    assert(<and><term>{ t1.value }</term></and>.toString === And(t1).toXml.toString)
-    assert(<and><term>{ t1.value }</term><term>{ t2.value }</term></and>.toString === And(t1, t2).toXml.toString)
+    assert(<and></and>.toString === And().toXmlString)
+    assert(<and><term>{ t1.value }</term></and>.toString === And(t1).toXmlString)
+    assert(<and><term>{ t1.value }</term><term>{ t2.value }</term></and>.toString === And(t1, t2).toXmlString)
   }
 
   @Test
   def testOrToXml {
-    assert(<or/>.toString === Or().toXml.toString)
-    assert(<or><term>{ t1.value }</term></or>.toString === Or(t1).toXml.toString)
-    assert(<or><term>{ t1.value }</term><term>{ t2.value }</term></or>.toString === Or(t1, t2).toXml.toString)
+    assert(<or></or>.toString === Or().toXmlString)
+    assert(<or><term>{ t1.value }</term></or>.toString === Or(t1).toXmlString)
+    assert(<or><term>{ t1.value }</term><term>{ t2.value }</term></or>.toString === Or(t1, t2).toXmlString)
   }
 
   @Test
   def testDateBoundedToXml {
-    assert(<dateBounded><start/><end/><term>{ t1.value }</term></dateBounded>.toString === DateBounded(None, None, t1).toXml.toString)
+    assert(<dateBounded><start/><end/><term>{ t1.value }</term></dateBounded>.toString === DateBounded(None, None, t1).toXmlString)
 
     val time = now
 
-    assert(<dateBounded><start>{ time.toString }</start><end/><term>{ t1.value }</term></dateBounded>.toString === DateBounded(Some(time), None, t1).toXml.toString)
-    assert(<dateBounded><start/><end>{ time.toString }</end><term>{ t1.value }</term></dateBounded>.toString === DateBounded(None, Some(time), t1).toXml.toString)
-    assert(<dateBounded><start>{ time.toString }</start><end>{ time.toString }</end><term>{ t1.value }</term></dateBounded>.toString === DateBounded(Some(time), Some(time), t1).toXml.toString)
+    assert(<dateBounded><start>{ time.toString }</start><end/><term>{ t1.value }</term></dateBounded>.toString === DateBounded(Some(time), None, t1).toXmlString)
+    assert(<dateBounded><start/><end>{ time.toString }</end><term>{ t1.value }</term></dateBounded>.toString === DateBounded(None, Some(time), t1).toXmlString)
+    assert(<dateBounded><start>{ time.toString }</start><end>{ time.toString }</end><term>{ t1.value }</term></dateBounded>.toString === DateBounded(Some(time), Some(time), t1).toXmlString)
   }
 
   @Test
   def testOccuranceLimitedToXml {
-    assert(<occurs><min>99</min><term>{ t1.value }</term></occurs>.toString === OccuranceLimited(99, t1).toXml.toString)
+    assert(<occurs><min>99</min><term>{ t1.value }</term></occurs>.toString === OccuranceLimited(99, t1).toXmlString)
   }
 
   private def doTestNormalizeComposeable[T <: Expression](Op: (Expression*) => T) {

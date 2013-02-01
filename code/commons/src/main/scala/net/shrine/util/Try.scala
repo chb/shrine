@@ -49,6 +49,7 @@ import scala.collection.generic.CanBuildFrom
  */
 //TODO: Remove when we depend on Scala 2.10
 // **** https://github.com/scala/scala/blob/3bd897ba0054fd2cfd580c7f87ff6488c9dca4ea/src/library/scala/util/Try.scala#L1 ****
+@Deprecated
 sealed abstract class Try[+T] {
 
   /**
@@ -136,6 +137,7 @@ sealed abstract class Try[+T] {
 
 }
 
+@Deprecated
 object Try {
   implicit def option2Try[T](o: Option[T]): Try[T] = o match {
     case Some(value) => Success(value)
@@ -172,6 +174,7 @@ object Try {
   }
 }
 
+@Deprecated
 final case class Failure[+T](val exception: Throwable) extends Try[T] {
   def isFailure: Boolean = true
   def isSuccess: Boolean = false
@@ -197,6 +200,7 @@ final case class Failure[+T](val exception: Throwable) extends Try[T] {
   def failed: Try[Throwable] = Success(exception)
 }
 
+@Deprecated
 final case class Success[+T](value: T) extends Try[T] {
   def isFailure: Boolean = false
   def isSuccess: Boolean = true

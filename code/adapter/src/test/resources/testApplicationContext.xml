@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:annotation-config/>
-
-    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!--define default properties and JNDI name that will override them-->
     <bean id="pmEndpoint" class="org.springframework.jndi.JndiObjectFactoryBean">
@@ -52,25 +50,26 @@
         <property name="suppressClose" value="true"/>
     </bean>
 
-    <bean id="scalaQueryDatabase" class="org.scalaquery.session.Database" factory-method="forDataSource">
+    <bean id="slickDatabase" class="scala.slick.session.Database" factory-method="forDataSource">
         <constructor-arg ref="dataSource"/>
     </bean>
     
-    <bean id="scalaQuerySpringWorkarounds" class="net.shrine.adapter.dao.scalaquery.workarounds.SpringWorkarounds">
+    <bean id="slickSpringWorkarounds" class="net.shrine.dao.slick.workarounds.SpringWorkarounds">
         <constructor-arg value="h2"/>
     </bean>
     
-    <bean id="sequenceHelper" factory-bean="scalaQuerySpringWorkarounds" factory-method="sequenceHelper">
-        <constructor-arg type="org.scalaquery.session.Database" ref="scalaQueryDatabase"/>
+    <bean id="slickDriver" factory-bean="slickSpringWorkarounds" factory-method="driver"/>
+    
+    <bean id="slickTables" class="net.shrine.adapter.dao.slick.tables.Tables">
+    	<constructor-arg ref="slickDriver"/>
     </bean>
     
-    <bean id="scalaQueryDriver" factory-bean="scalaQuerySpringWorkarounds" factory-method="driver"/>
-    
-    <bean id="adapterDao" class="net.shrine.adapter.dao.scalaquery.ScalaQueryAdapterDao">
-        <constructor-arg ref="scalaQueryDatabase"/>
-        <constructor-arg ref="scalaQueryDriver"/>
-        <constructor-arg ref="sequenceHelper"/>
+    <bean id="nonTransactionalAdapterDao" class="net.shrine.adapter.dao.slick.SlickAdapterDao">
+        <constructor-arg ref="slickDatabase"/>
+        <constructor-arg ref="slickTables"/>
     </bean>
+    
+    <bean id="adapterDao" class="net.shrine.adapter.dao.AdapterDao" factory-bean="nonTransactionalAdapterDao" factory-method="transactional"/>
 
     <bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
 	  <constructor-arg index="0" value="AdapterMappings.xml"/>

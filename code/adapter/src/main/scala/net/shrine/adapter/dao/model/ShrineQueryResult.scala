@@ -1,12 +1,11 @@
 package net.shrine.adapter.dao.model
 
-import scala.Option.option2Iterable
-import net.shrine.adapter.dao.scalaquery.rows.BreakdownResultRow
-import net.shrine.adapter.dao.scalaquery.rows.QueryResultRow
+import net.shrine.adapter.dao.slick.rows.BreakdownResultRow
+import net.shrine.adapter.dao.slick.rows.QueryResultRow
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.I2b2ResultEnvelope
-import net.shrine.adapter.dao.scalaquery.rows.CountRow
+import net.shrine.adapter.dao.slick.rows.CountRow
 
 /**
  * @author clint

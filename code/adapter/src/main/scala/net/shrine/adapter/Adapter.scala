@@ -2,7 +2,6 @@ package net.shrine.adapter
 
 import org.spin.node.QueryContext
 import java.lang.String
-import org.springframework.transaction.annotation.Transactional
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol.{ErrorResponse, ShrineResponse, BroadcastMessage}
 import net.shrine.util.Loggable
@@ -24,7 +23,6 @@ abstract class Adapter extends AbstractQueryAction[BroadcastMessage] with Loggab
   
   final override def unmarshal(serializedCriteria: String) = BroadcastMessage.fromXml(serializedCriteria)
 
-  @Transactional
   final override def perform(context: QueryContext, message: BroadcastMessage): String = {
     val shrineResponse = try {
       processRequest(context.getQueryInfo.getIdentity, message)
@@ -34,7 +32,7 @@ abstract class Adapter extends AbstractQueryAction[BroadcastMessage] with Loggab
         //for now we'll warn on all errors and work towards more specific logging later
         warn(String.format("Exception %s in Adapter with stack trace:\r\n%s caused on request\r\n %s", e.toString, e.getStackTraceString, message.toXmlString))
         
-        new ErrorResponse(e.getMessage)
+        ErrorResponse(e.getMessage)
       }
     }
 

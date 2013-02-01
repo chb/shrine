@@ -4,8 +4,8 @@ package net.shrine.protocol.query
  * @author clint
  * @date Dec 10, 2012
  */
-sealed abstract class Conjunction(combinator: (Expression*) => Expression) {
-  val combine = combinator
+sealed abstract class Conjunction(val combine: (Expression*) => Expression) {
+  //def combine(exprs: Expression*) = combinator(exprs: _*)
 }
 
 object Conjunction {

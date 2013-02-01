@@ -9,9 +9,8 @@ import org.apache.log4j.MDC
 import net.shrine.filters.LogFilter
 import java.lang.String
 import org.spin.tools.crypto.PKCryptor
-import net.shrine.broadcaster.dao.AuditDAO
-import net.shrine.broadcaster.dao.hibernate.AuditEntry
-import org.springframework.transaction.annotation.Transactional
+import net.shrine.broadcaster.dao.AuditDao
+import net.shrine.broadcaster.dao.model.AuditEntry
 import org.spin.message.{ AckNack, Failure, Response, Result, ResultSet, QueryInfo }
 import net.shrine.aggregation._
 import org.apache.log4j.Logger
@@ -38,13 +37,12 @@ import net.shrine.aggregation.ReadQueryResultAggregator
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class ShrineService(
-  private val auditDao: AuditDAO,
-  private val authorizationService: QueryAuthorizationService,
-  private val identityService: IdentityService,
-  private val shrineConfig: ShrineConfig,
-  private val spinClient: SpinAgent) extends ShrineRequestHandler with Loggable {
-
-  private lazy val aggregatorEndpointConfig = new EndpointConfig(EndpointType.SOAP, shrineConfig.getAggregatorEndpoint);
+    auditDao: AuditDao,
+    authorizationService: QueryAuthorizationService,
+    identityService: IdentityService,
+    shrineConfig: ShrineConfig,
+    spinClient: SpinAgent,
+    aggregatorEndpointConfig: Option[EndpointConfig]) extends ShrineRequestHandler with Loggable {
 
   protected def generateIdentity(authn: AuthenticationInfo): Identity = identityService.certify(authn.domain, authn.username, authn.credential.value)
 
@@ -62,11 +60,11 @@ class ShrineService(
     ackNack
   }
 
-  private def getSpinResults(queryID: String, identity: Identity): ResultSet = {
+  private def getSpinResults(queryId: String, identity: Identity): ResultSet = {
     try {
-      spinClient.receive(queryID, identity)
+      spinClient.receive(queryId, identity)
     } catch {
-      case e: TimeoutException => spinClient.getResult(queryID, identity)
+      case e: TimeoutException => spinClient.getResult(queryId, identity)
     }
   }
 
@@ -126,7 +124,7 @@ class ShrineService(
   }
 
   protected def executeRequest(identity: Identity, message: BroadcastMessage, aggregator: Aggregator): ShrineResponse = {
-    val queryInfo = new QueryInfo(determinePeergroup(message.request.projectId), identity, message.request.requestType.name, aggregatorEndpointConfig)
+    val queryInfo = new QueryInfo(determinePeergroup(message.request.projectId), identity, message.request.requestType.name, aggregatorEndpointConfig.orNull)
 
     val ackNack = broadcastMessage(message, queryInfo)
 
@@ -145,35 +143,39 @@ class ShrineService(
     executeRequest(generateIdentity(request.authn), BroadcastMessage(request), aggregator)
   }
 
-  private def auditRunQueryRequest(identity: Identity, request: RunQueryRequest) {
-    auditDao.addAuditEntry(AuditEntry(
-      request.projectId,
-      identity.getDomain,
-      identity.getUsername,
-      request.queryDefinition.toI2b2.toString, //TODO: Use i2b2 format Still?
-      request.topicId))
+  private def auditTransactionally[T](identity: Identity, request: RunQueryRequest)(body: => T): T = {
+    auditDao.inTransaction {
+      try { body } finally {
+        auditDao.addAuditEntry(
+          request.projectId,
+          identity.getDomain,
+          identity.getUsername,
+          request.queryDefinition.toI2b2String, //TODO: Use i2b2 format Still?
+          request.topicId)
+      }
+    }
   }
 
-  @Transactional
   override def runQuery(request: RunQueryRequest): ShrineResponse = {
-    authorizationService.authorizeRunQueryRequest(request)
-
     val identity = generateIdentity(request.authn)
 
-    auditRunQueryRequest(identity, request)
+    auditTransactionally(identity, request) {
 
-    val reqWithQueryIdAssigned = request.withNetworkQueryId(BroadcastMessage.Ids.next)
-    
-    val message = BroadcastMessage(reqWithQueryIdAssigned.networkQueryId, reqWithQueryIdAssigned)
+      authorizationService.authorizeRunQueryRequest(request)
 
-    val aggregator = new RunQueryAggregator(
-      message.requestId,
-      reqWithQueryIdAssigned.authn.username,
-      reqWithQueryIdAssigned.projectId,
-      reqWithQueryIdAssigned.queryDefinition,
-      shrineConfig.isIncludeAggregateResult)
+      val reqWithQueryIdAssigned = request.withNetworkQueryId(BroadcastMessage.Ids.next)
 
-    executeRequest(identity, message, aggregator)
+      val message = BroadcastMessage(reqWithQueryIdAssigned.networkQueryId, reqWithQueryIdAssigned)
+
+      val aggregator = new RunQueryAggregator(
+        message.requestId,
+        reqWithQueryIdAssigned.authn.username,
+        reqWithQueryIdAssigned.projectId,
+        reqWithQueryIdAssigned.queryDefinition,
+        shrineConfig.isIncludeAggregateResult)
+
+      executeRequest(identity, message, aggregator)
+    }
   }
 
   override def readQueryDefinition(request: ReadQueryDefinitionRequest) = executeRequest(request, new ReadQueryDefinitionAggregator)

@@ -77,7 +77,7 @@ trait ShrineWebclientApiJaxrsTest extends AssertionsForJUnit with ShouldMatchers
   protected def asJsonArray(rawJson: String): Option[JArray] = Option(parse(rawJson)) collect { case a: JArray => a }
 
   protected def unmarshalSeq[T: Jsonable](rawJson: String): Seq[T] = {
-    val items = asJsonArray(rawJson).map(_.children).flatten
+    val items = asJsonArray(rawJson).map(_.children).getOrElse(Nil)
 
     items.flatMap(unmarshal[T](_)).toSeq
   }

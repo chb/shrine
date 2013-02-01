@@ -2,18 +2,16 @@ package net.shrine.adapter
 
 import scala.io.Source
 import javax.annotation.Resource
-import org.scalaquery.session.Database
-import org.scalaquery.ql.extended.ExtendedProfile
 import net.shrine.adapter.dao.AdapterDao
-import org.scalaquery.session.Session
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests
-import org.scalaquery.ql.extended.ExtendedTable
-import org.scalaquery.ql.Query
-import net.shrine.adapter.dao.scalaquery.tables.ShrineQueries
-import net.shrine.adapter.dao.scalaquery.tables.QueryResults
-import net.shrine.adapter.dao.scalaquery.tables.CountResults
-import net.shrine.adapter.dao.scalaquery.tables.BreakdownResults
-import net.shrine.adapter.dao.scalaquery.tables.ErrorResults
+import scala.slick.session.Database
+import scala.slick.driver.ExtendedProfile
+import scala.slick.driver.BasicDriver.Table
+import scala.slick.lifted.Query
+import scala.slick.session.Session
+import net.shrine.adapter.dao.slick.tables.Tables
+import scala.slick.driver.BasicProfile
+import scala.slick.driver.BasicDriver
 
 /**
  * @author clint
@@ -26,27 +24,23 @@ trait AdapterDbTest { self: AbstractDependencyInjectionSpringContextTests =>
   @Resource
   var driver: ExtendedProfile = _
 
-  @Resource
+  @Resource(name = "adapterDao")
   var dao: AdapterDao = _
+  
+  @Resource
+  var tables: Tables = _
   
   override protected final def getConfigPath = "/testApplicationContext.xml"
   
-  protected def rows[A](table: ExtendedTable[A]): Query[_, A] = {
-    val d = driver
-    import d.Implicit._
-    
-    for (row <- table) yield row.*
-  }
-  
-  protected lazy val queryRows = rows(ShrineQueries)
+  protected lazy val queryRows = for(row <- Query(tables.ShrineQueries)) yield row.*
 
-  protected lazy val queryResultRows = rows(QueryResults)
+  protected lazy val queryResultRows = for(row <- Query(tables.QueryResults)) yield row.*
 
-  protected lazy val countResultRows = rows(CountResults)
+  protected lazy val countResultRows = for(row <- Query(tables.CountResults)) yield row.*
 
-  protected lazy val breakdownResultRows = rows(BreakdownResults)
+  protected lazy val breakdownResultRows = for(row <- Query(tables.BreakdownResults)) yield row.*
 
-  protected lazy val errorResultRows = rows(ErrorResults)
+  protected lazy val errorResultRows = for(row <- Query(tables.ErrorResults)) yield row.*
 
   protected def list[A, B](q: Query[A, B]): Seq[B] = {
     val d = driver

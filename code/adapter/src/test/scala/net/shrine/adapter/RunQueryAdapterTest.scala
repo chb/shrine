@@ -37,12 +37,6 @@ import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.RawCrcRunQueryResponse
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import net.shrine.adapter.dao.AdapterDao
-import org.scalaquery.session.Session
-import net.shrine.adapter.dao.scalaquery.tables.ShrineQueries
-import net.shrine.adapter.dao.scalaquery.tables.QueryResults
-import net.shrine.adapter.dao.scalaquery.tables.CountResults
-import net.shrine.adapter.dao.scalaquery.tables.ErrorResults
-import net.shrine.adapter.dao.scalaquery.tables.BreakdownResults
 import net.shrine.util.Loggable
 
 /**

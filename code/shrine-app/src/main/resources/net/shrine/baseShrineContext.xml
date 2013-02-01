@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><!--suppress JdkProxiedBeanTypeInspection, InjectionValueTypeInspection -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:jee="http://www.springframework.org/schema/jee" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	   xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws" 
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:jee="http://www.springframework.org/schema/jee" 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
             http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
             http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd">
@@ -49,6 +51,29 @@
     <jee:jndi-lookup id="adapterMappingsFileName" jndi-name="java:comp/env/shrine/adapterMappingsFileName" default-value="AdapterMappings.xml"/>                     
     <jee:jndi-lookup id="shouldTrustAllSslCerts" jndi-name="java:comp/env/shrine/shouldTrustAllSslCerts" default-value="false"/>
     <jee:jndi-lookup id="shrineDatabaseType" jndi-name="java:comp/env/shrine/shrineDatabaseType" default-value="mysql"/>
+
+    <bean id="aggregatorEndpointType" class="org.spin.tools.config.EndpointType" factory-method="valueOf">
+        <constructor-arg>
+            <value>SOAP</value>
+         </constructor-arg>
+    </bean>
+
+    <bean id="aggregatorEndpointConfig" class="org.spin.tools.config.EndpointConfig">
+    	<constructor-arg index="0" ref="aggregatorEndpointType"/>
+    	<constructor-arg index="1" ref="aggregatorEndpoint"/>
+    </bean>
+
+    <!-- Make aggregatorEndpointConfigOption this way, to enable direct, centralized aggregation -->
+	<!-- <bean id="aggregatorEndpointConfigOption" class="scala.Some">
+		<constructor-arg ref="aggregatorEndpointConfig"/>
+	</bean> -->
+	
+	<!-- Hack to get None, for reverse-broadcast-order aggregation -->
+	<bean id="aggregatorEndpointConfigOption" class="scala.Option" factory-method="apply">
+		<constructor-arg>
+			<null/>
+		</constructor-arg>
+	</bean>
 
     <bean id="httpClient" class="net.shrine.util.JerseyHttpClient">
       <constructor-arg ref="shouldTrustAllSslCerts"/>
@@ -100,55 +125,30 @@
     <jaxws:endpoint id="spinNodeEndpoint" implementor="#spinNode" address="/aggregate">
     </jaxws:endpoint>
 
-    <!-- DAO management-->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-
-    <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-        <property name="sessionFactory">
-            <ref bean="sessionFactory"/>
-        </property>
-    </bean>
-
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-        <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan">
-            <list>
-                <value>net.shrine.broadcaster.dao.hibernate</value>
-            </list>
-        </property>
-        <property name="hibernateProperties">
-            <util:map>
-                <entry key="hibernate.dialect">
-                    <jee:jndi-lookup jndi-name="java:comp/env/shrine/hibernateDialect"
-                                     default-value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
-                </entry>
-            </util:map>
-        </property>
-    </bean>
-    
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/jdbc/shrineDB"/>
     </bean>
 
-    <bean id="scalaQueryDatabase" class="org.scalaquery.session.Database" factory-method="forDataSource">
+    <bean id="slickDatabase" class="scala.slick.session.Database" factory-method="forDataSource">
         <constructor-arg ref="dataSource"/>
     </bean>
     
-    <bean id="scalaQuerySpringWorkarounds" class="net.shrine.adapter.dao.scalaquery.workarounds.SpringWorkarounds">
+    <bean id="slickSpringWorkarounds" class="net.shrine.dao.slick.workarounds.SpringWorkarounds">
         <constructor-arg ref="shrineDatabaseType"/>
     </bean>
     
-    <bean id="sequenceHelper" factory-bean="scalaQuerySpringWorkarounds" factory-method="sequenceHelper">
-        <constructor-arg ref="scalaQueryDatabase"/>
+    <bean id="slickDriver" factory-bean="slickSpringWorkarounds" factory-method="driver"/>
+    
+    <bean id="slickTables" class="net.shrine.adapter.dao.slick.tables.Tables">
+    	<constructor-arg ref="slickDriver"/>
     </bean>
     
-    <bean id="scalaQueryDriver" factory-bean="scalaQuerySpringWorkarounds" factory-method="driver"/>
-    
-    <bean id="adapterDao" class="net.shrine.adapter.dao.scalaquery.ScalaQueryAdapterDao">
-        <constructor-arg ref="scalaQueryDatabase"/>
-        <constructor-arg ref="scalaQueryDriver"/>
-        <constructor-arg ref="sequenceHelper"/>
+    <bean id="nonTransactionalAdapterDao" class="net.shrine.adapter.dao.slick.SlickAdapterDao">
+        <constructor-arg ref="slickDatabase"/>
+        <constructor-arg ref="slickTables"/>
     </bean>
+    
+    <bean id="adapterDao" class="net.shrine.adapter.dao.AdapterDao" factory-bean="nonTransactionalAdapterDao" factory-method="transactional"/>
 
 	<bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
 	   <constructor-arg ref="adapterMappingsFileName"/>

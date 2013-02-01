@@ -53,7 +53,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
     val authn = AuthenticationInfo("some-domain", "some-username", Credential("blarg", false))
     val req = ReadQueryInstancesRequest(projectId, 1L, authn, queryId)
     
-    val service = new ShrineService(null, null, null, new ShrineConfig, null)
+    val service = new ShrineService(null, null, null, new ShrineConfig, null, None)
     
     val response = service.readQueryInstances(req).asInstanceOf[ReadQueryInstancesResponse]
     
@@ -76,7 +76,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
   @Test
   def testDeterminePeerGroup {
     val shrineConfig = new ShrineConfig
-    val service = new ShrineService(null, null, null, shrineConfig, null)
+    val service = new ShrineService(null, null, null, shrineConfig, null, None)
     val expectedPeerGroup = "alksjdlaksjdlaksfj"
     val projectId = "projectId"
       
@@ -91,7 +91,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
   def testBroadcastMessage {
     val mockAgent = mock[SpinAgent]
     val nodeId = new CertID("98345")
-    val service = new ShrineService(null, null, null, null, mockAgent)
+    val service = new ShrineService(null, null, null, null, mockAgent, None)
     val ackNack = new AckNack("error", nodeId, StatusCode.QueryFailure)
     val authn = new AuthenticationInfo("domain", "username", new Credential("passwd", false))
     val message = new BroadcastMessage(1L, new DeleteQueryRequest("projectId", 1L, authn, 1L))
@@ -123,7 +123,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
     
     val resultSetWithNulls = ResultSet.of("query-id", true, results.size + failures.size, results.asJava, failures.asJava)
 
-    val shrineService = new ShrineService(null, null, null, null, new MockSpinAgent(resultSetWithNulls))
+    val shrineService = new ShrineService(null, null, null, null, new MockSpinAgent(resultSetWithNulls), None)
     
     val aggregator = new Aggregator {
       def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = ErrorResponse(spinCacheResults.size.toString + "," + errors.size.toString)
@@ -148,7 +148,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
 
     val spinAgent = new MockSpinAgent(resultSetWithNulls)
     
-    val shrineService = new ShrineService(null, null, null, null, spinAgent)
+    val shrineService = new ShrineService(null, null, null, null, spinAgent, None)
     
     val aggregator = new Aggregator {
       def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = ErrorResponse(spinCacheResults.size.toString)
@@ -160,34 +160,34 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
   }
   
   private final class MockSpinAgent(toReturn: ResultSet) extends SpinAgent {
-    def send(queryInfo: QueryInfo, conditions: AnyRef): AckNack = null
+    override def send(queryInfo: QueryInfo, conditions: AnyRef): AckNack = null
 
-    def send(queryInfo: QueryInfo, conditions: AnyRef, recipient: CertID): AckNack = null
+    override def send(queryInfo: QueryInfo, conditions: AnyRef, recipient: CertID): AckNack = null
 
-    def send[Conditions](queryInfo: QueryInfo, conditions: Conditions, serializer: BasicSerializer[Conditions]): AckNack = null
+    override def send[Conditions](queryInfo: QueryInfo, conditions: Conditions, serializer: BasicSerializer[Conditions]): AckNack = null
 
-    def send[Conditions](queryInfo: QueryInfo, conditions: Conditions, serializer: BasicSerializer[Conditions], recipient: CertID): AckNack = null
+    override def send[Conditions](queryInfo: QueryInfo, conditions: Conditions, serializer: BasicSerializer[Conditions], recipient: CertID): AckNack = null
 
-    def send(queryInfo: QueryInfo, conditions: String): AckNack = null
+    override def send(queryInfo: QueryInfo, conditions: String): AckNack = null
 
-    def send(queryInfo: QueryInfo, conditions: String, recipient: CertID): AckNack = null
+    override def send(queryInfo: QueryInfo, conditions: String, recipient: CertID): AckNack = null
 
-    def send(queryInfo: QueryInfo, queryInput: QueryInput): AckNack = null
+    override def send(queryInfo: QueryInfo, queryInput: QueryInput): AckNack = null
 
-    def receive(queryID: String, requestorID: Identity): ResultSet = toReturn
+    override def receive(queryID: String, requestorID: Identity): ResultSet = toReturn
 
-    def receive(queryID: String, requestorID: Identity, waitTime: Long): ResultSet = toReturn
+    override def receive(queryID: String, requestorID: Identity, waitTime: Long): ResultSet = toReturn
 
-    def receive(queryID: String, requestorID: Identity, waitTime: Long, numExpectedResponses: java.lang.Integer): ResultSet = toReturn
+    override def receive(queryID: String, requestorID: Identity, waitTime: Long, numExpectedResponses: java.lang.Integer): ResultSet = toReturn
 
-    def waitForQueryToComplete(queryID: String, maxWaitTime: Long, numExpectedResponses: java.lang.Integer): Unit = ()
+    override def waitForQueryToComplete(queryID: String, maxWaitTime: Long, numExpectedResponses: java.lang.Integer): Unit = ()
 
-    def getResult(queryID: String, requestorID: Identity): ResultSet = null
+    override def getResult(queryID: String, requestorID: Identity): ResultSet = null
 
-    def getResultNoDelete(queryID: String, requestorID: Identity): ResultSet = null
+    override def getResultNoDelete(queryID: String, requestorID: Identity): ResultSet = null
 
-    def isComplete(queryID: String): Boolean = true
+    override def isComplete(queryID: String): Boolean = true
 
-    def hasUpdate(queryID: String, numResponders: Int): Boolean = false
+    override def hasUpdate(queryID: String, numResponders: Int): Boolean = false
   }
 }

@@ -55,7 +55,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
   def doTestProcessInvalidRequest {
     val adapter = makeAdapter(dao, MockHttpClient)
     
-    intercept[ClassCastException] {null
+    intercept[ClassCastException] {
       //request must be a type of request we can handle
       adapter.processRequest(null, BroadcastMessage(0L, new AbstractQueryRetrievalTestCase.BogusRequest))
     }

@@ -22,10 +22,6 @@ import net.shrine.protocol.ReadResultResponse
 import net.shrine.adapter.dao.model.Breakdown
 import net.shrine.protocol.ResultOutputType
 import net.shrine.util.Try
-import akka.dispatch.ExecutionContexts
-import akka.dispatch.Future
-import akka.dispatch.Await
-import akka.dispatch.ExecutionContext
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -35,8 +31,10 @@ import net.shrine.protocol.HasQueryResults
 import net.shrine.adapter.Obfuscator.obfuscateResults
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.AuthenticationInfo
-import akka.util.Duration
 import net.shrine.serialization.I2b2Unmarshaller
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.Await
 
 /**
  * @author clint
@@ -124,7 +122,7 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
   }
 
   private def gather(queryId: Long, futureResponses: Future[(Option[Try[ReadInstanceResultsResponse]], Seq[Try[ReadResultResponse]])], waitTimeMs: Long): (Try[Rsp], Seq[Try[ReadResultResponse]]) = {
-    import akka.util.duration._
+    import scala.concurrent.duration._
     
     val (countResponseAttempts, breakdownResponseAttempts) = Await.result(futureResponses, waitTimeMs.milliseconds)
 
