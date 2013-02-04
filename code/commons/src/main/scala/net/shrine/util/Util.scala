@@ -28,7 +28,13 @@ object Util extends Loggable {
     }
   }
 
+  /**
+   * Helpers for working with scala.util.Try
+   */
   object Tries {
+    /**
+     * Implicits to allow mixing Options and Tries in for-comprehensions
+     */
     object Implicits {
 
       implicit def option2Try[T](o: Option[T]): Try[T] = o match {
