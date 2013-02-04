@@ -5,6 +5,7 @@ import junit.framework.TestCase
 import org.junit.Test
 import scala.util.Success
 import scala.util.Failure
+import scala.util.Try
 
 /**
  * @author clint
@@ -60,13 +61,27 @@ final class UtilTest extends TestCase with ShouldMatchersForJUnit{
     sequence(None) should be(Success(None))
   }
   
-  /*@Test
+  @Test
   def testSequenceTraversable {
     import Util.Tries.sequence
+    
+    val y = 234
+    val z = 43985
     
     sequence(List(Success(x))) should equal(Success(List(x)))
     sequence(Seq(Failure(e))) should equal(Failure(e))
     
-    sequence(None) should be(Success(None))
-  }*/
+    sequence(Vector(Success(x), Try(y), Try(z))) should equal(Success(Vector(x, y, z)))
+    
+    sequence(Vector(Failure(e), Try(y), Try(z))) should equal(Failure(e))
+    sequence(Vector(Try(x), Failure(e), Try(z))) should equal(Failure(e))
+    sequence(Vector(Try(x), Try(y), Failure(e))) should equal(Failure(e))
+    
+    val f = new Exception with scala.util.control.NoStackTrace
+    
+    sequence(Seq(Try(x), Failure(e), Failure(f))) should equal(Failure(e))
+    sequence(Seq(Failure(f), Failure(e))) should equal(Failure(f))
+    
+    sequence(Nil) should be(Success(Nil))
+  }
 }

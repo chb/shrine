@@ -7,7 +7,6 @@ import net.shrine.adapter.dao.model.ShrineQueryResult
 import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.ErrorResponse
-import net.shrine.util.Util.???
 import net.shrine.protocol.I2b2ResultEnvelope
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.query.Expression
@@ -35,7 +34,7 @@ trait AdapterDao {
   
   def insertErrorResult(parentResultId: Int, errorMessage: String): Unit
   
-  final def insertPatientSet(patients: ???): Unit = ??? //Unimplemented for now
+  final def insertPatientSet(patients: Nothing): Unit = ??? //Unimplemented for now
   
   def findQueriesByUserAndDomain(domain: String, username: String): Seq[ShrineQuery]
   

@@ -413,7 +413,7 @@ final class SlickAdapterDaoTest extends AbstractDependencyInjectionSpringContext
 
   @Test
   def testInsertPatientSet {
-    intercept[Exception] {
+    intercept[scala.NotImplementedError] {
       dao.insertPatientSet(null.asInstanceOf[Nothing])
     }
   }

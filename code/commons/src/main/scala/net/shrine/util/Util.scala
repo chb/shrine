@@ -44,8 +44,8 @@ object Util extends Loggable {
       case None => Try(None)
     }
 
-    def sequence[T, C[T] <: Traversable[T]](tries: C[Try[T]])(implicit cbf: CanBuildFrom[C[T], T, C[T]]): Try[C[T]] = {
-      val firstFailure: Option[Failure[T]] = tries.find(_.isFailure).collect { case f: Failure[T] => f }
+    def sequence[A, C[+A] <: Traversable[A]](tries: C[Try[A]])(implicit cbf: CanBuildFrom[C[A], A, C[A]]): Try[C[A]] = {
+      val firstFailure: Option[Failure[A]] = tries.find(_.isFailure).collect { case f: Failure[A] => f }
 
       firstFailure match {
         case Some(failure) => failure.map(_ => cbf().result)
