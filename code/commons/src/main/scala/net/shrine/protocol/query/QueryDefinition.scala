@@ -110,7 +110,7 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
     def panelWithDefaults(terms: Seq[Term]) = Panel(1, false, 1, None, None, terms)
 
     val resultPanels = expr.normalize match {
-      case q: Query => Util.???
+      case q: Query => ??? //TODO: implement for query-in-query
       case t: Term => Seq(panelWithDefaults(Seq(t)))
       case Not(e) => toPanels(e).map(_.invert)
       case And(exprs@_*) => {

@@ -23,7 +23,7 @@ abstract class AbstractReadQueryResultResponse(
     }
   }
 
-  override protected def i2b2MessageBody = Util.???
+  override protected def i2b2MessageBody = ???
 
   override def toI2b2 = ErrorResponse("ReadQueryResultResponse can't be marshalled to i2b2 XML, as it has no i2b2 analog").toI2b2
 }

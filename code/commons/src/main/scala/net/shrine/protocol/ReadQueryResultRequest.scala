@@ -20,15 +20,15 @@ final case class ReadQueryResultRequest(
   //TODO: what to do about this one, that has no meaningful i2b2 representation 
   
   //NB: Unimplemented for now
-  def handle(handler: ShrineRequestHandler): ShrineResponse = Util.???
+  def handle(handler: ShrineRequestHandler): ShrineResponse = ???
 
   val requestType: CRCRequestType = CRCRequestType.GetQueryResult
   
   //NB: Intentionally left out
-  override def toI2b2 = Util.???
+  override def toI2b2 = ???
 
   //NB: intentionally left unimplemented
-  protected def i2b2MessageBody: NodeSeq = Util.???
+  protected def i2b2MessageBody: NodeSeq = ???
   
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(
     <readPreviousQueryResult>

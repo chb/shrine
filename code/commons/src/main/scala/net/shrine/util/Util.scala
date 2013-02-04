@@ -7,22 +7,20 @@ import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
 import scala.collection.generic.CanBuildFrom
+import scala.util.control.NonFatal
 
 /**
  * @author clint
  * @date Oct 18, 2012
  */
 object Util extends Loggable {
-  type ??? = Nothing
-
-  def ??? = sys.error("Unimplemented")
 
   //NB: Will use current locale
   def now: XMLGregorianCalendar = (new NetworkTime).getXMLGregorianCalendar
 
   def tryOrElse[T](default: => T)(f: => T): T = {
     try { f } catch {
-      case e: Exception => {
+      case NonFatal(e) => {
         error("Exception: ", e)
 
         default

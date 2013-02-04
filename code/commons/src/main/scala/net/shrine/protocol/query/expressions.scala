@@ -179,7 +179,7 @@ final case class Not(expr: Expression) extends Expression {
 
   override def hasDirectI2b2Representation = expr.hasDirectI2b2Representation
 
-  override def toExecutionPlan = Util.??? //SimplePlan(this.normalize)
+  override def toExecutionPlan = SimplePlan(this.normalize)
 }
 
 trait HasSubExpressions extends Expression {
@@ -310,7 +310,7 @@ final case class DateBounded(start: Option[XMLGregorianCalendar], end: Option[XM
     }
   }
 
-  override def toExecutionPlan = Util.???
+  override def toExecutionPlan = SimplePlan(this.normalize)
 
   override def hasDirectI2b2Representation = expr.hasDirectI2b2Representation
 }
@@ -331,7 +331,7 @@ final case class OccuranceLimited(min: Int, expr: Expression) extends Expression
 
   override def normalize = if (min == 1) expr.normalize else this.withExpr(expr.normalize)
 
-  override def toExecutionPlan = Util.???
+  override def toExecutionPlan = SimplePlan(this.normalize)
 
   override def hasDirectI2b2Representation = expr.hasDirectI2b2Representation
 }
