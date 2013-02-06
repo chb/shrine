@@ -419,7 +419,6 @@ final class NetworkSimulationTest extends SPINUnitTest with ShouldMatchersForJUn
   private def makeNodeConfig(nodeName: String, isBroadcaster: Boolean, isAggregator: Boolean): NodeConfig = {
     NodeConfig.Default.
       withNodeName(nodeName).
-      //withQueries(DefaultQueries.toQueryTypeConfigs).
       withIsAuthenticator(false).
       withIsAggregator(isAggregator).
       withIsBroadcaster(isBroadcaster).
