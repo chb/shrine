@@ -3,7 +3,6 @@ package net.shrine.service
 import net.shrine.protocol._
 import net.shrine.authorization.QueryAuthorizationService
 import org.spin.tools.crypto.signature.Identity
-import net.shrine.config.ShrineConfig
 import org.spin.tools.config.{ EndpointType, EndpointConfig }
 import org.apache.log4j.MDC
 import net.shrine.filters.LogFilter

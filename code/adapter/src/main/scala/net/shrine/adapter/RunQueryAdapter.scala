@@ -4,7 +4,7 @@ import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol.{ BroadcastMessage, RunQueryResponse, RunQueryRequest, RawCrcRunQueryResponse }
 import xml.NodeSeq
 import net.shrine.adapter.translators.QueryDefinitionTranslator
-import net.shrine.config.{ HiveCredentials, ShrineConfig }
+import net.shrine.config.HiveCredentials
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.ReadResultRequest

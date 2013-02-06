@@ -1,6 +1,6 @@
 package net.shrine.service
 
-import scala.collection.JavaConverters.seqAsJavaListConverter
+import scala.collection.JavaConverters._
 import org.easymock.EasyMock.{expect => invoke}
 import org.easymock.EasyMock.isA
 import org.easymock.EasyMock.same
@@ -16,7 +16,6 @@ import org.spin.tools.crypto.Envelope
 import org.spin.tools.Interval
 import net.shrine.aggregation.Aggregator
 import net.shrine.aggregation.SpinResultEntry
-import net.shrine.config.ShrineConfig
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.Credential

@@ -12,7 +12,6 @@ import net.shrine.adapter.dao.MockAdapterDao
 import net.shrine.adapter.translators.ExpressionTranslator
 import net.shrine.adapter.translators.QueryDefinitionTranslator
 import net.shrine.config.HiveCredentials
-import net.shrine.config.ShrineConfig
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.Credential

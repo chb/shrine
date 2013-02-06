@@ -85,28 +85,6 @@
       <constructor-arg ref="expressionTranslator"/>
     </bean>
 
-<!-- 
-    <bean id="shrineConfig" class="net.shrine.config.ShrineConfig">
-        <property name="adapter" value="true"/>
-        <property name="adapterLockoutAttemptsThreshold" value="10"/>
-        <property name="adapterRequireExplicitMappings" value="false"/>
-        <property name="broadcasterAggregator" value="true"/>
-        <property name="cacheTTL" value="3600000"/>
-        <property name="certificationTTL" value="3600000"/>
-        <property name="queryTTL" value="3600000"/>
-        <property name="databasePropertiesFile" value="jdbc-derby.properties"/>
-        <property name="broadcasterPeerGroupToQuery" ref="broadcasterPeerGroupToQuery"/>
-        <property name="humanReadableNodeName" ref="humanReadableNodeName"/>
-        <property name="pmEndpoint" ref="pmEndpoint"/>
-        <property name="realCRCEndpoint" ref="realCRCEndpoint"/>
-        <property name="aggregatorEndpoint" ref="aggregatorEndpoint"/>
-        <property name="shrineEndpoint" ref="shrineEndpoint"/>
-        <property name="ontEndpoint" value=""/>
-        <property name="sheriffEndpoint" value=""/>
-        <property name="queryActionMapClassName" ref="queryActionMapClassName"/>
-    </bean>
-    -->
-
     <bean id="i2b2HiveCredentials" class="net.shrine.config.HiveCredentials">
         <constructor-arg value="LegionOfEvil"/>
         <constructor-arg value="DrHorrible"/>

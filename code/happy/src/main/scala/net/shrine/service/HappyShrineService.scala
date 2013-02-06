@@ -8,40 +8,40 @@ import org.spin.message.Failure
 import org.spin.message.QueryInfo
 import org.spin.message.Result
 import org.spin.message.ResultSet
-import org.spin.node.actions.discovery.DiscoveryResult
-import org.spin.node.actions.discovery.DiscoveryCriteria
 import org.spin.node.DefaultQueries
-import org.spin.tools.config.RoutingTableConfig
+import org.spin.node.actions.discovery.DiscoveryCriteria
+import org.spin.node.actions.discovery.DiscoveryResult
+import org.spin.tools.JAXBUtils
 import org.spin.tools.config.ConfigTool
 import org.spin.tools.config.EndpointConfig
-import org.spin.tools.crypto.signature.CertID
-import org.spin.tools.crypto.signature.Identity
+import org.spin.tools.config.RoutingTableConfig
 import org.spin.tools.crypto.PKCryptor
 import org.spin.tools.crypto.PKITool
 import org.spin.tools.crypto.XMLSignatureUtil
-import org.spin.tools.JAXBUtils
+import org.spin.tools.crypto.signature.CertID
+import org.spin.tools.crypto.signature.Identity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.xml.bind.JAXBContext
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.broadcaster.dao.AuditDao
-import net.shrine.config.ShrineConfig
 import net.shrine.config.HiveCredentials
 import net.shrine.i2b2.protocol.pm.GetUserConfigurationRequest
 import net.shrine.i2b2.protocol.pm.HiveConfig
-import net.shrine.protocol.query.OccuranceLimited
-import net.shrine.protocol.query.QueryDefinition
-import net.shrine.protocol.query.Term
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.CRCRequestType
 import net.shrine.protocol.Credential
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.RunQueryRequest
-import net.shrine.util.XmlUtil
-import net.shrine.util.Versions
+import net.shrine.protocol.query.OccuranceLimited
+import net.shrine.protocol.query.QueryDefinition
+import net.shrine.protocol.query.Term
 import net.shrine.util.HttpClient
+import net.shrine.util.Versions
+import net.shrine.util.XmlUtil
 import scala.collection.JavaConverters._
+import net.shrine.config.HappyShrineConfig
 
 /**
  * @author Bill Simons
@@ -55,16 +55,15 @@ import scala.collection.JavaConverters._
  */
 @Service
 class HappyShrineService @Autowired() (
-  shrineConfig: ShrineConfig,
+  config: HappyShrineConfig,
   hiveCredentials: HiveCredentials,
-  pmEndpoint: String,
   spinClient: SpinAgent,
   auditDao: AuditDao,
   adapterDao: AdapterDao,
   httpClient: HttpClient) extends HappyShrineRequestHandler {
 
   //TODO - maybe make this a spring bean since its used in shrine service too?
-  private lazy val endpointConfig = EndpointConfig.soap(shrineConfig.aggregatorEndpoint)
+  private lazy val endpointConfig = EndpointConfig.soap(config.aggregatorEndpoint)
 
   override def keystoreReport: String = {
     val keystoreConfig = ConfigTool.loadKeyStoreConfig
@@ -90,25 +89,21 @@ class HappyShrineService @Autowired() (
       </keystoreReport>).toString
   }
 
-  override def shrineConfigReport: String = {
-    val marshaller = JAXBContext.newInstance(classOf[ShrineConfig]).createMarshaller
-    marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", false);
-    val sWriter = new StringWriter
-    marshaller.marshal(shrineConfig, sWriter)
-    sWriter.toString
-  }
-
   override def routingReport: String = {
     val marshaller = JAXBContext.newInstance(classOf[RoutingTableConfig]).createMarshaller
+    
     marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", false);
+    
     val sWriter = new StringWriter
+    
     marshaller.marshal(ConfigTool.loadRoutingTableConfig, sWriter)
+    
     sWriter.toString
   }
 
   override def hiveReport: String = {
     val pmRequest = new GetUserConfigurationRequest(hiveCredentials.domain, hiveCredentials.username, hiveCredentials.password)
-    val responseXml: String = httpClient.post(pmRequest.toI2b2String, pmEndpoint)
+    val responseXml: String = httpClient.post(pmRequest.toI2b2String, config.pmEndpoint)
 
     HiveConfig.fromI2b2(responseXml).toXmlString
   }
@@ -128,20 +123,20 @@ class HappyShrineService @Autowired() (
   }
 
   private[service] def generateSpinReport(routingTable: RoutingTableConfig): String = {
-    val peerGroupOption = routingTable.getPeerGroups.asScala.find (_.getGroupName == shrineConfig.broadcasterPeerGroupToQuery)
+    val peerGroupOption = routingTable.getPeerGroups.asScala.find (_.getGroupName == config.broadcasterPeerGroupToQuery)
 
     if (!peerGroupOption.isDefined) {
       return invalidSpinConfig
     }
 
     val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
-    val queryInfo: QueryInfo = new QueryInfo(shrineConfig.broadcasterPeerGroupToQuery, identity, DefaultQueries.Discovery.queryType, endpointConfig)
+    val queryInfo: QueryInfo = new QueryInfo(config.broadcasterPeerGroupToQuery, identity, DefaultQueries.Discovery.queryType, endpointConfig)
     val ackNack = spinClient.send(queryInfo, DiscoveryCriteria.Instance)
     val resultSet = spinClient.receive(ackNack.getQueryId, identity)
     val expectedCount = peerGroupOption.get.getChildren.size + 1 //add one to include self
     val (results, failures) = partitionSpinResults(resultSet)
 
-    XmlUtil.stripWhitespace(
+    XmlUtil.stripWhitespace {
       <spin>
         <properlyConnected>{ !resultSet.getFailures.isEmpty }</properlyConnected>
         <expectedNodeCount>{ expectedCount }</expectedNodeCount>
@@ -160,7 +155,8 @@ class HappyShrineService @Autowired() (
         {
           failures.map(toXml)
         }
-      </spin>).toString
+      </spin>
+    }.toString
   }
 
   override def spinReport: String = {
@@ -169,7 +165,7 @@ class HappyShrineService @Autowired() (
   }
 
   private def newRunQueryRequest: RunQueryRequest = {
-    val queryDefinition = QueryDefinition("PDD", OccuranceLimited(1, Term(shrineConfig.adapterStatusQuery)))
+    val queryDefinition = QueryDefinition("PDD", OccuranceLimited(1, Term(config.adapterStatusQuery)))
 
     new RunQueryRequest(
       "happyProject",
@@ -182,7 +178,7 @@ class HappyShrineService @Autowired() (
   }
 
   override def adapterReport: String = {
-    if (!shrineConfig.isAdapter) {
+    if (!config.isAdapter) {
       XmlUtil.stripWhitespace(
         <adapter>
           <isAdapter>false</isAdapter>
@@ -278,7 +274,6 @@ class HappyShrineService @Autowired() (
     new StringBuilder("<all>")
       .append(versionReport)
       .append(keystoreReport)
-      .append(shrineConfigReport)
       .append(routingReport)
       .append(hiveReport)
       .append(spinReport)

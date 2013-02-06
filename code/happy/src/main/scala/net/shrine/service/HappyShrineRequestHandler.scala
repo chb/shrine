@@ -13,8 +13,6 @@ package net.shrine.service
 trait HappyShrineRequestHandler {
   def keystoreReport: String
 
-  def shrineConfigReport: String
-
   def routingReport: String
 
   def hiveReport: String

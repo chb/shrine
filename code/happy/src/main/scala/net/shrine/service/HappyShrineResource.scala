@@ -28,10 +28,6 @@ class HappyShrineResource @Autowired()(private val happyService: HappyShrineRequ
   def keystoreReport: String = happyService.keystoreReport
 
   @GET
-  @Path("shrineconfig")
-  def shrineConfigReport: String = happyService.shrineConfigReport
-
-  @GET
   @Path("routing")
   def routingReport: String = happyService.routingReport
 

@@ -86,30 +86,13 @@
         <constructor-arg ref="i2b2HiveProject"/>
     </bean>
 
-	<!-- 
-    <bean id="shrineConfig" class="net.shrine.config.ShrineConfig">
-        <property name="adapter" ref="isAdapter"/>
-        <property name="adapterLockoutAttemptsThreshold" ref="adapterLockoutAttemptsThreshold"/>
-        <property name="adapterRequireExplicitMappings" value="false"/>
-        <property name="broadcasterAggregator" ref="isBroadcaster"/>
-        <property name="cacheTTL" value="3600000"/>
-        <property name="certificationTTL" value="3600000"/>
-        <property name="queryTTL" ref="queryTTL"/>
-        <property name="databasePropertiesFile" value="jdbc-derby.properties"/>
-        <property name="broadcasterPeerGroupToQuery" ref="broadcasterPeerGroupToQuery"/>
-        <property name="humanReadableNodeName" ref="humanReadableNodeName"/>
-        <property name="pmEndpoint" ref="pmEndpoint"/>
-        <property name="realCRCEndpoint" ref="realCRCEndpoint"/>
-        <property name="aggregatorEndpoint" ref="aggregatorEndpoint"/>
-        <property name="shrineEndpoint" ref="shrineEndpoint"/>
-        <property name="ontEndpoint" value=""/>
-        <property name="sheriffEndpoint" ref="sheriffEndpoint"/>
-        <property name="queryActionMapClassName" value="net.shrine.adapter.query.ShrineQueryActionMap"/>
-        <property name="setSizeObfuscationEnabled" ref="setSizeObfuscation"/>
-        <property name="adapterStatusQuery" ref="adapterStatusQuery"/>
-        <property name="includeAggregateResult" ref="isIncludeAggregateResults"/>
-    </bean>
-    -->
+	<bean id="happyShrineConfig" class="net.shrine.config.HappyShrineConfig">
+		<constructor-arg index="0" ref="isAdapter"/>
+		<constructor-arg index="1" ref="aggregatorEndpoint"/>
+		<constructor-arg index="2" ref="pmEndpoint"/>
+		<constructor-arg index="3" ref="broadcasterPeerGroupToQuery"/>
+		<constructor-arg index="4" ref="adapterStatusQuery"/>
+	</bean>
 
 	<bean id="spinPollingFrequency" class="java.lang.Float" factory-method="valueOf">
 		<constructor-arg>

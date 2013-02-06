@@ -40,7 +40,6 @@ import net.shrine.broadcaster.dao.AuditDao
 import java.util.Date
 import net.shrine.broadcaster.dao.model.AuditEntry
 import net.shrine.authorization.AllowsAllAuthorizationService
-import net.shrine.config.ShrineConfig
 import net.shrine.protocol.RunQueryRequest
 import net.shrine.protocol.ReadPreviousQueriesResponse
 import org.spin.client.SpinClient
@@ -167,7 +166,7 @@ final class NetworkSimulationTest extends SPINUnitTest with ShouldMatchersForJUn
   override protected def setUp() {
     super.setUp()
 
-    init
+    val x = init
 
     myCertID = PKITool.getInstance.getMyCertID
 
