@@ -40,7 +40,7 @@ class RunQueryAdapter(
     dao: AdapterDao,
     override protected val hiveCredentials: HiveCredentials,
     private[adapter] val conceptTranslator: QueryDefinitionTranslator,
-    config: ShrineConfig,
+    adapterLockoutAttemptsThreshold: Int,
     doObfuscation: Boolean) extends CrcAdapter[RunQueryRequest, RunQueryResponse](crcUrl, httpClient, hiveCredentials) {
 
   import RunQueryAdapter._
@@ -118,9 +118,9 @@ class RunQueryAdapter(
   }
 
   private def isLockedOut(identity: Identity): Boolean = {
-    config.getAdapterLockoutAttemptsThreshold match {
+    adapterLockoutAttemptsThreshold match {
       case 0 => false
-      case _ => dao.isUserLockedOut(identity, config.getAdapterLockoutAttemptsThreshold)
+      case _ => dao.isUserLockedOut(identity, adapterLockoutAttemptsThreshold)
     }
   }
 }

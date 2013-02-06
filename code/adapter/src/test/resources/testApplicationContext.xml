@@ -85,6 +85,7 @@
       <constructor-arg ref="expressionTranslator"/>
     </bean>
 
+<!-- 
     <bean id="shrineConfig" class="net.shrine.config.ShrineConfig">
         <property name="adapter" value="true"/>
         <property name="adapterLockoutAttemptsThreshold" value="10"/>
@@ -104,6 +105,7 @@
         <property name="sheriffEndpoint" value=""/>
         <property name="queryActionMapClassName" ref="queryActionMapClassName"/>
     </bean>
+    -->
 
     <bean id="i2b2HiveCredentials" class="net.shrine.config.HiveCredentials">
         <constructor-arg value="LegionOfEvil"/>

@@ -18,6 +18,11 @@ object Util extends Loggable {
   //NB: Will use current locale
   def now: XMLGregorianCalendar = (new NetworkTime).getXMLGregorianCalendar
 
+  /**
+   * Try a block of code, f, and if a NonFatal exception is thrown,
+   * log it and return the default value.  The default is not evaluated 
+   * unless it is needed. 
+   */
   def tryOrElse[T](default: => T)(f: => T): T = {
     try { f } catch {
       case NonFatal(e) => {

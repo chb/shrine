@@ -38,6 +38,7 @@ import net.shrine.protocol.RawCrcRunQueryResponse
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.util.Loggable
+import net.shrine.util.Util
 
 /**
  * @author Bill Simons
@@ -63,7 +64,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
 
   private val justCounts = Set(ResultOutputType.PATIENT_COUNT_XML)
 
-  private val now = NetworkTime.makeXMLGregorianCalendar(new GregorianCalendar)
+  private val now = Util.now
 
   private val countQueryResult = QueryResult(resultId, instanceId, Some(ResultOutputType.PATIENT_COUNT_XML), setSize, Some(now), Some(now), None, QueryResult.StatusType.Finished, None)
 
@@ -72,6 +73,8 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
   private val hiveCredentials = HiveCredentials("some-hive-domain", "hive-username", "hive-password", "hive-project")
 
   private val authn = AuthenticationInfo("some-domain", "username", Credential("jksafhkjaf", false))
+  
+  private val adapterLockoutThreshold = 99
 
   @Test
   def testObfuscateBreakdowns {
@@ -108,7 +111,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
 
     val translator = new QueryDefinitionTranslator(new ExpressionTranslator(mappings))
 
-    val adapter = new RunQueryAdapter("crc-url", MockHttpClient, null, null, translator, null, true)
+    val adapter = new RunQueryAdapter("crc-url", MockHttpClient, null, null, translator, adapterLockoutThreshold, true)
 
     val queryDefinition = QueryDefinition("10-17 years old@14:39:20", OccuranceLimited(1, Term("network")))
 
@@ -372,7 +375,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
     val translator = new QueryDefinitionTranslator(new ExpressionTranslator(Map("foo" -> Set("bar"))))
 
     //NB: Don't obfuscate, for simpler testing
-    val adapter = new RunQueryAdapter("crc-url", httpClient, adapterDao, hiveCredentials, translator, new ShrineConfig, false)
+    val adapter = new RunQueryAdapter("crc-url", httpClient, adapterDao, hiveCredentials, translator, adapterLockoutThreshold, false)
 
     val req = new RunQueryRequest(projectId, 1000L, authn, expectedNetworkQueryId, "topicId", outputTypes, queryDef)
 

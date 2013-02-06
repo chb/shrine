@@ -232,20 +232,12 @@ final class NetworkSimulationTest extends SPINUnitTest with ShouldMatchersForJUn
 
     val client = new SavesQueryIdsAgent(new Agent(makeAgentConfig(centralAggregator), nodes.getNodeConnector(rootNodeName)))
 
-    val shrineConfig = {
-      val result = new ShrineConfig
-
-      result.setIncludeAggregateResult(true)
-      result.setBroadcasterPeerGroupToQuery(PeerGroupName.Test)
-
-      result
-    }
-
     val shrineService = new ShrineService(
       MockAuditDao,
       new AllowsAllAuthorizationService,
       AlwaysCertifiesIdentityService.Instance,
-      shrineConfig,
+      PeerGroupName.Test,
+      true,
       client,
       centralAggregator.map(toLocalEndpoint))
 

@@ -86,6 +86,7 @@
         <constructor-arg ref="i2b2HiveProject"/>
     </bean>
 
+	<!-- 
     <bean id="shrineConfig" class="net.shrine.config.ShrineConfig">
         <property name="adapter" ref="isAdapter"/>
         <property name="adapterLockoutAttemptsThreshold" ref="adapterLockoutAttemptsThreshold"/>
@@ -108,10 +109,42 @@
         <property name="adapterStatusQuery" ref="adapterStatusQuery"/>
         <property name="includeAggregateResult" ref="isIncludeAggregateResults"/>
     </bean>
+    -->
 
-    <bean id="agentConfig" factory-bean="shrineConfig" factory-method="generateAgentConfig"/>
+	<bean id="spinPollingFrequency" class="java.lang.Float" factory-method="valueOf">
+		<constructor-arg>
+			<!-- Use higher value - 5Hz instead of 1Hz - for more responsive network queries -->
+			<value>5.0F</value>
+		</constructor-arg>
+	</bean>
 
-    <bean id="nodeConfig" factory-bean="shrineConfig" factory-method="generateNodeConfig"/>
+    <bean id="agentConfig" class="org.spin.tools.config.AgentConfig">
+    	<constructor-arg index="0" ref="aggregatorEndpointConfig"/>
+    	<constructor-arg index="1" ref="aggregatorEndpointConfig"/>
+    	<constructor-arg index="2" ref="broadcasterPeerGroupToQuery"/>
+    	<constructor-arg index="3"><null/></constructor-arg>
+    	<constructor-arg index="4" ref="queryTTL"/>
+    	<constructor-arg index="5" ref="spinPollingFrequency"/>
+    </bean>
+
+	<!-- 5 seconds, Spin's default -->
+	<bean id="broadcasterTimeoutPeriod" class="org.spin.tools.Interval" factory-method="seconds">
+		<constructor-arg value="5"/>
+	</bean>
+
+    <bean id="nodeConfig" class="org.spin.tools.config.NodeConfig">
+    	<constructor-arg index="0" ref="humanReadableNodeName"/>
+    	<constructor-arg index="1" value="false"/>
+    	<constructor-arg index="2" ref="isBroadcaster"/>
+    	<constructor-arg index="3" ref="isBroadcaster"/>
+    	<constructor-arg index="4" ref="isAdapter"/>
+    	<constructor-arg index="5"><null/></constructor-arg>
+    	<constructor-arg index="6" value="3600000" />
+    	<constructor-arg index="7" value="3600000" />
+    	<constructor-arg index="8" ref="broadcasterTimeoutPeriod"/>
+    	<constructor-arg index="9" value="net.shrine.adapter.query.ShrineQueryActionMap"/>
+    	<constructor-arg index="10"><null/></constructor-arg>
+    </bean>
 
     <bean id="spinClient" class="org.spin.client.Agent">
         <constructor-arg index="0" ref="agentConfig"/>
@@ -184,7 +217,7 @@
         <constructor-arg index="2" ref="adapterDao"/>
         <constructor-arg index="3" ref="hiveCredentials"/>
         <constructor-arg index="4" ref="queryDefinitionTranslator"/>
-        <constructor-arg index="5" ref="shrineConfig"/>
+        <constructor-arg index="5" ref="adapterLockoutAttemptsThreshold"/>
         <constructor-arg index="6" value="true"/>
     </bean>
 

@@ -40,14 +40,15 @@ class ShrineService(
     auditDao: AuditDao,
     authorizationService: QueryAuthorizationService,
     identityService: IdentityService,
-    shrineConfig: ShrineConfig,
+    broadcasterPeerGroupToQuery: String,
+    includeAggregateResult: Boolean,
     spinClient: SpinAgent,
     aggregatorEndpointConfig: Option[EndpointConfig]) extends ShrineRequestHandler with Loggable {
 
   protected def generateIdentity(authn: AuthenticationInfo): Identity = identityService.certify(authn.domain, authn.username, authn.credential.value)
 
   private[service] def determinePeergroup(projectId: String): String = {
-    Option(shrineConfig.getBroadcasterPeerGroupToQuery).getOrElse(projectId)
+    Option(broadcasterPeerGroupToQuery).getOrElse(projectId)
   }
 
   private[service] def broadcastMessage(message: BroadcastMessage, queryInfo: QueryInfo): AckNack = {
@@ -172,7 +173,7 @@ class ShrineService(
         reqWithQueryIdAssigned.authn.username,
         reqWithQueryIdAssigned.projectId,
         reqWithQueryIdAssigned.queryDefinition,
-        shrineConfig.isIncludeAggregateResult)
+        includeAggregateResult)
 
       executeRequest(identity, message, aggregator)
     }
@@ -206,5 +207,5 @@ class ShrineService(
 
   override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest) = authorizationService.readApprovedEntries(request)
 
-  override def readQueryResult(request: ReadQueryResultRequest): ShrineResponse = executeRequest(request, new ReadQueryResultAggregator(request.queryId, shrineConfig.isIncludeAggregateResult))
+  override def readQueryResult(request: ReadQueryResultRequest): ShrineResponse = executeRequest(request, new ReadQueryResultAggregator(request.queryId, includeAggregateResult))
 }

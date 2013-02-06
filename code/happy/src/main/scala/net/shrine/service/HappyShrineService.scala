@@ -64,7 +64,7 @@ class HappyShrineService @Autowired() (
   httpClient: HttpClient) extends HappyShrineRequestHandler {
 
   //TODO - maybe make this a spring bean since its used in shrine service too?
-  private lazy val endpointConfig = EndpointConfig.soap(shrineConfig.getAggregatorEndpoint)
+  private lazy val endpointConfig = EndpointConfig.soap(shrineConfig.aggregatorEndpoint)
 
   override def keystoreReport: String = {
     val keystoreConfig = ConfigTool.loadKeyStoreConfig
@@ -128,14 +128,14 @@ class HappyShrineService @Autowired() (
   }
 
   private[service] def generateSpinReport(routingTable: RoutingTableConfig): String = {
-    val peerGroupOption = routingTable.getPeerGroups.asScala.find (_.getGroupName == shrineConfig.getBroadcasterPeerGroupToQuery)
+    val peerGroupOption = routingTable.getPeerGroups.asScala.find (_.getGroupName == shrineConfig.broadcasterPeerGroupToQuery)
 
     if (!peerGroupOption.isDefined) {
       return invalidSpinConfig
     }
 
     val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
-    val queryInfo: QueryInfo = new QueryInfo(shrineConfig.getBroadcasterPeerGroupToQuery, identity, DefaultQueries.Discovery.queryType, endpointConfig)
+    val queryInfo: QueryInfo = new QueryInfo(shrineConfig.broadcasterPeerGroupToQuery, identity, DefaultQueries.Discovery.queryType, endpointConfig)
     val ackNack = spinClient.send(queryInfo, DiscoveryCriteria.Instance)
     val resultSet = spinClient.receive(ackNack.getQueryId, identity)
     val expectedCount = peerGroupOption.get.getChildren.size + 1 //add one to include self
@@ -169,7 +169,7 @@ class HappyShrineService @Autowired() (
   }
 
   private def newRunQueryRequest: RunQueryRequest = {
-    val queryDefinition = QueryDefinition("PDD", OccuranceLimited(1, Term(shrineConfig.getAdapterStatusQuery)))
+    val queryDefinition = QueryDefinition("PDD", OccuranceLimited(1, Term(shrineConfig.adapterStatusQuery)))
 
     new RunQueryRequest(
       "happyProject",
