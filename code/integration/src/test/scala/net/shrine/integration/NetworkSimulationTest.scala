@@ -390,7 +390,7 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
     import scala.collection.mutable
 
     val adapter = new ReadPreviousQueriesAdapter(new MockAdapterDao {
-      override def findQueriesByUserAndDomain(domain: String, username: String): Seq[ShrineQuery] = {
+      override def findQueriesByUserAndDomain(domain: String, username: String, howMany: Int): Seq[ShrineQuery] = {
         import RandomTool._
 
         Seq(new ShrineQuery(randomInt, "local_" + randomInt, randomInt.toLong, randomString, username, domain, Term(randomString), Util.now))
