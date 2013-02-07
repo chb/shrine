@@ -198,14 +198,14 @@ final class SlickAdapterDaoTest extends AbstractDependencyInjectionSpringContext
 
   @Test
   def testFindQueriesByUserAndDomain: Unit = afterCreatingTables {
-    dao.findQueriesByUserAndDomain("", "") should equal(Nil)
+    dao.findQueriesByUserAndDomain("", "", 50) should equal(Nil)
 
     dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
     dao.insertQuery(masterId2, networkQueryId2, queryDef.name, authn, queryDef.expr)
 
-    dao.findQueriesByUserAndDomain("", "") should equal(Nil)
+    dao.findQueriesByUserAndDomain("", "", 50) should equal(Nil)
 
-    val Seq(foundQuery1, foundQuery2) = dao.findQueriesByUserAndDomain(authn.domain, authn.username)
+    val Seq(foundQuery1, foundQuery2) = dao.findQueriesByUserAndDomain(authn.domain, authn.username, 50)
 
     foundQuery1.domain should equal(authn.domain)
     foundQuery1.username should equal(authn.username)
@@ -218,6 +218,10 @@ final class SlickAdapterDaoTest extends AbstractDependencyInjectionSpringContext
     foundQuery2.localId should equal(masterId2)
     foundQuery2.networkId should equal(networkQueryId2)
     foundQuery2.queryExpr should equal(queryDef.expr)
+    
+    val Seq(foundQuery) = dao.findQueriesByUserAndDomain(authn.domain, authn.username, 1)
+    
+    foundQuery should equal(foundQuery1)
   }
 
   @Test

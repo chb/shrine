@@ -14,6 +14,8 @@ import net.shrine.protocol.query.Term
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.protocol.ReadPreviousQueriesResponse
 import net.shrine.protocol.QueryMaster
+import net.shrine.protocol.ReadPreviousQueriesRequest
+import net.shrine.protocol.BroadcastMessage
 
 /**
  * @author clint
@@ -21,7 +23,7 @@ import net.shrine.protocol.QueryMaster
  */
 final class ReadPreviousQueriesAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
   @Test
-  def testProcessRequest {
+  def testProcessRequest = afterCreatingTables {
     val Seq((masterId1, queryId1, name1, authn1, expr1), (masterId2, queryId2, name2, authn2, expr2)) = (1 to 2).map(i => ("masterid:" + i, i, "query" + i, AuthenticationInfo("some-domain", "user" + i, Credential("salkhfkjas", false)), Term(i.toString)))
     
     val masterId3 = "kalsjdklasdjklasdlkjaldsagtuegthasgf"
@@ -36,23 +38,31 @@ final class ReadPreviousQueriesAdapterTest extends AbstractDependencyInjectionSp
     
     def toIdentity(authn: AuthenticationInfo) = new Identity(authn.domain, authn.username)
     
+    def processRequest(identity: Identity, req: ReadPreviousQueriesRequest) = adapter.processRequest(identity, BroadcastMessage(req)).asInstanceOf[ReadPreviousQueriesResponse]
+    
     {
       //bogus id
       val bogusDomain = "alskdjlasd"
       val bogusUser = "salkjdlas"
-      
-      val result = adapter.processRequest(new Identity(bogusDomain, bogusUser), null).asInstanceOf[ReadPreviousQueriesResponse]
+
+      val req = ReadPreviousQueriesRequest("some-projectId", 1000L, AuthenticationInfo(bogusDomain, bogusUser, Credential("sadasdsad", false)), bogusUser, 5)
+        
+      val result = processRequest(new Identity(bogusDomain, bogusUser), req)
       
       result.groupId should equal(bogusDomain)
       result.userId should equal(bogusUser)
       result.queryMasters should equal(Nil)
     }
     
+    //Should get 2 QueryMasters for authn1
     {
-      val result = adapter.processRequest(toIdentity(authn1), null).asInstanceOf[ReadPreviousQueriesResponse]
+      val req = ReadPreviousQueriesRequest("some-projectId", 1000L, authn1, authn1.username, 5)
+      
+      val result = processRequest(toIdentity(authn1), req)
       
       result.groupId should equal(authn1.domain)
       result.userId should equal(authn1.username)
+      
       val Seq(queryMaster1, queryMaster2) = result.queryMasters.sortBy(_.queryMasterId)
       
       queryMaster1.queryMasterId should equal(queryId1.toString)
@@ -68,8 +78,11 @@ final class ReadPreviousQueriesAdapterTest extends AbstractDependencyInjectionSp
       queryMaster2.createDate should not be(null) // :/
     }
     
+    //Should get 1 QueryMaster for authn2
     {
-      val result = adapter.processRequest(toIdentity(authn2), null).asInstanceOf[ReadPreviousQueriesResponse]
+      val req = ReadPreviousQueriesRequest("some-projectId", 1000L, authn1, authn1.username, 5)
+      
+      val result = processRequest(toIdentity(authn2), req)
       
       result.groupId should equal(authn2.domain)
       result.userId should equal(authn2.username)
@@ -80,6 +93,24 @@ final class ReadPreviousQueriesAdapterTest extends AbstractDependencyInjectionSp
       queryMaster.userId should equal(authn2.username)
       queryMaster.groupId should equal(authn2.domain)
       queryMaster.createDate should not be(null) // :/
+    }
+    
+    //Limit to fewer prev. queries than are in the DB
+    {
+      val req = ReadPreviousQueriesRequest("some-projectId", 1000L, authn1, authn1.username, 1)
+      
+      val result = processRequest(toIdentity(authn1), req)
+      
+      result.groupId should equal(authn1.domain)
+      result.userId should equal(authn1.username)
+      
+      val Seq(queryMaster1) = result.queryMasters.sortBy(_.queryMasterId)
+      
+      queryMaster1.queryMasterId should equal(queryId1.toString)
+      queryMaster1.name should equal(name1)
+      queryMaster1.userId should equal(authn1.username)
+      queryMaster1.groupId should equal(authn1.domain)
+      queryMaster1.createDate should not be(null) // :/
     }
   }
 }

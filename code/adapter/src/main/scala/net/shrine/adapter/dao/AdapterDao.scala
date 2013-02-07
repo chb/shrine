@@ -36,7 +36,7 @@ trait AdapterDao {
   
   final def insertPatientSet(patients: Nothing): Unit = ??? //Unimplemented for now
   
-  def findQueriesByUserAndDomain(domain: String, username: String): Seq[ShrineQuery]
+  def findQueriesByUserAndDomain(domain: String, username: String, howMany: Int): Seq[ShrineQuery]
   
   def findQueryByNetworkId(networkQueryId: Long): Option[ShrineQuery]
   

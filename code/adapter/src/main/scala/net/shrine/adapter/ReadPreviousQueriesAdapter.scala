@@ -13,6 +13,7 @@ import net.shrine.protocol.QueryMaster
 import net.shrine.protocol.ShrineResponse
 import net.shrine.serialization.XmlMarshaller
 import net.shrine.util.Loggable
+import net.shrine.protocol.ReadPreviousQueriesRequest
 
 /**
  * @author Bill Simons
@@ -30,7 +31,9 @@ class ReadPreviousQueriesAdapter(dao: AdapterDao) extends Adapter with Loggable 
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
     //TODO: do we need the BroadcastMessage for anything?  fetchsize?
     
-    val previousQueries = dao.findQueriesByUserAndDomain(identity.getDomain, identity.getUsername)
+    val fetchSize = message.request.asInstanceOf[ReadPreviousQueriesRequest].fetchSize
+    
+    val previousQueries = dao.findQueriesByUserAndDomain(identity.getDomain, identity.getUsername, fetchSize)
     
     ReadPreviousQueriesResponse(identity.getUsername, identity.getDomain, previousQueries.map(_.toQueryMaster))
   }

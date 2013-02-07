@@ -33,7 +33,7 @@ trait MockAdapterDao extends AdapterDao {
 
   override def findQueryByNetworkId(networkQueryId: Long): Option[ShrineQuery] = None
 
-  override def findQueriesByUserAndDomain(domain: String, username: String): Seq[ShrineQuery] = Nil
+  override def findQueriesByUserAndDomain(domain: String, username: String, howMany: Int): Seq[ShrineQuery] = Nil
 
   override def findResultsFor(networkQueryId: Long): Option[ShrineQueryResult] = None
 

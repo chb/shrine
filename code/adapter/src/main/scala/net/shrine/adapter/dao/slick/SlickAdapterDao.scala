@@ -28,6 +28,7 @@ import scala.slick.lifted.Parameters
 import scala.slick.lifted.Query
 import scala.slick.lifted.Join
 import net.shrine.adapter.dao.slick.tables.Tables
+import scala.slick.lifted.Column
 
 /**
  * @author clint
@@ -235,8 +236,8 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
     firstResultOption(Queries.queriesByNetworkId(networkQueryId))
   }
 
-  override def findQueriesByUserAndDomain(domain: String, username: String): Seq[ShrineQuery] = {
-    allResults(Queries.queriesForUser(username, domain))
+  override def findQueriesByUserAndDomain(domain: String, username: String, howMany: Int): Seq[ShrineQuery] = {
+    allResults(Queries.queriesForUser(howMany)(username, domain))
   }
 
   override def findResultsFor(networkQueryId: Long): Option[ShrineQueryResult] = {
@@ -279,8 +280,8 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       database.withTransaction(outer.insertErrorResult(parentResultId, errorMessage))
     }
 
-    override def findQueriesByUserAndDomain(domain: String, username: String): Seq[ShrineQuery] = {
-      database.withTransaction(outer.findQueriesByUserAndDomain(domain, username))
+    override def findQueriesByUserAndDomain(domain: String, username: String, howMany: Int): Seq[ShrineQuery] = {
+      database.withTransaction(outer.findQueriesByUserAndDomain(domain, username, howMany))
     }
 
     override def findQueryByNetworkId(networkQueryId: Long): Option[ShrineQuery] = {
@@ -353,16 +354,20 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
     val queriesForAllUsers = {
       import DateHelpers.Implicit._
 
-      (for (query <- ShrineQueries) yield query).sortBy(_.creationDate.desc)
+      (for(row <- ShrineQueries) yield row).sortBy(_.creationDate.desc)
     }
 
-    val queriesForUser = for {
-      (username, domain) <- Parameters[(String, String)]
-      query <- ShrineQueries
-      if query.domain === domain //NB: Note triple-equals
-      if query.username === username //NB: Note triple-equals
-    } yield query.*
-
+    //TODO: Find a way to parameterize on limit, to avoid building the query every time
+    def queriesForUser(limit: Int) = {
+      Parameters[(String, String)].flatMap { case (username, domain) =>
+        (for {
+          query <- ShrineQueries
+          if query.domain === domain 
+          if query.username === username
+        } yield query.*).take(limit)
+      }
+    }
+    
     val queriesByNetworkId = for {
       networkQueryId <- Parameters[Long]
       query <- ShrineQueries
