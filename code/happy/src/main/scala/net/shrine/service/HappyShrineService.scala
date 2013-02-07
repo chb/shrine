@@ -60,10 +60,8 @@ class HappyShrineService @Autowired() (
   spinClient: SpinAgent,
   auditDao: AuditDao,
   adapterDao: AdapterDao,
-  httpClient: HttpClient) extends HappyShrineRequestHandler {
-
-  //TODO - maybe make this a spring bean since its used in shrine service too?
-  private lazy val endpointConfig = EndpointConfig.soap(config.aggregatorEndpoint)
+  httpClient: HttpClient,
+  endpointConfig: EndpointConfig) extends HappyShrineRequestHandler {
 
   override def keystoreReport: String = {
     val keystoreConfig = ConfigTool.loadKeyStoreConfig

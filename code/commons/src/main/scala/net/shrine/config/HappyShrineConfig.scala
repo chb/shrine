@@ -6,7 +6,6 @@ package net.shrine.config
  */
 final case class HappyShrineConfig(
     isAdapter: Boolean,
-    aggregatorEndpoint: String,
     pmEndpoint: String,
     broadcasterPeerGroupToQuery: String,
     adapterStatusQuery: String)
