@@ -25,7 +25,7 @@
 	<scalatest-scala-version>2.10</scalatest-scala-version>
         <scalatest-version>1.9.1</scalatest-version>
 	<slick-scala-version>2.10</slick-scala-version>
-        <slick-version>1.0.0-RC2</slick-version>
+        <slick-version>1.0.0</slick-version>
     </properties>
     <build>
         <pluginManagement>
