@@ -3,12 +3,10 @@
 	   xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:jaxws="http://cxf.apache.org/jaxws" 
-       xmlns:util="http://www.springframework.org/schema/util"
-       xmlns:jee="http://www.springframework.org/schema/jee" 
+       xmlns:jee="http://www.springframework.org/schema/jee"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
-            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
             http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd">
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
@@ -158,7 +156,16 @@
     <bean id="slickTables" class="net.shrine.adapter.dao.slick.tables.Tables">
     	<constructor-arg ref="slickDriver"/>
     </bean>
-    
+
+    <bean id="slickBroadcasterAuditTables" class="net.shrine.broadcaster.dao.slick.tables.Tables">
+    	<constructor-arg ref="slickDriver"/>
+    </bean>
+
+    <bean id="auditDao" class="net.shrine.broadcaster.dao.slick.SlickAuditDao">
+        <constructor-arg ref="slickDatabase"/>
+        <constructor-arg ref="slickBroadcasterAuditTables"/>
+    </bean>
+
     <bean id="nonTransactionalAdapterDao" class="net.shrine.adapter.dao.slick.SlickAdapterDao">
         <constructor-arg ref="slickDatabase"/>
         <constructor-arg ref="slickTables"/>

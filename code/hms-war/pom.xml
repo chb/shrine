@@ -19,6 +19,12 @@
         </dependency>
         <dependency>
             <groupId>net.shrine</groupId>
+            <artifactId>shrine-broadcaster-aggregator</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>net.shrine</groupId>
             <artifactId>hms</artifactId>
             <version>${project.version}</version>
         </dependency>

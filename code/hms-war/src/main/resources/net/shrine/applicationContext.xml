@@ -18,10 +18,12 @@
     </bean>
 
     <bean id="shrineService" class="net.shrine.service.ShrineService">
-        <constructor-arg index="0" ref="hibernateAuditDAO"/>
+        <constructor-arg index="0" ref="auditDao"/>
         <constructor-arg index="1" ref="authorizationService"/>
         <constructor-arg index="2" ref="identityService"/>
-        <constructor-arg index="3" ref="shrineConfig"/>
-        <constructor-arg index="4" ref="spinClient"/>
+        <constructor-arg index="3" ref="broadcasterPeerGroupToQuery"/>
+        <constructor-arg index="4" ref="isIncludeAggregateResults"/>
+        <constructor-arg index="5" ref="spinClient"/>
+        <constructor-arg index="6" ref="aggregatorEndpointConfigOption"/>
     </bean>
 </beans>

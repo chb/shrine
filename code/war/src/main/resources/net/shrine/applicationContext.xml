@@ -9,25 +9,6 @@
 
     <bean id="authorizationService" class="net.shrine.authorization.AllowsAllAuthorizationService"/>
         
-    <bean id="slickDatabase" class="scala.slick.session.Database" factory-method="forDataSource">
-        <constructor-arg ref="dataSource"/>
-    </bean>
-    
-    <bean id="slickSpringWorkarounds" class="net.shrine.dao.slick.workarounds.SpringWorkarounds">
-        <constructor-arg value="mysql"/>
-    </bean>
-    
-    <bean id="slickDriver" factory-bean="slickSpringWorkarounds" factory-method="driver"/>
-    
-    <bean id="slickBroadcasterAuditTables" class="net.shrine.broadcaster.dao.slick.tables.Tables">
-    	<constructor-arg ref="slickDriver"/>
-    </bean>
-    
-    <bean id="auditDao" class="net.shrine.broadcaster.dao.slick.SlickAuditDao">
-        <constructor-arg ref="slickDatabase"/>
-        <constructor-arg ref="slickBroadcasterAuditTables"/>
-    </bean>
-        
     <bean id="shrineService" class="net.shrine.service.ShrineService">
         <constructor-arg index="0" ref="auditDao"/>
         <constructor-arg index="1" ref="authorizationService"/>
