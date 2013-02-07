@@ -125,7 +125,7 @@ import net.shrine.util.Util
  *
  *       TODO: test querying a single node using the local peergroup
  */
-final class NetworkSimulationTest extends SPINUnitTest with ShouldMatchersForJUnit with Loggable {
+final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit with Loggable {
 
   private var nodes: LocalNodeMap[SpinNodeImpl] = new LocalNodeMap(Map.empty)
 
