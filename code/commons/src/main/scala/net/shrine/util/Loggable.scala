@@ -10,15 +10,15 @@ import org.apache.log4j.Logger
  * Date: 8/8/11
  */
 trait Loggable {
-  private[util] lazy val log: Logger = Logger.getLogger(this.getClass.getName)
+  private[util] lazy val internaLogger: Logger = Logger.getLogger(this.getClass.getName)
   
-  lazy val debugEnabled = log.isDebugEnabled
+  lazy val debugEnabled = internaLogger.isDebugEnabled
   
-  lazy val infoEnabled = log.isInfoEnabled
+  lazy val infoEnabled = internaLogger.isInfoEnabled
   
-  def debug(s: => Any): Unit = if(log.isDebugEnabled) log.debug(s)
-  def info(s: => Any): Unit = if(log.isInfoEnabled) log.info(s)
-  def warn(s: => Any): Unit = log.warn(s)
-  def error(s: => Any): Unit = log.error(s)
-  def error(s: => Any, e: Throwable): Unit = log.error(s, e)
+  def debug(s: => Any): Unit = if(internaLogger.isDebugEnabled) internaLogger.debug(s)
+  def info(s: => Any): Unit = if(internaLogger.isInfoEnabled) internaLogger.info(s)
+  def warn(s: => Any): Unit = internaLogger.warn(s)
+  def error(s: => Any): Unit = internaLogger.error(s)
+  def error(s: => Any, e: Throwable): Unit = internaLogger.error(s, e)
 }

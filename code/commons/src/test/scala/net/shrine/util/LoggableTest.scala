@@ -44,7 +44,7 @@ final class LoggableTest extends TestCase with AssertionsForJUnit with ShouldMat
     
     val otherPriority = if(logMessageIsLazy) higher(priority) else not(priority)
     
-    loggable.log.setPriority(otherPriority)
+    loggable.internaLogger.setPriority(otherPriority)
     
     log(loggable)({ messageComputed = true ; "message" })
     
@@ -57,7 +57,7 @@ final class LoggableTest extends TestCase with AssertionsForJUnit with ShouldMat
     loggable.reset()
     messageComputed = false
     
-    loggable.log.setPriority(priority)
+    loggable.internaLogger.setPriority(priority)
     
     log(loggable)({ messageComputed = true ; "message" })
     
