@@ -6,7 +6,6 @@ import net.shrine.protocol.QueryResult.StatusType
 import javax.xml.datatype.XMLGregorianCalendar
 import scala.slick.lifted.ForeignKeyAction
 import net.shrine.dao.slick.tables.HasDriver
-import net.shrine.dao.slick.tables.ProjectionHelpers
 import net.shrine.dao.slick.tables.DateHelpers
 
 /**
@@ -32,9 +31,7 @@ trait QueryResultsComponent extends HasColumns { self: HasDriver with ShrineQuer
     
     def inserter = withoutGeneratedColumns returning id
 
-    import ProjectionHelpers._
-
-    override def * = id ~~ withoutGeneratedColumns ~ lastUpdated <> (QueryResultRow, QueryResultRow.unapply _)
+    override def * = (id ~: withoutGeneratedColumns) ~ lastUpdated <> (QueryResultRow, QueryResultRow.unapply _)
 
     import ForeignKeyAction.{ NoAction, Cascade }
 

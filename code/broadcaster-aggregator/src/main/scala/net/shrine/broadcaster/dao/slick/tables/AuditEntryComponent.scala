@@ -4,7 +4,6 @@ import net.shrine.broadcaster.dao.model.AuditEntry
 import java.sql.Timestamp
 import scala.slick.lifted.TypeMapper._
 import net.shrine.dao.slick.tables.HasDriver
-import net.shrine.dao.slick.tables.ProjectionHelpers
 
 /**
  * @author clint
@@ -25,9 +24,7 @@ trait AuditEntryComponent { self: HasDriver =>
     
     def withoutId = project ~ username ~ domain ~ time ~ queryText ~ queryTopic
     
-    import ProjectionHelpers._
-    
-    override def * = id ~~ withoutId <> (AuditEntry, AuditEntry.unapply _)
+    override def * = id ~: withoutId <> (AuditEntry, AuditEntry.unapply _)
     
     def domainUsernameAndQueryTopicIndex = index("IDX_AUDIT_ENTRY_DOMAIN_USERNAME_QUERY_TOPIC", domain ~ username ~ queryTopic, unique = false)
   }

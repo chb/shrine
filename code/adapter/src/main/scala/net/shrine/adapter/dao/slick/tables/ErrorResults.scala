@@ -2,7 +2,6 @@ package net.shrine.adapter.dao.slick.tables
 
 import net.shrine.adapter.dao.model.ShrineError
 import net.shrine.dao.slick.tables.HasDriver
-import net.shrine.dao.slick.tables.ProjectionHelpers
 
 /**
  * @author clint
@@ -16,8 +15,6 @@ trait ErrorResultsComponent extends IsSubResult { self: HasDriver with QueryResu
 
     def withoutId = resultId ~ message
 
-    import ProjectionHelpers._
-
-    override def * = id ~~ withoutId <> (ShrineError, ShrineError.unapply _)
+    override def * = id ~: withoutId <> (ShrineError, ShrineError.unapply _)
   }
 }

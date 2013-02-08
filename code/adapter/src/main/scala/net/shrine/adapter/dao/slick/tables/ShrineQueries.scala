@@ -4,7 +4,6 @@ import net.shrine.protocol.query.Expression
 import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.adapter.dao.model.ShrineQuery
 import net.shrine.dao.slick.tables.HasDriver
-import net.shrine.dao.slick.tables.ProjectionHelpers
 
 /**
  * @author clint
@@ -25,9 +24,7 @@ trait ShrineQueriesComponent extends HasColumns { self: HasDriver =>
     
     def inserter = withoutGeneratedColumns returning id
 
-    import ProjectionHelpers._
-
-    override def * = id ~~ withoutGeneratedColumns ~ creationDate <> (ShrineQuery, ShrineQuery.unapply _)
+    override def * = (id ~: withoutGeneratedColumns) ~ creationDate <> (ShrineQuery, ShrineQuery.unapply _)
 
     private implicit val expression2StringMapper: TypeMapper[Expression] =
       MappedTypeMapper.base[Expression, String](

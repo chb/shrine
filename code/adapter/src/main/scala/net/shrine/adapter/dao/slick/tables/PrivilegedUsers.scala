@@ -3,7 +3,6 @@ package net.shrine.adapter.dao.slick.tables
 import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.adapter.dao.model.PrivilegedUser
 import net.shrine.dao.slick.tables.HasDriver
-import net.shrine.dao.slick.tables.ProjectionHelpers
 import net.shrine.dao.slick.tables.DateHelpers
 
 /**
@@ -27,8 +26,6 @@ trait PrivilegedUsersComponent extends HasColumns { self: HasDriver =>
 
     def withoutId = username ~ domain ~ threshold ~ overrideDate
 
-    import ProjectionHelpers._
-
-    override def * = id ~~ withoutId <> (PrivilegedUser, PrivilegedUser.unapply _)
+    override def * = id ~: withoutId <> (PrivilegedUser, PrivilegedUser.unapply _)
   }
 }

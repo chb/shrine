@@ -2,7 +2,6 @@ package net.shrine.adapter.dao.slick.tables
 
 import net.shrine.adapter.dao.slick.rows.PatientSetRow
 import net.shrine.dao.slick.tables.HasDriver
-import net.shrine.dao.slick.tables.ProjectionHelpers
 
 /**
  * @author clint
@@ -16,8 +15,6 @@ trait PatientSetsComponent extends IsSubResult { self: HasDriver with QueryResul
 
     def withoutId = resultId ~ patientId
 
-    import ProjectionHelpers._
-
-    def * = id ~~ withoutId <> (PatientSetRow, PatientSetRow.unapply _)
+    def * = id ~: withoutId <> (PatientSetRow, PatientSetRow.unapply _)
   }
 }

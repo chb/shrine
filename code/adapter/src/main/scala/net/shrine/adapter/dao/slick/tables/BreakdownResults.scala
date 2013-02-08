@@ -2,7 +2,6 @@ package net.shrine.adapter.dao.slick.tables
 
 import net.shrine.adapter.dao.slick.rows.BreakdownResultRow
 import net.shrine.dao.slick.tables.HasDriver
-import net.shrine.dao.slick.tables.ProjectionHelpers
 
 /**
  * @author clint
@@ -18,8 +17,6 @@ trait BreakdownResultsComponent extends IsSubResult { self: HasDriver with Query
 
     def withoutId = resultId ~ dataKey ~ originalValue ~ obfuscatedValue
 
-    import ProjectionHelpers._
-
-    override def * = id ~~ withoutId <> (BreakdownResultRow, BreakdownResultRow.unapply _)
+    override def * = id ~: withoutId <> (BreakdownResultRow, BreakdownResultRow.unapply _)
   }
 }

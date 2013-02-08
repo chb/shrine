@@ -2,7 +2,6 @@ package net.shrine.adapter.dao.slick.tables
 
 import net.shrine.adapter.dao.slick.rows.CountRow
 import net.shrine.dao.slick.tables.HasDriver
-import net.shrine.dao.slick.tables.ProjectionHelpers
 
 /**
  * @author clint
@@ -17,8 +16,6 @@ trait CountResultsComponent extends IsSubResult { self: HasDriver with QueryResu
 
     def withoutGeneratedColumns = resultId ~ originalCount ~ obfuscatedCount
 
-    import ProjectionHelpers._
-
-    override def * = id ~~ withoutGeneratedColumns ~ creationDate <> (CountRow, CountRow.unapply _)
+    override def * = (id ~: withoutGeneratedColumns) ~ creationDate <> (CountRow, CountRow.unapply _)
   }
 }
