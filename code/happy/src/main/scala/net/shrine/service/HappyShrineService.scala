@@ -222,7 +222,6 @@ class HappyShrineService @Autowired() (
     </failure>
   }
 
-  //TODO: @Transactional(readOnly = true)
   override def auditReport: String = {
     val recentEntries = auditDao.findRecentEntries(10)
     XmlUtil.stripWhitespace(
@@ -239,7 +238,6 @@ class HappyShrineService @Autowired() (
       </recentAuditEntries>).toString
   }
 
-  //TODO: @Transactional(readOnly = true)
   override def queryReport: String = {
     val recentQueries = adapterDao.findRecentQueries(10)
     
@@ -267,7 +265,6 @@ class HappyShrineService @Autowired() (
       </versionInfo>).toString
   }
 
-  //TODO: @Transactional(readOnly = true)
   override def all: String = {
     new StringBuilder("<all>")
       .append(versionReport)

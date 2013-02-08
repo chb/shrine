@@ -107,39 +107,23 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
   }
 
   override def renameQuery(networkQueryId: Long, newName: String) {
-    //TODO: why can't we use a parameterized query here?
-    val updateQuery = for {
-      query <- ShrineQueries
-      if query.networkId === networkQueryId
-    } yield query.name
-
-    database.withSession { implicit session: Session =>
-      updateQuery.update(newName)
+    withSession { implicit session =>
+      Queries.queryNamesByNetworkId(networkQueryId).update(newName)
     }
   }
 
   override def deleteQuery(networkQueryId: Long) {
-    database.withSession { implicit session: Session =>
-      //TODO: Find another way besides .mutate(_.delete()) here;
-      //apparently this relies on a slow and potentially fragile
-      //JDBC ResultSet API, instead of generating DELETE FROM ...
-      //SQL.  However, it appears nothing else works with parameterized
-      //queries. :\
-      Queries.queriesByNetworkId(networkQueryId).mutate(_.delete())
+    withSession { implicit session =>
+      Queries.queriesByNetworkId(networkQueryId).delete
     }
   }
 
   def deleteQueryResultsFor(networkQueryId: Long) {
-    database.withSession { implicit session: Session =>
-      //TODO: Find another way besides .mutate(_.delete()) here;
-      //apparently this relies on a slow and potentially fragile
-      //JDBC ResultSet API, instead of generating DELETE FROM ...
-      //SQL.  However, it appears nothing else works with parameterized
-      //queries. :\
-      Queries.resultsForQuery(networkQueryId).mutate(_.delete())
+    withSession { implicit session =>
+      Queries.resultsForQuery(networkQueryId).delete
     }
   }
-
+  
   override def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean = Util.tryOrElse(false) {
     val privilegedUserOption = firstResultOption(Queries.privilegedUsers(id.getUsername, id.getDomain))
 
@@ -161,7 +145,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
   }
 
   override def insertQuery(localMasterId: String, networkId: Long, name: String, authn: AuthenticationInfo, queryExpr: Expression): Int = {
-    database.withSession { implicit session: Session =>
+    withSession { implicit session =>
       ShrineQueries.inserter.insert(localMasterId, networkId, name, authn.username, authn.domain, queryExpr)
     }
   }
@@ -184,7 +168,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
 
     import QueryResult.StatusType
 
-    database.withSession { implicit session: Session =>
+    withSession { implicit session =>
       val typeToIdTuples = for {
         result <- results
         resultType = result.resultType.getOrElse(ResultOutputType.ERROR)
@@ -201,7 +185,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
   }
 
   override def insertCountResult(resultId: Int, originalCount: Long, obfuscatedCount: Long) {
-    database.withSession { implicit session: Session =>
+    withSession { implicit session =>
       CountResults.withoutGeneratedColumns.insert(resultId, originalCount, obfuscatedCount)
     }
   }
@@ -214,7 +198,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       } yield (key, ObfuscatedPair(originalValue, obfuscatedValue)))
     }
 
-    database.withSession { implicit session: Session =>
+    withSession { implicit session =>
       for {
         (resultType, Seq(resultId)) <- parentResultIds if resultType.isBreakdown
         originalBreakdown <- originalBreakdowns.get(resultType)
@@ -227,7 +211,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
   }
 
   override def insertErrorResult(parentResultId: Int, errorMessage: String) {
-    database.withSession { implicit session: Session =>
+    withSession { implicit session =>
       ErrorResults.withoutId.insert(parentResultId, errorMessage)
     }
   }
@@ -249,12 +233,20 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
     } yield shrineQueryResult
   }
 
+  private def withSession[T](f: Session => T): T = {
+    database.withSession { session: Session => f(session) } 
+  }
+  
   private def firstResultOption[T](queryToRun: MutatingUnitInvoker[T]): Option[T] = {
-    database.withSession { implicit session: Session => queryToRun.firstOption }
+    withSession { implicit session => queryToRun.firstOption }
+  }
+  
+  private def firstResultOption[A, B](queryToRun: Query[A, B]): Option[B] = {
+    withSession { implicit session => queryToRun.firstOption }
   }
 
   private def allResults[T](queryToRun: MutatingUnitInvoker[T]): Seq[T] = {
-    database.withSession { implicit session: Session => queryToRun.list }
+    withSession { implicit session => queryToRun.list }
   }
 
   override def transactional: AdapterDao = new AdapterDao {
@@ -368,22 +360,24 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       }
     }
     
-    val queriesByNetworkId = for {
-      networkQueryId <- Parameters[Long]
-      query <- ShrineQueries
-      if query.networkId === networkQueryId //NB: Note triple-equals
-    } yield query
+    def queriesByNetworkId(networkQueryId: Long) = {
+      for(row <- ShrineQueries if row.networkId === networkQueryId) yield row
+    }
 
-    val queryNamesByNetworkId = for {
-      networkQueryId <- Parameters[Long]
-      query <- ShrineQueries
-      if query.networkId === networkQueryId //NB: Note triple-equals
-    } yield query.name
-
-    val resultsForQuery = for {
-      networkQueryId <- Parameters[Long]
-      Join(_, right) <- ShrineQueries.innerJoin(QueryResults).on(_.id === _.queryId).filter { case (shrineQueryRow, _) => shrineQueryRow.networkId === networkQueryId }
-    } yield right
+    def queryNamesByNetworkId(networkQueryId: Long) = {
+      for(query <- ShrineQueries if query.networkId === networkQueryId) yield query.name
+    }
+    
+    def resultsForQuery(networkQueryId: Long) = {
+      val queriesJoinedWithResults = ShrineQueries.innerJoin(QueryResults).on(_.id === _.queryId)
+      
+      val joinedRowsWithNetworkQueryId = queriesJoinedWithResults.filter { 
+        case (shrineQueryRow, _) => 
+          shrineQueryRow.networkId === networkQueryId 
+      }
+      
+      joinedRowsWithNetworkQueryId.map { case Join(_, right) => right }
+    }
 
     val countResults = for {
       networkQueryId <- Parameters[Long]
