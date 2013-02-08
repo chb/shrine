@@ -58,14 +58,15 @@ trait AdapterDbTest { self: AbstractDependencyInjectionSpringContextTests =>
   
   protected def afterCreatingTables(body: => Any): Unit = afterCreatingTablesReturn(body)
   
-  //TODO: There /must/ be a better way
+  //NB: There /must/ be a better way.  We do this because Slick Table objects can't express our schema
+  //fully (mostly default values for date/time/timestamp columns) and so Foo.ddl.create can't work. :(
   protected def afterCreatingTablesReturn[T](body: => T): T = {
     def sqlLines(filename: String): Iterator[String] = {
       Source.fromInputStream(this.getClass.getClassLoader.getResourceAsStream(filename)).getLines.map(_.trim).filter(!_.isEmpty).filter(!_.startsWith("--"))
     }
 
     def ignore[T <: Exception : Manifest](g: => Any) {
-      val classOfT = manifest[T].erasure
+      val classOfT = manifest[T].runtimeClass
 
       try { g } catch { case e: T if classOfT.isAssignableFrom(e.getClass) => }
     }

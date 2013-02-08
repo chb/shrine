@@ -16,7 +16,6 @@ import net.shrine.util.HttpClient
  * @date Nov 2, 2012
  * 
  */
-//TODO: TEST!!!
 final class ReadQueryResultAdapter(
     crcUrl: String,
     httpClient: HttpClient,

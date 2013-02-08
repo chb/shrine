@@ -41,7 +41,7 @@ final class JsonableTest extends TestCase with AssertionsForJUnit with ShouldMat
 
     doRoundTrip(term)(checkTermEquality)
 
-    //TODO: Why is it necessary to escape the path?
+    //NB: escape slashes in the term path, because that's the JSON spec/convention
     toJson(term) should equal("""{"path":"""" + escapeSlashes(path) + """","category":"""" + category + """","simpleName":"""" + simpleName + "\"}")
   }
 

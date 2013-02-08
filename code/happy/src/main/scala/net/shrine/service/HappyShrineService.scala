@@ -143,7 +143,7 @@ class HappyShrineService @Autowired() (
         {
           results.map { spinResult =>
             val xmlString = (new PKCryptor).decrypt(spinResult.getPayload)
-            val discoveryResult = JAXBUtils.unmarshal(xmlString, classOf[DiscoveryResult]) //TODO fixme - use scala xpath instead of JAXB?
+            val discoveryResult = unmarshal[DiscoveryResult](xmlString)
             <node>
               <name>{ discoveryResult.getNodeConfig.getNodeName }</name>
               <url>{ discoveryResult.getNodeURL }</url>
@@ -156,6 +156,9 @@ class HappyShrineService @Autowired() (
       </spin>
     }.toString
   }
+  
+  //NB: Use JAXB for Spin JAXBable types, because it's easy and it works
+  private def unmarshal[T : Manifest](xml: String): T = JAXBUtils.unmarshal(xml, manifest[T].runtimeClass.asInstanceOf[Class[T]])
 
   override def spinReport: String = {
     val routingTable: RoutingTableConfig = ConfigTool.loadRoutingTableConfig

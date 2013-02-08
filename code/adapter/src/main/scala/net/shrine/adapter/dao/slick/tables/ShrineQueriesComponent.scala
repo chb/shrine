@@ -29,6 +29,6 @@ trait ShrineQueriesComponent extends HasColumns { self: HasDriver =>
     private implicit val expression2StringMapper: TypeMapper[Expression] =
       MappedTypeMapper.base[Expression, String](
         expr => expr.toXmlString,
-        xml => Expression.fromXml(xml).get) //TODO: What about failures?
+        xml => Expression.fromXml(xml).get) //NB: Fail loudly on purpose
   }
 }

@@ -57,8 +57,11 @@ object Count {
       countRow.originalValue, 
       countRow.obfuscatedValue, 
       countRow.creationDate,
-      countRow.creationDate, //TODO: revisit startDate
-      countRow.creationDate + elapsed.milliseconds) //TODO: revisit endDate
+      //NB: This loses the original starttime from the CRC, but preserves the ability to compute elapsed
+      //times, which is all anyone cares about.  We need to be able to turn this into a QueryResult (with
+      //start and end times) so we can't just include the elapsed time
+      countRow.creationDate, 
+      countRow.creationDate + elapsed.milliseconds)
   }
 }
 

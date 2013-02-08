@@ -123,7 +123,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       Queries.resultsForQuery(networkQueryId).delete
     }
   }
-  
+
   override def isUserLockedOut(id: Identity, defaultThreshold: Int): Boolean = Util.tryOrElse(false) {
     val privilegedUserOption = firstResultOption(Queries.privilegedUsers(id.getUsername, id.getDomain))
 
@@ -134,7 +134,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
     val overrideDate = privilegedUserOption.map(_.overrideDate).getOrElse(thirtyDaysInThePast)
 
     val counts = allResults(Queries.repeatedResults(id.getUsername, id.getDomain, overrideDate)).sorted
-    
+
     val repeatedResultCount = counts.lastOption.getOrElse(0)
 
     val result = repeatedResultCount > threshold
@@ -230,16 +230,17 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       queryRow <- firstResultOption(Queries.queriesByNetworkId(networkQueryId))
       shrineQueryResult <- ShrineQueryResult.fromRows(queryRow, allResults(Queries.resultsForQuery(networkQueryId)), firstResultOption(Queries.countResults(networkQueryId)), breakdownRowsByType, allResults(Queries.errorResults(networkQueryId)))
     } yield shrineQueryResult
+
   }
 
   private def withSession[T](f: Session => T): T = {
-    database.withSession { session: Session => f(session) } 
+    database.withSession { session: Session => f(session) }
   }
-  
+
   private def firstResultOption[T](queryToRun: MutatingUnitInvoker[T]): Option[T] = {
     withSession { implicit session => queryToRun.firstOption }
   }
-  
+
   private def firstResultOption[A, B](queryToRun: Query[A, B]): Option[B] = {
     withSession { implicit session => queryToRun.firstOption }
   }
@@ -338,43 +339,44 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
             countRow <- CountResults if countRow.resultId === resultRow.id
             if countRow.originalCount =!= 0L
             if queryRow.creationDate > overrideDate
-           } yield countRow.originalCount.count).filter(_ > 1) 
+          } yield countRow.originalCount.count).filter(_ > 1)
       }
     }
 
     val queriesForAllUsers = {
       import DateHelpers.Implicit._
 
-      (for(row <- ShrineQueries) yield row).sortBy(_.creationDate.desc)
+      (for (row <- ShrineQueries) yield row).sortBy(_.creationDate.desc)
     }
 
     //TODO: Find a way to parameterize on limit, to avoid building the query every time
     def queriesForUser(limit: Int) = {
-      Parameters[(String, String)].flatMap { case (username, domain) =>
-        (for {
-          query <- ShrineQueries
-          if query.domain === domain 
-          if query.username === username
-        } yield query.*).take(limit)
+      Parameters[(String, String)].flatMap {
+        case (username, domain) =>
+          (for {
+            query <- ShrineQueries
+            if query.domain === domain
+            if query.username === username
+          } yield query.*).take(limit)
       }
     }
-    
+
     def queriesByNetworkId(networkQueryId: Long) = {
-      for(row <- ShrineQueries if row.networkId === networkQueryId) yield row
+      for (row <- ShrineQueries if row.networkId === networkQueryId) yield row
     }
 
     def queryNamesByNetworkId(networkQueryId: Long) = {
-      for(query <- ShrineQueries if query.networkId === networkQueryId) yield query.name
+      for (query <- ShrineQueries if query.networkId === networkQueryId) yield query.name
     }
-    
+
     def resultsForQuery(networkQueryId: Long) = {
       val queriesJoinedWithResults = ShrineQueries.innerJoin(QueryResults).on(_.id === _.queryId)
-      
-      val joinedRowsWithNetworkQueryId = queriesJoinedWithResults.filter { 
-        case (shrineQueryRow, _) => 
-          shrineQueryRow.networkId === networkQueryId 
+
+      val joinedRowsWithNetworkQueryId = queriesJoinedWithResults.filter {
+        case (shrineQueryRow, _) =>
+          shrineQueryRow.networkId === networkQueryId
       }
-      
+
       joinedRowsWithNetworkQueryId.map { case Join(_, right) => right }
     }
 
@@ -397,7 +399,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       q <- ShrineQueries if q.networkId === networkQueryId
       qr <- QueryResults if qr.queryId === q.id
       breakdownRow <- BreakdownResults if breakdownRow.resultId === qr.id
-      //_ <- Query groupBy qr.resultType
-    } yield (qr.resultType, breakdownRow) //TODO: Way to say 'group by' here?
+      //NB: using groupBy here is too much of a pain; do it 'manually' later
+    } yield (qr.resultType, breakdownRow) 
   }
 }

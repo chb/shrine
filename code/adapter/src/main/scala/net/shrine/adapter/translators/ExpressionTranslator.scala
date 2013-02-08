@@ -70,5 +70,9 @@ final class ExpressionTranslator(
     case not: Not => not.withExpr(translate(not.expr))
     case db: DateBounded => db.withExpr(translate(db.expr))
     case ol: OccuranceLimited => ol.withExpr(translate(ol.expr))
+    //NB: Intentionally blow up loudly.  We want to avoid warnings, since the
+    //only missing cases are for the uninstantiatable traits or abstract classes 
+    //HasSubExpressions and SimpleExpression, at least for now.
+    case _ => ???
   }
 }
