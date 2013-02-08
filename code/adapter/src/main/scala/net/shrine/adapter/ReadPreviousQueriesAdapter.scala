@@ -29,8 +29,6 @@ import net.shrine.protocol.ReadPreviousQueriesRequest
 class ReadPreviousQueriesAdapter(dao: AdapterDao) extends Adapter with Loggable {
   
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
-    //TODO: do we need the BroadcastMessage for anything?  fetchsize?
-    
     val fetchSize = message.request.asInstanceOf[ReadPreviousQueriesRequest].fetchSize
     
     val previousQueries = dao.findQueriesByUserAndDomain(identity.getDomain, identity.getUsername, fetchSize)
