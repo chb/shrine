@@ -155,7 +155,6 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
    * Inserted rows are 'children' of the passed ShrineQuery (ie, they are the results of the query)
    */
   override def insertQueryResults(parentQueryId: Int, results: Seq[QueryResult]): Map[ResultOutputType, Seq[Int]] = {
-    //TODO: Is there a better way?  Is the elapsed time available somewhere?
     def execTime(result: QueryResult): Option[Long] = {
       //TODO: How are locales handled here?  Do we care?
       def toMillis(xmlGc: XMLGregorianCalendar) = xmlGc.toGregorianCalendar.getTimeInMillis

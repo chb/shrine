@@ -49,7 +49,6 @@ final case class ShrineQueryResult(
 }
 
 object ShrineQueryResult {
-  //TODO: TEST!!! 
   def fromRows(queryRow: ShrineQuery, resultRows: Seq[QueryResultRow], countRowOption: Option[CountRow], breakdownRows: Map[ResultOutputType, Seq[BreakdownResultRow]], errorRows: Seq[ShrineError]): Option[ShrineQueryResult] = {
     if(resultRows.isEmpty) {
       None
