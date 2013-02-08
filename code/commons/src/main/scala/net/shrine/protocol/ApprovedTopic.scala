@@ -18,20 +18,20 @@ import net.shrine.serialization.{I2b2Marshaller, XmlMarshaller}
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
 final case class ApprovedTopic(val queryTopicId: Long, val queryTopicName: String) extends XmlMarshaller with I2b2Marshaller {
-  def toI2b2 = XmlUtil.stripWhitespace(
+  override def toI2b2 = XmlUtil.stripWhitespace {
     <sheriffEntry>
       <approval>Approved</approval>
       <queryName>{queryTopicName}</queryName>
       <queryTopicID>{queryTopicId}</queryTopicID>
     </sheriffEntry>
-  )
+  }
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace {
     <approvedTopic>
       <queryTopicId>{queryTopicId}</queryTopicId>
       <queryTopicName>{queryTopicName}</queryTopicName>
     </approvedTopic>
-  )
+  }
 }
 
 object ApprovedTopic {
