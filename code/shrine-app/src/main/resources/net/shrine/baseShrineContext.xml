@@ -20,8 +20,14 @@
                      default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
     <jee:jndi-lookup id="realCRCEndpoint" jndi-name="java:comp/env/shrine/realCRCEndpoint"
                      default-value="http://services.i2b2.org/i2b2/rest/QueryToolService/"/>
+	<jee:jndi-lookup id="spinEntrypoint" jndi-name="java:comp/env/shrine/spinEntrypoint"
+                     default-value="http://localhost:8080/shrine/soap/aggregate?wsdl"/>
+	<jee:jndi-lookup id="spinEndpointType" jndi-name="java:comp/env/shrine/spinEntrypointType"
+                     default-value="SOAP"/>
     <jee:jndi-lookup id="aggregatorEndpoint" jndi-name="java:comp/env/shrine/aggregatorEndpoint"
                      default-value="http://localhost:8080/shrine/soap/aggregate?wsdl"/>
+    <jee:jndi-lookup id="aggregatorEndpointType" jndi-name="java:comp/env/shrine/aggregatorEndpointType"
+                     default-value="SOAP"/>
     <jee:jndi-lookup id="shrineEndpoint" jndi-name="java:comp/env/shrine/shrineEndpoint"
                      default-value="http://localhost:8080/shrine/soap/"/>
     <jee:jndi-lookup id="sheriffEndpoint" jndi-name="java:comp/env/shrine/sheriffEndpoint"
@@ -50,28 +56,46 @@
     <jee:jndi-lookup id="shouldTrustAllSslCerts" jndi-name="java:comp/env/shrine/shouldTrustAllSslCerts" default-value="false"/>
     <jee:jndi-lookup id="shrineDatabaseType" jndi-name="java:comp/env/shrine/shrineDatabaseType" default-value="mysql"/>
 
-    <bean id="aggregatorEndpointType" class="org.spin.tools.config.EndpointType" factory-method="valueOf">
-        <constructor-arg>
-            <value>SOAP</value>
-         </constructor-arg>
+    <bean id="aggregatorEndpointTypeEnumValue" class="org.spin.tools.config.EndpointType" factory-method="valueOf">
+        <constructor-arg ref="aggregatorEndpointType"/>
+    </bean>
+    
+    <bean id="spinEntrypointTypeEnumValue" class="org.spin.tools.config.EndpointType" factory-method="valueOf">
+        <constructor-arg ref="spinEntrypointType"/>
+    </bean>
+    
+    <bean id="aggregatorEndpointConfigMaker" class="net.shrine.spring.EndpointConfigMaker">
+		<constructor-arg ref="aggregatorEndpointTypeEnumValue"/>
+	</bean>
+	
+	<bean id="spinEntrypointEndpointConfigMaker" class="net.shrine.spring.EndpointConfigMaker">
+		<constructor-arg ref="spinEntrypointTypeEnumValue"/>
+	</bean>
+
+    <bean id="aggregatorEndpointOption" class="scala.Option" factory-method="apply">
+    	<constructor-arg ref="aggregatorEndpoint"/>
+    </bean>
+    
+    <bean id="aggregatorEndpointConfig" factory-bean="aggregatorEndpointConfigMaker" factory-method="apply">
+    	<constructor-arg ref="aggregatorEndpoint"/>
+    </bean>
+    
+    <bean id="spinEntrypointEndpointConfig" factory-bean="spinEntrypointEndpointConfigMaker" factory-method="apply">
+    	<constructor-arg ref="spinEntrypoint"/>
     </bean>
 
-    <bean id="aggregatorEndpointConfig" class="org.spin.tools.config.EndpointConfig">
-    	<constructor-arg index="0" ref="aggregatorEndpointType"/>
-    	<constructor-arg index="1" ref="aggregatorEndpoint"/>
-    </bean>
-
-    <!-- Make aggregatorEndpointConfigOption this way, to enable direct, centralized aggregation -->
-	<!-- <bean id="aggregatorEndpointConfigOption" class="scala.Some">
-		<constructor-arg ref="aggregatorEndpointConfig"/>
-	</bean> -->
+	<bean id="aggregatorEndpointConfigOption" factory-bean="aggregatorEndpointOption" factory-method="map">
+		<constructor-arg ref="endpointConfigMaker"/>
+	</bean>
 	
 	<!-- Hack to get None, for reverse-broadcast-order aggregation -->
+	<!-- 
 	<bean id="aggregatorEndpointConfigOption" class="scala.Option" factory-method="apply">
 		<constructor-arg>
 			<null/>
 		</constructor-arg>
 	</bean>
+	-->
 
     <bean id="httpClient" class="net.shrine.util.JerseyHttpClient">
       <constructor-arg ref="shouldTrustAllSslCerts"/>
@@ -100,7 +124,7 @@
 
     <bean id="agentConfig" class="org.spin.tools.config.AgentConfig">
     	<constructor-arg index="0" ref="aggregatorEndpointConfig"/>
-    	<constructor-arg index="1" ref="aggregatorEndpointConfig"/>
+    	<constructor-arg index="1" ref="spinEntrypointEndpointConfig"/>
     	<constructor-arg index="2" ref="broadcasterPeerGroupToQuery"/>
     	<constructor-arg index="3"><null/></constructor-arg>
     	<constructor-arg index="4" ref="queryTTL"/>
