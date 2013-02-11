@@ -76,10 +76,6 @@
     	<constructor-arg ref="aggregatorEndpoint"/>
     </bean>
     
-    <bean id="aggregatorEndpointConfig" factory-bean="aggregatorEndpointConfigMaker" factory-method="apply">
-    	<constructor-arg ref="aggregatorEndpoint"/>
-    </bean>
-    
     <bean id="spinEntrypointEndpointConfig" factory-bean="spinEntrypointEndpointConfigMaker" factory-method="apply">
     	<constructor-arg ref="spinEntrypoint"/>
     </bean>
@@ -87,6 +83,8 @@
 	<bean id="aggregatorEndpointConfigOption" factory-bean="aggregatorEndpointOption" factory-method="map">
 		<constructor-arg ref="endpointConfigMaker"/>
 	</bean>
+	
+	<bean id="aggregatorEndpointConfig" factory-bean="aggregatorEndpointConfigOption" factory-method="orNull"/>
 	
 	<!-- Hack to get None, for reverse-broadcast-order aggregation -->
 	<!-- 
