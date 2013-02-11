@@ -80,20 +80,21 @@
     	<constructor-arg ref="spinEntrypoint"/>
     </bean>
 
+	<!-- Uncomment this bean to enable centralized result aggregation -->
+	<!-- 
 	<bean id="aggregatorEndpointConfigOption" factory-bean="aggregatorEndpointOption" factory-method="map">
 		<constructor-arg ref="endpointConfigMaker"/>
 	</bean>
-	
-	<bean id="aggregatorEndpointConfig" factory-bean="aggregatorEndpointConfigOption" factory-method="orNull"/>
+	-->
 	
 	<!-- Hack to get None, for reverse-broadcast-order aggregation -->
-	<!-- 
 	<bean id="aggregatorEndpointConfigOption" class="scala.Option" factory-method="apply">
 		<constructor-arg>
 			<null/>
 		</constructor-arg>
 	</bean>
-	-->
+	
+	<bean id="aggregatorEndpointConfig" factory-bean="aggregatorEndpointConfigOption" factory-method="orNull"/>
 
     <bean id="httpClient" class="net.shrine.util.JerseyHttpClient">
       <constructor-arg ref="shouldTrustAllSslCerts"/>
