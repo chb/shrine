@@ -47,8 +47,6 @@ object BroadcastMessage extends XmlUnmarshaller[BroadcastMessage] {
   }
 
   object serializer extends BasicSerializer[BroadcastMessage] {
-    override def fromString(s: String) = BroadcastMessage.fromXml(s)
-
     override def toString(o: BroadcastMessage) = o.toXmlString
   }
 }
