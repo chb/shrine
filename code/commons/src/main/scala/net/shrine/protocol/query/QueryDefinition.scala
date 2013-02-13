@@ -110,7 +110,6 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
     def panelWithDefaults(terms: Seq[Term]) = Panel(1, false, 1, None, None, terms)
 
     val resultPanels = expr.normalize match {
-      case q: Query => ??? //TODO: implement for query-in-query
       case t: Term => Seq(panelWithDefaults(Seq(t)))
       case Not(e) => toPanels(e).map(_.invert)
       case And(exprs@_*) => {
@@ -135,6 +134,9 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
         toPanels(e).map(_.withStart(truncatedStart)).map(_.withEnd(truncatedEnd))
       }
       case OccuranceLimited(min, e) => toPanels(e).map(_.withMinOccurrences(min))
+      case q: Query => ??? //TODO: implement for query-in-query
+      case _ => ??? //We should never get here, but fail loudly just in case.  Also fixes compiler
+    		  	    //warning about unhandled cases for abstract, non-instantiatable Expression subtypes 
     }
 
     //Assign indicies; i2b2 indicies start from 1 
