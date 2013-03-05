@@ -35,42 +35,40 @@ import javax.xml.bind.annotation.XmlRootElement
  *       REFACTORED from 1.6.6
  * @see AdapterMappings
  */
-@XmlRootElement(name = "AdapterMappings")
-@XmlAccessorType(XmlAccessType.FIELD)
-final case class AdapterMappings {
+final case class AdapterMappings(private var mappings: Map[String, Set[String]] = Map.empty) {
 
-  private val mappings: JTreeMap[String, LocalKeys] = new JTreeMap
+  import scala.collection.JavaConverters._
+  
+  def getMappings: JList[String] = mappings.keySet.toSeq.asJava
 
-  private def immutableCopy[T](coll: JCollection[T]): JList[T] = {
-    JCollections.unmodifiableList(new JArrayList(coll))
-  }
-
-  def getMappings: JList[String] = immutableCopy(mappings.keySet)
-
-  def getMappings(globalKey: String): JList[String] = {
-    Option(mappings.get(globalKey)).map(immutableCopy).getOrElse(JCollections.emptyList[String])
+  def getMappings(globalTerm: String): JList[String] = {
+    mappings.get(globalTerm).map(_.toSeq.asJava).getOrElse(JCollections.emptyList[String])
   }
 
   def size = mappings.size
 
-  def addMapping(coreKey: String, localKey: String): Boolean = {
-    if (mappings.containsKey(coreKey)) {
-      // TODO if there is a uniqueness constraint on local_key mappings,
-      // then this should be a Set, not a List
-      val keys: JList[String] = mappings.get(coreKey)
-
-      if (keys.contains(localKey)) false else keys.add(localKey)
-    } else {
-      val keys = new LocalKeys(localKey)
-
-      mappings.put(coreKey, keys)
-
-      true
-    }
+  def addMapping(coreKey: String, localKey: String) {
+    mappings += (mappings.get(coreKey) match {
+      case None => (coreKey -> Set(localKey))
+      case Some(localTerms) => (coreKey -> (localTerms + localKey))
+    })
   }
 
-  def getEntries: JSet[String] = {
-    // Defensive copy Map.keySet() can change out from underneath you
-    JCollections.unmodifiableSet(new JHashSet(mappings.keySet))
+  def getEntries: JSet[String] = mappings.keySet.asJava
+  
+  def jaxbable: JaxbableAdapterMappings = {
+    val javaMappings = mappings.mapValues(localTerms => LocalKeys(localTerms.toSeq: _*)).asJava
+    
+    JaxbableAdapterMappings(new JTreeMap(javaMappings))
+  }
+}
+
+object AdapterMappings {
+  def apply(jaxbable: JaxbableAdapterMappings): AdapterMappings = {
+    import scala.collection.JavaConverters._
+    
+    val mappings = jaxbable.mappings.asScala.mapValues(_.asScala.toSet).toMap
+    
+    AdapterMappings(mappings)
   }
 }

@@ -11,17 +11,20 @@ import javax.xml.bind.annotation.XmlElement
 /**
  * @author Andy McMurry
  */
-final case class LocalKeys(key: String) extends JAbstractList[String] {
+object LocalKeys {
+  def apply(keys: String*): LocalKeys = {
+    val result = new LocalKeys
+    
+    keys.foreach(result.add)
+    
+    result
+  }
+}
+
+final case class LocalKeys extends JAbstractList[String] {
 
   @XmlElement(name = "local_key", required = true)
   private val keys: JArrayList[String] = new JArrayList
-
-  if (key != null) {
-    keys.add(key)
-  }
-
-  /*for JAXB*/
-  private def this() = this(null)
 
   override def add(key: String) = keys.add(key)
 

@@ -16,6 +16,6 @@ final class ClasspathAdapterMappingsSource(mappingFileName: String) extends Adap
     
     require(mappingStream != null, "Couldn't find adapter mapping file '" + mappingFileName + "' on the classpath")
     
-    unmarshal(new InputStreamReader(mappingStream), classOf[AdapterMappings])
+    AdapterMappings(unmarshal(new InputStreamReader(mappingStream), classOf[JaxbableAdapterMappings]))
   }
 }

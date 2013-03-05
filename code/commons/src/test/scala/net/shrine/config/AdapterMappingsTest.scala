@@ -21,11 +21,11 @@ import junit.framework.TestCase
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 object AdapterMappingsTest {
-  private val CORE_KEY_DEMOGRAPHICS_0_9 = "\\\\i2b2\\i2b2\\Demographics\\Age\\0-9 years old\\"
-  private val CORE_KEY_TEST = "\\\\i2b2\\i2b2\\TEST\\KEY\\"
-  private val CORE_KEY_INVALID = "THIS IS NOT A VALID GLOBAL KEY"
-  private val LOCAL_KEY_DEMOGRAPHICS_AGE_4 = "\\\\i2b2\\LOCAL\\DEM|AGE:4"
-  private val LOCAL_KEY_DEMOGRAPHICS_AGE_TEST = "\\\\i2b2\\LOCAL\\DEM|AGE:TEST"
+  private val CORE_KEY_DEMOGRAPHICS_0_9 = """\\i2b2\i2b2\Demographics\Age\0-9 years old\"""
+  private val CORE_KEY_TEST = """\\i2b2\i2b2\TEST\KEY\"""
+  private val CORE_KEY_INVALID = """THIS IS NOT A VALID GLOBAL KEY"""
+  private val LOCAL_KEY_DEMOGRAPHICS_AGE_4 = """\\i2b2\LOCAL\DEM|AGE:4"""
+  private val LOCAL_KEY_DEMOGRAPHICS_AGE_TEST = """\\i2b2\LOCAL\DEM|AGE:TEST"""
 }
 
 final class AdapterMappingsTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
@@ -54,14 +54,14 @@ final class AdapterMappingsTest extends TestCase with AssertionsForJUnit with Sh
   def testAddMapping {
     val mappings = getMappings
 
-    mappings.addMapping(CORE_KEY_DEMOGRAPHICS_0_9, LOCAL_KEY_DEMOGRAPHICS_AGE_4) should be(false)
+    mappings.addMapping(CORE_KEY_DEMOGRAPHICS_0_9, LOCAL_KEY_DEMOGRAPHICS_AGE_4)
     mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(10)
 
-    mappings.addMapping(CORE_KEY_DEMOGRAPHICS_0_9, LOCAL_KEY_DEMOGRAPHICS_AGE_TEST) should be(true)
+    mappings.addMapping(CORE_KEY_DEMOGRAPHICS_0_9, LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)
     mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(11)
 
     mappings.getMappings(CORE_KEY_TEST).size should equal(0)
-    mappings.addMapping(CORE_KEY_TEST, LOCAL_KEY_DEMOGRAPHICS_AGE_TEST) should be(true)
+    mappings.addMapping(CORE_KEY_TEST, LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)
     mappings.getMappings(CORE_KEY_TEST).size should equal(1)
   }
 
@@ -76,10 +76,23 @@ final class AdapterMappingsTest extends TestCase with AssertionsForJUnit with Sh
     m.addMapping("core2", "local2")
     m.addMapping("core2", "local3")
 
-    val xml = JAXBUtils.marshalToString(m)
-    val m1 = JAXBUtils.unmarshal(xml, classOf[AdapterMappings])
-    val xml1 = JAXBUtils.marshalToString(m1)
+    val jaxbable = m.jaxbable
+    
+    val xml = JAXBUtils.marshalToString(jaxbable)
+    
+    val jaxbable1 = JAXBUtils.unmarshal(xml, classOf[JaxbableAdapterMappings])
+    
+    val xml1 = JAXBUtils.marshalToString(jaxbable1)
 
     xml should equal(xml1)
+    
+    AdapterMappings(jaxbable1) should equal(m)
+  }
+  
+  @Test
+  def testDefaultConstructor {
+    val mappings = new AdapterMappings
+    
+    mappings.size should equal(0)
   }
 }

@@ -24,18 +24,7 @@ final class ExpressionTranslatorTest extends TestCase with AssertionsForJUnit wi
 
   private val mappings = Map("twoMatches" -> localTerms, "oneMatch" -> Set("localTerm3"))
 
-  private val adapterMappings = {
-    val result = new AdapterMappings
-
-    for {
-      (networkTerm, localTerms) <- mappings
-      localTerm <- localTerms
-    } {
-      result.addMapping(networkTerm, localTerm)
-    }
-
-    result
-  }
+  private val adapterMappings = AdapterMappings(mappings)
 
   def testConstructorScalaMap {
     val translator = new ExpressionTranslator(mappings)
