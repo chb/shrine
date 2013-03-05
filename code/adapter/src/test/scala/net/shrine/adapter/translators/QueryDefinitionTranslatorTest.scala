@@ -22,18 +22,7 @@ final class QueryDefinitionTranslatorTest extends TestCase with AssertionsForJUn
 
   private def queryDef(expr: Expression) = QueryDefinition("foo", expr)
 
-  private val adapterMappings = {
-    val result = new AdapterMappings
-
-    for {
-      (networkTerm, localTerms) <- mappings
-      localTerm <- localTerms
-    } {
-      result.addMapping(networkTerm, localTerm)
-    }
-
-    result
-  }
+  private val adapterMappings = AdapterMappings(mappings)
 
   def testConstructor {
     val translator = new QueryDefinitionTranslator(new ExpressionTranslator(mappings))

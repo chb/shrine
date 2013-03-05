@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement
  *       REFACTORED from 1.6.6
  * @see AdapterMappings
  */
-final case class AdapterMappings private (mappings: Map[String, Set[String]] = Map.empty) {
+final case class AdapterMappings(val mappings: Map[String, Set[String]] = Map.empty) {
 
   import scala.collection.JavaConverters._
 

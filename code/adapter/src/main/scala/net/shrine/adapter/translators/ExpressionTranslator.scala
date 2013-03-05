@@ -33,8 +33,8 @@ object ExpressionTranslator {
     import scala.collection.JavaConverters._
 
     val mappings = Map.empty ++ (for {
-      networkTerm <- adapterMappings.getMappings.asScala
-      localTerms = adapterMappings.getMappings(networkTerm).asScala.toSet
+      networkTerm <- adapterMappings.getAllMappings
+      localTerms = adapterMappings.getMappings(networkTerm)
     } yield {
       (networkTerm, localTerms)
     })
