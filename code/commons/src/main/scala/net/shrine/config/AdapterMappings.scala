@@ -35,40 +35,48 @@ import javax.xml.bind.annotation.XmlRootElement
  *       REFACTORED from 1.6.6
  * @see AdapterMappings
  */
-final case class AdapterMappings(private var mappings: Map[String, Set[String]] = Map.empty) {
+final case class AdapterMappings private (mappings: Map[String, Set[String]] = Map.empty) {
 
   import scala.collection.JavaConverters._
-  
-  def getMappings: JList[String] = mappings.keySet.toSeq.asJava
 
-  def getMappings(globalTerm: String): JList[String] = {
-    mappings.get(globalTerm).map(_.toSeq.asJava).getOrElse(JCollections.emptyList[String])
-  }
+  def getAllMappings: Set[String] = mappings.keySet
+
+  def getMappings(globalTerm: String): Set[String] = mappings.get(globalTerm).getOrElse(Set.empty)
 
   def size = mappings.size
 
-  def addMapping(coreKey: String, localKey: String) {
-    mappings += (mappings.get(coreKey) match {
-      case None => (coreKey -> Set(localKey))
-      case Some(localTerms) => (coreKey -> (localTerms + localKey))
-    })
+  def ++(ms: (String, String)*): AdapterMappings = ms.foldLeft(this)(_ + _)
+  
+  def +(mapping: (String, String)): AdapterMappings = {
+    val (coreTerm, localTerm) = mapping
+
+    mappings.get(coreTerm) match {
+      case Some(localTerms) if localTerms.contains(localTerm) => this
+      case possiblyExtantMapping => {
+        val newLocalTerms = possiblyExtantMapping.getOrElse(Set.empty) + localTerm
+
+        AdapterMappings(mappings + (coreTerm -> newLocalTerms))
+      }
+    }
   }
 
-  def getEntries: JSet[String] = mappings.keySet.asJava
-  
+  def getEntries: Set[String] = mappings.keySet
+
   def jaxbable: JaxbableAdapterMappings = {
     val javaMappings = mappings.mapValues(localTerms => LocalKeys(localTerms.toSeq: _*)).asJava
-    
+
     JaxbableAdapterMappings(new JTreeMap(javaMappings))
   }
 }
 
 object AdapterMappings {
+  val empty = new AdapterMappings
+  
   def apply(jaxbable: JaxbableAdapterMappings): AdapterMappings = {
     import scala.collection.JavaConverters._
-    
+
     val mappings = jaxbable.mappings.asScala.mapValues(_.asScala.toSet).toMap
-    
+
     AdapterMappings(mappings)
   }
 }

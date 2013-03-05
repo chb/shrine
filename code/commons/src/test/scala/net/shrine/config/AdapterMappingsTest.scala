@@ -11,7 +11,7 @@ import junit.framework.TestCase
 
 /**
  * @author Andrew McMurry, MS
- * @author clint (Scala port)
+ * @author clint 
  * @date Jan 6, 2010
  * @link http://cbmi.med.harvard.edu
  * @link http://chip.org
@@ -31,50 +31,37 @@ object AdapterMappingsTest {
 final class AdapterMappingsTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
   import AdapterMappingsTest._
 
-  private def getMappings = (new ClasspathAdapterMappingsSource("AdapterMappings_DEM_AGE_0_9.xml")).load
+  private val mappings = (new ClasspathAdapterMappingsSource("AdapterMappings_DEM_AGE_0_9.xml")).load
 
   @Test
   def testGetMappings {
-    val mappings = getMappings
-
     mappings.getMappings(CORE_KEY_INVALID) should not be (null)
     mappings.getMappings(CORE_KEY_INVALID).size should equal(0)
 
     mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9) should not be (null)
     mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(10)
-
-    val localKeys = mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9)
-
-    intercept[UnsupportedOperationException] {
-      localKeys.add("Better hope not")
-    }
   }
 
   @Test
   def testAddMapping {
-    val mappings = getMappings
+    (mappings + (CORE_KEY_DEMOGRAPHICS_0_9 -> LOCAL_KEY_DEMOGRAPHICS_AGE_4)).getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(10)
+    
+    ((mappings + (CORE_KEY_DEMOGRAPHICS_0_9 -> LOCAL_KEY_DEMOGRAPHICS_AGE_4)) eq mappings) should be(true)
 
-    mappings.addMapping(CORE_KEY_DEMOGRAPHICS_0_9, LOCAL_KEY_DEMOGRAPHICS_AGE_4)
-    mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(10)
-
-    mappings.addMapping(CORE_KEY_DEMOGRAPHICS_0_9, LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)
-    mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(11)
+    (mappings + (CORE_KEY_DEMOGRAPHICS_0_9 -> LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)).getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(11)
 
     mappings.getMappings(CORE_KEY_TEST).size should equal(0)
-    mappings.addMapping(CORE_KEY_TEST, LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)
-    mappings.getMappings(CORE_KEY_TEST).size should equal(1)
+    
+    (mappings + (CORE_KEY_TEST -> LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)).getMappings(CORE_KEY_TEST).size should equal(1)
   }
 
   @Test
   def testSerialize {
-    val m = new AdapterMappings
-
-    m.addMapping("core1", "local1")
-    m.addMapping("core1", "local2")
-
-    m.addMapping("core2", "local1")
-    m.addMapping("core2", "local2")
-    m.addMapping("core2", "local3")
+    val m = AdapterMappings.empty  ++ ("core1" -> "local1", 
+							    	   "core1" -> "local2",
+							    	   "core2" -> "local1",
+							    	   "core2" -> "local2",
+							    	   "core2" -> "local3")
 
     val jaxbable = m.jaxbable
     
@@ -90,9 +77,7 @@ final class AdapterMappingsTest extends TestCase with AssertionsForJUnit with Sh
   }
   
   @Test
-  def testDefaultConstructor {
-    val mappings = new AdapterMappings
-    
-    mappings.size should equal(0)
+  def testEmpty {
+    AdapterMappings.empty.size should equal(0)
   }
 }
