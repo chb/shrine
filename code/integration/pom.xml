@@ -2,9 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<name>SHRINE Integration Tests</name>
-	<groupId>net.shrine</groupId>
 	<artifactId>shrine-integration-tests</artifactId>
-	<version>1.14-SNAPSHOT</version>
 	<parent>
 		<groupId>net.shrine</groupId>
 		<artifactId>shrine-base</artifactId>
@@ -12,11 +10,11 @@
 	</parent>
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
-	        <testSourceDirectory>src/test/scala</testSourceDirectory>
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
-	                        <artifactId>scala-maven-plugin</artifactId>
+				<artifactId>scala-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

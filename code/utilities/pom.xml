@@ -10,7 +10,7 @@
 		<artifactId>shrine-base</artifactId>
 		<version>1.14-SNAPSHOT</version>
 	</parent>
-	
+
 	<properties>
 		<gmaven-plugin-version>1.5</gmaven-plugin-version>
 		<assembly-plugin-version>2.4</assembly-plugin-version>

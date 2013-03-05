@@ -1,37 +1,36 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <name>SHRINE Proxy</name>
-    <groupId>net.shrine</groupId>
-    <artifactId>shrine-proxy</artifactId>
-    <packaging>war</packaging>
-    <version>1.14-SNAPSHOT</version>
-    <parent>
-        <groupId>net.shrine</groupId>
-        <artifactId>shrine-base</artifactId>
-        <version>1.14-SNAPSHOT</version>
-    </parent>
-    <dependencies>
-        <dependency>
-            <groupId>net.shrine</groupId>
-            <artifactId>shrine-commons</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-    <build>
-	<sourceDirectory>src/main/scala</sourceDirectory>
-        <testSourceDirectory>src/test/scala</testSourceDirectory>
-        <finalName>shrine-proxy</finalName>
-        <plugins>
-            <plugin>
-		<groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<name>SHRINE Proxy</name>
+	<artifactId>shrine-proxy</artifactId>
+	<packaging>war</packaging>
+	<parent>
+		<groupId>net.shrine</groupId>
+		<artifactId>shrine-base</artifactId>
+		<version>1.14-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>net.shrine</groupId>
+			<artifactId>shrine-commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.4</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<sourceDirectory>src/main/scala</sourceDirectory>
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
+		<finalName>shrine-proxy</finalName>
+		<plugins>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>
