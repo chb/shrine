@@ -4,6 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:jaxws="http://cxf.apache.org/jaxws" 
        xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
@@ -20,9 +21,9 @@
                      default-value="http://services.i2b2.org/i2b2/rest/PMService/getServices"/>
     <jee:jndi-lookup id="realCRCEndpoint" jndi-name="java:comp/env/shrine/realCRCEndpoint"
                      default-value="http://services.i2b2.org/i2b2/rest/QueryToolService/"/>
-	<jee:jndi-lookup id="spinEntrypoint" jndi-name="java:comp/env/shrine/spinEntrypoint"
+	<jee:jndi-lookup id="shrineEndpoint" jndi-name="java:comp/env/shrine/shrineEndpoint"
                      default-value="http://localhost:8080/shrine/soap/aggregate?wsdl"/>
-	<jee:jndi-lookup id="spinEndpointType" jndi-name="java:comp/env/shrine/spinEntrypointType"
+	<jee:jndi-lookup id="shrineEndpointType" jndi-name="java:comp/env/shrine/shrineEndpointType"
                      default-value="SOAP"/>
     <jee:jndi-lookup id="aggregatorEndpoint" jndi-name="java:comp/env/shrine/aggregatorEndpoint"
                      default-value="http://localhost:8080/shrine/soap/aggregate?wsdl"/>
@@ -60,24 +61,24 @@
         <constructor-arg ref="aggregatorEndpointType"/>
     </bean>
     
-    <bean id="spinEntrypointTypeEnumValue" class="org.spin.tools.config.EndpointType" factory-method="valueOf">
-        <constructor-arg ref="spinEntrypointType"/>
+    <bean id="shrineEndpointTypeEnumValue" class="org.spin.tools.config.EndpointType" factory-method="valueOf">
+        <constructor-arg ref="shrineEndpointType"/>
     </bean>
     
     <bean id="aggregatorEndpointConfigMaker" class="net.shrine.spring.EndpointConfigMaker">
 		<constructor-arg ref="aggregatorEndpointTypeEnumValue"/>
 	</bean>
 	
-	<bean id="spinEntrypointEndpointConfigMaker" class="net.shrine.spring.EndpointConfigMaker">
-		<constructor-arg ref="spinEntrypointTypeEnumValue"/>
+	<bean id="shrineEndpointEndpointConfigMaker" class="net.shrine.spring.EndpointConfigMaker">
+		<constructor-arg ref="shrineEndpointTypeEnumValue"/>
 	</bean>
 
     <bean id="aggregatorEndpointOption" class="scala.Option" factory-method="apply">
     	<constructor-arg ref="aggregatorEndpoint"/>
     </bean>
     
-    <bean id="spinEntrypointEndpointConfig" factory-bean="spinEntrypointEndpointConfigMaker" factory-method="apply">
-    	<constructor-arg ref="spinEntrypoint"/>
+    <bean id="shrineEndpointEndpointConfig" factory-bean="shrineEndpointEndpointConfigMaker" factory-method="apply">
+    	<constructor-arg ref="shrineEndpoint"/>
     </bean>
 
 	<!-- Uncomment this bean to enable centralized result aggregation -->
@@ -94,7 +95,9 @@
 		</constructor-arg>
 	</bean>
 	
-	<bean id="aggregatorEndpointConfig" factory-bean="aggregatorEndpointConfigOption" factory-method="orNull"/>
+	<bean id="aggregatorEndpointConfig" class="net.shrine.spring.ToNullShim" factory-method="orNull">
+		<constructor-arg ref="aggregatorEndpointConfigOption"/>
+	</bean>
 
     <bean id="httpClient" class="net.shrine.util.JerseyHttpClient">
       <constructor-arg ref="shouldTrustAllSslCerts"/>
@@ -121,13 +124,31 @@
 		</constructor-arg>
 	</bean>
 
-    <bean id="agentConfig" class="org.spin.tools.config.AgentConfig">
-    	<constructor-arg index="0" ref="aggregatorEndpointConfig"/>
-    	<constructor-arg index="1" ref="spinEntrypointEndpointConfig"/>
-    	<constructor-arg index="2" ref="broadcasterPeerGroupToQuery"/>
-    	<constructor-arg index="3"><null/></constructor-arg>
+	<bean id="identityService" class="org.spin.identity.AlwaysCertifiesIdentityService"/>
+
+	<bean id="dummySpinCredentials" class="org.spin.client.Credentials">
+		<constructor-arg index="0" value="some-domain"/>
+    	<constructor-arg index="1" value="some-user"/>
+    	<constructor-arg index="2" value="some-password"/>
+	</bean>
+	
+	<bean id="spinEncryptionParams" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+  		<property name="staticField" value="org.spin.message.EncryptionParams.NoEncryption"/>
+	</bean>
+	
+    <bean id="spinClientConfig" class="org.spin.client.SpinClientConfig">
+    	<constructor-arg index="0" ref="broadcasterPeerGroupToQuery"/>
+    	<constructor-arg index="1" ref="dummySpinCredentials"/>
+    	<constructor-arg index="2" ref="shrineEndpointEndpointConfig"/>
+    	<constructor-arg index="3" ref="aggregatorEndpointConfigOption"/>
     	<constructor-arg index="4" ref="queryTTL"/>
-    	<constructor-arg index="5" ref="spinPollingFrequency"/>
+    	<constructor-arg index="5" ref="spinEncryptionParams"/>
+    	<constructor-arg index="6" ref="identityService"/>
+     	<constructor-arg index="7" ref="spinPollingFrequency"/>
+    </bean>
+
+	<bean id="spinClient" class="org.spin.client.RemoteSpinClient">
+        <constructor-arg index="0" ref="spinClientConfig"/>
     </bean>
 
 	<!-- 5 seconds, Spin's default -->
@@ -147,10 +168,6 @@
     	<constructor-arg index="8" ref="broadcasterTimeoutPeriod"/>
     	<constructor-arg index="9" value="net.shrine.adapter.query.ShrineQueryActionMap"/>
     	<constructor-arg index="10"><null/></constructor-arg>
-    </bean>
-
-    <bean id="spinClient" class="org.spin.client.Agent">
-        <constructor-arg index="0" ref="agentConfig"/>
     </bean>
 
     <bean id="spinNode" class="org.spin.node.SpinNodeImpl">

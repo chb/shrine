@@ -4,10 +4,10 @@ import xml.NodeSeq
 import org.apache.log4j.MDC
 import net.shrine.filters.LogFilter
 import util.Random
-import org.spin.message.serializer.BasicSerializer
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.{ XmlMarshaller, XmlUnmarshaller }
 import scala.util.Try
+import org.spin.message.serializer.Stringable
 
 /**
  * @author Bill Simons
@@ -46,7 +46,7 @@ object BroadcastMessage extends XmlUnmarshaller[BroadcastMessage] {
       ShrineRequest.fromXml(nodeSeq \ "request" \ "_"))
   }
 
-  object serializer extends BasicSerializer[BroadcastMessage] {
-    override def toString(o: BroadcastMessage) = o.toXmlString
+  implicit object BroadcastMessageIsStringable extends Stringable[BroadcastMessage] {
+    override def toString(message: BroadcastMessage) = message.toXmlString
   }
 }

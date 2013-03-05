@@ -24,6 +24,8 @@ class ReadPreviousQueriesAggregator(
   private[aggregation] def oldestToNewest(x: QueryMaster, y: QueryMaster) = x.createDate.compare(y.createDate) < 0
 
   override def makeResponseFrom(responses: Seq[Valid[ReadPreviousQueriesResponse]]): ShrineResponse = {
+    //debug("Raw previous query responses: " + responses)
+    
     val mastersGroupedById = responses.flatMap(_.response.queryMasters).groupBy(_.queryMasterId)
 
     val sortedMastersById = mastersGroupedById.map { case (id, mastersWithThatId) => (id, mastersWithThatId.sortWith(oldestToNewest)) }.toMap
@@ -34,9 +36,9 @@ class ReadPreviousQueriesAggregator(
     
     val result = new ReadPreviousQueriesResponse(userId, groupId, sortedMasters)
     
-    debug("Previous queries: ")
+    //debug("Previous queries: ")
     
-    sortedMasters.foreach(debug(_))
+    //sortedMasters.foreach(debug(_))
     
     result
   }

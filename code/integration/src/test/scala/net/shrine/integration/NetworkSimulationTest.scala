@@ -4,7 +4,10 @@ import scala.collection.JavaConverters._
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.spin.client.Credentials
-import org.spin.client.Querier
+import org.spin.client.AbstractSpinClient
+import org.spin.client.LocalSpinClient
+import org.spin.client.SpinClient
+import org.spin.client.SpinClientConfig
 import org.spin.identity.local.DummyIdentityService
 import org.spin.message.AckNack
 import org.spin.message.Result
@@ -20,7 +23,6 @@ import org.spin.node.connector.NodeConnectorSource
 import org.spin.tools.Durations
 import org.spin.tools.JAXBUtils
 import org.spin.tools.RandomTool
-import org.spin.tools.config.AgentConfig
 import org.spin.tools.config.EndpointConfig
 import org.spin.tools.config.EndpointType
 import org.spin.tools.config.NodeConfig
@@ -34,7 +36,6 @@ import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.Credential
 import net.shrine.protocol.ReadPreviousQueriesRequest
 import net.shrine.util.Loggable
-import org.spin.client.Agent
 import net.shrine.service.ShrineService
 import net.shrine.broadcaster.dao.AuditDao
 import java.util.Date
@@ -46,9 +47,8 @@ import org.spin.client.SpinClient
 import org.spin.message.QueryInfo
 import org.spin.message.serializer.BasicSerializer
 import org.spin.message.QueryInput
+import org.spin.message.ResultSet
 import org.spin.tools.crypto.signature.Identity
-import org.spin.client.SpinAgent
-import org.spin.tools.SPINUnitTest
 import org.spin.identity.AlwaysCertifiesIdentityService
 import net.shrine.adapter.query.ShrineQueryActionMap
 import org.spin.tools.config.QueryTypeConfig
@@ -60,6 +60,10 @@ import net.shrine.adapter.dao.model.ShrineQuery
 import net.shrine.adapter.dao.model.ShrineQuery
 import net.shrine.protocol.query.Term
 import net.shrine.util.Util
+import scala.concurrent.Future
+import scala.concurrent.blocking
+import scala.concurrent.Await
+import org.spin.message.serializer.Stringable
 
 /**
  * @author Clint Gilbert
@@ -229,13 +233,16 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
   private def doTestSimluatedNetwork(centralAggregator: Option[NodeName], rootNodeName: NodeName) {
     //supply serializer that does .toXml
 
-    val client = new SavesQueryIdsAgent(new Agent(makeAgentConfig(centralAggregator), nodes.getNodeConnector(rootNodeName)))
+    val rootEndpoint = EndpointConfig.local(rootNodeName.name)
+    
+    val rootNode = nodes.get(rootNodeName)
+    
+    val client = new SavesQueryIdsSpinClient(new LocalSpinClient(makeSpinClientConfig(rootEndpoint, centralAggregator), rootEndpoint -> rootNode))
 
     val shrineService = new ShrineService(
       MockAuditDao,
       new AllowsAllAuthorizationService,
-      AlwaysCertifiesIdentityService.Instance,
-      PeerGroupName.Test,
+      Some(PeerGroupName.Test),
       true,
       client,
       centralAggregator.map(toLocalEndpoint))
@@ -284,7 +291,7 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
     doExpectedResponsesTest(nodes.get(NodeName.G), queryId, 1)
   }
 
-  private final class SavesQueryIdsAgent(delegate: Agent) extends SpinAgent {
+  private final class SavesQueryIdsSpinClient(delegate: AbstractSpinClient) extends AbstractSpinClient(delegate.config, delegate.nodeConnectorSource) {
     var queryId: Option[String] = None
 
     private def storeQueryId(f: => AckNack): AckNack = {
@@ -295,35 +302,15 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
       ack
     }
 
-    override def send(queryInfo: QueryInfo, conditions: AnyRef) = storeQueryId(delegate.send(queryInfo, conditions))
-
-    override def send(queryInfo: QueryInfo, conditions: AnyRef, recipient: CertID) = storeQueryId(delegate.send(queryInfo, conditions, recipient))
-
-    override def send[C](queryInfo: QueryInfo, conditions: C, serializer: BasicSerializer[C]) = storeQueryId(delegate.send(queryInfo, conditions, serializer))
-
-    override def send[C](queryInfo: QueryInfo, conditions: C, serializer: BasicSerializer[C], recipient: CertID) = storeQueryId(delegate.send(queryInfo, conditions, serializer, recipient))
-
-    override def send(queryInfo: QueryInfo, conditions: String) = storeQueryId(delegate.send(queryInfo, conditions))
-
-    override def send(queryInfo: QueryInfo, conditions: String, recipient: CertID) = storeQueryId(delegate.send(queryInfo, conditions, recipient))
-
-    override def send(queryInfo: QueryInfo, queryInput: QueryInput) = storeQueryId(delegate.send(queryInfo, queryInput))
-
-    override def receive(queryId: String, requestorId: Identity) = delegate.receive(queryId, requestorId)
-
-    override def receive(queryId: String, requestorId: Identity, maxWaitTime: Long) = delegate.receive(queryId, requestorId, maxWaitTime)
-
-    override def receive(queryId: String, requestorId: Identity, maxWaitTime: Long, numExpectedResponses: java.lang.Integer) = delegate.receive(queryId, requestorId, maxWaitTime, numExpectedResponses)
-
-    override def waitForQueryToComplete(queryId: String, maxWaitTime: Long, numExpectedResponses: java.lang.Integer) = delegate.waitForQueryToComplete(queryId, maxWaitTime, numExpectedResponses)
-
-    override def getResult(queryId: String, requestorId: Identity) = delegate.getResult(queryId, requestorId)
-
-    override def getResultNoDelete(queryId: String, requestorId: Identity) = delegate.getResult(queryId, requestorId)
-
-    override def isComplete(queryId: String) = delegate.isComplete(queryId)
-
-    override def hasUpdate(queryId: String, numResponders: Int) = delegate.hasUpdate(queryId, numResponders)
+    override def query[T : Stringable](queryType: String, conditions: T, peerGroup: String, credentials: Credentials): Future[ResultSet] = {
+      val identity = credentials.toIdentity(config.identityService)
+      
+      val ack = storeQueryId(send(queryType, conditions, peerGroup, identity))
+      
+      import scala.concurrent.ExecutionContext.Implicits.global
+      
+      Future { blocking { receive(ack.getQueryId, identity) } }.map(decryptIfNecessary)
+    }
   }
 
   private object MockAuditDao extends AuditDao {
@@ -363,13 +350,19 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
     resultSet.size should equal(treeSize)
   }
 
-  private def makeAgentConfig: AgentConfig = makeAgentConfig(null)
+  private def makeSpinClientConfig(entryPoint: EndpointConfig): SpinClientConfig = makeSpinClientConfig(entryPoint, None)
 
-  private def makeAgentConfig(rootAggregator: Option[NodeName]): AgentConfig = {
-    val result = AgentConfig.Default.withMaxWaitTime(Durations.InMilliseconds.oneSecond * 60).withPeerGroupToQuery(PeerGroupName.Test)
+  private def makeSpinClientConfig(entryPoint: EndpointConfig, rootAggregator: Option[NodeName]): SpinClientConfig = {
+    val credentials = Credentials(requestorIdentity.getDomain, requestorIdentity.getUsername, "some-password")
+    
+    val result = SpinClientConfig.Default.
+    				withMaxWaitTime(Durations.InMilliseconds.oneSecond * 60).
+    				withPeerGroupToQuery(PeerGroupName.Test).
+    				withCredentials(credentials).
+    				withEntryPoint(entryPoint)
 
     rootAggregator match {
-      case Some(root) => result.withRootAggregatorEndpoint(new EndpointConfig(EndpointType.Local, root.name))
+      case Some(aggregator) => result.withAggregatorEndpoint(rootAggregator.map(_.name).map(EndpointConfig.local))
       case None => result
     }
   }

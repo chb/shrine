@@ -3,7 +3,7 @@ package net.shrine.service
 import java.io.StringWriter
 import scala.xml.NodeSeq
 import scala.xml.XML
-import org.spin.client.SpinAgent
+import org.spin.client.SpinClient
 import org.spin.message.Failure
 import org.spin.message.QueryInfo
 import org.spin.message.Result
@@ -42,6 +42,8 @@ import net.shrine.util.Versions
 import net.shrine.util.XmlUtil
 import scala.collection.JavaConverters._
 import net.shrine.config.HappyShrineConfig
+import scala.concurrent.Await
+import org.spin.message.serializer.Stringable
 
 /**
  * @author Bill Simons
@@ -57,7 +59,7 @@ import net.shrine.config.HappyShrineConfig
 class HappyShrineService @Autowired() (
   config: HappyShrineConfig,
   hiveCredentials: HiveCredentials,
-  spinClient: SpinAgent,
+  spinClient: SpinClient,
   auditDao: AuditDao,
   adapterDao: AdapterDao,
   httpClient: HttpClient,
@@ -128,10 +130,15 @@ class HappyShrineService @Autowired() (
     }
 
     val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
-    val queryInfo: QueryInfo = new QueryInfo(config.broadcasterPeerGroupToQuery, identity, DefaultQueries.Discovery.queryType, endpointConfig)
-    val ackNack = spinClient.send(queryInfo, DiscoveryCriteria.Instance)
-    val resultSet = spinClient.receive(ackNack.getQueryId, identity)
+    
+    import scala.concurrent.duration._
+    
+    implicit def jaxbTypesAreStringable[T]: Stringable[T] = Stringable.jaxb[T]
+    
+    val resultSet = Await.result(spinClient.query(DefaultQueries.Discovery.queryType, DiscoveryCriteria.Instance), 1.minute)
+    
     val expectedCount = peerGroupOption.get.getChildren.size + 1 //add one to include self
+    
     val (results, failures) = partitionSpinResults(resultSet)
 
     XmlUtil.stripWhitespace {
@@ -190,8 +197,11 @@ class HappyShrineService @Autowired() (
       val req = newRunQueryRequest
       val message = BroadcastMessage(req.networkQueryId, req)
 
-      val ackNack = spinClient.send(queryInfo, message, BroadcastMessage.serializer)
-      val resultSet = spinClient.receive(ackNack.getQueryId, identity)
+      import scala.concurrent.duration._
+      
+      //TODO: Allow different serializers
+      //BroadcastMessage.serializer
+      val resultSet = Await.result(spinClient.query(CRCRequestType.QueryDefinitionRequestType.name, message), 1.minute)
 
       val (results, failures) = partitionSpinResults(resultSet)
 

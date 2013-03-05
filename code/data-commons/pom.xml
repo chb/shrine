@@ -12,10 +12,12 @@
         <version>1.14-SNAPSHOT</version>
     </parent>
     <build>
+	<sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.scala-tools</groupId>
-                <artifactId>maven-scala-plugin</artifactId>
+		<groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>	
             </plugin>
         </plugins>
     </build>

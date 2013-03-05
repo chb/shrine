@@ -5,17 +5,18 @@
 
     <import resource="classpath:net/shrine/baseShrineContext.xml"/>
     
-    <bean id="identityService" class="org.spin.identity.AlwaysCertifiesIdentityService"/>
-
     <bean id="authorizationService" class="net.shrine.authorization.AllowsAllAuthorizationService"/>
+        
+    <bean id="broadcasterPeerGroupToQueryOption" class="scala.Option" factory-method="apply">
+    	<constructor-arg ref="broadcasterPeerGroupToQuery"/>
+    </bean>
         
     <bean id="shrineService" class="net.shrine.service.ShrineService">
         <constructor-arg index="0" ref="auditDao"/>
         <constructor-arg index="1" ref="authorizationService"/>
-        <constructor-arg index="2" ref="identityService"/>
-        <constructor-arg index="3" ref="broadcasterPeerGroupToQuery"/>
-        <constructor-arg index="4" ref="isIncludeAggregateResults"/>
-        <constructor-arg index="5" ref="spinClient"/>
-        <constructor-arg index="6" ref="aggregatorEndpointConfigOption"/>
+        <constructor-arg index="2" ref="broadcasterPeerGroupToQueryOption"/>
+        <constructor-arg index="3" ref="isIncludeAggregateResults"/>
+        <constructor-arg index="4" ref="spinClient"/>
+        <constructor-arg index="5" ref="aggregatorEndpointConfigOption"/>
     </bean>
 </beans>

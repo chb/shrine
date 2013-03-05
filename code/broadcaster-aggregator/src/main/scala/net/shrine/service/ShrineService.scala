@@ -16,14 +16,16 @@ import org.apache.log4j.Logger
 import org.spin.tools.crypto.Envelope
 import org.spin.identity.IdentityService
 import org.spin.client.AgentException
-import org.spin.client.SpinAgent
-import org.spin.client.TimeoutException
+import org.spin.client.SpinClient
 import java.net.MalformedURLException
 import org.spin.tools.NetworkTime
 import net.shrine.util.Util
 import scala.util.Try
 import net.shrine.util.Loggable
 import net.shrine.aggregation.ReadQueryResultAggregator
+import scala.concurrent.Future
+import scala.concurrent.Await
+import org.spin.client.Credentials
 
 /**
  * @author Bill Simons
@@ -35,54 +37,61 @@ import net.shrine.aggregation.ReadQueryResultAggregator
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
+object ShrineService {
+  private[service] def toCredentials(authn: AuthenticationInfo): Credentials = Credentials(authn.domain, authn.username, authn.credential.value)
+}
+
 class ShrineService(
     auditDao: AuditDao,
     authorizationService: QueryAuthorizationService,
-    identityService: IdentityService,
-    broadcasterPeerGroupToQuery: String,
+    broadcasterPeerGroupToQuery: Option[String],
     includeAggregateResult: Boolean,
-    spinClient: SpinAgent,
+    spinClient: SpinClient,
     aggregatorEndpointConfig: Option[EndpointConfig]) extends ShrineRequestHandler with Loggable {
 
-  protected def generateIdentity(authn: AuthenticationInfo): Identity = identityService.certify(authn.domain, authn.username, authn.credential.value)
-
-  private[service] def determinePeergroup(projectId: String): String = {
-    Option(broadcasterPeerGroupToQuery).getOrElse(projectId)
+  import ShrineService._
+  
+  private[service] def determinePeergroupFallingBackTo(projectId: String): String = {
+    broadcasterPeerGroupToQuery.getOrElse(projectId)
   }
 
-  private[service] def broadcastMessage(message: BroadcastMessage, queryInfo: QueryInfo): AckNack = {
-    val ackNack = spinClient.send(queryInfo, message, BroadcastMessage.serializer)
-
-    if (ackNack.isError) {
-      throw new AgentException("Error encountered during query.")
-    }
-
-    ackNack
+  private[service] def broadcastMessage(message: BroadcastMessage): Future[ResultSet] = {
+    val queryType = message.request.requestType.name
+    
+    val credentials = toCredentials(message.request.authn)
+    
+    val peerGroupToQuery = determinePeergroupFallingBackTo(message.request.projectId)
+    
+    val start = System.currentTimeMillis
+    
+    val result = spinClient.query(queryType, message, peerGroupToQuery, credentials)
+    
+    val elapsed = System.currentTimeMillis - start
+    
+    debug("Broadcasting via Spin took " + elapsed + "ms")
+    
+    result
   }
 
-  private def getSpinResults(queryId: String, identity: Identity): ResultSet = {
-    try {
-      spinClient.receive(queryId, identity)
-    } catch {
-      case e: TimeoutException => spinClient.getResult(queryId, identity)
-    }
+  private def waitForResults(futureResults: Future[ResultSet]): ResultSet = {
+    import scala.concurrent.duration._
+    
+    val start = System.currentTimeMillis
+    
+    val delta = 100L
+    
+    val fromSpin = Await.result(futureResults, (spinClient.config.maxWaitTime + delta).milliseconds)
+    
+    val elapsed = System.currentTimeMillis - start
+
+    debug("Waiting for Spin results took " + elapsed + "ms")
+    
+    fromSpin
   }
 
-  private[service] def aggregate(queryId: String, identity: Identity, aggregator: Aggregator): ShrineResponse = {
+  private[service] def aggregate(spinResults: ResultSet, aggregator: Aggregator): ShrineResponse = {
 
     def toDescription(response: Response): String = Option(response).map(_.getDescription).getOrElse("Unknown")
-
-    val spinResults = {
-      val start = System.currentTimeMillis
-
-      val fromSpin = getSpinResults(queryId, identity)
-
-      val elapsed = System.currentTimeMillis - start
-
-      debug("Polling Spin for results took " + elapsed + "ms")
-
-      fromSpin
-    }
 
     import scala.collection.JavaConverters._
 
@@ -123,14 +132,16 @@ class ShrineService(
     aggregator.aggregate(spinResultEntries.toSeq, errorResponses.toSeq)
   }
 
-  protected def executeRequest(identity: Identity, message: BroadcastMessage, aggregator: Aggregator): ShrineResponse = {
-    val queryInfo = new QueryInfo(determinePeergroup(message.request.projectId), identity, message.request.requestType.name, aggregatorEndpointConfig.orNull)
-
-    val ackNack = broadcastMessage(message, queryInfo)
-
+  protected def executeRequest(request: ShrineRequest, aggregator: Aggregator): ShrineResponse = {
+    executeRequest(BroadcastMessage(request), aggregator)
+  }
+  
+  protected def executeRequest(message: BroadcastMessage, aggregator: Aggregator): ShrineResponse = {
+    val resultSet = waitForResults(broadcastMessage(message))
+    
     val start = System.currentTimeMillis
 
-    val result = aggregate(ackNack.getQueryId, identity, aggregator)
+    val result = aggregate(resultSet, aggregator)
 
     val elapsed = System.currentTimeMillis - start
 
@@ -139,17 +150,13 @@ class ShrineService(
     result
   }
 
-  protected def executeRequest(request: ShrineRequest, aggregator: Aggregator): ShrineResponse = {
-    executeRequest(generateIdentity(request.authn), BroadcastMessage(request), aggregator)
-  }
-
-  private def auditTransactionally[T](identity: Identity, request: RunQueryRequest)(body: => T): T = {
+  private def auditTransactionally[T](request: RunQueryRequest)(body: => T): T = {
     auditDao.inTransaction {
       try { body } finally {
         auditDao.addAuditEntry(
           request.projectId,
-          identity.getDomain,
-          identity.getUsername,
+          request.authn.domain,
+          request.authn.username,
           request.queryDefinition.toI2b2String, //TODO: Use i2b2 format Still?
           request.topicId)
       }
@@ -157,9 +164,7 @@ class ShrineService(
   }
 
   override def runQuery(request: RunQueryRequest): ShrineResponse = {
-    val identity = generateIdentity(request.authn)
-
-    auditTransactionally(identity, request) {
+    auditTransactionally(request) {
 
       authorizationService.authorizeRunQueryRequest(request)
 
@@ -174,7 +179,7 @@ class ShrineService(
         reqWithQueryIdAssigned.queryDefinition,
         includeAggregateResult)
 
-      executeRequest(identity, message, aggregator)
+      executeRequest(message, aggregator)
     }
   }
 
@@ -198,7 +203,7 @@ class ShrineService(
     ReadQueryInstancesResponse(networkQueryId, username, groupId, Seq(instance))
   }
 
-  override def readPreviousQueries(request: ReadPreviousQueriesRequest) = executeRequest(request, new ReadPreviousQueriesAggregator(request.authn.username, request.projectId))
+  override def readPreviousQueries(request: ReadPreviousQueriesRequest) = executeRequest(request, new ReadPreviousQueriesAggregator(request.userId, request.projectId))
 
   override def renameQuery(request: RenameQueryRequest) = executeRequest(request, new RenameQueryAggregator)
 
