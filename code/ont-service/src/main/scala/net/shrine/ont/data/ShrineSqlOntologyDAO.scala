@@ -79,11 +79,3 @@ final class ShrineSqlOntologyDAO(val file: InputStream) extends OntologyDAO {
     source.getLines.filter(noEmptyLines)/*.map(mungeSingleQuotes)*/.flatMap(parseLine).toIterable
   }
 }
-
-object Foo {
-  def main(args: Array[String]) {
-    val dao = new ShrineSqlOntologyDAO(new java.io.FileInputStream("/home/clint/workspace/shrine-trunk/ontology/core/ShrineWithSyns.sql"))
-    
-    dao.ontologyEntries.filter(_.baseCode.isDefined).take(5).foreach(println)
-  }
-}
