@@ -37,8 +37,6 @@ import javax.xml.bind.annotation.XmlRootElement
  */
 final case class AdapterMappings(val mappings: Map[String, Set[String]] = Map.empty) {
 
-  import scala.collection.JavaConverters._
-
   def networkTerms: Set[String] = mappings.keySet
 
   def localTermsFor(networkTerm: String): Set[String] = mappings.get(networkTerm).getOrElse(Set.empty)
@@ -61,6 +59,8 @@ final case class AdapterMappings(val mappings: Map[String, Set[String]] = Map.em
   }
 
   def jaxbable: JaxbableAdapterMappings = {
+    import scala.collection.JavaConverters._
+    
     val javaMappings = mappings.mapValues(localTerms => LocalKeys(localTerms.toSeq: _*)).asJava
 
     JaxbableAdapterMappings(new JTreeMap(javaMappings))
@@ -73,8 +73,8 @@ object AdapterMappings {
   def apply(jaxbable: JaxbableAdapterMappings): AdapterMappings = {
     import scala.collection.JavaConverters._
 
-    val mappings = jaxbable.mappings.asScala.mapValues(_.asScala.toSet).toMap
+    val javaMappings = jaxbable.mappings.asScala.mapValues(_.asScala.toSet).toMap
 
-    AdapterMappings(mappings)
+    AdapterMappings(javaMappings)
   }
 }
