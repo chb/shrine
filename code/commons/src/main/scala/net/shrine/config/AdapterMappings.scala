@@ -39,28 +39,26 @@ final case class AdapterMappings(val mappings: Map[String, Set[String]] = Map.em
 
   import scala.collection.JavaConverters._
 
-  def getAllMappings: Set[String] = mappings.keySet
+  def networkTerms: Set[String] = mappings.keySet
 
-  def getMappings(globalTerm: String): Set[String] = mappings.get(globalTerm).getOrElse(Set.empty)
+  def localTermsFor(networkTerm: String): Set[String] = mappings.get(networkTerm).getOrElse(Set.empty)
 
   def size = mappings.size
 
   def ++(ms: (String, String)*): AdapterMappings = ms.foldLeft(this)(_ + _)
   
   def +(mapping: (String, String)): AdapterMappings = {
-    val (coreTerm, localTerm) = mapping
+    val (networkTerm, localTerm) = mapping
 
-    mappings.get(coreTerm) match {
+    mappings.get(networkTerm) match {
       case Some(localTerms) if localTerms.contains(localTerm) => this
       case possiblyExtantMapping => {
         val newLocalTerms = possiblyExtantMapping.getOrElse(Set.empty) + localTerm
 
-        AdapterMappings(mappings + (coreTerm -> newLocalTerms))
+        AdapterMappings(mappings + (networkTerm -> newLocalTerms))
       }
     }
   }
-
-  def getEntries: Set[String] = mappings.keySet
 
   def jaxbable: JaxbableAdapterMappings = {
     val javaMappings = mappings.mapValues(localTerms => LocalKeys(localTerms.toSeq: _*)).asJava

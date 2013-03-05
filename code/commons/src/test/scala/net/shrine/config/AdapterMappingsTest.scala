@@ -35,24 +35,24 @@ final class AdapterMappingsTest extends TestCase with AssertionsForJUnit with Sh
 
   @Test
   def testGetMappings {
-    mappings.getMappings(CORE_KEY_INVALID) should not be (null)
-    mappings.getMappings(CORE_KEY_INVALID).size should equal(0)
+    mappings.localTermsFor(CORE_KEY_INVALID) should not be (null)
+    mappings.localTermsFor(CORE_KEY_INVALID).size should equal(0)
 
-    mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9) should not be (null)
-    mappings.getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(10)
+    mappings.localTermsFor(CORE_KEY_DEMOGRAPHICS_0_9) should not be (null)
+    mappings.localTermsFor(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(10)
   }
 
   @Test
   def testAddMapping {
-    (mappings + (CORE_KEY_DEMOGRAPHICS_0_9 -> LOCAL_KEY_DEMOGRAPHICS_AGE_4)).getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(10)
+    (mappings + (CORE_KEY_DEMOGRAPHICS_0_9 -> LOCAL_KEY_DEMOGRAPHICS_AGE_4)).localTermsFor(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(10)
     
     ((mappings + (CORE_KEY_DEMOGRAPHICS_0_9 -> LOCAL_KEY_DEMOGRAPHICS_AGE_4)) eq mappings) should be(true)
 
-    (mappings + (CORE_KEY_DEMOGRAPHICS_0_9 -> LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)).getMappings(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(11)
+    (mappings + (CORE_KEY_DEMOGRAPHICS_0_9 -> LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)).localTermsFor(CORE_KEY_DEMOGRAPHICS_0_9).size should equal(11)
 
-    mappings.getMappings(CORE_KEY_TEST).size should equal(0)
+    mappings.localTermsFor(CORE_KEY_TEST).size should equal(0)
     
-    (mappings + (CORE_KEY_TEST -> LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)).getMappings(CORE_KEY_TEST).size should equal(1)
+    (mappings + (CORE_KEY_TEST -> LOCAL_KEY_DEMOGRAPHICS_AGE_TEST)).localTermsFor(CORE_KEY_TEST).size should equal(1)
   }
 
   @Test

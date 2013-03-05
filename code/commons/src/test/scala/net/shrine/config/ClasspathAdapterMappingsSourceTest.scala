@@ -32,6 +32,6 @@ final class ClasspathAdapterMappingsSourceTest extends AssertionsForJUnit with S
     
     import scala.collection.JavaConverters._
     
-    mappings.getAllMappings should be(Set("""\\i2b2\i2b2\Demographics\Age\0-9 years old\""", """\\i2b2\i2b2\Demographics\"""))
+    mappings.networkTerms should be(Set("""\\i2b2\i2b2\Demographics\Age\0-9 years old\""", """\\i2b2\i2b2\Demographics\"""))
   }
 }
