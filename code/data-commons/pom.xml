@@ -1,36 +1,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<name>SHRINE Data Access Classes</name>
-	<artifactId>shrine-data-commons</artifactId>
-	<packaging>jar</packaging>
-	<parent>
-		<groupId>net.shrine</groupId>
-		<artifactId>shrine-base</artifactId>
-		<version>1.14-SNAPSHOT</version>
-	</parent>
-	<build>
-		<sourceDirectory>src/main/scala</sourceDirectory>
-		<testSourceDirectory>src/test/scala</testSourceDirectory>
-		<plugins>
-			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>scala-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-	<repositories>
-		<repository>
-			<id>typesafe</id>
-			<name>Typesafe Repository</name>
-			<url>http://repo.typesafe.com/typesafe/releases/</url>
-		</repository>
-	</repositories>
-	<dependencies>
-		<dependency>
-			<groupId>com.typesafe.slick</groupId>
-			<artifactId>slick_${slick-scala-version}</artifactId>
-			<version>${slick-version}</version>
-		</dependency>
-	</dependencies>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>SHRINE Data Access Classes</name>
+    <artifactId>shrine-data-commons</artifactId>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>net.shrine</groupId>
+        <artifactId>shrine-base</artifactId>
+        <version>1.14-SNAPSHOT</version>
+    </parent>
+    <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    <repositories>
+        <repository>
+            <id>typesafe</id>
+            <name>Typesafe Repository</name>
+            <url>http://repo.typesafe.com/typesafe/releases/</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>com.typesafe.slick</groupId>
+            <artifactId>slick_${slick-scala-version}</artifactId>
+            <version>${slick-version}</version>
+        </dependency>
+    </dependencies>
 </project>
