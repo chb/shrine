@@ -19,6 +19,7 @@ import net.shrine.protocol.query.Term
 import org.spin.tools.{RandomTool, NetworkTime}
 import net.shrine.client.JerseyShrineClient
 import net.shrine.util.Util
+import com.sun.jersey.api.client.UniformInterfaceException
 
 /**
  *
@@ -92,6 +93,24 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     param.fetchSize should equal(fetchSize)
     param.userId should equal(userId)
+  }
+  
+  @Test
+  def testReadPreviousQueriesUsernameMismatch = resetMockThen {
+	intercept[UniformInterfaceException] {
+      shrineClient.readPreviousQueries("foo", 123)
+	}
+
+    MockShrineRequestHandler.readApprovedQueryTopicsParam should be(null)
+    MockShrineRequestHandler.runQueryParam should be(null)
+    MockShrineRequestHandler.readQueryInstancesParam should be(null)
+    MockShrineRequestHandler.readInstanceResultsParam should be(null)
+    MockShrineRequestHandler.readPdoParam should be(null)
+    MockShrineRequestHandler.readQueryDefinitionParam should be(null)
+    MockShrineRequestHandler.deleteQueryParam should be(null)
+    MockShrineRequestHandler.renameQueryParam should be(null)
+    MockShrineRequestHandler.readQueryResultParam should be(null)
+    MockShrineRequestHandler.readPreviousQueriesParam should be(null)
   }
 
   @Test

@@ -23,6 +23,7 @@ import java.io.StringReader
 import javax.ws.rs.DELETE
 import net.shrine.protocol.query.QueryDefinition
 import scala.xml.XML
+import javax.ws.rs.core.Response
 
 /**
  * @author Bill Simons
@@ -38,113 +39,118 @@ import scala.xml.XML
 @Path("/shrine")
 @Produces(Array(MediaType.APPLICATION_XML))
 @Component
-@Scope("singleton")
-//shrineRequestHandler constructor param needs to be annotated with @RequestHandler (@ShrineRequestHandler)
+@Scope("singleton") //shrineRequestHandler constructor param needs to be annotated with @RequestHandler (@ShrineRequestHandler)
 //So Jersey/JAXRS will be able to inject a mock ShrineRequestHandler when running tests of this class in an
 //embedded HTTP server. :/
 final class ShrineResource @Autowired() (@RequestHandler private val shrineRequestHandler: ShrineRequestHandler) {
-  import ShrineResource.waitTimeMs  
-  
+  import ShrineResource.waitTimeMs
+
   @GET
   @Path("{userId}/approved-topics")
   def readApprovedQueryTopics(
-      @HeaderParam("projectId") projectId: String,
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @PathParam("userId") userId: String): String = {
-    
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("userId") userId: String): String = {
+
     performAndSerialize(_.readApprovedQueryTopics(new ReadApprovedQueryTopicsRequest(projectId, waitTimeMs, authorization, userId)))
   }
 
   @GET
   @Path("{userId}/queries")
   def readPreviousQueries(
-      @HeaderParam("projectId") projectId: String,
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @PathParam("userId") userId: String,
-      @QueryParam("fetchSize") fetchSize: Int): String = {
-    
-    val fSize = if(fetchSize != 0) fetchSize else 20
-    
-    performAndSerialize(_.readPreviousQueries(new ReadPreviousQueriesRequest(projectId, waitTimeMs, authorization, userId, fSize)))
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("userId") userId: String,
+    @QueryParam("fetchSize") fetchSize: Int): Response = {
+
+    if (userId != authorization.username) {
+      Response.status(403).build
+    } else {
+      val fSize = if (fetchSize != 0) fetchSize else 20
+
+      Response.ok.entity {
+        performAndSerialize(_.readPreviousQueries(new ReadPreviousQueriesRequest(projectId, waitTimeMs, authorization, userId, fSize)))
+      }.build
+    }
   }
 
   @POST
   @Path("/queries")
   @Consumes(Array(MediaType.APPLICATION_XML))
   def runQuery(
-      @HeaderParam("projectId") projectId: String,
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @HeaderParam("topicId") topicId: String,
-      //outputTypes will be constructed by JAXRS using the String value of the 'outputTypes' header
-      @HeaderParam("outputTypes") outputTypes: OutputTypeSet,
-      queryDefinitionXml: String): String = {
-    
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @HeaderParam("topicId") topicId: String,
+    //outputTypes will be constructed by JAXRS using the String value of the 'outputTypes' header
+    @HeaderParam("outputTypes") outputTypes: OutputTypeSet,
+    queryDefinitionXml: String): String = {
+
     val queryDef = QueryDefinition.fromXml(queryDefinitionXml).get
 
     //NB: Create the RunQueryRequest with a dummy networkQueryId of '-1'; 
     //this will be filled in with an appropriately-generated value by the ShrineRequestHandler
     performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, -1, topicId, outputTypes.toSet, queryDef)))
   }
-  
+
   @GET
   @Path("/queries/{queryId}/instances")
   def readQueryInstances(
-      @HeaderParam("projectId") projectId: String,
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @PathParam("queryId") queryId: Long): String = {
-    
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("queryId") queryId: Long): String = {
+
     performAndSerialize(_.readQueryInstances(new ReadQueryInstancesRequest(projectId, waitTimeMs, authorization, queryId)))
   }
-  
+
   @GET
   @Path("/instances/{instanceId}/results")
   def readInstanceResults(
-      @HeaderParam("projectId") projectId: String,
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @PathParam("instanceId") instanceId: Long): String = {
-    
-    performAndSerialize(_.readInstanceResults(new ReadInstanceResultsRequest(projectId, waitTimeMs, authorization, instanceId))) 
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("instanceId") instanceId: Long): String = {
+
+    performAndSerialize(_.readInstanceResults(new ReadInstanceResultsRequest(projectId, waitTimeMs, authorization, instanceId)))
   }
-  
+
   @POST //This must be POST, since we're sending content in the request body
   @Path("/patient-set/{patientSetCollId}")
   @Consumes(Array(MediaType.APPLICATION_XML))
   def readPdo(
-      @HeaderParam("projectId") projectId: String, 
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo, 
-      @PathParam("patientSetCollId") patientSetCollId: String, 
-      optionsXml: String): String = {
-    
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("patientSetCollId") patientSetCollId: String,
+    optionsXml: String): String = {
+
     import XML.loadString
-    
+
     performAndSerialize(_.readPdo(new ReadPdoRequest(projectId, waitTimeMs, authorization, patientSetCollId, loadString(optionsXml))))
   }
-  
+
   @GET
   @Path("/queries/{queryId}")
   def readQueryDefinition(
-      @HeaderParam("projectId") projectId: String, 
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @PathParam("queryId") queryId: Long): String = {
-    
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("queryId") queryId: Long): String = {
+
     performAndSerialize(_.readQueryDefinition(new ReadQueryDefinitionRequest(projectId, waitTimeMs, authorization, queryId)))
   }
 
   @DELETE
   @Path("/queries/{queryId}")
   def deleteQuery(
-      @HeaderParam("projectId") projectId: String, 
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @PathParam("queryId") queryId: Long): String = {
-    
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("queryId") queryId: Long): String = {
+
     performAndSerialize(_.deleteQuery(new DeleteQueryRequest(projectId, waitTimeMs, authorization, queryId)))
   }
 
@@ -152,27 +158,27 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
   @Path("/queries/{queryId}/name")
   @Consumes(Array(MediaType.TEXT_PLAIN))
   def renameQuery(
-      @HeaderParam("projectId") projectId: String, 
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @PathParam("queryId") queryId: Long,
-      queryName: String): String = {
-    
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("queryId") queryId: Long,
+    queryName: String): String = {
+
     performAndSerialize(_.renameQuery(new RenameQueryRequest(projectId, waitTimeMs, authorization, queryId, queryName)))
   }
-  
+
   @GET
   @Path("/queries/{queryId}/results")
   @Consumes(Array(MediaType.TEXT_PLAIN))
   def readQueryResults(
-      @HeaderParam("projectId") projectId: String, 
-      //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
-      @HeaderParam("Authorization") authorization: AuthenticationInfo,
-      @PathParam("queryId") queryId: Long): String = {
-    
+    @HeaderParam("projectId") projectId: String,
+    //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
+    @HeaderParam("Authorization") authorization: AuthenticationInfo,
+    @PathParam("queryId") queryId: Long): String = {
+
     performAndSerialize(_.readQueryResult(new ReadQueryResultRequest(projectId, waitTimeMs, authorization, queryId)))
   }
-  
+
   private def performAndSerialize[R <: ShrineResponse](op: ShrineRequestHandler => R): String = {
     op(shrineRequestHandler).toXmlString
   }
