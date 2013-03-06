@@ -17,6 +17,5 @@
         <constructor-arg index="2" ref="broadcasterPeerGroupToQueryOption"/>
         <constructor-arg index="3" ref="isIncludeAggregateResults"/>
         <constructor-arg index="4" ref="spinClient"/>
-        <constructor-arg index="5" ref="aggregatorEndpointConfigOption"/>
     </bean>
 </beans>

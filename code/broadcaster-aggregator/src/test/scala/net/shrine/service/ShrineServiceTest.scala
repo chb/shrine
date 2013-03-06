@@ -71,7 +71,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
     val authn = AuthenticationInfo("some-domain", "some-username", Credential("blarg", false))
     val req = ReadQueryInstancesRequest(projectId, 1L, authn, queryId)
 
-    val service = new ShrineService(null, null, None, true, null, None)
+    val service = new ShrineService(null, null, None, true, null)
 
     val response = service.readQueryInstances(req).asInstanceOf[ReadQueryInstancesResponse]
 
@@ -97,13 +97,13 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
     val projectId = "projectId"
 
     {
-      val service = new ShrineService(null, null, None, true, null, None)
+      val service = new ShrineService(null, null, None, true, null)
 
       service.determinePeergroupFallingBackTo(projectId) should equal(projectId)
     }
 
     {
-      val service = new ShrineService(null, null, Option(expectedPeerGroup), true, null, None)
+      val service = new ShrineService(null, null, Option(expectedPeerGroup), true, null)
 
       service.determinePeergroupFallingBackTo(projectId) should equal(expectedPeerGroup)
     }
@@ -113,7 +113,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
   def testBroadcastMessage {
     val mockClient = mock[SpinClient]
     val nodeId = new CertID("98345")
-    val service = new ShrineService(null, null, None, true, mockClient, None)
+    val service = new ShrineService(null, null, None, true, mockClient)
     val authn = new AuthenticationInfo("domain", "username", new Credential("passwd", false))
     val projectId = "projectId"
     val message = new BroadcastMessage(1L, new DeleteQueryRequest(projectId, 1L, authn, 1L))
@@ -149,7 +149,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
 
     val resultSetWithNulls = ResultSet.of("query-id", true, results.size + failures.size, results.asJava, failures.asJava)
 
-    val shrineService = new ShrineService(null, null, None, true, new MockSpinClient(resultSetWithNulls), None)
+    val shrineService = new ShrineService(null, null, None, true, new MockSpinClient(resultSetWithNulls))
 
     val aggregator = new Aggregator {
       def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = ErrorResponse(spinCacheResults.size.toString + "," + errors.size.toString)
@@ -174,7 +174,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
 
     val spinAgent = new MockSpinClient(resultSetWithNulls)
 
-    val shrineService = new ShrineService(null, null, None, true, spinAgent, None)
+    val shrineService = new ShrineService(null, null, None, true, spinAgent)
 
     val aggregator = new Aggregator {
       def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = ErrorResponse(spinCacheResults.size.toString)

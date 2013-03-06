@@ -46,8 +46,7 @@ class ShrineService(
     authorizationService: QueryAuthorizationService,
     broadcasterPeerGroupToQuery: Option[String],
     includeAggregateResult: Boolean,
-    spinClient: SpinClient,
-    aggregatorEndpointConfig: Option[EndpointConfig]) extends ShrineRequestHandler with Loggable {
+    spinClient: SpinClient) extends ShrineRequestHandler with Loggable {
 
   import ShrineService._
   
