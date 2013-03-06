@@ -8,13 +8,16 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import net.shrine.protocol.AggregatedRunQueryResponse
 import net.shrine.protocol.QueryResult
+import scala.concurrent.duration.Duration
 
 /**
  * @author clint
  * @date Mar 5, 2013
  */
-final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMappingsSource, shrineClient: ShrineClient) {
+final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMappingsSource, shrineClient: ShrineClient, timeout: Duration) {
   import Scanner._
+  
+  private def toTermSet(results: Set[TermResult]): Set[String] = results.map(_.term)
   
   def scan(): ScanResults = {
     val mappedNetworkTerms = adapterMappingsSource.load.networkTerms
@@ -35,34 +38,57 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
     //Terms that never completed after some timeout period
     val neverFinished = resultsForMappedTerms.filterNot(_.status.isDone)
     
-    def toTermSet(results: Set[StatusAndCount]): Set[String] = results.map(_.term)
+    val reScanResults = reScan(neverFinished)
+
+    val finalSouldHaveBeenMappedSet = toTermSet(shouldHaveBeenMapped) ++ reScanResults.shouldHaveBeenMapped
     
-    reScan(ScanResults(toTermSet(shouldHaveBeenMapped), toTermSet(shouldNotHaveBeenMapped), toTermSet(neverFinished)))
+    ScanResults(finalSouldHaveBeenMappedSet, toTermSet(shouldNotHaveBeenMapped), reScanResults.stillNotFinished)
   }
   
-  def reScan(provisionalResults: ScanResults): ScanResults = {
-    if(provisionalResults.neverFinished.isEmpty) { provisionalResults }
-    else { ??? }
+  def reScan(neverFinished: Set[TermResult]): ReQueryResults = {
+    if(neverFinished.isEmpty) { ReQueryResults(toTermSet(neverFinished)) }
+    else { 
+      Thread.sleep(timeout.toMillis)
+      
+      val (done, stillNotFinished) = neverFinished.flatMap(attemptToRetrieve).partition(_.status.isDone)
+      
+      val errors = done.filter(_.status.isError)
+      
+      ReQueryResults(toTermSet(stillNotFinished), toTermSet(errors))
+    }
   }
   
-  //TODO: Don't go through a ShrineClient perhaps?  Hit adapter directly?
-  
-  private[scanner] def query(term: String): Option[StatusAndCount] = {
-    val topicId = "foo" //???
-    val outputTypes = Set(ResultOutputType.PATIENT_COUNT_XML)
+  private[scanner] def attemptToRetrieve(termResult: TermResult): Option[TermResult] = {
+    val aggregatedResults = shrineClient.readQueryResult(termResult.networkQueryId)
     
-    //TODO: Log4J, etc
-    println(s"Querying for '$term'")
+    for {
+      queryResult <- aggregatedResults.results.headOption
+    } yield TermResult(aggregatedResults.queryId, termResult.term, queryResult.statusType, queryResult.setSize)
+  }
+  
+  private[scanner] def query(term: String): Option[TermResult] = {
+    import QueryDefaults._
+    
+    log(s"Querying for '$term'")
     
     val aggregatedResults: AggregatedRunQueryResponse = shrineClient.runQuery(topicId, outputTypes, QueryDefinition("scanner query", Term(term)))
     
     for {
       queryResult <- aggregatedResults.results.headOption
-      if queryResult.statusType.isDone
-    } yield StatusAndCount(term, queryResult.statusType, queryResult.setSize)
+    } yield TermResult(aggregatedResults.queryId, term, queryResult.statusType, queryResult.setSize)
   }
+
+  //TODO: Log4J, etc
+  private def log(s: String) = println(s)
 }
 
 object Scanner {
-  final case class StatusAndCount(term: String, status: QueryResult.StatusType, count: Long)
+  final object QueryDefaults {
+    val topicId = "foo" //???
+    val outputTypes = Set(ResultOutputType.PATIENT_COUNT_XML)
+  }
+  
+  final case class TermResult(networkQueryId: Long, term: String, status: QueryResult.StatusType, count: Long)
+  
+  final case class ReQueryResults(stillNotFinished: Set[String], shouldHaveBeenMapped: Set[String] = Set.empty)
 }

@@ -10,4 +10,11 @@ final case class ScanResults(
     //Terms that we expected to NOT be mapped, but ARE mapped
     shouldNotHaveBeenMapped: Set[String],
     //Terms that never completed after some timeout period
-    neverFinished: Set[String])
+    neverFinished: Set[String]) {
+  
+  def withShouldHaveBeenMappedTerms(newShouldHaveBeenMapped: Set[String]) = copy(shouldHaveBeenMapped = newShouldHaveBeenMapped)
+  
+  def withShouldNotHaveBeenMappedTerms(newShouldNotHaveBeenMapped: Set[String]) = copy(shouldNotHaveBeenMapped = newShouldNotHaveBeenMapped)
+  
+  def withNeverFinishedTerms(newNeverFinished: Set[String]) = copy(neverFinished = newNeverFinished)
+}
