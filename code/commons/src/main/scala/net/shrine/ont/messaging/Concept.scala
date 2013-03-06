@@ -2,6 +2,8 @@ package net.shrine.ont.messaging
 
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
+import Concept.forwardSlash
+import Concept.shrinePrefix
 
 /**
  * @author Justin Quan

@@ -1,7 +1,6 @@
 package net.shrine.ont.messaging
 
 import org.junit.Test
-import org.scalatest.junit.ShouldMatchersForJUnit
 
 /**
  * @author Dave Ortiz (?)

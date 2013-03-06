@@ -2,6 +2,7 @@ package net.shrine.ont
 
 import net.shrine.ont.index.OntologyIndex
 import net.shrine.ont.messaging._
+import net.shrine.ont.messaging.SearchResponse
 
 /**
  * @author Justin Quan

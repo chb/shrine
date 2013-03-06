@@ -99,5 +99,13 @@
 			<artifactId>shrine-commons</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+                        <groupId>net.shrine</groupId>
+                        <artifactId>shrine-commons</artifactId>
+                        <version>${project.version}</version>
+                        <type>test-jar</type>
+                        <scope>test</scope>
+                        <optional>true</optional>
+                </dependency>
 	</dependencies>
 </project>

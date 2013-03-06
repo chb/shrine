@@ -2,10 +2,10 @@ package net.shrine.ont.data
 
 import net.shrine.ont.messaging.Concept
 import scala.io.Source
-import java.io.FileInputStream
 import scala.util.matching.Regex
 import scala.util.matching.Regex.Match
 import java.io.InputStream
+import scala.Option.option2Iterable
 
 /**
  * @author Clint Gilbert
