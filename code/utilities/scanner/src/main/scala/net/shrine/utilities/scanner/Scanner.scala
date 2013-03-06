@@ -35,14 +35,19 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
     //Terms that never completed after some timeout period
     val neverFinished = resultsForMappedTerms.filterNot(_.status.isDone)
     
-    def toTermSet(results: Iterable[StatusAndCount]): Set[String] = results.map(_.term).toSet
+    def toTermSet(results: Set[StatusAndCount]): Set[String] = results.map(_.term)
     
     ScanResults(toTermSet(shouldHaveBeenMapped), toTermSet(shouldNotHaveBeenMapped), toTermSet(neverFinished))
   }
   
+  //TODO: Don't go through a ShrineClient perhaps?  Hit adapter directly?
+  
   private[scanner] def query(term: String): Option[StatusAndCount] = {
     val topicId = "foo" //???
     val outputTypes = Set(ResultOutputType.PATIENT_COUNT_XML)
+    
+    //TODO: Log4J, etc
+    println(s"Querying for '$term'")
     
     val aggregatedResults: AggregatedRunQueryResponse = shrineClient.runQuery(topicId, outputTypes, QueryDefinition("scanner query", Term(term)))
     
