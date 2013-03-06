@@ -244,8 +244,7 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
       new AllowsAllAuthorizationService,
       Some(PeerGroupName.Test),
       true,
-      client,
-      centralAggregator.map(toLocalEndpoint))
+      client)
 
     val req = ReadPreviousQueriesRequest("SHRINE", 10000L, AuthenticationInfo(domain, username, Credential(password, false)), username, 100)
 
