@@ -26,14 +26,13 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
     
     val termsExpectedToBeUnmapped = allShrineOntologyTerms -- mappedNetworkTerms
     
-    //TODO: Don't flatmap, actually care about Nones (but under what circumstances could they come back?)
-    val resultsForMappedTerms = mappedNetworkTerms.flatMap(query)
+    val resultsForMappedTerms = mappedNetworkTerms.map(query)
     
     //Terms that we expected to BE mapped, but were NOT mapped
     val shouldHaveBeenMapped = resultsForMappedTerms.filter(_.status.isError)
     
     //Terms that we expected to NOT be mapped, but ARE mapped
-    val shouldNotHaveBeenMapped = termsExpectedToBeUnmapped.flatMap(query).filterNot(_.status.isError)
+    val shouldNotHaveBeenMapped = termsExpectedToBeUnmapped.map(query).filterNot(_.status.isError)
     
     //Terms that never completed after some timeout period
     val neverFinished = resultsForMappedTerms.filterNot(_.status.isDone)
@@ -45,38 +44,42 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
     ScanResults(finalSouldHaveBeenMappedSet, toTermSet(shouldNotHaveBeenMapped), reScanResults.stillNotFinished)
   }
   
-  def reScan(neverFinished: Set[TermResult]): ReQueryResults = {
-    if(neverFinished.isEmpty) { ReQueryResults(toTermSet(neverFinished)) }
+  def reScan(neverFinished: Set[TermResult]): ReScanResults = {
+    if(neverFinished.isEmpty) { ReScanResults.empty }
     else { 
       Thread.sleep(timeout.toMillis)
       
-      val (done, stillNotFinished) = neverFinished.flatMap(attemptToRetrieve).partition(_.status.isDone)
+      val (done, stillNotFinished) = neverFinished.map(attemptToRetrieve).partition(_.status.isDone)
       
       val errors = done.filter(_.status.isError)
       
-      ReQueryResults(toTermSet(stillNotFinished), toTermSet(errors))
+      ReScanResults(toTermSet(stillNotFinished), toTermSet(errors))
     }
   }
   
-  private[scanner] def attemptToRetrieve(termResult: TermResult): Option[TermResult] = {
+  private[scanner] def attemptToRetrieve(termResult: TermResult): TermResult = {
     val aggregatedResults = shrineClient.readQueryResult(termResult.networkQueryId)
     
-    for {
-      queryResult <- aggregatedResults.results.headOption
-    } yield TermResult(aggregatedResults.queryId, termResult.term, queryResult.statusType, queryResult.setSize)
+    aggregatedResults.results.headOption match {
+      case None => errorTermResult(aggregatedResults.queryId, termResult.term)
+      case Some(queryResult) => TermResult(aggregatedResults.queryId, termResult.term, queryResult.statusType, queryResult.setSize)
+    }
   }
   
-  private[scanner] def query(term: String): Option[TermResult] = {
+  private[scanner] def query(term: String): TermResult = {
     import QueryDefaults._
     
     log(s"Querying for '$term'")
     
     val aggregatedResults: AggregatedRunQueryResponse = shrineClient.runQuery(topicId, outputTypes, QueryDefinition("scanner query", Term(term)))
     
-    for {
-      queryResult <- aggregatedResults.results.headOption
-    } yield TermResult(aggregatedResults.queryId, term, queryResult.statusType, queryResult.setSize)
+    aggregatedResults.results.headOption match {
+      case None => errorTermResult(aggregatedResults.queryId, term)
+      case Some(queryResult) => TermResult(aggregatedResults.queryId, term, queryResult.statusType, queryResult.setSize)
+    }
   }
+  
+  private def errorTermResult(networkQueryId: Long, term: String): TermResult = TermResult(networkQueryId, term, QueryResult.StatusType.Error, -1L)
 
   //TODO: Log4J, etc
   private def log(s: String) = println(s)
@@ -90,5 +93,9 @@ object Scanner {
   
   final case class TermResult(networkQueryId: Long, term: String, status: QueryResult.StatusType, count: Long)
   
-  final case class ReQueryResults(stillNotFinished: Set[String], shouldHaveBeenMapped: Set[String] = Set.empty)
+  final case class ReScanResults(stillNotFinished: Set[String], shouldHaveBeenMapped: Set[String])
+  
+  object ReScanResults {
+    val empty = ReScanResults(Set.empty, Set.empty)
+  }
 }
