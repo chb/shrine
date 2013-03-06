@@ -53,13 +53,13 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
 
   @Test
   def testReadPreviousQueries {
-    def doTestReadPreviousQueries(fetchSize: Int, expectedFetchSize: Int) {
+    def doTestReadPreviousQueries(userId: String, fetchSize: Int, expectedFetchSize: Int) {
       //Call setUp again create a new mock and new ShrinResource;
       //each pair of expecting/whenExecuting calls needs a fresh mock.
       this.setUp()
 
       val expectedRequest = new ReadPreviousQueriesRequest(projectId, waitTimeMs, authenticationInfo, userId, expectedFetchSize)
-      val expectedResponse = new ReadPreviousQueriesResponse("userId", "groupId", Seq.empty)
+      val expectedResponse = new ReadPreviousQueriesResponse(userId, "groupId", Seq.empty)
 
       setExpectations(_.readPreviousQueries, expectedRequest, expectedResponse)
 
@@ -68,10 +68,10 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
       }
     }
 
-    doTestReadPreviousQueries(-100, -100)
-    doTestReadPreviousQueries(0, 20)
-    doTestReadPreviousQueries(1, 1)
-    doTestReadPreviousQueries(100, 100)
+    doTestReadPreviousQueries(authenticationInfo.username, -100, -100)
+    doTestReadPreviousQueries(authenticationInfo.username, 0, 20)
+    doTestReadPreviousQueries(authenticationInfo.username, 1, 1)
+    doTestReadPreviousQueries(authenticationInfo.username, 100, 100)
   }
 
   @Test
