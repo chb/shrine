@@ -9,22 +9,27 @@ import net.shrine.protocol.query.Term
 import net.shrine.protocol.AggregatedRunQueryResponse
 import net.shrine.protocol.QueryResult
 import scala.concurrent.duration.Duration
+import net.shrine.util.Loggable
 
 /**
  * @author clint
  * @date Mar 5, 2013
  */
-final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMappingsSource, shrineClient: ShrineClient, timeout: Duration) {
+final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMappingsSource, shrineClient: ShrineClient, timeout: Duration) extends Loggable {
   import Scanner._
   
   private def toTermSet(results: Set[TermResult]): Set[String] = results.map(_.term)
   
   def scan(): ScanResults = {
+    info("Shrine Scanner starting")
+    
     val mappedNetworkTerms = adapterMappingsSource.load.networkTerms
     
     def allShrineOntologyTerms = ontologyDao.ontologyEntries.map(_.path).toSet
     
     val termsExpectedToBeUnmapped = allShrineOntologyTerms -- mappedNetworkTerms
+    
+    info(s"We expect ${ mappedNetworkTerms.size } to be mapped, and ${ termsExpectedToBeUnmapped.size } to be unmapped.")
     
     val resultsForMappedTerms = mappedNetworkTerms.map(query)
     
@@ -47,6 +52,8 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
   def reScan(neverFinished: Set[TermResult]): ReScanResults = {
     if(neverFinished.isEmpty) { ReScanResults.empty }
     else { 
+      info(s"Sleeping for ${timeout} before retreiving results for ${ neverFinished.size } incomplete queries...")
+      
       Thread.sleep(timeout.toMillis)
       
       val (done, stillNotFinished) = neverFinished.map(attemptToRetrieve).partition(_.status.isDone)
@@ -60,6 +67,8 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
   private[scanner] def attemptToRetrieve(termResult: TermResult): TermResult = {
     val aggregatedResults = shrineClient.readQueryResult(termResult.networkQueryId)
     
+    info(s"Retrieving results for previously-incomplete query for '${ termResult.term }'")
+    
     aggregatedResults.results.headOption match {
       case None => errorTermResult(aggregatedResults.queryId, termResult.term)
       case Some(queryResult) => TermResult(aggregatedResults.queryId, termResult.term, queryResult.statusType, queryResult.setSize)
@@ -69,7 +78,7 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
   private[scanner] def query(term: String): TermResult = {
     import QueryDefaults._
     
-    log(s"Querying for '$term'")
+    info(s"Querying for '$term'")
     
     val aggregatedResults: AggregatedRunQueryResponse = shrineClient.runQuery(topicId, outputTypes, QueryDefinition("scanner query", Term(term)))
     
@@ -80,9 +89,6 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
   }
   
   private def errorTermResult(networkQueryId: Long, term: String): TermResult = TermResult(networkQueryId, term, QueryResult.StatusType.Error, -1L)
-
-  //TODO: Log4J, etc
-  private def log(s: String) = println(s)
 }
 
 object Scanner {
