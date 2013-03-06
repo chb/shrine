@@ -37,7 +37,12 @@ final class Scanner(ontologyDao: OntologyDAO, adapterMappingsSource: AdapterMapp
     
     def toTermSet(results: Set[StatusAndCount]): Set[String] = results.map(_.term)
     
-    ScanResults(toTermSet(shouldHaveBeenMapped), toTermSet(shouldNotHaveBeenMapped), toTermSet(neverFinished))
+    reScan(ScanResults(toTermSet(shouldHaveBeenMapped), toTermSet(shouldNotHaveBeenMapped), toTermSet(neverFinished)))
+  }
+  
+  def reScan(provisionalResults: ScanResults): ScanResults = {
+    if(provisionalResults.neverFinished.isEmpty) { provisionalResults }
+    else { ??? }
   }
   
   //TODO: Don't go through a ShrineClient perhaps?  Hit adapter directly?
