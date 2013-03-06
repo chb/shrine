@@ -135,7 +135,10 @@ final case class QueryResult(
 }
 
 object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[QueryResult] {
-  final class StatusType(val name: String, val isDone: Boolean) extends StatusType.Value
+  final class StatusType(val name: String, val isDone: Boolean) extends StatusType.Value {
+    //TODO: TEST
+    def isError = this == StatusType.Error
+  }
   
   object StatusType extends SEnum[StatusType] {
     val Error = new StatusType("ERROR", true)
