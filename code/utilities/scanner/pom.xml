@@ -11,25 +11,6 @@
         <version>1.14-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <guice-version>3.0</guice-version>
-        <scalaguice-version>3.0.2</scalaguice-version>
-        <scala-minor-version>2.10</scala-minor-version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${guice-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.codingwell</groupId>
-            <artifactId>scala-guice_${scala-minor-version}</artifactId>
-            <version>${scalaguice-version}</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
