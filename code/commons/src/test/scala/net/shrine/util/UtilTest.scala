@@ -24,6 +24,18 @@ final class UtilTest extends TestCase with ShouldMatchersForJUnit{
   }
   
   @Test
+  def testTime {
+    //verify values are passed through
+    val x = 123
+    
+    val noop: String => Unit = _ => ()
+    
+    import Util.time
+    
+    time("Identity")(noop)(x) should be(x)
+  }
+  
+  @Test
   def testTryOrElse {
     import Util.tryOrElse 
     

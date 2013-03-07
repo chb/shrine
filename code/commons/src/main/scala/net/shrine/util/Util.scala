@@ -32,6 +32,16 @@ object Util extends Loggable {
       }
     }
   }
+  
+  def time[T](taskName: String)(log: String => Unit)(f: => T): T = {
+    val start = System.currentTimeMillis
+    
+    try { f } finally { 
+      val elapsed = System.currentTimeMillis - start
+    
+      log(s"$taskName took $elapsed milliseconds.")
+    }
+  }
 
   /**
    * Helpers for working with scala.util.Try
