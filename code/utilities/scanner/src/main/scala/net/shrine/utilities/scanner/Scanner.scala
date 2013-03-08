@@ -19,7 +19,7 @@ import net.shrine.util.Util.time
 trait Scanner extends Loggable {
   
   //All of our dependencies are specified as abstract vals
-  val config: ScannerConfig
+  val reScanTimeout: Duration
   val adapterMappingsSource: AdapterMappingsSource
   val ontologyDao: OntologyDAO
   val shrineClient: ShrineClient
@@ -37,34 +37,48 @@ trait Scanner extends Loggable {
     
     val resultsForMappedTerms = mappedNetworkTerms.map(query)
     
+    val resultsForUnMappedTerms = termsExpectedToBeUnmapped.map(query)
+    
+    //Split query results into those that completed on the first try, and those that didn't
+    val (finishedAndShouldHaveBeenMapped, didntFinishAndShouldHaveBeenMapped) = resultsForMappedTerms.partition(_.status.isDone)
+    
+    val (finishedAndShouldNotHaveBeenMapped, didntFinishAndShouldNotHaveBeenMapped) = resultsForUnMappedTerms.partition(_.status.isDone)
+    
     //Terms that we expected to BE mapped, but were NOT mapped
-    val shouldHaveBeenMapped = resultsForMappedTerms.filter(_.status.isError)
+    val shouldHaveBeenMapped = finishedAndShouldHaveBeenMapped.filter(_.status.isError)
     
     //Terms that we expected to NOT be mapped, but ARE mapped
-    val shouldNotHaveBeenMapped = termsExpectedToBeUnmapped.map(query).filterNot(_.status.isError)
+    val shouldNotHaveBeenMapped = finishedAndShouldNotHaveBeenMapped.filterNot(_.status.isError)
     
-    //Terms that never completed after some timeout period
-    val neverFinished = resultsForMappedTerms.filterNot(_.status.isDone)
-    
-    val reScanResults = reScan(neverFinished)
+    val reScanResults = reScan(didntFinishAndShouldHaveBeenMapped, didntFinishAndShouldNotHaveBeenMapped)
 
     val finalSouldHaveBeenMappedSet = toTermSet(shouldHaveBeenMapped) ++ reScanResults.shouldHaveBeenMapped
     
-    ScanResults(finalSouldHaveBeenMappedSet, toTermSet(shouldNotHaveBeenMapped), reScanResults.stillNotFinished)
+    val finalSouldNotHaveBeenMappedSet = toTermSet(shouldNotHaveBeenMapped) ++ reScanResults.shouldNotHaveBeenMapped
+    
+    ScanResults(finalSouldHaveBeenMappedSet, finalSouldNotHaveBeenMappedSet, reScanResults.neverFinished)
   }
   
-  def reScan(neverFinished: Set[TermResult]): ReScanResults = time("Re-scanning")(info(_)) {
-    if(neverFinished.isEmpty) { ReScanResults.empty }
+  def reScan(neverFinishedShouldHaveBeenMapped: Set[TermResult], neverFinishedShouldNotHaveBeenMapped: Set[TermResult]): ScanResults = time("Re-scanning")(info(_)) {
+    if(neverFinishedShouldHaveBeenMapped.isEmpty && neverFinishedShouldNotHaveBeenMapped.isEmpty) { ScanResults.empty }
     else { 
-      info(s"Sleeping for ${ config.reScanTimeout } before retreiving results for ${ neverFinished.size } incomplete queries...")
+      val total = neverFinishedShouldNotHaveBeenMapped.size + neverFinishedShouldNotHaveBeenMapped.size
       
-      Thread.sleep(config.reScanTimeout.toMillis)
+      info(s"Sleeping for ${ reScanTimeout } before retreiving results for $total incomplete queries...")
       
-      val (done, stillNotFinished) = neverFinished.map(attemptToRetrieve).partition(_.status.isDone)
+      Thread.sleep(reScanTimeout.toMillis)
       
-      val errors = done.filter(_.status.isError)
+      val (doneShouldHaveBeenMapped, stillNotFinishedShouldHaveBeenMapped) = neverFinishedShouldHaveBeenMapped.map(attemptToRetrieve).partition(_.status.isDone)
       
-      ReScanResults(toTermSet(stillNotFinished), toTermSet(errors))
+      val (doneShouldNotHaveBeenMapped, stillNotFinishedShouldNotHaveBeenMapped) = neverFinishedShouldNotHaveBeenMapped.map(attemptToRetrieve).partition(_.status.isDone)
+      
+      val shouldHaveBeenMapped = doneShouldHaveBeenMapped.filter(_.status.isError)
+      
+      val shouldNotHaveBeenMapped = doneShouldNotHaveBeenMapped.filterNot(_.status.isError)
+      
+      val stillNotFinished = stillNotFinishedShouldHaveBeenMapped ++ stillNotFinishedShouldNotHaveBeenMapped
+      
+      ScanResults(toTermSet(shouldHaveBeenMapped), toTermSet(shouldNotHaveBeenMapped), toTermSet(stillNotFinished))
     }
   }
   

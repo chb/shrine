@@ -17,15 +17,17 @@ import net.shrine.protocol.Credential
  * @author clint
  * @date Mar 6, 2013
  */
-final class ScannerModule(override val config: ScannerConfig) extends Scanner {
+final class ScannerModule(config: ScannerConfig) extends Scanner {
   
-  private def classpathStream(fileName: String) = getClass.getClassLoader.getResourceAsStream(fileName)
+  override val reScanTimeout = config.reScanTimeout
   
   override val adapterMappingsSource = new ClasspathAdapterMappingsSource(config.adapterMappingsFile)
   
   override val ontologyDao = new ShrineSqlOntologyDAO(classpathStream(config.ontologySqlFile))
   
   override val shrineClient = new JerseyShrineClient(config.shrineUrl, config.projectId, config.authorization)
+  
+  private def classpathStream(fileName: String) = getClass.getClassLoader.getResourceAsStream(fileName)
 }
 
 object ScannerModule {
