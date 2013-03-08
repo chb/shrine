@@ -34,9 +34,11 @@ object ScannerConfig {
     import Keys._
     
     def getAuthInfo(subConfig: Config): AuthenticationInfo = {
-      require(subConfig.hasPath(domain))
-      require(subConfig.hasPath(username))
-      require(subConfig.hasPath(password))
+      def requirePath(path: String) = if(!subConfig.hasPath(path)) throw new ConfigException.Missing(s"Expected to find '$path' in $subConfig")
+      
+      requirePath(domain)
+      requirePath(username)
+      requirePath(password)
 
       AuthenticationInfo(subConfig.getString(domain), subConfig.getString(username), Credential(subConfig.getString(password), false))
     }
