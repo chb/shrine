@@ -35,6 +35,10 @@ trait Scanner extends Loggable {
     
     info(s"We expect ${ mappedNetworkTerms.size } to be mapped, and ${ termsExpectedToBeUnmapped.size } to be unmapped.")
     
+    doScan(mappedNetworkTerms, termsExpectedToBeUnmapped)
+  }
+  
+  private def doScan(mappedNetworkTerms: Set[String], termsExpectedToBeUnmapped: Set[String]): ScanResults = time("Scanning")(info(_)) {
     val resultsForMappedTerms = mappedNetworkTerms.map(query)
     
     val resultsForUnMappedTerms = termsExpectedToBeUnmapped.map(query)
@@ -59,7 +63,7 @@ trait Scanner extends Loggable {
     ScanResults(finalSouldHaveBeenMappedSet, finalSouldNotHaveBeenMappedSet, reScanResults.neverFinished)
   }
   
-  def reScan(neverFinishedShouldHaveBeenMapped: Set[TermResult], neverFinishedShouldNotHaveBeenMapped: Set[TermResult]): ScanResults = time("Re-scanning")(info(_)) {
+  private def reScan(neverFinishedShouldHaveBeenMapped: Set[TermResult], neverFinishedShouldNotHaveBeenMapped: Set[TermResult]): ScanResults = time("Re-scanning")(info(_)) {
     if(neverFinishedShouldHaveBeenMapped.isEmpty && neverFinishedShouldNotHaveBeenMapped.isEmpty) { ScanResults.empty }
     else { 
       val total = neverFinishedShouldNotHaveBeenMapped.size + neverFinishedShouldNotHaveBeenMapped.size
