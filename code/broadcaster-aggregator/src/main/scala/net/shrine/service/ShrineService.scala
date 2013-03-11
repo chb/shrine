@@ -61,31 +61,19 @@ class ShrineService(
     
     val peerGroupToQuery = determinePeergroupFallingBackTo(message.request.projectId)
     
-    val start = System.currentTimeMillis
-    
-    val result = spinClient.query(queryType, message, peerGroupToQuery, credentials)
-    
-    val elapsed = System.currentTimeMillis - start
-    
-    debug("Broadcasting via Spin took " + elapsed + "ms")
-    
-    result
+    Util.time("Broadcasting via Spin")(debug(_)) {
+      spinClient.query(queryType, message, peerGroupToQuery, credentials)
+    }
   }
 
   private def waitForResults(futureResults: Future[ResultSet]): ResultSet = {
-    import scala.concurrent.duration._
-    
-    val start = System.currentTimeMillis
-    
     val delta = 100L
     
-    val fromSpin = Await.result(futureResults, (spinClient.config.maxWaitTime + delta).milliseconds)
-    
-    val elapsed = System.currentTimeMillis - start
-
-    debug("Waiting for Spin results took " + elapsed + "ms")
-    
-    fromSpin
+    Util.time("Waiting for Spin results")(debug(_)) {
+      import scala.concurrent.duration._
+      
+      Await.result(futureResults, (spinClient.config.maxWaitTime + delta).milliseconds)
+    }
   }
 
   private[service] def aggregate(spinResults: ResultSet, aggregator: Aggregator): ShrineResponse = {
@@ -138,14 +126,12 @@ class ShrineService(
   protected def executeRequest(message: BroadcastMessage, aggregator: Aggregator): ShrineResponse = {
     val resultSet = waitForResults(broadcastMessage(message))
     
-    val start = System.currentTimeMillis
+    val result = Util.time("Aggregating")(debug(_)) {
+      aggregate(resultSet, aggregator)
+    }
 
-    val result = aggregate(resultSet, aggregator)
-
-    val elapsed = System.currentTimeMillis - start
-
-    debug("Aggregating into a " + result.getClass.getName + " took: " + elapsed + "ms")
-
+    debug("Aggregated into a " + result.getClass.getName)
+    
     result
   }
 
