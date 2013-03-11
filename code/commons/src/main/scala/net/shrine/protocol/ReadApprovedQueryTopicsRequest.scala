@@ -24,19 +24,19 @@ final case class ReadApprovedQueryTopicsRequest(
     override val authn: AuthenticationInfo,
     val userId: String) extends ShrineRequest(projectId, waitTimeMs, authn) {
 
-  val requestType = SheriffRequestType
+  override val requestType = SheriffRequestType
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <readApprovedQueryTopics>
       {headerFragment}
       <userId>{userId}</userId>
     </readApprovedQueryTopics>)
 
-  def handle(handler: ShrineRequestHandler) = {
+  override def handle(handler: ShrineRequestHandler) = {
     handler.readApprovedQueryTopics(this)
   }
 
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>
       <ns8:sheriff_header xsi:type="ns8:sheriffHeaderType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
       <ns8:sheriff_request xsi:type="ns8:sheriffRequestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
@@ -45,7 +45,7 @@ final case class ReadApprovedQueryTopicsRequest(
 
 object ReadApprovedQueryTopicsRequest extends ShrineRequestUnmarshaller[ReadApprovedQueryTopicsRequest] with I2b2Unmarshaller[ReadApprovedQueryTopicsRequest] {
 
-  def fromI2b2(nodeSeq: NodeSeq): ReadApprovedQueryTopicsRequest = {
+  override def fromI2b2(nodeSeq: NodeSeq): ReadApprovedQueryTopicsRequest = {
     new ReadApprovedQueryTopicsRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
@@ -53,7 +53,7 @@ object ReadApprovedQueryTopicsRequest extends ShrineRequestUnmarshaller[ReadAppr
       (nodeSeq \ "message_header" \ "security" \ "username").text)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     new ReadApprovedQueryTopicsRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),
