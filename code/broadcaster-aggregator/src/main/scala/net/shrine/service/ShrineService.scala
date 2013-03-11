@@ -11,7 +11,6 @@ import org.spin.tools.crypto.PKCryptor
 import net.shrine.broadcaster.dao.AuditDao
 import net.shrine.broadcaster.dao.model.AuditEntry
 import org.spin.message.{ AckNack, Failure, Response, Result, ResultSet, QueryInfo }
-import net.shrine.aggregation._
 import org.apache.log4j.Logger
 import org.spin.tools.crypto.Envelope
 import org.spin.identity.IdentityService
@@ -26,6 +25,15 @@ import net.shrine.aggregation.ReadQueryResultAggregator
 import scala.concurrent.Future
 import scala.concurrent.Await
 import org.spin.client.Credentials
+import net.shrine.aggregation.Aggregator
+import net.shrine.aggregation.SpinResultEntry
+import net.shrine.aggregation.RunQueryAggregator
+import net.shrine.aggregation.ReadQueryDefinitionAggregator
+import net.shrine.aggregation.ReadPdoResponseAggregator
+import net.shrine.aggregation.ReadInstanceResultsAggregator
+import net.shrine.aggregation.ReadPreviousQueriesAggregator
+import net.shrine.aggregation.RenameQueryAggregator
+import net.shrine.aggregation.DeleteQueryAggregator
 
 /**
  * @author Bill Simons
