@@ -38,8 +38,8 @@ final case class ReadPdoRequest(
       </patientSetCollId>
     </readPdo>)
 
-  override def handle(handler: ShrineRequestHandler) = {
-    handler.readPdo(this)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = {
+    handler.readPdo(this, shouldBroadcast)
   }
   
   private[protocol] def getOptionsXml = ReadPdoRequest.updateCollId(optionsXml.head, patientSetCollId).toSeq

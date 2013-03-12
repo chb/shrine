@@ -46,8 +46,8 @@ final case class ReadInstanceResultsRequest(
       <shrineNetworkQueryId>{ shrineNetworkQueryId }</shrineNetworkQueryId>
     </readInstanceResults>)
 
-  override def handle(handler: ShrineRequestHandler) = {
-    handler.readInstanceResults(this)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = {
+    handler.readInstanceResults(this, shouldBroadcast)
   }
 
   def withId(id: Long) = this.copy(shrineNetworkQueryId = id)

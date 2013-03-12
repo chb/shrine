@@ -22,6 +22,7 @@ final case class ReadApprovedQueryTopicsRequest(
     override val projectId: String,
     override val waitTimeMs: Long,
     override val authn: AuthenticationInfo,
+    
     val userId: String) extends ShrineRequest(projectId, waitTimeMs, authn) {
 
   override val requestType = SheriffRequestType
@@ -32,8 +33,8 @@ final case class ReadApprovedQueryTopicsRequest(
       <userId>{userId}</userId>
     </readApprovedQueryTopics>)
 
-  override def handle(handler: ShrineRequestHandler) = {
-    handler.readApprovedQueryTopics(this)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = {
+    handler.readApprovedQueryTopics(this, shouldBroadcast)
   }
 
   protected override def i2b2MessageBody = XmlUtil.stripWhitespace(

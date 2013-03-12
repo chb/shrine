@@ -335,6 +335,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
   }
   
   private def validateCachedParam(param: ShrineRequest, expectedRequestType: CRCRequestType) {
+    MockShrineRequestHandler.shouldBroadcastParam should be(true)
     param should not(be(null))
     param.projectId should equal(projectId)
     param.authn should equal(authenticationInfo)
@@ -389,6 +390,8 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
    * Private, since this is (basically) the enclosing test class's state
    */
   private object MockShrineRequestHandler extends ShrineRequestHandler {
+    var shouldBroadcastParam = false
+    
     var readApprovedQueryTopicsParam: ReadApprovedQueryTopicsRequest = _
     var readPreviousQueriesParam: ReadPreviousQueriesRequest = _
     var runQueryParam: RunQueryRequest = _
@@ -401,6 +404,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     var readQueryResultParam: ReadQueryResultRequest = _
 
     def reset() {
+      shouldBroadcastParam = false
       readApprovedQueryTopicsParam = null
       readPreviousQueriesParam = null
       runQueryParam = null
@@ -415,31 +419,37 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     
     import Util.now
 
-    override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest): ShrineResponse = {
+    private def setShouldBroadcastAndThen(shouldBroadcast: Boolean)(f: => ShrineResponse): ShrineResponse = {
+      try { f } finally {
+        shouldBroadcastParam = shouldBroadcast
+      }
+    }
+    
+    override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readApprovedQueryTopicsParam = request
 
       ReadApprovedQueryTopicsResponse(Seq(new ApprovedTopic(123L, "some topic")))
     }
 
-    override def readPreviousQueries(request: ReadPreviousQueriesRequest): ShrineResponse = {
+    override def readPreviousQueries(request: ReadPreviousQueriesRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readPreviousQueriesParam = request
 
       ReadPreviousQueriesResponse("userId", "groupId", Seq.empty)
     }
 
-    override def readQueryInstances(request: ReadQueryInstancesRequest): ShrineResponse = {
+    override def readQueryInstances(request: ReadQueryInstancesRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readQueryInstancesParam = request
 
       ReadQueryInstancesResponse(999L, "userId", "groupId", Seq.empty)
     }
 
-    override def readInstanceResults(request: ReadInstanceResultsRequest): ShrineResponse = {
+    override def readInstanceResults(request: ReadInstanceResultsRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readInstanceResultsParam = request
 
       AggregatedReadInstanceResultsResponse(1337L, Seq(new QueryResult(123L, 1337L, Some(ResultOutputType.PATIENT_COUNT_XML), 789L, None, None, Some("description"), QueryResult.StatusType.Finished, Some("statusMessage"))))
     }
 
-    override def readPdo(request: ReadPdoRequest): ShrineResponse = {
+    override def readPdo(request: ReadPdoRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readPdoParam = request
 
       import RandomTool.randomString
@@ -449,31 +459,31 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       ReadPdoResponse(Seq(new EventResponse("event", "patient", None, None, Seq.empty)), Seq(new PatientResponse("patientId", Seq(paramResponse))), Seq(new ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode",None,None,None,None,None,None,None, Seq(paramResponse))))
     }
 
-    override def readQueryDefinition(request: ReadQueryDefinitionRequest): ShrineResponse = {
+    override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readQueryDefinitionParam = request
 
       ReadQueryDefinitionResponse(87456L, "name", "userId", now, "<foo/>")
     }
 
-    override def runQuery(request: RunQueryRequest): ShrineResponse = {
+    override def runQuery(request: RunQueryRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       runQueryParam = request
 
       AggregatedRunQueryResponse(123L, now, "userId", "groupId", request.queryDefinition, 456L, Seq.empty)
     }
 
-    override def deleteQuery(request: DeleteQueryRequest): ShrineResponse = {
+    override def deleteQuery(request: DeleteQueryRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       deleteQueryParam = request
 
       DeleteQueryResponse(56834756L)
     }
 
-    override def renameQuery(request: RenameQueryRequest): ShrineResponse = {
+    override def renameQuery(request: RenameQueryRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       renameQueryParam = request
 
       RenameQueryResponse(873468L, "some-name")
     }
     
-    override def readQueryResult(request: ReadQueryResultRequest): ShrineResponse = {
+    override def readQueryResult(request: ReadQueryResultRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readQueryResultParam = request
       
       AggregatedReadQueryResultResponse(1234567890L, Seq.empty)

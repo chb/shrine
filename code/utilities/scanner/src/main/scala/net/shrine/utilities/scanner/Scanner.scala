@@ -86,8 +86,10 @@ trait Scanner extends Loggable {
     }
   }
   
+  private val shouldBroadcast = false
+  
   private[scanner] def attemptToRetrieve(termResult: TermResult): TermResult = {
-    val aggregatedResults = shrineClient.readQueryResult(termResult.networkQueryId)
+    val aggregatedResults = shrineClient.readQueryResult(termResult.networkQueryId, shouldBroadcast)
     
     info(s"Retrieving results for previously-incomplete query for '${ termResult.term }'")
     
@@ -102,7 +104,7 @@ trait Scanner extends Loggable {
     
     info(s"Querying for '$term'")
     
-    val aggregatedResults: AggregatedRunQueryResponse = shrineClient.runQuery(topicId, outputTypes, QueryDefinition("scanner query", Term(term)))
+    val aggregatedResults: AggregatedRunQueryResponse = shrineClient.runQuery(topicId, outputTypes, QueryDefinition("scanner query", Term(term)), shouldBroadcast)
     
     aggregatedResults.results.headOption match {
       case None => errorTermResult(aggregatedResults.queryId, term)

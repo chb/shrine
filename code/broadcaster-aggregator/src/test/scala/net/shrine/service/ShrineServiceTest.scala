@@ -35,6 +35,7 @@ import org.spin.client.SpinClient
 import scala.concurrent.Future
 import org.spin.message.serializer.Stringable
 import org.spin.client.Credentials
+import org.spin.tools.config.DefaultPeerGroups
 
 /**
  * @author Bill Simons
@@ -96,21 +97,35 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
     val expectedPeerGroup = "alksjdlaksjdlaksfj"
     val projectId = "projectId"
 
+    //shouldBroadcast = true
     {
       val service = new ShrineService(null, null, None, true, null)
 
-      service.determinePeergroupFallingBackTo(projectId) should equal(projectId)
+      service.determinePeergroup(projectId, true) should equal(projectId)
     }
 
     {
       val service = new ShrineService(null, null, Option(expectedPeerGroup), true, null)
 
-      service.determinePeergroupFallingBackTo(projectId) should equal(expectedPeerGroup)
+      service.determinePeergroup(projectId, true) should equal(expectedPeerGroup)
+    }
+    
+    //shouldBroadcast = false
+    {
+      val service = new ShrineService(null, null, None, true, null)
+
+      service.determinePeergroup(projectId, false) should equal(DefaultPeerGroups.LOCAL.name)
+    }
+
+    {
+      val service = new ShrineService(null, null, Option(expectedPeerGroup), true, null)
+
+      service.determinePeergroup(projectId, false) should equal(DefaultPeerGroups.LOCAL.name)
     }
   }
 
   @Test
-  def testBroadcastMessage {
+  def testSendMessage {
     val mockClient = mock[SpinClient]
     val nodeId = new CertID("98345")
     val service = new ShrineService(null, null, None, true, mockClient)
@@ -129,7 +144,7 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
       invoke(mockClient.query(queryType, message, peerGroupToQuery, credentials)).andReturn(futureResultSet)
     }
     whenExecuting(mockClient) {
-      service.broadcastMessage(message)
+      service.sendMessage(message, true)
     }
   }
 

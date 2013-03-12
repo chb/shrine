@@ -91,7 +91,7 @@ final class JerseyShrineClientTest extends TestCase with AssertionsForJUnit with
 
     val client = new JerseyShrineClient(uri, projectId, authn, acceptAllSslCerts = false)
     
-    val unmarshalled: Foo = client.perform(client.webResource, _ => Foo(value).toXml.toString)
+    val unmarshalled: Foo = client.perform(true)(client.webResource, _ => Foo(value).toXml.toString)
 
     unmarshalled should not be (null)
 

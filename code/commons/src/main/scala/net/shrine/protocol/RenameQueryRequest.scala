@@ -33,9 +33,7 @@ final case class RenameQueryRequest(
       <queryName>{ queryName }</queryName>
     </renameQuery>)
 
-  override def handle(handler: ShrineRequestHandler) = {
-    handler.renameQuery(this)
-  }
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.renameQuery(this, shouldBroadcast)
 
   def withId(id: Long) = this.copy(queryId = id)
 

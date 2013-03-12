@@ -25,28 +25,28 @@ import net.shrine.protocol.query.QueryDefinition
  *
  */
 trait ShrineClient {
-  def readApprovedQueryTopics(userId: String): ReadApprovedQueryTopicsResponse
+  def readApprovedQueryTopics(userId: String, shouldBroadcast: Boolean): ReadApprovedQueryTopicsResponse
 
-  def readPreviousQueries(userId: String, fetchSize: Int): ReadPreviousQueriesResponse
+  def readPreviousQueries(userId: String, fetchSize: Int, shouldBroadcast: Boolean): ReadPreviousQueriesResponse
 
-  def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition): AggregatedRunQueryResponse
+  def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse
   
-  def readQueryInstances(queryId: Long): ReadQueryInstancesResponse
+  def readQueryInstances(queryId: Long, shouldBroadcast: Boolean): ReadQueryInstancesResponse
   
-  def readInstanceResults(instanceId: Long): AggregatedReadInstanceResultsResponse
+  def readInstanceResults(instanceId: Long, shouldBroadcast: Boolean): AggregatedReadInstanceResultsResponse
   
-  def readPdo(patientSetCollId: String, optionsXml: NodeSeq): ReadPdoResponse
+  def readPdo(patientSetCollId: String, optionsXml: NodeSeq, shouldBroadcast: Boolean): ReadPdoResponse
   
-  def readQueryDefinition(queryId: Long): ReadQueryDefinitionResponse
+  def readQueryDefinition(queryId: Long, shouldBroadcast: Boolean): ReadQueryDefinitionResponse
   
-  def deleteQuery(queryId: Long): DeleteQueryResponse
+  def deleteQuery(queryId: Long, shouldBroadcast: Boolean): DeleteQueryResponse
   
-  def renameQuery(queryId: Long, queryName: String): RenameQueryResponse
+  def renameQuery(queryId: Long, queryName: String, shouldBroadcast: Boolean): RenameQueryResponse
   
   //Overloads for Java interop
   import scala.collection.JavaConverters._
 
-  def runQuery(topicId: String, outputTypes: java.util.Set[ResultOutputType], queryDefinition: QueryDefinition): AggregatedRunQueryResponse = runQuery(topicId, outputTypes.asScala.toSet, queryDefinition)
+  def runQuery(topicId: String, outputTypes: java.util.Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse = runQuery(topicId, outputTypes.asScala.toSet, queryDefinition, shouldBroadcast)
   
-  def readQueryResult(queryId: Long): AggregatedReadQueryResultResponse
+  def readQueryResult(queryId: Long, shouldBroadcast: Boolean): AggregatedReadQueryResultResponse
 }

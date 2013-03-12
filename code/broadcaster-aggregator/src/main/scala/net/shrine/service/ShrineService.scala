@@ -34,6 +34,7 @@ import net.shrine.aggregation.ReadInstanceResultsAggregator
 import net.shrine.aggregation.ReadPreviousQueriesAggregator
 import net.shrine.aggregation.RenameQueryAggregator
 import net.shrine.aggregation.DeleteQueryAggregator
+import org.spin.tools.config.DefaultPeerGroups
 
 /**
  * @author Bill Simons
@@ -58,16 +59,17 @@ class ShrineService(
 
   import ShrineService._
   
-  private[service] def determinePeergroupFallingBackTo(projectId: String): String = {
-    broadcasterPeerGroupToQuery.getOrElse(projectId)
+  private[service] def determinePeergroup(projectId: String, broadcastDesired: Boolean): String = {
+    if(broadcastDesired) { broadcasterPeerGroupToQuery.getOrElse(projectId) }
+    else { DefaultPeerGroups.LOCAL.name }
   }
 
-  private[service] def broadcastMessage(message: BroadcastMessage): Future[ResultSet] = {
+  def sendMessage(message: BroadcastMessage, shouldBroadcast: Boolean): Future[ResultSet] = {
     val queryType = message.request.requestType.name
     
     val credentials = toCredentials(message.request.authn)
     
-    val peerGroupToQuery = determinePeergroupFallingBackTo(message.request.projectId)
+    val peerGroupToQuery = determinePeergroup(message.request.projectId, shouldBroadcast)
     
     Util.time("Broadcasting via Spin")(debug(_)) {
       spinClient.query(queryType, message, peerGroupToQuery, credentials)
@@ -127,12 +129,12 @@ class ShrineService(
     aggregator.aggregate(spinResultEntries.toSeq, errorResponses.toSeq)
   }
 
-  protected def executeRequest(request: ShrineRequest, aggregator: Aggregator): ShrineResponse = {
-    executeRequest(BroadcastMessage(request), aggregator)
+  protected def executeRequest(request: ShrineRequest, aggregator: Aggregator, shouldBroadcast: Boolean): ShrineResponse = {
+    executeRequest(BroadcastMessage(request), aggregator, shouldBroadcast)
   }
   
-  protected def executeRequest(message: BroadcastMessage, aggregator: Aggregator): ShrineResponse = {
-    val resultSet = waitForResults(broadcastMessage(message))
+  protected def executeRequest(message: BroadcastMessage, aggregator: Aggregator, shouldBroadcast: Boolean): ShrineResponse = {
+    val resultSet = waitForResults(sendMessage(message, shouldBroadcast))
     
     val result = Util.time("Aggregating")(debug(_)) {
       aggregate(resultSet, aggregator)
@@ -156,7 +158,7 @@ class ShrineService(
     }
   }
 
-  override def runQuery(request: RunQueryRequest): ShrineResponse = {
+  override def runQuery(request: RunQueryRequest, shouldBroadcast: Boolean): ShrineResponse = {
     auditTransactionally(request) {
 
       authorizationService.authorizeRunQueryRequest(request)
@@ -172,17 +174,17 @@ class ShrineService(
         reqWithQueryIdAssigned.queryDefinition,
         includeAggregateResult)
 
-      executeRequest(message, aggregator)
+      executeRequest(message, aggregator, shouldBroadcast)
     }
   }
 
-  override def readQueryDefinition(request: ReadQueryDefinitionRequest) = executeRequest(request, new ReadQueryDefinitionAggregator)
+  override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean) = executeRequest(request, new ReadQueryDefinitionAggregator, shouldBroadcast)
 
-  override def readPdo(request: ReadPdoRequest) = executeRequest(request, new ReadPdoResponseAggregator)
+  override def readPdo(request: ReadPdoRequest, shouldBroadcast: Boolean) = executeRequest(request, new ReadPdoResponseAggregator, shouldBroadcast)
 
-  override def readInstanceResults(request: ReadInstanceResultsRequest) = executeRequest(request, new ReadInstanceResultsAggregator(request.shrineNetworkQueryId, false))
+  override def readInstanceResults(request: ReadInstanceResultsRequest, shouldBroadcast: Boolean) = executeRequest(request, new ReadInstanceResultsAggregator(request.shrineNetworkQueryId, false), shouldBroadcast)
 
-  override def readQueryInstances(request: ReadQueryInstancesRequest) = {
+  override def readQueryInstances(request: ReadQueryInstancesRequest, shouldBroadcast: Boolean) = {
     val now = Util.now
     val networkQueryId = request.queryId
     val username = request.authn.username
@@ -196,13 +198,13 @@ class ShrineService(
     ReadQueryInstancesResponse(networkQueryId, username, groupId, Seq(instance))
   }
 
-  override def readPreviousQueries(request: ReadPreviousQueriesRequest) = executeRequest(request, new ReadPreviousQueriesAggregator(request.userId, request.projectId))
+  override def readPreviousQueries(request: ReadPreviousQueriesRequest, shouldBroadcast: Boolean) = executeRequest(request, new ReadPreviousQueriesAggregator(request.userId, request.projectId), shouldBroadcast)
 
-  override def renameQuery(request: RenameQueryRequest) = executeRequest(request, new RenameQueryAggregator)
+  override def renameQuery(request: RenameQueryRequest, shouldBroadcast: Boolean) = executeRequest(request, new RenameQueryAggregator, shouldBroadcast)
 
-  override def deleteQuery(request: DeleteQueryRequest) = executeRequest(request, new DeleteQueryAggregator)
+  override def deleteQuery(request: DeleteQueryRequest, shouldBroadcast: Boolean) = executeRequest(request, new DeleteQueryAggregator, shouldBroadcast)
 
-  override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest) = authorizationService.readApprovedEntries(request)
+  override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest, shouldBroadcast: Boolean) = authorizationService.readApprovedEntries(request)
 
-  override def readQueryResult(request: ReadQueryResultRequest): ShrineResponse = executeRequest(request, new ReadQueryResultAggregator(request.queryId, includeAggregateResult))
+  override def readQueryResult(request: ReadQueryResultRequest, shouldBroadcast: Boolean): ShrineResponse = executeRequest(request, new ReadQueryResultAggregator(request.queryId, includeAggregateResult), shouldBroadcast)
 }

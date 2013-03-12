@@ -11,23 +11,23 @@ package net.shrine.protocol
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 trait ShrineRequestHandler {
-  def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest): ShrineResponse
+  def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest, shouldBroadcast: Boolean = true): ShrineResponse
 
-  def readPreviousQueries(request: ReadPreviousQueriesRequest): ShrineResponse
+  def readPreviousQueries(request: ReadPreviousQueriesRequest, shouldBroadcast: Boolean = true): ShrineResponse
 
-  def readQueryInstances(request: ReadQueryInstancesRequest): ShrineResponse
+  def readQueryInstances(request: ReadQueryInstancesRequest, shouldBroadcast: Boolean = true): ShrineResponse
 
-  def readInstanceResults(request: ReadInstanceResultsRequest): ShrineResponse
+  def readInstanceResults(request: ReadInstanceResultsRequest, shouldBroadcast: Boolean = true): ShrineResponse
 
-  def readPdo(request: ReadPdoRequest): ShrineResponse
+  def readPdo(request: ReadPdoRequest, shouldBroadcast: Boolean = true): ShrineResponse
 
-  def readQueryDefinition(request: ReadQueryDefinitionRequest): ShrineResponse
+  def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean = true): ShrineResponse
 
-  def runQuery(request: RunQueryRequest): ShrineResponse
+  def runQuery(request: RunQueryRequest, shouldBroadcast: Boolean = true): ShrineResponse
 
-  def deleteQuery(request: DeleteQueryRequest): ShrineResponse
+  def deleteQuery(request: DeleteQueryRequest, shouldBroadcast: Boolean = true): ShrineResponse
 
-  def renameQuery(request: RenameQueryRequest): ShrineResponse
+  def renameQuery(request: RenameQueryRequest, shouldBroadcast: Boolean = true): ShrineResponse
   
-  def readQueryResult(request: ReadQueryResultRequest): ShrineResponse
+  def readQueryResult(request: ReadQueryResultRequest, shouldBroadcast: Boolean = true): ShrineResponse
 }

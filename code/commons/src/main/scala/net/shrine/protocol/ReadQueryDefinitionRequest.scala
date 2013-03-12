@@ -31,9 +31,7 @@ final case class ReadQueryDefinitionRequest(
       <queryId>{ queryId }</queryId>
     </readQueryDefinition>)
 
-  def handle(handler: ShrineRequestHandler) = {
-    handler.readQueryDefinition(this)
-  }
+  def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
 
   protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>

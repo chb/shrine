@@ -20,23 +20,23 @@ import net.shrine.protocol.query.QueryDefinition
  * @date Mar 7, 2013
  */
 abstract class ShrineClientAdapter extends ShrineClient {
-  override def readApprovedQueryTopics(userId: String): ReadApprovedQueryTopicsResponse = null
+  override def readApprovedQueryTopics(userId: String, shouldBroadcast: Boolean): ReadApprovedQueryTopicsResponse = null
 
-  override def readPreviousQueries(userId: String, fetchSize: Int): ReadPreviousQueriesResponse = null
+  override def readPreviousQueries(userId: String, fetchSize: Int, shouldBroadcast: Boolean): ReadPreviousQueriesResponse = null
 
-  override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition): AggregatedRunQueryResponse = null
+  override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse = null
 
-  override def readQueryInstances(queryId: Long): ReadQueryInstancesResponse = null
+  override def readQueryInstances(queryId: Long, shouldBroadcast: Boolean): ReadQueryInstancesResponse = null
 
-  override def readInstanceResults(instanceId: Long): AggregatedReadInstanceResultsResponse = null
+  override def readInstanceResults(instanceId: Long, shouldBroadcast: Boolean): AggregatedReadInstanceResultsResponse = null
 
-  override def readPdo(patientSetCollId: String, optionsXml: NodeSeq): ReadPdoResponse = null
+  override def readPdo(patientSetCollId: String, optionsXml: NodeSeq, shouldBroadcast: Boolean): ReadPdoResponse = null
 
-  override def readQueryDefinition(queryId: Long): ReadQueryDefinitionResponse = null
+  override def readQueryDefinition(queryId: Long, shouldBroadcast: Boolean): ReadQueryDefinitionResponse = null
 
-  override def deleteQuery(queryId: Long): DeleteQueryResponse = null
+  override def deleteQuery(queryId: Long, shouldBroadcast: Boolean): DeleteQueryResponse = null
 
-  override def renameQuery(queryId: Long, queryName: String): RenameQueryResponse = null
+  override def renameQuery(queryId: Long, queryName: String, shouldBroadcast: Boolean): RenameQueryResponse = null
 
-  override def readQueryResult(queryId: Long): AggregatedReadQueryResultResponse = null
+  override def readQueryResult(queryId: Long, shouldBroadcast: Boolean): AggregatedReadQueryResultResponse = null
 }

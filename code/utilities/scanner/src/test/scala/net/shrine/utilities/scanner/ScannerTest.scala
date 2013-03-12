@@ -130,13 +130,13 @@ object ScannerTest {
   import QueryResult.StatusType
   
   private object AllQueriesCompleteShrineClient extends ShrineClientAdapter {
-    override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition): AggregatedRunQueryResponse = {
+    override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse = {
       aggregatedRunQueryResponse(random.nextLong, queryDefinition, StatusType.Finished)
     }
   }
   
   private object AllQueriesErrorShrineClient extends ShrineClientAdapter {
-    override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition): AggregatedRunQueryResponse = {
+    override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse = {
       aggregatedRunQueryResponse(random.nextLong, queryDefinition, StatusType.Error)
     }
   }
@@ -144,7 +144,7 @@ object ScannerTest {
   private def someQueriesWorkShrineClient(termsThatShouldWork: Set[String], termsThatShouldNotWork: Set[String], termsThatShouldNeverFinish: Set[String], termsThatShouldFinishAfter1Retry: Set[String] = Set.empty): ShrineClient = new ShrineClientAdapter {
     var timedOutTerms = Map.empty[Long, String]
     
-    override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition): AggregatedRunQueryResponse = {
+    override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse = {
       val Term(term) = queryDefinition.expr
       
       val queryId = random.nextLong
@@ -162,7 +162,7 @@ object ScannerTest {
       aggregatedRunQueryResponse(queryId, queryDefinition, statusType)
     }
     
-    override def readQueryResult(queryId: Long): AggregatedReadQueryResultResponse = {
+    override def readQueryResult(queryId: Long, shouldBroadcast: Boolean): AggregatedReadQueryResultResponse = {
       val status = timedOutTerms.get(queryId) match {
         case Some(_) => StatusType.Finished
         case None => StatusType.Processing

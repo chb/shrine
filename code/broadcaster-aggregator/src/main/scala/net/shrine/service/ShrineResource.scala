@@ -51,9 +51,10 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @HeaderParam("projectId") projectId: String,
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
-    @PathParam("userId") userId: String): String = {
+    @PathParam("userId") userId: String,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readApprovedQueryTopics(new ReadApprovedQueryTopicsRequest(projectId, waitTimeMs, authorization, userId)))
+    performAndSerialize(_.readApprovedQueryTopics(new ReadApprovedQueryTopicsRequest(projectId, waitTimeMs, authorization, userId), shouldBroadcast))
   }
 
   @GET
@@ -63,7 +64,8 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
     @PathParam("userId") userId: String,
-    @QueryParam("fetchSize") fetchSize: Int): Response = {
+    @QueryParam("fetchSize") fetchSize: Int,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): Response = {
 
     if (userId != authorization.username) {
       Response.status(403).build
@@ -71,7 +73,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       val fSize = if (fetchSize != 0) fetchSize else 20
 
       Response.ok.entity {
-        performAndSerialize(_.readPreviousQueries(new ReadPreviousQueriesRequest(projectId, waitTimeMs, authorization, userId, fSize)))
+        performAndSerialize(_.readPreviousQueries(new ReadPreviousQueriesRequest(projectId, waitTimeMs, authorization, userId, fSize), shouldBroadcast))
       }.build
     }
   }
@@ -86,13 +88,14 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @HeaderParam("topicId") topicId: String,
     //outputTypes will be constructed by JAXRS using the String value of the 'outputTypes' header
     @HeaderParam("outputTypes") outputTypes: OutputTypeSet,
-    queryDefinitionXml: String): String = {
+    queryDefinitionXml: String,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
     val queryDef = QueryDefinition.fromXml(queryDefinitionXml).get
 
     //NB: Create the RunQueryRequest with a dummy networkQueryId of '-1'; 
     //this will be filled in with an appropriately-generated value by the ShrineRequestHandler
-    performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, -1, topicId, outputTypes.toSet, queryDef)))
+    performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, -1, topicId, outputTypes.toSet, queryDef), shouldBroadcast))
   }
 
   @GET
@@ -101,9 +104,10 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @HeaderParam("projectId") projectId: String,
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
-    @PathParam("queryId") queryId: Long): String = {
+    @PathParam("queryId") queryId: Long,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readQueryInstances(new ReadQueryInstancesRequest(projectId, waitTimeMs, authorization, queryId)))
+    performAndSerialize(_.readQueryInstances(new ReadQueryInstancesRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
   }
 
   @GET
@@ -112,9 +116,10 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @HeaderParam("projectId") projectId: String,
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
-    @PathParam("instanceId") instanceId: Long): String = {
+    @PathParam("instanceId") instanceId: Long,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readInstanceResults(new ReadInstanceResultsRequest(projectId, waitTimeMs, authorization, instanceId)))
+    performAndSerialize(_.readInstanceResults(new ReadInstanceResultsRequest(projectId, waitTimeMs, authorization, instanceId), shouldBroadcast))
   }
 
   @POST //This must be POST, since we're sending content in the request body
@@ -125,11 +130,12 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
     @PathParam("patientSetCollId") patientSetCollId: String,
-    optionsXml: String): String = {
+    optionsXml: String,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
     import XML.loadString
 
-    performAndSerialize(_.readPdo(new ReadPdoRequest(projectId, waitTimeMs, authorization, patientSetCollId, loadString(optionsXml))))
+    performAndSerialize(_.readPdo(new ReadPdoRequest(projectId, waitTimeMs, authorization, patientSetCollId, loadString(optionsXml)), shouldBroadcast))
   }
 
   @GET
@@ -138,9 +144,10 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @HeaderParam("projectId") projectId: String,
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
-    @PathParam("queryId") queryId: Long): String = {
+    @PathParam("queryId") queryId: Long,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readQueryDefinition(new ReadQueryDefinitionRequest(projectId, waitTimeMs, authorization, queryId)))
+    performAndSerialize(_.readQueryDefinition(new ReadQueryDefinitionRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
   }
 
   @DELETE
@@ -149,9 +156,10 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @HeaderParam("projectId") projectId: String,
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
-    @PathParam("queryId") queryId: Long): String = {
+    @PathParam("queryId") queryId: Long,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.deleteQuery(new DeleteQueryRequest(projectId, waitTimeMs, authorization, queryId)))
+    performAndSerialize(_.deleteQuery(new DeleteQueryRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
   }
 
   @POST
@@ -162,9 +170,10 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
     @PathParam("queryId") queryId: Long,
-    queryName: String): String = {
+    queryName: String,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.renameQuery(new RenameQueryRequest(projectId, waitTimeMs, authorization, queryId, queryName)))
+    performAndSerialize(_.renameQuery(new RenameQueryRequest(projectId, waitTimeMs, authorization, queryId, queryName), shouldBroadcast))
   }
 
   @GET
@@ -174,9 +183,10 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @HeaderParam("projectId") projectId: String,
     //authorization will be constructed by JAXRS using the String value of the 'Authorization' header
     @HeaderParam("Authorization") authorization: AuthenticationInfo,
-    @PathParam("queryId") queryId: Long): String = {
+    @PathParam("queryId") queryId: Long,
+    @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readQueryResult(new ReadQueryResultRequest(projectId, waitTimeMs, authorization, queryId)))
+    performAndSerialize(_.readQueryResult(new ReadQueryResultRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
   }
 
   private def performAndSerialize[R <: ShrineResponse](op: ShrineRequestHandler => R): String = {

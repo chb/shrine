@@ -32,6 +32,8 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
   private val authenticationInfo = new AuthenticationInfo("domain", "username", new Credential("secret", true))
   private val userId = "userId"
 
+  private val shouldBroadcast = true
+    
   override def setUp() {
     handler = mock[ShrineRequestHandler]
     resource = new ShrineResource(handler)
@@ -47,7 +49,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     setExpectations(_.readApprovedQueryTopics, expectedRequest, expectedResponse)
 
     execute {
-      resource.readApprovedQueryTopics(projectId, authenticationInfo, userId)
+      resource.readApprovedQueryTopics(projectId, authenticationInfo, userId, shouldBroadcast)
     }
   }
 
@@ -64,7 +66,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
       setExpectations(_.readPreviousQueries, expectedRequest, expectedResponse)
 
       execute {
-        resource.readPreviousQueries(projectId, authenticationInfo, userId, fetchSize)
+        resource.readPreviousQueries(projectId, authenticationInfo, userId, fetchSize, shouldBroadcast)
       }
     }
 
@@ -106,13 +108,12 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
       null
     }
     
-    //setExpectations(_.runQuery, expectedRequest, expectedResponse)
     expecting {
-      invoke(handler.runQuery(isEqualToExceptForQueryId(expectedRequest))).andReturn(expectedResponse)
+      invoke(handler.runQuery(isEqualToExceptForQueryId(expectedRequest), isEqualTo(shouldBroadcast))).andReturn(expectedResponse)
     }
 
     execute {
-      resource.runQuery(projectId, authenticationInfo, topicId, new OutputTypeSet(outputTypes), queryDef.toXml.toString)
+      resource.runQuery(projectId, authenticationInfo, topicId, new OutputTypeSet(outputTypes), queryDef.toXmlString, shouldBroadcast)
     }
   }
 
@@ -126,7 +127,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     setExpectations(_.readQueryInstances, expectedRequest, expectedResponse)
     
     execute {
-      resource.readQueryInstances(projectId, authenticationInfo, queryId)
+      resource.readQueryInstances(projectId, authenticationInfo, queryId, shouldBroadcast)
     }
   }
   
@@ -140,7 +141,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     setExpectations(_.readInstanceResults, expectedRequest, expectedResponse)
     
     execute {
-      resource.readInstanceResults(projectId, authenticationInfo, instanceId)
+      resource.readInstanceResults(projectId, authenticationInfo, instanceId, shouldBroadcast)
     }
   }
 
@@ -158,7 +159,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     setExpectations(_.readPdo, expectedRequest, expectedResponse)
     
     execute {
-      resource.readPdo(projectId, authenticationInfo, patientSetCollId, optionsXml.toString)
+      resource.readPdo(projectId, authenticationInfo, patientSetCollId, optionsXml.toString, shouldBroadcast)
     }
   }
 
@@ -174,7 +175,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     setExpectations(_.readQueryDefinition, expectedRequest, expectedResponse)
     
     execute {
-      resource.readQueryDefinition(projectId, authenticationInfo, queryId)
+      resource.readQueryDefinition(projectId, authenticationInfo, queryId, shouldBroadcast)
     }
   }
 
@@ -189,7 +190,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     setExpectations(_.deleteQuery, expectedRequest, expectedResponse)
     
     execute {
-      resource.deleteQuery(projectId, authenticationInfo, queryId)
+      resource.deleteQuery(projectId, authenticationInfo, queryId, shouldBroadcast)
     }
   }
 
@@ -205,7 +206,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     setExpectations(_.renameQuery, expectedRequest, expectedResponse)
     
     execute {
-      resource.renameQuery(projectId, authenticationInfo, queryId, queryName)
+      resource.renameQuery(projectId, authenticationInfo, queryId, queryName, shouldBroadcast)
     }
   }
   
@@ -219,15 +220,15 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     setExpectations(_.readQueryResult, expectedRequest, expectedResponse)
     
     execute {
-      resource.readQueryResults(projectId, authenticationInfo, queryId)
+      resource.readQueryResults(projectId, authenticationInfo, queryId, shouldBroadcast)
     }
   }
   
   private def execute(f: => Unit) = whenExecuting(handler)(f)
 
-  private def setExpectations[Req <: ShrineRequest, Resp <: ShrineResponse](handlerMethod: ShrineRequestHandler => Req => ShrineResponse, expectedRequest: Req, expectedResponse: Resp) {
+  private def setExpectations[Req <: ShrineRequest, Resp <: ShrineResponse](handlerMethod: ShrineRequestHandler => (Req, Boolean) => ShrineResponse, expectedRequest: Req, expectedResponse: Resp) {
     expecting {
-      invoke(handlerMethod(handler)(isEqualTo(expectedRequest))).andReturn(expectedResponse)
+      invoke(handlerMethod(handler)(isEqualTo(expectedRequest), isEqualTo(shouldBroadcast))).andReturn(expectedResponse)
     }
   }
 }

@@ -43,7 +43,11 @@ class I2b2Resource @Autowired()(private val shrineRequestHandler: ShrineRequestH
     
     info("Running request from user: %s of type %s".format(shrineRequest.authn.username,shrineRequest.requestType.toString))
     
-    val shrineResponse = shrineRequest.handle(shrineRequestHandler)
+    //NB: Always broadcast when receiving requests from the legacy i2b2/Shrine webclient, since we can't retrofit it to 
+    //Say whether broadcasting is desired for a praticular query/operation
+    val shouldBroadcast = true
+    
+    val shrineResponse = shrineRequest.handle(shrineRequestHandler, shouldBroadcast)
     
     val responseString = shrineResponse.toI2b2String
     

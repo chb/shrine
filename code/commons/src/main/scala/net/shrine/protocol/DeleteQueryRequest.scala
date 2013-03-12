@@ -31,8 +31,8 @@ final case class DeleteQueryRequest(
       <queryId>{ queryId }</queryId>
     </deleteQuery>)
 
-  override def handle(handler: ShrineRequestHandler) = {
-    handler.deleteQuery(this)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = {
+    handler.deleteQuery(this, shouldBroadcast)
   }
 
   def withId(id: Long) = this.copy(queryId = id)

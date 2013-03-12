@@ -35,62 +35,62 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
 
   private[client] lazy val webResource = createJerseyClient(acceptAllSslCerts).resource(shrineUrl)
 
-  override def readApprovedQueryTopics(userId: String) = {
-    get[ReadApprovedQueryTopicsResponse] {
+  override def readApprovedQueryTopics(userId: String, shouldBroadcast: Boolean = true) = {
+    get[ReadApprovedQueryTopicsResponse](shouldBroadcast) {
       webResource.path("/shrine/" + userId + "/approved-topics")
     }
   }
 
-  override def readPreviousQueries(userId: String, fetchSize: Int) = {
-    get[ReadPreviousQueriesResponse] {
+  override def readPreviousQueries(userId: String, fetchSize: Int, shouldBroadcast: Boolean = true) = {
+    get[ReadPreviousQueriesResponse](shouldBroadcast) {
       webResource.path("/shrine/" + userId + "/queries").queryParam("fetchSize", fetchSize.toString)
     }
   }
 
-  override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition) = {
-    post[AggregatedRunQueryResponse] {
+  override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean = true) = {
+    post[AggregatedRunQueryResponse](shouldBroadcast) {
       webResource.path("/shrine/queries").header("outputTypes", OutputTypeSet(outputTypes).serialized).header("topicId", topicId).entity(queryDefinition.toXmlString, MediaType.APPLICATION_XML)
     }
   }
 
-  override def readQueryInstances(queryId: Long) = {
-    get[ReadQueryInstancesResponse] {
+  override def readQueryInstances(queryId: Long, shouldBroadcast: Boolean = true) = {
+    get[ReadQueryInstancesResponse](shouldBroadcast) {
       webResource.path("/shrine/queries/" + queryId + "/instances")
     }
   }
 
-  override def readInstanceResults(instanceId: Long) = {
-    get[AggregatedReadInstanceResultsResponse] {
+  override def readInstanceResults(instanceId: Long, shouldBroadcast: Boolean = true) = {
+    get[AggregatedReadInstanceResultsResponse](shouldBroadcast) {
       webResource.path("/shrine/instances/" + instanceId + "/results")
     }
   }
 
-  override def readPdo(patientSetCollId: String, optionsXml: NodeSeq) = {
-    post[ReadPdoResponse] {
+  override def readPdo(patientSetCollId: String, optionsXml: NodeSeq, shouldBroadcast: Boolean = true) = {
+    post[ReadPdoResponse](shouldBroadcast) {
       webResource.path("/shrine/patient-set/" + patientSetCollId).entity(optionsXml.toString, MediaType.APPLICATION_XML)
     }
   }
 
-  override def readQueryDefinition(queryId: Long) = {
-    get[ReadQueryDefinitionResponse] {
+  override def readQueryDefinition(queryId: Long, shouldBroadcast: Boolean = true) = {
+    get[ReadQueryDefinitionResponse](shouldBroadcast) {
       webResource.path("/shrine/queries/" + queryId)
     }
   }
 
-  override def deleteQuery(queryId: Long) = {
-    delete[DeleteQueryResponse] {
+  override def deleteQuery(queryId: Long, shouldBroadcast: Boolean = true) = {
+    delete[DeleteQueryResponse](shouldBroadcast) {
       webResource.path("/shrine/queries/" + queryId)
     }
   }
 
-  override def renameQuery(queryId: Long, queryName: String) = {
-    post[RenameQueryResponse] {
+  override def renameQuery(queryId: Long, queryName: String, shouldBroadcast: Boolean = true) = {
+    post[RenameQueryResponse](shouldBroadcast) {
       webResource.path("/shrine/queries/" + queryId + "/name").entity(queryName, MediaType.TEXT_PLAIN)
     }
   }
   
-  override def readQueryResult(queryId: Long) = {
-    get[AggregatedReadQueryResultResponse] {
+  override def readQueryResult(queryId: Long, shouldBroadcast: Boolean = true) = {
+    get[AggregatedReadQueryResultResponse](shouldBroadcast) {
       webResource.path("/shrine/queries/" + queryId + "/results")
     }
   } 
@@ -98,15 +98,15 @@ final class JerseyShrineClient(val shrineUrl: String, val projectId: String, val
   private type WebResourceLike = RequestBuilder[WebResource#Builder] with UniformInterface
 
   //TODO: it would be nice to be able to test post(), get(), and delete()
-  private def post[T: Deserializer](webResource: => WebResourceLike): T = perform[T](webResource, _.post(classOf[String]))
+  private def post[T: Deserializer](shouldBroadcast: Boolean)(webResource: => WebResourceLike): T = perform[T](shouldBroadcast)(webResource, _.post(classOf[String]))
 
-  private def get[T: Deserializer](webResource: => WebResourceLike): T = perform[T](webResource, _.get(classOf[String]))
+  private def get[T: Deserializer](shouldBroadcast: Boolean)(webResource: => WebResourceLike): T = perform[T](shouldBroadcast)(webResource, _.get(classOf[String]))
 
-  private def delete[T: Deserializer](webResource: => WebResourceLike): T = perform[T](webResource, _.delete(classOf[String]))
+  private def delete[T: Deserializer](shouldBroadcast: Boolean)(webResource: => WebResourceLike): T = perform[T](shouldBroadcast)(webResource, _.delete(classOf[String]))
 
-  private[client] def perform[T: Deserializer](webResource: WebResourceLike, httpVerb: UniformInterface => String): T = {
+  private[client] def perform[T: Deserializer](shouldBroadcast: Boolean)(webResource: WebResourceLike, httpVerb: UniformInterface => String): T = {
 
-    val withNeededHeaders = webResource.header("Authorization", authorization.toHeader).header("projectId", projectId)
+    val withNeededHeaders = webResource.header("Authorization", authorization.toHeader).header("projectId", projectId).header("shouldBroadcast", shouldBroadcast)
 
     val xml = XML.loadString(httpVerb(withNeededHeaders))
 

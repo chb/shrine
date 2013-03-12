@@ -45,9 +45,7 @@ final case class RunQueryRequest(
       { queryDefinition.toXml }
     </runQuery>)
 
-  override def handle(handler: ShrineRequestHandler) = {
-    handler.runQuery(this)
-  }
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.runQuery(this, shouldBroadcast)
 
   protected def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>

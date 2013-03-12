@@ -20,7 +20,7 @@ final case class ReadQueryResultRequest(
   //TODO: what to do about this one, that has no meaningful i2b2 representation 
   
   //NB: Unimplemented for now
-  def handle(handler: ShrineRequestHandler): ShrineResponse = ???
+  def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean): ShrineResponse = ???
 
   val requestType: CRCRequestType = CRCRequestType.GetQueryResult
   

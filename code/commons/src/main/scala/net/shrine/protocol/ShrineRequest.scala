@@ -14,12 +14,15 @@ import net.shrine.serialization.{ I2b2Marshaller, I2b2Unmarshaller, XmlMarshalle
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-abstract class ShrineRequest(val projectId: String, val waitTimeMs: Long, val authn: AuthenticationInfo) extends XmlMarshaller with I2b2Marshaller {
+abstract class ShrineRequest(
+    val projectId: String, 
+    val waitTimeMs: Long, 
+    val authn: AuthenticationInfo) extends XmlMarshaller with I2b2Marshaller {
   protected def headerFragment: NodeBuffer = <projectId>{ projectId }</projectId><waitTimeMs>{ waitTimeMs }</waitTimeMs> &+ authn.toXml
 
   protected def i2b2MessageBody: NodeSeq
 
-  def handle(handler: ShrineRequestHandler): ShrineResponse
+  def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean): ShrineResponse
 
   val requestType: CRCRequestType
 

@@ -247,7 +247,7 @@ object AbstractQueryRetrievalTestCase {
   final class BogusRequest extends ShrineRequest("fooProject", 1000L, null) {
     override protected def i2b2MessageBody: NodeSeq = <foo></foo>
 
-    override def handle(handler: ShrineRequestHandler): ShrineResponse = null
+    override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean): ShrineResponse = null
 
     override val requestType: CRCRequestType = CRCRequestType.GetRequestXml
 

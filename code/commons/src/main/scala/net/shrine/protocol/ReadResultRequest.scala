@@ -25,7 +25,7 @@ final case class ReadResultRequest(
   //TODO: This request is never sent through the broadcaster-aggregator/shrine service, so it doesn't make sense
   //to have it be handled by a ShrineRequestHandler.  Should a subclass of ShrineRequest be introduced for Requests
   //like this?
-  override def handle(handler: ShrineRequestHandler): ShrineResponse = ???
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean): ShrineResponse = ???
 
   override protected def i2b2MessageBody: NodeSeq = XmlUtil.stripWhitespace(
     <message_body>
