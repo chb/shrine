@@ -41,6 +41,8 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
     
     val scanResults = scanner.scan()
     
+    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
+    
     scanResults should not be(null)
     scanResults.neverFinished.isEmpty should be(true)
     scanResults.shouldNotHaveBeenMapped should be(terms)
@@ -57,6 +59,8 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
     }
     
     val scanResults = scanner.scan()
+    
+    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
     scanResults should not be(null)
     scanResults.neverFinished.isEmpty should be(true)
@@ -75,6 +79,8 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
     
     val scanResults = scanner.scan()
     
+    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
+    
     scanResults should not be(null)
     scanResults.neverFinished.isEmpty should be(true)
     scanResults.shouldNotHaveBeenMapped should be(Set("foo"))
@@ -92,6 +98,8 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
     
     val scanResults = scanner.scan()
     
+    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
+    
     scanResults should not be(null)
     scanResults.neverFinished.isEmpty should be(true)
     scanResults.shouldNotHaveBeenMapped should be(Set("foo"))
@@ -108,6 +116,8 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
     }
     
     val scanResults = scanner.scan()
+    
+    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false) 
     
     scanResults should not be(null)
     scanResults.neverFinished should be(Set("network1", "foo"))
@@ -129,22 +139,28 @@ object ScannerTest {
   
   import QueryResult.StatusType
   
-  private object AllQueriesCompleteShrineClient extends ShrineClientAdapter {
+  private object AllQueriesCompleteShrineClient extends ShrineClientAdapter with HasShouldBroadcastFlag {
     override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse = {
+      this.everToldToBroadcast ||= shouldBroadcast
+      
       aggregatedRunQueryResponse(random.nextLong, queryDefinition, StatusType.Finished)
     }
   }
   
-  private object AllQueriesErrorShrineClient extends ShrineClientAdapter {
+  private object AllQueriesErrorShrineClient extends ShrineClientAdapter with HasShouldBroadcastFlag {
     override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse = {
+      this.everToldToBroadcast ||= shouldBroadcast
+      
       aggregatedRunQueryResponse(random.nextLong, queryDefinition, StatusType.Error)
     }
   }
   
-  private def someQueriesWorkShrineClient(termsThatShouldWork: Set[String], termsThatShouldNotWork: Set[String], termsThatShouldNeverFinish: Set[String], termsThatShouldFinishAfter1Retry: Set[String] = Set.empty): ShrineClient = new ShrineClientAdapter {
+  private def someQueriesWorkShrineClient(termsThatShouldWork: Set[String], termsThatShouldNotWork: Set[String], termsThatShouldNeverFinish: Set[String], termsThatShouldFinishAfter1Retry: Set[String] = Set.empty): ShrineClient = new ShrineClientAdapter with HasShouldBroadcastFlag {
     var timedOutTerms = Map.empty[Long, String]
     
     override def runQuery(topicId: String, outputTypes: Set[ResultOutputType], queryDefinition: QueryDefinition, shouldBroadcast: Boolean): AggregatedRunQueryResponse = {
+      this.everToldToBroadcast ||= shouldBroadcast
+      
       val Term(term) = queryDefinition.expr
       
       val queryId = random.nextLong
@@ -163,6 +179,8 @@ object ScannerTest {
     }
     
     override def readQueryResult(queryId: Long, shouldBroadcast: Boolean): AggregatedReadQueryResultResponse = {
+      this.everToldToBroadcast ||= shouldBroadcast
+      
       val status = timedOutTerms.get(queryId) match {
         case Some(_) => StatusType.Finished
         case None => StatusType.Processing
@@ -171,6 +189,10 @@ object ScannerTest {
       AggregatedReadQueryResultResponse(queryId, Seq(queryResult(status)))
     }
   } 
+
+  private trait HasShouldBroadcastFlag {
+    var everToldToBroadcast = false
+  }
   
   private def queryResult(status: QueryResult.StatusType): QueryResult = {
     val resultType = if(status.isError) None else Some(ResultOutputType.PATIENT_COUNT_XML)
