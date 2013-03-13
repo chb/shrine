@@ -16,6 +16,7 @@ import net.shrine.config.AdapterMappings
 import net.shrine.config.AdapterMappingsSource
 import net.shrine.ont.data.OntologyDAO
 import net.shrine.ont.messaging.Concept
+import scala.concurrent.Await
 
 /**
  * @author clint
@@ -36,12 +37,12 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val reScanTimeout = 0.seconds
       override val adapterMappingsSource = literalAdapterMappingsSource(mappings)
       override val ontologyDao = literalOntologyDao(terms)
-      override val shrineClient = AllQueriesCompleteShrineClient
+      override val client = ShrineApiScannerClient(AllQueriesCompleteShrineClient)
     }
     
-    val scanResults = scanner.scan()
+    val scanResults = Await.result(scanner.scan(), 1.hour)
     
-    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
+    scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
     scanResults should not be(null)
     scanResults.neverFinished.isEmpty should be(true)
@@ -55,12 +56,12 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val reScanTimeout = 0.seconds
       override val adapterMappingsSource = literalAdapterMappingsSource(mappings)
       override val ontologyDao = literalOntologyDao(terms)
-      override val shrineClient = AllQueriesErrorShrineClient
+      override val client = ShrineApiScannerClient(AllQueriesErrorShrineClient)
     }
     
-    val scanResults = scanner.scan()
+    val scanResults = Await.result(scanner.scan(), 1.hour)
     
-    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
+    scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
     scanResults should not be(null)
     scanResults.neverFinished.isEmpty should be(true)
@@ -74,12 +75,12 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val reScanTimeout = 0.seconds
       override val adapterMappingsSource = literalAdapterMappingsSource(mappings)
       override val ontologyDao = literalOntologyDao(terms)
-      override val shrineClient = someQueriesWorkShrineClient(Set("network1", "foo"), Set("network2", "bar", "baz"), Set.empty)
+      override val client = ShrineApiScannerClient(someQueriesWorkShrineClient(Set("network1", "foo"), Set("network2", "bar", "baz"), Set.empty))
     }
     
-    val scanResults = scanner.scan()
+    val scanResults = Await.result(scanner.scan(), 1.hour)
     
-    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
+    scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
     scanResults should not be(null)
     scanResults.neverFinished.isEmpty should be(true)
@@ -93,12 +94,12 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val reScanTimeout = 0.seconds
       override val adapterMappingsSource = literalAdapterMappingsSource(mappings)
       override val ontologyDao = literalOntologyDao(terms)
-      override val shrineClient = someQueriesWorkShrineClient(Set.empty, Set("network2", "bar", "baz"), Set.empty, Set("network1", "foo"))
+      override val client = ShrineApiScannerClient(someQueriesWorkShrineClient(Set.empty, Set("network2", "bar", "baz"), Set.empty, Set("network1", "foo")))
     }
     
-    val scanResults = scanner.scan()
+    val scanResults = Await.result(scanner.scan(), 1.hour)
     
-    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
+    scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
     scanResults should not be(null)
     scanResults.neverFinished.isEmpty should be(true)
@@ -112,12 +113,12 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val reScanTimeout = 0.seconds
       override val adapterMappingsSource = literalAdapterMappingsSource(mappings)
       override val ontologyDao = literalOntologyDao(terms)
-      override val shrineClient = someQueriesWorkShrineClient(Set("bar"), Set("network2", "baz"), Set("network1", "foo"))
+      override val client = ShrineApiScannerClient(someQueriesWorkShrineClient(Set("bar"), Set("network2", "baz"), Set("network1", "foo")))
     }
     
-    val scanResults = scanner.scan()
+    val scanResults = Await.result(scanner.scan(), 1.hour)
     
-    scanner.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false) 
+    scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false) 
     
     scanResults should not be(null)
     scanResults.neverFinished should be(Set("network1", "foo"))

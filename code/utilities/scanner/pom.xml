@@ -21,6 +21,12 @@
 			<artifactId>config</artifactId>
 			<version>${typesafe-config-version}</version>
 		</dependency>
+        
+        <dependency>
+            <groupId>org.spin</groupId>
+            <artifactId>spin-client</artifactId>
+            <version>${spin-base-version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>

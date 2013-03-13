@@ -25,7 +25,7 @@ final class ScannerModule(config: ScannerConfig) extends Scanner {
   
   override val ontologyDao = new ShrineSqlOntologyDAO(classpathStream(config.ontologySqlFile))
   
-  override val shrineClient = new JerseyShrineClient(config.shrineUrl, config.projectId, config.authorization)
+  override val client = ShrineApiScannerClient(new JerseyShrineClient(config.shrineUrl, config.projectId, config.authorization))
   
   private def classpathStream(fileName: String) = getClass.getClassLoader.getResourceAsStream(fileName)
 }
