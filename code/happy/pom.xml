@@ -12,7 +12,7 @@
     <dependencies>
         <dependency>
             <groupId>net.shrine</groupId>
-            <artifactId>shrine-broadcaster-aggregator</artifactId>
+            <artifactId>shrine-service</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

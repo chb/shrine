@@ -64,6 +64,7 @@ import scala.concurrent.Future
 import scala.concurrent.blocking
 import scala.concurrent.Await
 import org.spin.message.serializer.Stringable
+import net.shrine.broadcaster.spin.SpinBroadcastService
 
 /**
  * @author Clint Gilbert
@@ -239,12 +240,16 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
     
     val client = new SavesQueryIdsSpinClient(new LocalSpinClient(makeSpinClientConfig(rootEndpoint, centralAggregator), rootEndpoint -> rootNode))
 
-    val shrineService = new ShrineService(
+    val broadcastService = new SpinBroadcastService(client, Some(PeerGroupName.Test))
+    
+    import scala.concurrent.duration._
+    
+    val shrineService = new ShrineService( 
       MockAuditDao,
       new AllowsAllAuthorizationService,
-      Some(PeerGroupName.Test),
       true,
-      client)
+      broadcastService,
+      1.hour)
 
     val req = ReadPreviousQueriesRequest("SHRINE", 10000L, AuthenticationInfo(domain, username, Credential(password, false)), username, 100)
 

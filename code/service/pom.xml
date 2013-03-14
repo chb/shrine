@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <name>SHRINE Broadcaster Aggregator</name>
-    <artifactId>shrine-broadcaster-aggregator</artifactId>
+    <name>SHRINE Service</name>
+    <artifactId>shrine-service</artifactId>
     <packaging>jar</packaging>
     <parent>
         <groupId>net.shrine</groupId>
@@ -17,14 +17,9 @@
         </repository>
     </repositories>
     <build>
-        <sourceDirectory>src/main/scala</sourceDirectory>
-        <testSourceDirectory>src/test/scala</testSourceDirectory>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>tomcat-maven-plugin</artifactId>
-                <version>1.0-beta-1</version>
-            </plugin>
+            <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>tomcat-maven-plugin</artifactId> 
+                <version>1.0-beta-1</version> </plugin> -->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
@@ -88,9 +83,16 @@
 
         <dependency>
             <groupId>net.shrine</groupId>
+            <artifactId>shrine-broadcaster-aggregator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.shrine</groupId>
             <artifactId>shrine-commons</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>net.shrine</groupId>
             <artifactId>shrine-data-commons</artifactId>
@@ -101,6 +103,18 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.6</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j-version}</version>
         </dependency>
 
         <!-- Test Scoped dependencies -->
@@ -132,6 +146,7 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -147,19 +162,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--SPIN QUERY SUPPORT -->
-        <dependency>
-            <groupId>org.spin</groupId>
-            <artifactId>spin-client</artifactId>
-            <version>${spin-base-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.spin</groupId>
-            <artifactId>spin-identity-service</artifactId>
-            <version>${spin-base-version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
@@ -168,15 +170,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j-version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

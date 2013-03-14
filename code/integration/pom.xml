@@ -38,6 +38,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>net.shrine</groupId>
+            <artifactId>shrine-service</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.spin</groupId>
             <artifactId>spin-node-core</artifactId>
             <version>${spin-base-version}</version>

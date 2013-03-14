@@ -34,7 +34,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
 
   private val shouldBroadcast = true
     
-  override def setUp() {
+  override def setUp {
     handler = mock[ShrineRequestHandler]
     resource = new ShrineResource(handler)
   }
