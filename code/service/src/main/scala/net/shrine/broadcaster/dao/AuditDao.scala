@@ -16,16 +16,16 @@ trait AuditDao {
 
   def addAuditEntry(
     project: String, 
-    username: String, 
-    domain: String, 
+    domain: String,
+    username: String,
     queryText: String, 
-    queryTopic: String): Unit = addAuditEntry(new Date, project, username, domain, queryText, queryTopic)
+    queryTopic: String): Unit = addAuditEntry(new Date, project, domain, username, queryText, queryTopic)
     
   def addAuditEntry(
     time: Date,
     project: String, 
-    username: String, 
-    domain: String, 
+    domain: String,
+    username: String,
     queryText: String, 
     queryTopic: String): Unit
 

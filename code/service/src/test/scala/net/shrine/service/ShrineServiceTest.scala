@@ -37,9 +37,17 @@ import org.spin.message.serializer.Stringable
 import org.spin.client.Credentials
 import org.spin.tools.config.DefaultPeerGroups
 import net.shrine.protocol.QueryInstance
+import net.shrine.protocol.RunQueryRequest
+import net.shrine.protocol.query.QueryDefinition
+import net.shrine.protocol.query.Term
+import net.shrine.broadcaster.dao.AbstractAuditDaoTest
+import net.shrine.authorization.QueryAuthorizationService
+import net.shrine.protocol.ReadApprovedQueryTopicsRequest
+import net.shrine.protocol.ReadApprovedQueryTopicsResponse
 
 /**
  * @author Bill Simons
+ * @author Clint Gilbert
  * @date 3/30/11
  * @link http://cbmi.med.harvard.edu
  * @link http://chip.org
@@ -48,7 +56,7 @@ import net.shrine.protocol.QueryInstance
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit with EasyMockSugar {
+final class ShrineServiceTest extends AbstractAuditDaoTest with AssertionsForJUnit with EasyMockSugar {
 
   @Test
   def testReadQueryInstances {
@@ -75,5 +83,108 @@ class ShrineServiceTest extends AssertionsForJUnit with ShouldMatchersForJUnit w
     instance.queryInstanceId should equal(queryId.toString)
     instance.queryMasterId should equal(queryId.toString)
     instance.userId should equal(authn.username)
+  }
+
+  private val authn = AuthenticationInfo("some-domain", "some-user", Credential("some-password", false))
+  private val projectId = "projectId"
+  private val queryDef = QueryDefinition("yo", Term("foo"))
+  private val request = RunQueryRequest(projectId, 1L, authn, 0L, "topicId", Set.empty, queryDef)
+
+  @Test
+  def testRunQueryAggregatorFor {
+
+    def doTestRunQueryAggregatorFor(addAggregatedResult: Boolean) {
+      val service = new ShrineService(null, null, addAggregatedResult, null, null)
+
+      val aggregator = service.runQueryAggregatorFor(request)
+
+      aggregator should not be (null)
+
+      aggregator.queryId should be(-1L)
+      aggregator.groupId should be(projectId)
+      aggregator.userId should be(authn.username)
+      aggregator.requestQueryDefinition should be(queryDef)
+      aggregator.addAggregatedResult should be(addAggregatedResult)
+    }
+
+    doTestRunQueryAggregatorFor(true)
+    doTestRunQueryAggregatorFor(false)
+  }
+
+  @Test
+  def testAuditTransactionally = afterMakingTables {
+    def doTestAuditTransactionally(shouldThrow: Boolean) {
+      val service = new ShrineService(auditDao, null, true, null, null)
+
+      if (shouldThrow) {
+        intercept[Exception] {
+          service.auditTransactionally(request)(throw new Exception)
+        }
+      } else {
+        val x = 1
+
+        val actual = service.auditTransactionally(request)(x)
+
+        actual should be(x)
+      }
+
+      //We should have recorded an audit entry no matter what
+      val Seq(entry) = auditDao.findRecentEntries(1)
+
+      entry.domain should be(authn.domain)
+      entry.username should be(authn.username)
+      entry.project should be(projectId)
+      entry.queryText should be(queryDef.toI2b2String)
+      entry.queryTopic should be(request.topicId)
+      entry.time should not be (null)
+    }
+
+    doTestAuditTransactionally(true)
+    doTestAuditTransactionally(false)
+  }
+
+  @Test
+  def testAfterAuditingAndAuthorizing = afterMakingTables {
+
+    final class MockAuthService(shouldWork: Boolean) extends QueryAuthorizationService {
+      def authorizeRunQueryRequest(request: RunQueryRequest) {
+        if (!shouldWork) {
+          throw new Exception
+        }
+      }
+
+      def readApprovedEntries(request: ReadApprovedQueryTopicsRequest): ReadApprovedQueryTopicsResponse = ???
+    }
+
+    def doAfterAuditingAndAuthorizing(shouldBeAuthorized: Boolean, shouldThrow: Boolean) {
+      val service = new ShrineService(auditDao, new MockAuthService(shouldBeAuthorized), true, null, null)
+
+      if (shouldThrow || !shouldBeAuthorized) {
+        intercept[Exception] {
+          service.afterAuditingAndAuthorizing(request)(throw new Exception)
+        }
+      } else {
+        val x = 1
+
+        val actual = service.afterAuditingAndAuthorizing(request)(x)
+
+        actual should be(x)
+      }
+
+      //We should have recorded an audit entry no matter what
+      val Seq(entry) = auditDao.findRecentEntries(1)
+
+      entry.domain should be(authn.domain)
+      entry.username should be(authn.username)
+      entry.project should be(projectId)
+      entry.queryText should be(queryDef.toI2b2String)
+      entry.queryTopic should be(request.topicId)
+      entry.time should not be (null)
+    }
+
+    doAfterAuditingAndAuthorizing(true, true)
+    doAfterAuditingAndAuthorizing(true, false)
+    doAfterAuditingAndAuthorizing(false, true)
+    doAfterAuditingAndAuthorizing(false, false)
   }
 }

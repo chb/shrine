@@ -22,7 +22,7 @@ trait AuditEntryComponent { self: HasDriver =>
     def queryText = column[String]("QUERY_TEXT", O.Nullable)//TODO:  TEXT,
     def queryTopic = column[String]("QUERY_TOPIC", O.Nullable)
     
-    def withoutId = project ~ username ~ domain ~ time ~ queryText ~ queryTopic
+    def withoutId = project ~ domain ~ username ~ time ~ queryText ~ queryTopic
     
     override def * = id ~: withoutId <> (AuditEntry, AuditEntry.unapply _)
     

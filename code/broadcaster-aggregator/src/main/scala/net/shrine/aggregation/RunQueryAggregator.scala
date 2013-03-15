@@ -18,12 +18,14 @@ import net.shrine.protocol.AggregatedRunQueryResponse
  * Date: 8/11/11
  */
 class RunQueryAggregator(
-  queryId: Long,
-  userId: String,
-  groupId: String,
-  requestQueryDefinition: QueryDefinition,
-  doAggregation: Boolean) extends PackagesErrorsAggregator[RunQueryResponse](errorMessage = None, invalidMessage = Some("Unexpected response")) {
+  val queryId: Long,
+  val userId: String,
+  val groupId: String,
+  val requestQueryDefinition: QueryDefinition,
+  val addAggregatedResult: Boolean) extends PackagesErrorsAggregator[RunQueryResponse](errorMessage = None, invalidMessage = Some("Unexpected response")) {
 
+  def withQueryId(qId: Long) = new RunQueryAggregator(qId, userId, groupId, requestQueryDefinition, addAggregatedResult)
+  
   /* We need to override this some place in Carranet, we need this method to change descriptions of responses */
   protected def transformResult(n: QueryResult, metaData: Result): QueryResult = n.withDescription(metaData.getDescription)
 
@@ -50,7 +52,7 @@ class RunQueryAggregator(
     val now = Util.now
 
     val aggResults = {
-      if (doAggregation) {
+      if (addAggregatedResult) {
         val sumResult = new QueryResult(0L, invalidInstanceId, PATIENT_COUNT_XML, counts.sum, now, now, "TOTAL COUNT", QueryResult.StatusType.Finished)
 
         results :+ sumResult

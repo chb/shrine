@@ -10,8 +10,8 @@ import java.sql.Timestamp
 final case class AuditEntry(
     auditEntryId: Long, 
     project: String, 
-    username: String, 
-    domain: String, 
+    domain: String,
+    username: String,
     time: Timestamp, 
     queryText: String, 
     queryTopic: String)

@@ -27,6 +27,12 @@
             <artifactId>spin-client</artifactId>
             <version>${spin-base-version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>net.shrine</groupId>
+            <artifactId>shrine-broadcaster-aggregator</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 	</dependencies>
 
 	<build>

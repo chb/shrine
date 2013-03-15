@@ -20,23 +20,12 @@ import net.shrine.broadcaster.dao.slick.tables.Tables
  * Ported to Scala on Feb 28, 2012
  *
  */
-final class AuditDaoTest extends AbstractDependencyInjectionSpringContextTests with ShouldMatchersForJUnit {
-
-  @Autowired
-  private var auditDao: AuditDao = _
-
-  @Autowired
-  private var tables: Tables = _
-
-  @Autowired
-  private var database: Database = _
-
-  override protected def getConfigLocations: Array[String] = Array("classpath:testApplicationContext.xml")
+final class AuditDaoTest extends AbstractAuditDaoTest {
 
   private val numDummyEntries = 20
 
   @Test
-  def testGetRecentEntries = afterMakingTables {
+  def testGetRecentEntries = withDummyEntries {
     val limit = numDummyEntries / 2
 
     val entries = auditDao.findRecentEntries(limit)
@@ -56,21 +45,10 @@ final class AuditDaoTest extends AbstractDependencyInjectionSpringContextTests w
     entries should equal(entries.sortBy(_.time.getTime).reverse)
   }
 
-  private def afterMakingTables(f: => Any) {
-    val t = tables
-    import t.driver.Implicit._
+  private def withDummyEntries(f: => Any) = afterMakingTables {
+    addDummyEntries()
 
-    database.withTransaction { implicit session: Session =>
-      try {
-        tables.AuditEntries.ddl.create
-
-        addDummyEntries()
-
-        f
-      } finally {
-        tables.AuditEntries.ddl.drop
-      }
-    }
+    f
   }
 
   private def addDummyEntries() {
@@ -86,7 +64,7 @@ final class AuditDaoTest extends AbstractDependencyInjectionSpringContextTests w
     val queryText = "query" + i
     val queryTopic = "topic" + i
 
-    auditDao.addAuditEntry(date, project, username, domain, queryText, queryTopic)
+    auditDao.addAuditEntry(date, project, domain, username, queryText, queryTopic)
 
     val Seq(entry) = auditDao.findRecentEntries(1)
 

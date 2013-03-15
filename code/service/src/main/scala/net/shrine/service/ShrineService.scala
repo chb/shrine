@@ -58,22 +58,8 @@ class ShrineService(
   import broadcastService.sendAndAggregate
   
   override def runQuery(request: RunQueryRequest, shouldBroadcast: Boolean): ShrineResponse = {
-    auditTransactionally(request) {
-
-      authorizationService.authorizeRunQueryRequest(request)
-
-      val reqWithQueryIdAssigned = request.withNetworkQueryId(BroadcastMessage.Ids.next)
-
-      val message = BroadcastMessage(reqWithQueryIdAssigned.networkQueryId, reqWithQueryIdAssigned)
-
-      val aggregator = new RunQueryAggregator(
-        message.requestId,
-        reqWithQueryIdAssigned.authn.username,
-        reqWithQueryIdAssigned.projectId,
-        reqWithQueryIdAssigned.queryDefinition,
-        includeAggregateResult)
-
-      waitFor(sendAndAggregate(message, aggregator, shouldBroadcast))
+    afterAuditingAndAuthorizing(request) {
+      waitFor(sendAndAggregate(request, runQueryAggregatorFor(request), shouldBroadcast))
     }
   }
 
@@ -113,7 +99,27 @@ class ShrineService(
     }
   }
   
-  private def auditTransactionally[T](request: RunQueryRequest)(body: => T): T = {
+  private[service] def runQueryAggregatorFor(request: RunQueryRequest): RunQueryAggregator = {
+    new RunQueryAggregator(
+        //NB: Use dummy queryId, since this will be assigned by the BroadcasterService if needed
+        //TODO: Don't use dummy values
+        -1L,
+        request.authn.username,
+        //TODO: Confusing field name: this is called groupId, but we're passing the projectId
+        request.projectId, 
+        request.queryDefinition,
+        includeAggregateResult)
+  }
+  
+  private[service] def afterAuditingAndAuthorizing[T](request: RunQueryRequest)(body: => T): T = {
+    auditTransactionally(request) {
+      authorizationService.authorizeRunQueryRequest(request)
+      
+      body
+    }
+  }
+  
+  private[service] def auditTransactionally[T](request: RunQueryRequest)(body: => T): T = {
     auditDao.inTransaction {
       try { body } finally {
         auditDao.addAuditEntry(

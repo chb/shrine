@@ -16,11 +16,11 @@ final class SlickAuditDao(database: Database, tables: Tables) extends AuditDao {
   import tables._
   import driver.Implicit._
 
-  override def addAuditEntry(time: Date, project: String, username: String, domain: String, queryText: String, queryTopic: String) {
+  override def addAuditEntry(time: Date, project: String, domain: String, username: String, queryText: String, queryTopic: String) {
     val timestamp = new java.sql.Timestamp(time.getTime)
 
     database.withTransaction { implicit session: Session =>
-      AuditEntries.withoutId.insert(project, username, domain, timestamp, queryText, queryTopic)
+      AuditEntries.withoutId.insert(project, domain, username, timestamp, queryText, queryTopic)
     }
   }
 
