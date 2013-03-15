@@ -11,12 +11,14 @@ import net.shrine.protocol.ResultOutputType.PATIENT_COUNT_XML
  * @date Nov 6, 2012
  */
 //TODO: TEST!!!
-final class ReadQueryResultAggregator(shrineNetworkQueryId: Long, showAggregation: Boolean) extends 
+final class ReadQueryResultAggregator(val shrineNetworkQueryId: Long, val showAggregation: Boolean) extends 
     StoredResultsAggregator[ReadQueryResultResponse, AggregatedReadQueryResultResponse](
         shrineNetworkQueryId: Long, 
         showAggregation: Boolean,
         Some("No results available"), 
         Some("No results available")) {
+  
+  def withShrineNetworkQueryId(qId: Long) = new ReadQueryResultAggregator(qId, showAggregation)
   
   protected override def consolidateQueryResults(queryResultsFromAllValidResponses: Seq[(SpinResultEntry, Seq[QueryResult])]): Seq[QueryResult] = {
     queryResultsFromAllValidResponses.unzip._2.flatten

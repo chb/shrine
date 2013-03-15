@@ -45,7 +45,7 @@ final case class SpinApiScannerClient(val projectId: String, val spinClient: Spi
 
     val queryId = BroadcastMessage.Ids.next
     
-    val message = BroadcastMessage(queryId, RunQueryRequest(projectId, waitTimeMs, authorization, queryId, topicId, outputTypes.toSet, toQueryDef(term)))
+    val message = BroadcastMessage(queryId, RunQueryRequest(projectId, waitTimeMs, authorization, queryId, topicId, outputTypes, toQueryDef(term)))
 
     val futureResultSet = spinClient.query(queryType(message), message, peerGroupToQuery)
 

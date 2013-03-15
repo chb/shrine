@@ -15,6 +15,7 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import net.shrine.aggregation.DeleteQueryAggregator
 import net.shrine.aggregation.RunQueryAggregator
+import net.shrine.aggregation.ReadQueryResultAggregator
 
 /**
  * @author clint
@@ -94,6 +95,23 @@ final class BroadcastServiceTest extends TestCase with ShouldMatchersForJUnit {
       munged.requestQueryDefinition should equal(aggregator.requestQueryDefinition)
       munged.addAggregatedResult should equal(aggregator.addAggregatedResult)
     }
+    
+    def doTestWithReadQueryResultAggregator(showAggregation: Boolean) {
+      val aggregator = new ReadQueryResultAggregator(-1L, showAggregation)
+      
+      val message = BroadcastMessage(999L, null)
+      
+      val munged = service.addQueryId(message, aggregator).asInstanceOf[ReadQueryResultAggregator]
+      
+      munged should not be(aggregator)
+      
+      munged.shrineNetworkQueryId should be(message.requestId)
+      
+      munged.showAggregation should be(aggregator.showAggregation)
+    }
+    
+    doTestWithReadQueryResultAggregator(true)
+    doTestWithReadQueryResultAggregator(false)
   }
   
   @Test

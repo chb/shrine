@@ -7,6 +7,7 @@ import net.shrine.aggregation.Aggregator
 import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.RunQueryRequest
 import net.shrine.aggregation.RunQueryAggregator
+import net.shrine.aggregation.ReadQueryResultAggregator
 
 /**
  * @author clint
@@ -36,6 +37,7 @@ trait BroadcastService {
   
   protected[broadcaster] def addQueryId(message: BroadcastMessage, aggregator: Aggregator): Aggregator = aggregator match {
     case runQueryAggregator: RunQueryAggregator => runQueryAggregator.withQueryId(message.requestId)
+    case readQueryResultAggregator: ReadQueryResultAggregator => readQueryResultAggregator.withShrineNetworkQueryId(message.requestId) 
     case _ => aggregator
   }
   

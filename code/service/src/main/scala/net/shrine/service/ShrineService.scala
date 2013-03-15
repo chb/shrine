@@ -37,6 +37,7 @@ import net.shrine.aggregation.DeleteQueryAggregator
 import org.spin.tools.config.DefaultPeerGroups
 import net.shrine.broadcaster.BroadcastService
 import scala.concurrent.duration.Duration
+import net.shrine.aggregation.Aggregators
 
 /**
  * @author Bill Simons
@@ -99,17 +100,7 @@ class ShrineService(
     }
   }
   
-  private[service] def runQueryAggregatorFor(request: RunQueryRequest): RunQueryAggregator = {
-    new RunQueryAggregator(
-        //NB: Use dummy queryId, since this will be assigned by the BroadcasterService if needed
-        //TODO: Don't use dummy values
-        -1L,
-        request.authn.username,
-        //TODO: Confusing field name: this is called groupId, but we're passing the projectId
-        request.projectId, 
-        request.queryDefinition,
-        includeAggregateResult)
-  }
+  private[service] val runQueryAggregatorFor: RunQueryRequest => RunQueryAggregator = Aggregators.forRunQueryRequest(includeAggregateResult) _
   
   private[service] def afterAuditingAndAuthorizing[T](request: RunQueryRequest)(body: => T): T = {
     auditTransactionally(request) {
