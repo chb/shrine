@@ -38,6 +38,8 @@ import org.spin.tools.config.DefaultPeerGroups
 import net.shrine.broadcaster.BroadcastService
 import scala.concurrent.duration.Duration
 import net.shrine.aggregation.Aggregators
+import scala.concurrent.duration.FiniteDuration
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Bill Simons

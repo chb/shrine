@@ -126,18 +126,21 @@
 
 	<bean id="identityService" class="org.spin.identity.AlwaysCertifiesIdentityService"/>
 
+    <!-- TODO: Needed for now, need to revisit Spin client config to properly make credentials optional, or use some other solution that doesn't require dummy values -->
 	<bean id="dummySpinCredentials" class="org.spin.client.Credentials">
 		<constructor-arg index="0" value="some-domain"/>
     	<constructor-arg index="1" value="some-user"/>
     	<constructor-arg index="2" value="some-password"/>
 	</bean>
 	
+    <!-- UGH: Need to use this bean to access static fields, gah -->
 	<bean id="spinEncryptionParams" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
   		<property name="staticField" value="org.spin.message.EncryptionParams.NoEncryption"/>
 	</bean>
 	
     <bean id="spinClientConfig" class="org.spin.client.SpinClientConfig">
     	<constructor-arg index="0" ref="broadcasterPeerGroupToQuery"/>
+        <!-- TODO: Needed for now, need to revisit Spin client config to properly make credentials optional, or use some other solution that doesn't require dummy values -->
     	<constructor-arg index="1" ref="dummySpinCredentials"/>
     	<constructor-arg index="2" ref="shrineEndpointEndpointConfig"/>
     	<constructor-arg index="3" ref="aggregatorEndpointConfigOption"/>
@@ -149,6 +152,10 @@
 
 	<bean id="spinClient" class="org.spin.client.RemoteSpinClient">
         <constructor-arg index="0" ref="spinClientConfig"/>
+    </bean>
+
+    <bean id="broadcastService" class="net.shrine.broadcaster.spin.SpinBroadcastService">
+        <constructor-arg index="0" ref="spinClient"/>
     </bean>
 
 	<!-- 5 seconds, Spin's default -->

@@ -19,7 +19,7 @@ import net.shrine.aggregation.ReadQueryResultAggregator
  * @author clint
  * @date Mar 14, 2013
  */
-final class BroadcastServiceScannerClient(
+final case class BroadcastServiceScannerClient(
     val projectId: String,
     val authn: AuthenticationInfo,
     val broadcastService: BroadcastService) extends ScannerClient with Loggable {

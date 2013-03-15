@@ -240,7 +240,7 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
     
     val client = new SavesQueryIdsSpinClient(new LocalSpinClient(makeSpinClientConfig(rootEndpoint, centralAggregator), rootEndpoint -> rootNode))
 
-    val broadcastService = new SpinBroadcastService(client, Some(PeerGroupName.Test))
+    val broadcastService = new SpinBroadcastService(client)
     
     import scala.concurrent.duration._
     

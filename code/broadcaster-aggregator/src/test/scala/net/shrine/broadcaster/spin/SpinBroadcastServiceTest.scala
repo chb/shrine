@@ -18,20 +18,18 @@ import org.spin.client.SpinClient
 import org.spin.message.serializer.Stringable
 import org.spin.client.Credentials
 import scala.concurrent.Future
-import org.scalatest.mock.EasyMockSugar
-import org.easymock.EasyMock.{ expect => invoke }
-import org.easymock.EasyMock.isA
-import org.easymock.EasyMock.same
 import org.spin.tools.config.DefaultPeerGroups
 import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.DeleteQueryRequest
 import org.spin.message.Failure
+import org.spin.client.SpinClientConfig
+import org.spin.client.Credentials
 
 /**
  * @author clint
  * @date Mar 13, 2013
  */
-final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUnit with EasyMockSugar {
+final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUnit {
   import SpinBroadcastServiceTest._
   
   @Test
@@ -62,9 +60,9 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
 
     val resultSetWithNulls = ResultSet.of("query-id", true, results.size, results.asJava, Seq.empty.asJava)
 
-    val spinAgent = new MockSpinClient(resultSetWithNulls)
+    val spinAgent = new MockSpinClient(resultSetWithNulls, None)
 
-    val broadcastService = new SpinBroadcastService(spinAgent, None)
+    val broadcastService = new SpinBroadcastService(spinAgent)
 
     val aggregator = new Aggregator {
       def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = ErrorResponse(spinCacheResults.size.toString)
@@ -82,26 +80,26 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
 
     //shouldBroadcast = true
     {
-      val service = new SpinBroadcastService(null, None)
+      val service = new SpinBroadcastService(new MockSpinClient(null, None))
 
       service.determinePeergroup(projectId, true) should equal(projectId)
     }
 
     {
-      val service = new SpinBroadcastService(null, Option(expectedPeerGroup))
+      val service = new SpinBroadcastService(new MockSpinClient(null, Option(expectedPeerGroup)))
 
       service.determinePeergroup(projectId, true) should equal(expectedPeerGroup)
     }
     
     //shouldBroadcast = false
     {
-      val service = new SpinBroadcastService(null, None)
+      val service = new SpinBroadcastService(new MockSpinClient(null, None))
 
       service.determinePeergroup(projectId, false) should equal(DefaultPeerGroups.LOCAL.name)
     }
 
     {
-      val service = new SpinBroadcastService(null, Option(expectedPeerGroup))
+      val service = new SpinBroadcastService(new MockSpinClient(null, Option(expectedPeerGroup)))
 
       service.determinePeergroup(projectId, false) should equal(DefaultPeerGroups.LOCAL.name)
     }
@@ -109,26 +107,22 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
 
   @Test
   def testSendMessage {
-    val mockClient = mock[SpinClient]
-    val nodeId = new CertID("98345")
-    val service = new SpinBroadcastService(mockClient, None)
-    val authn = new AuthenticationInfo("domain", "username", new Credential("passwd", false))
     val projectId = "projectId"
+    val peerGroupToQuery = projectId
+    val mockClient = new MockSpinClient(null, Some(peerGroupToQuery))
+    val nodeId = new CertID("98345")
+    val service = new SpinBroadcastService(mockClient)
+    val authn = new AuthenticationInfo("domain", "username", new Credential("passwd", false))
     val message = new BroadcastMessage(1L, new DeleteQueryRequest(projectId, 1L, authn, 1L))
     val queryType = message.request.requestType.name
-    val peerGroupToQuery = projectId
     val credentials = SpinBroadcastService.toCredentials(authn)
     	
-    import scala.collection.JavaConverters._
-
-    val futureResultSet = Future.successful(ResultSet.of("some-query-id", true, 0, Seq.empty[Result].asJava, Seq.empty[Failure].asJava))
-
-    expecting {
-      invoke(mockClient.query(queryType, message, peerGroupToQuery, credentials)).andReturn(futureResultSet)
-    }
-    whenExecuting(mockClient) {
-      service.sendMessage(message, true)
-    }
+    service.sendMessage(message, true)
+    
+    mockClient.queryTypeParam.get should be(queryType)
+    mockClient.inputParam.get should be(message)
+    mockClient.peerGroupParam.get should be(peerGroupToQuery)
+    mockClient.credentialsParam.get should be(credentials)
   }
 
   @Test
@@ -147,7 +141,7 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
 
     val resultSetWithNulls = ResultSet.of("query-id", true, results.size + failures.size, results.asJava, failures.asJava)
 
-    val broadcastService = new SpinBroadcastService(new MockSpinClient(resultSetWithNulls), None)
+    val broadcastService = new SpinBroadcastService(new MockSpinClient(resultSetWithNulls, None))
 
     val aggregator = new Aggregator {
       def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = ErrorResponse(spinCacheResults.size.toString + "," + errors.size.toString)
@@ -160,9 +154,21 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
 }
 
 object SpinBroadcastServiceTest {
-  private final class MockSpinClient(toReturn: ResultSet) extends SpinClient {
-    override def config = ???
+  private final class MockSpinClient(toReturn: ResultSet, peerGroupToQuery: Option[String]) extends SpinClient {
+    override val config = SpinClientConfig.Default.withPeerGroupToQuery(peerGroupToQuery.orNull)
 
-    override def query[T : Stringable](queryType: String, input: T, peerGroup: String, credentials: Credentials): Future[ResultSet] = Future.successful(toReturn)
+    var queryTypeParam: Option[String] = None
+    var inputParam: Option[Any] = None
+    var peerGroupParam: Option[String] = None
+    var credentialsParam: Option[Credentials] = None
+    
+    override def query[T : Stringable](queryType: String, input: T, peerGroup: String, credentials: Credentials): Future[ResultSet] = {
+      queryTypeParam = Some(queryType)
+      inputParam = Some(input)
+      peerGroupParam = Some(peerGroup)
+      credentialsParam = Some(credentials)
+      
+      Future.successful(toReturn)
+    }
   }
 }

@@ -31,9 +31,6 @@
             </plugin>
         </plugins>
     </build>
-    <properties>
-        <cxf-version>2.2.9</cxf-version>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>com.typesafe.slick</groupId>

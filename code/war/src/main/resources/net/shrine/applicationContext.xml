@@ -11,11 +11,21 @@
     	<constructor-arg ref="broadcasterPeerGroupToQuery"/>
     </bean>
         
+    <!-- UGH: Need to use this bean to access static fields, gah -->
+    <bean id="queryTimeoutTimeUnit" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField" value="java.util.concurrent.TimeUnit.MILLISECONDS"/>
+    </bean>
+        
+    <bean id="queryTimeoutDuration" class="scala.concurrent.duration.FiniteDuration">
+        <constructor-arg index="0" ref="queryTTL"/> <!-- TODO: is this right? -->
+        <constructor-arg index="1" ref="queryTimeoutTimeUnit"/>
+    </bean>
+        
     <bean id="shrineService" class="net.shrine.service.ShrineService">
         <constructor-arg index="0" ref="auditDao"/>
         <constructor-arg index="1" ref="authorizationService"/>
-        <constructor-arg index="2" ref="broadcasterPeerGroupToQueryOption"/>
-        <constructor-arg index="3" ref="isIncludeAggregateResults"/>
-        <constructor-arg index="4" ref="spinClient"/>
+        <constructor-arg index="2" ref="isIncludeAggregateResults"/>
+        <constructor-arg index="3" ref="broadcastService"/>
+        <constructor-arg index="4" ref="queryTimeoutDuration"/>
     </bean>
 </beans>
