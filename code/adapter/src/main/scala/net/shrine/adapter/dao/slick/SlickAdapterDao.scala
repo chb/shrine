@@ -131,7 +131,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
 
     val thirtyDaysInThePast = DateHelpers.daysFromNow(-30)
 
-    val overrideDate = privilegedUserOption.map(_.overrideDate).getOrElse(thirtyDaysInThePast)
+    val overrideDate = privilegedUserOption.flatMap(_.overrideDate).getOrElse(thirtyDaysInThePast)
 
     val counts = allResults(Queries.repeatedResults(id.getUsername, id.getDomain, overrideDate)).sorted
 

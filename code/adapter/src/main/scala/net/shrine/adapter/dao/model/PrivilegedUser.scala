@@ -11,4 +11,4 @@ final case class PrivilegedUser(
   username: String,
   domain: String,
   threshold: Int,
-  overrideDate: XMLGregorianCalendar)
+  overrideDate: Option[XMLGregorianCalendar])

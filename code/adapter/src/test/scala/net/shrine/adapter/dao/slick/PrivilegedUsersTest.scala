@@ -172,9 +172,7 @@ final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContext
     import d.Implicit._
 
     database.withSession { implicit session: Session =>
-      //TODO: Fix once PrivilegedUsers.overrideDate is nullable; currently bogus override date equal to default is added. :(
-      //PrivilegedUsers.withoutId.insert(testUsername, testDomain, testThreshold, None)
-      tables.PrivilegedUsers.withoutId.insert(testUsername, testDomain, testThreshold, DateHelpers.daysFromNow(-30))
+      tables.PrivilegedUsers.withoutId.insert(testUsername, testDomain, testThreshold, None)
     }
   }
 

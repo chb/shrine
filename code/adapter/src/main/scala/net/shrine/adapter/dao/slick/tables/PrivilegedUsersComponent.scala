@@ -18,13 +18,10 @@ trait PrivilegedUsersComponent extends HasColumns { self: HasDriver =>
     def overrideDate = {
       import DateHelpers.Implicit._
 
-      //TODO: Needs to be nullable and non-Optional to work 
-      //https://github.com/slick/slick/issues/54
-      //until we can upgrade to Scala 2.10/Slick 
-      column[XMLGregorianCalendar]("OVERRIDE_DATE", O.NotNull)
+      column[XMLGregorianCalendar]("OVERRIDE_DATE", O.Nullable)
     }
 
-    def withoutId = username ~ domain ~ threshold ~ overrideDate
+    def withoutId = username ~ domain ~ threshold ~ overrideDate.?
 
     override def * = id ~: withoutId <> (PrivilegedUser, PrivilegedUser.unapply _)
   }
