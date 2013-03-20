@@ -13,25 +13,28 @@ import net.shrine.aggregation.Aggregators
 import net.shrine.protocol.ReadQueryResultRequest
 import net.shrine.protocol.ReadQueryResultResponse
 import net.shrine.aggregation.ReadQueryResultAggregator
+import net.shrine.utilities.scanner.components.HasSingleThreadExecutionContextComponent
+import net.shrine.protocol.AggregatedRunQueryResponse
+import net.shrine.protocol.AggregatedReadQueryResultResponse
+import net.shrine.utilities.scanner.components.HasBroadcastServiceComponent
+import net.shrine.utilities.scanner.components.HasExecutionContextComponent
 
 
 /**
  * @author clint
  * @date Mar 14, 2013
  */
-final case class BroadcastServiceScannerClient(
-    val projectId: String,
-    val authn: AuthenticationInfo,
-    val broadcastService: BroadcastService) extends ScannerClient with Loggable {
+trait BroadcastServiceScannerClient extends ScannerClient with Loggable { 
+  self: HasExecutionContextComponent with HasBroadcastServiceComponent =>
   
-  //private val peerGroupToQuery = DefaultPeerGroups.LOCAL.name
+  val projectId: String
+  
+  val authn: AuthenticationInfo
   
   private val waitTimeMs = 10000
   
   //Don't ask for an aggregated (summed) result, since we'll get at most one result back in any case 
   private val runQueryAggregatorSource = Aggregators.forRunQueryRequest(false) _
-  
-  import ExecutionContext.Implicits.global
   
   override def query(term: String): Future[TermResult] = {
     import Scanner.QueryDefaults._
@@ -42,7 +45,7 @@ final case class BroadcastServiceScannerClient(
     
     val futureResponse = broadcastService.sendAndAggregate(request, runQueryAggregatorSource(request), false)
     
-    def toTermResult(runQueryResponse: RunQueryResponse): TermResult = {
+    def toTermResult(runQueryResponse: AggregatedRunQueryResponse): TermResult = {
       val termResultOption = for {
         shrineQueryResult <- runQueryResponse.results.headOption
       } yield TermResult(runQueryResponse.queryId, term, shrineQueryResult.statusType, shrineQueryResult.setSize)
@@ -51,7 +54,7 @@ final case class BroadcastServiceScannerClient(
       termResultOption.getOrElse(errorTermResult(runQueryResponse.queryId, term))
     }
     
-    futureResponse.collect { case resp: RunQueryResponse => resp }.map(toTermResult)
+    futureResponse.collect { case resp: AggregatedRunQueryResponse => resp }.map(toTermResult)
   }
   
   override def retrieveResults(termResult: TermResult): Future[TermResult] = {
@@ -61,7 +64,7 @@ final case class BroadcastServiceScannerClient(
     
     val futureResponse = broadcastService.sendAndAggregate(request, new ReadQueryResultAggregator(termResult.networkQueryId, false), false)
     
-    def toTermResult(readQueryResultResponse: ReadQueryResultResponse): TermResult = {
+    def toTermResult(readQueryResultResponse: AggregatedReadQueryResultResponse): TermResult = {
       val termResultOption = for {
         shrineQueryResult <- readQueryResultResponse.results.headOption
       } yield TermResult(termResult.networkQueryId, termResult.term, shrineQueryResult.statusType, shrineQueryResult.setSize)
@@ -70,6 +73,6 @@ final case class BroadcastServiceScannerClient(
       termResultOption.getOrElse(errorTermResult(termResult.networkQueryId, termResult.term))
     }
     
-    futureResponse.collect { case resp: ReadQueryResultResponse => resp }.map(toTermResult)
+    futureResponse.collect { case resp: AggregatedReadQueryResultResponse => resp }.map(toTermResult)
   }
 }

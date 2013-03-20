@@ -11,18 +11,15 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.AggregatedRunQueryResponse
 import java.util.concurrent.Executors
 import ScannerClient._
+import net.shrine.utilities.scanner.components.HasSingleThreadExecutionContextComponent
 
 /**
  * @author clint
  * @date Mar 12, 2013
  */
-final case class ShrineApiScannerClient(val shrineClient: ShrineClient) extends ScannerClient with Loggable {
+final case class ShrineApiScannerClient(val shrineClient: ShrineClient) extends ScannerClient with HasSingleThreadExecutionContextComponent with Loggable {
   private val shouldBroadcast = false
 
-  //import ExecutionContext.Implicits.global
-  
-  private implicit val executionContext = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(1))
-  
   override def query(term: String): Future[TermResult] = Future {
     //blocking {
       import Scanner.QueryDefaults._

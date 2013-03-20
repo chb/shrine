@@ -10,7 +10,7 @@ import net.shrine.protocol.QueryResult
  * @author clint
  * @date Mar 12, 2013
  */
-trait ScannerClient {
+trait ScannerClient { 
   def query(term: String): Future[TermResult]
   
   def retrieveResults(termResult: TermResult): Future[TermResult]

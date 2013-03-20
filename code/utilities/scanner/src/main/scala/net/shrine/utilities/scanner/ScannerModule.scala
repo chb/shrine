@@ -20,6 +20,9 @@ import org.spin.tools.config.EndpointConfig
 import net.shrine.broadcaster.spin.SpinBroadcastService
 import org.spin.tools.crypto.PKITool
 import org.spin.node.connector.ConnectorUtils
+import scala.concurrent.Await
+import net.shrine.utilities.scanner.components.HasSpinBroadcastServiceComponent
+import net.shrine.utilities.scanner.components.HasSingleThreadExecutionContextComponent
 
 /**
  * @author clint
@@ -42,11 +45,13 @@ final class ScannerModule(config: ScannerConfig) extends Scanner {
     
     val spinConfig = SpinClientConfig(peerGroupToQuery, spinCredentials, entryPoint)
     
-    val spinClient = new RemoteSpinClient(spinConfig)
-    
-    val broadcastService = new SpinBroadcastService(spinClient)
-    
-    BroadcastServiceScannerClient(config.projectId, config.authorization, broadcastService)
+    new BroadcastServiceScannerClient with HasSpinBroadcastServiceComponent with HasSingleThreadExecutionContextComponent {
+      override val projectId = config.projectId
+      override val authn = config.authorization
+      override val spinClient = new RemoteSpinClient(spinConfig)(executionContext)
+      
+      println(executionContext)
+    }
   }
   
   private def classpathStream(fileName: String) = getClass.getClassLoader.getResourceAsStream(fileName)
@@ -64,6 +69,8 @@ object ScannerModule {
     				
     val scanner = new ScannerModule(config)
     
-    scanner.scan()
+    val futureResults = scanner.scan()
+    
+    Await.result(futureResults, 1.day)
   }
 }

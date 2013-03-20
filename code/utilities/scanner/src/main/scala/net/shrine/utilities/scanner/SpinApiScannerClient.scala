@@ -18,12 +18,13 @@ import ScannerClient._
 import scala.collection.JavaConverters._
 import net.shrine.protocol.ReadQueryResultRequest
 import net.shrine.protocol.ReadQueryResultResponse
+import net.shrine.utilities.scanner.components.HasSingleThreadExecutionContextComponent
 
 /**
  * @author clint
  * @date Mar 12, 2013
  */
-final case class SpinApiScannerClient(val projectId: String, val spinClient: SpinClient) extends ScannerClient with Loggable {
+final case class SpinApiScannerClient(val projectId: String, val spinClient: SpinClient) extends ScannerClient with HasSingleThreadExecutionContextComponent with Loggable {
   private val peerGroupToQuery = DefaultPeerGroups.LOCAL.name
   
   private val waitTimeMs = 10000
@@ -34,10 +35,6 @@ final case class SpinApiScannerClient(val projectId: String, val spinClient: Spi
     AuthenticationInfo(credentials.domain, credentials.username, Credential(credentials.password, false))
   }
 
-  //import ExecutionContext.Implicits.global
-  
-  private implicit val executionContext = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(1))
-  
   override def query(term: String): Future[TermResult] = {
     import Scanner.QueryDefaults._
 
