@@ -24,12 +24,8 @@ import net.shrine.utilities.scanner.components.HasExecutionContextComponent
  * @author clint
  * @date Mar 14, 2013
  */
-trait BroadcastServiceScannerClient extends ScannerClient with Loggable { 
+abstract class BroadcastServiceScannerClient(val projectId: String, val authn: AuthenticationInfo) extends ScannerClient with Loggable { 
   self: HasExecutionContextComponent with HasBroadcastServiceComponent =>
-  
-  val projectId: String
-  
-  val authn: AuthenticationInfo
   
   private val waitTimeMs = 10000
   

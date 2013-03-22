@@ -150,12 +150,17 @@
      	<constructor-arg index="7" ref="spinPollingFrequency"/>
     </bean>
 
+    <!-- Use the Scala standard lib's default ExecutionContext, based on java.util.concurrent.ForkJoinPool, for Future-related tasks -->
+    <bean id="executionContext" class="org.spin.client.SpinClientDefaults" factory-method="forkJoinExecutionContext"/>
+
 	<bean id="spinClient" class="org.spin.client.RemoteSpinClient">
         <constructor-arg index="0" ref="spinClientConfig"/>
+        <constructor-arg index="1" ref="executionContext"/>
     </bean>
 
     <bean id="broadcastService" class="net.shrine.broadcaster.spin.SpinBroadcastService">
         <constructor-arg index="0" ref="spinClient"/>
+        <constructor-arg index="1" ref="executionContext"/>
     </bean>
 
 	<!-- 5 seconds, Spin's default -->

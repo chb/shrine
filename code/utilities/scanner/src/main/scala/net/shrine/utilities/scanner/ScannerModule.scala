@@ -3,10 +3,6 @@ package net.shrine.utilities.scanner
 import net.shrine.ont.data.OntologyDAO
 import net.shrine.ont.data.ShrineSqlOntologyDAO
 import net.shrine.config.AdapterMappingsSource
-import net.shrine.config.ClasspathAdapterMappingsSource
-import net.shrine.client.JerseyShrineClient
-import net.shrine.client.ShrineClient
-import scala.concurrent.duration.Duration
 import scala.concurrent.duration._
 import net.shrine.config.ClasspathAdapterMappingsSource
 import java.io.FileInputStream
@@ -22,6 +18,10 @@ import org.spin.tools.crypto.PKITool
 import org.spin.node.connector.ConnectorUtils
 import scala.concurrent.Await
 import net.shrine.utilities.scanner.components.HasSpinBroadcastServiceComponent
+import net.shrine.utilities.scanner.components.HasSingleThreadExecutionContextComponent
+import net.shrine.utilities.scanner.components.HasSpinClientComponent
+import net.shrine.utilities.scanner.components.HasSpinClientConfigComponent
+import net.shrine.utilities.scanner.components.HasRemoteSpinClientComponent
 import net.shrine.utilities.scanner.components.HasSingleThreadExecutionContextComponent
 
 /**
@@ -43,21 +43,15 @@ final class ScannerModule(config: ScannerConfig) extends Scanner {
     
     val entryPoint = EndpointConfig.soap(config.shrineUrl)
     
-    val spinConfig = SpinClientConfig(peerGroupToQuery, spinCredentials, entryPoint)
+    val spinClientConfig = SpinClientConfig(peerGroupToQuery, spinCredentials, entryPoint)
     
-    new BroadcastServiceScannerClient with HasSpinBroadcastServiceComponent with HasSingleThreadExecutionContextComponent {
-      override val projectId = config.projectId
-      override val authn = config.authorization
-      override val spinClient = new RemoteSpinClient(spinConfig)(executionContext)
-      
-      println(executionContext)
-    }
+    new SpinBroadcastServiceScannerClient(config.projectId, config.authorization, spinClientConfig) with HasSingleThreadExecutionContextComponent 
   }
   
   private def classpathStream(fileName: String) = getClass.getClassLoader.getResourceAsStream(fileName)
 }
 
-object ScannerModule {
+object ScannerModule extends HasSingleThreadExecutionContextComponent {
   def main(args: Array[String]) {
     
     val config = ScannerConfig("testAdapterMappings.xml", 
@@ -69,8 +63,20 @@ object ScannerModule {
     				
     val scanner = new ScannerModule(config)
     
-    val futureResults = scanner.scan()
+    /*val scanResults = scanner.scan()
     
-    Await.result(futureResults, 1.day)
+    val command = Output.to("foo.csv")
+    
+    command(scanResults)*/
+    
+    val futureResult = scanner.client.query("""\\SHRINE\SHRINE\Diagnoses\Diseases of the respiratory system\Respiratory infections\Pneumonia (except that caused by TB or STD)\""")
+    
+    val retriedFutureResult = futureResult.flatMap(scanner.client.retrieveResults)
+    
+    val retriedResult = Await.result(retriedFutureResult, 1.day)
+    
+    println(retriedResult)
+    
+    shutdownExecutor()
   }
 }

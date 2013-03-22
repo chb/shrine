@@ -28,7 +28,7 @@ trait Scanner extends Loggable {
   val ontologyDao: OntologyDAO
   val client: ScannerClient
 
-  def scan(): Future[ScanResults] = {
+  def scan(): ScanResults = {
     info("Shrine Scanner starting")
 
     val mappedNetworkTerms = adapterMappingsSource.load.networkTerms
@@ -43,41 +43,40 @@ trait Scanner extends Loggable {
   }
 
   import ExecutionContext.Implicits.global
-  
+
   import scala.concurrent.duration._
-  
+
   //TODO: Evaluate, possibly don't block?
   private val howLongToWaitForAllResults = 1.day
-  
-  private def doScan(mappedNetworkTerms: Set[String], termsExpectedToBeUnmapped: Set[String]): Future[ScanResults] = {
-    for {
-      resultsForMappedTerms <- Future.sequence(mappedNetworkTerms.map(client.query))
 
-      resultsForUnMappedTerms <- Future.sequence(termsExpectedToBeUnmapped.map(client.query))
-      
-      (finishedAndShouldHaveBeenMapped, didntFinishAndShouldHaveBeenMapped) = resultsForMappedTerms.partition(_.status.isDone)
+  private def doScan(mappedNetworkTerms: Set[String], termsExpectedToBeUnmapped: Set[String]): ScanResults = {
 
-      (finishedAndShouldNotHaveBeenMapped, didntFinishAndShouldNotHaveBeenMapped) = resultsForUnMappedTerms.partition(_.status.isDone)
+    val resultsForMappedTerms = mappedNetworkTerms.map(t => Await.result(client.query(t), 1.day))
 
-      //Terms that we expected to BE mapped, but were NOT mapped
-      shouldHaveBeenMapped = finishedAndShouldHaveBeenMapped.filter(_.status.isError)
+    val resultsForUnMappedTerms = termsExpectedToBeUnmapped.map(t => Await.result(client.query(t), 1.day))
 
-      //Terms that we expected to NOT be mapped, but ARE mapped
-      shouldNotHaveBeenMapped = finishedAndShouldNotHaveBeenMapped.filterNot(_.status.isError)
+    val (finishedAndShouldHaveBeenMapped, didntFinishAndShouldHaveBeenMapped) = resultsForMappedTerms.partition(_.status.isDone)
 
-      reScanResults <- reScan(didntFinishAndShouldHaveBeenMapped, didntFinishAndShouldNotHaveBeenMapped)
+    val (finishedAndShouldNotHaveBeenMapped, didntFinishAndShouldNotHaveBeenMapped) = resultsForUnMappedTerms.partition(_.status.isDone)
 
-      finalSouldHaveBeenMappedSet = toTermSet(shouldHaveBeenMapped) ++ reScanResults.shouldHaveBeenMapped
+    //Terms that we expected to BE mapped, but were NOT mapped
+    val shouldHaveBeenMapped = finishedAndShouldHaveBeenMapped.filter(_.status.isError)
 
-      finalSouldNotHaveBeenMappedSet = toTermSet(shouldNotHaveBeenMapped) ++ reScanResults.shouldNotHaveBeenMapped
-    } yield {
-      //Split query results into those that completed on the first try, and those that didn't
-      ScanResults(finalSouldHaveBeenMappedSet, finalSouldNotHaveBeenMappedSet, reScanResults.neverFinished)
-    }
+    //Terms that we expected to NOT be mapped, but ARE mapped
+    val shouldNotHaveBeenMapped = finishedAndShouldNotHaveBeenMapped.filterNot(_.status.isError)
+
+    val reScanResults = reScan(didntFinishAndShouldHaveBeenMapped, didntFinishAndShouldNotHaveBeenMapped)
+
+    val finalSouldHaveBeenMappedSet = toTermSet(shouldHaveBeenMapped) ++ reScanResults.shouldHaveBeenMapped
+
+    val finalSouldNotHaveBeenMappedSet = toTermSet(shouldNotHaveBeenMapped) ++ reScanResults.shouldNotHaveBeenMapped
+
+    //Split query results into those that completed on the first try, and those that didn't
+    ScanResults(finalSouldHaveBeenMappedSet, finalSouldNotHaveBeenMappedSet, reScanResults.neverFinished)
   }
 
-  private def reScan(neverFinishedShouldHaveBeenMapped: Set[TermResult], neverFinishedShouldNotHaveBeenMapped: Set[TermResult]): Future[ScanResults] = {
-    if (neverFinishedShouldHaveBeenMapped.isEmpty && neverFinishedShouldNotHaveBeenMapped.isEmpty) { Future.successful(ScanResults.empty) }
+  private def reScan(neverFinishedShouldHaveBeenMapped: Set[TermResult], neverFinishedShouldNotHaveBeenMapped: Set[TermResult]): ScanResults = {
+    if (neverFinishedShouldHaveBeenMapped.isEmpty && neverFinishedShouldNotHaveBeenMapped.isEmpty) { ScanResults.empty }
     else {
       val total = neverFinishedShouldNotHaveBeenMapped.size + neverFinishedShouldNotHaveBeenMapped.size
 
@@ -85,23 +84,21 @@ trait Scanner extends Loggable {
 
       Thread.sleep(reScanTimeout.toMillis)
 
-      for {
-        neverFinishedShouldHaveBeenMappedRetries <- Future.sequence(neverFinishedShouldHaveBeenMapped.map(client.retrieveResults))
-        
-        neverFinishedShouldNotHaveBeenMappedRetries <- Future.sequence(neverFinishedShouldNotHaveBeenMapped.map(client.retrieveResults))
-      
-        (doneShouldHaveBeenMapped, stillNotFinishedShouldHaveBeenMapped) = neverFinishedShouldHaveBeenMappedRetries.partition(_.status.isDone)
+      val neverFinishedShouldHaveBeenMappedRetries = neverFinishedShouldHaveBeenMapped.map(termResult => Await.result(client.retrieveResults(termResult), 1.day))
 
-        (doneShouldNotHaveBeenMapped, stillNotFinishedShouldNotHaveBeenMapped) = neverFinishedShouldNotHaveBeenMappedRetries.partition(_.status.isDone)
+      val neverFinishedShouldNotHaveBeenMappedRetries = neverFinishedShouldNotHaveBeenMapped.map(termResult => Await.result(client.retrieveResults(termResult), 1.day))
 
-        shouldHaveBeenMapped = doneShouldHaveBeenMapped.filter(_.status.isError)
+      val (doneShouldHaveBeenMapped, stillNotFinishedShouldHaveBeenMapped) = neverFinishedShouldHaveBeenMappedRetries.partition(_.status.isDone)
 
-        shouldNotHaveBeenMapped = doneShouldNotHaveBeenMapped.filterNot(_.status.isError)
+      val (doneShouldNotHaveBeenMapped, stillNotFinishedShouldNotHaveBeenMapped) = neverFinishedShouldNotHaveBeenMappedRetries.partition(_.status.isDone)
 
-        stillNotFinished = stillNotFinishedShouldHaveBeenMapped ++ stillNotFinishedShouldNotHaveBeenMapped
-      } yield {
-        ScanResults(toTermSet(shouldHaveBeenMapped), toTermSet(shouldNotHaveBeenMapped), toTermSet(stillNotFinished))
-      }
+      val shouldHaveBeenMapped = doneShouldHaveBeenMapped.filter(_.status.isError)
+
+      val shouldNotHaveBeenMapped = doneShouldNotHaveBeenMapped.filterNot(_.status.isError)
+
+      val stillNotFinished = stillNotFinishedShouldHaveBeenMapped ++ stillNotFinishedShouldNotHaveBeenMapped
+
+      ScanResults(toTermSet(shouldHaveBeenMapped), toTermSet(shouldNotHaveBeenMapped), toTermSet(stillNotFinished))
     }
   }
 

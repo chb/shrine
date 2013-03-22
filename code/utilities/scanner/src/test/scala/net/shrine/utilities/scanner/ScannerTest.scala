@@ -40,7 +40,7 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val client = ShrineApiScannerClient(AllQueriesCompleteShrineClient)
     }
     
-    val scanResults = Await.result(scanner.scan(), 1.hour)
+    val scanResults = scanner.scan()
     
     scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
@@ -59,7 +59,7 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val client = ShrineApiScannerClient(AllQueriesErrorShrineClient)
     }
     
-    val scanResults = Await.result(scanner.scan(), 1.hour)
+    val scanResults = scanner.scan()
     
     scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
@@ -78,7 +78,7 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val client = ShrineApiScannerClient(someQueriesWorkShrineClient(Set("network1", "foo"), Set("network2", "bar", "baz"), Set.empty))
     }
     
-    val scanResults = Await.result(scanner.scan(), 1.hour)
+    val scanResults = scanner.scan()
     
     scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
@@ -97,7 +97,7 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val client = ShrineApiScannerClient(someQueriesWorkShrineClient(Set.empty, Set("network2", "bar", "baz"), Set.empty, Set("network1", "foo")))
     }
     
-    val scanResults = Await.result(scanner.scan(), 1.hour)
+    val scanResults = scanner.scan()
     
     scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false)
     
@@ -116,7 +116,7 @@ final class ScannerTest extends TestCase with ShouldMatchersForJUnit {
       override val client = ShrineApiScannerClient(someQueriesWorkShrineClient(Set("bar"), Set("network2", "baz"), Set("network1", "foo")))
     }
     
-    val scanResults = Await.result(scanner.scan(), 1.hour)
+    val scanResults = scanner.scan()
     
     scanner.client.shrineClient.asInstanceOf[HasShouldBroadcastFlag].everToldToBroadcast should be(false) 
     

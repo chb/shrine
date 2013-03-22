@@ -2,11 +2,24 @@ package net.shrine.utilities.scanner.components
 
 import scala.concurrent.ExecutionContext
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * @author clint
  * @date Mar 20, 2013
  */
 trait HasSingleThreadExecutionContextComponent extends HasExecutionContextComponent {
-  override implicit val executionContext = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(1))
+  private val executor = Executors.newSingleThreadExecutor
+  
+  override implicit lazy val executionContext: ExecutionContext = ExecutionContext.fromExecutorService(executor)
+  
+  def shutdownExecutor() {
+    try {
+      executor.shutdown()
+      
+      executor.awaitTermination(5, TimeUnit.SECONDS)
+    } finally {
+      executor.shutdownNow()
+    }
+  }
 }

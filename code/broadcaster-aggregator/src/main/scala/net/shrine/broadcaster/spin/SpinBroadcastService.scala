@@ -25,9 +25,7 @@ import net.shrine.protocol.ErrorResponse
  * @author clint
  * @date Mar 13, 2013
  */
-final class SpinBroadcastService(val spinClient: SpinClient) extends BroadcastService with Loggable {
-  import ExecutionContext.Implicits.global
-  
+final class SpinBroadcastService(val spinClient: SpinClient, val executionContext: ExecutionContext) extends BroadcastService with Loggable {
   private lazy val broadcasterPeerGroupToQuery: Option[String] = Option(spinClient.config.peerGroupToQuery)
 
   override def sendAndAggregate(message: BroadcastMessage, aggregator: Aggregator, shouldBroadcast: Boolean): Future[ShrineResponse] = {
@@ -38,8 +36,10 @@ final class SpinBroadcastService(val spinClient: SpinClient) extends BroadcastSe
 
       result
     }
+    
+    implicit val exContext = executionContext
 
-    sendMessage(message, shouldBroadcast).map(blocking(toShrineResponse))
+    sendMessage(message, shouldBroadcast).map(toShrineResponse)
   }
 
   import SpinBroadcastService._

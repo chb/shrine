@@ -65,6 +65,7 @@ import scala.concurrent.blocking
 import scala.concurrent.Await
 import org.spin.message.serializer.Stringable
 import net.shrine.broadcaster.spin.SpinBroadcastService
+import org.spin.client.SpinClientDefaults
 
 /**
  * @author Clint Gilbert
@@ -237,10 +238,12 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
     val rootEndpoint = EndpointConfig.local(rootNodeName.name)
     
     val rootNode = nodes.get(rootNodeName)
-    
-    val client = new SavesQueryIdsSpinClient(new LocalSpinClient(makeSpinClientConfig(rootEndpoint, centralAggregator), rootEndpoint -> rootNode))
 
-    val broadcastService = new SpinBroadcastService(client)
+    val executionContext = SpinClientDefaults.forkJoinExecutionContext
+    
+    val client = new SavesQueryIdsSpinClient(new LocalSpinClient(makeSpinClientConfig(rootEndpoint, centralAggregator), rootEndpoint -> rootNode)(executionContext))
+
+    val broadcastService = new SpinBroadcastService(client, executionContext)
     
     import scala.concurrent.duration._
     
@@ -295,7 +298,7 @@ final class NetworkSimulationTest extends TestCase with ShouldMatchersForJUnit w
     doExpectedResponsesTest(nodes.get(NodeName.G), queryId, 1)
   }
 
-  private final class SavesQueryIdsSpinClient(delegate: AbstractSpinClient) extends AbstractSpinClient(delegate.config, delegate.nodeConnectorSource) {
+  private final class SavesQueryIdsSpinClient(delegate: AbstractSpinClient) extends AbstractSpinClient(delegate.config, delegate.nodeConnectorSource, delegate.executionContext) {
     var queryId: Option[String] = None
 
     private def storeQueryId(f: => AckNack): AckNack = {

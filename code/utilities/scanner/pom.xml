@@ -1,55 +1,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<name>SHRINE Scanner Utility</name>
-	<artifactId>shrine-scanner-utility</artifactId>
-	<packaging>jar</packaging>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>SHRINE Scanner Utility</name>
+    <artifactId>shrine-scanner-utility</artifactId>
+    <packaging>jar</packaging>
 
-	<parent>
-		<groupId>net.shrine</groupId>
-		<artifactId>shrine-utilities</artifactId>
-		<version>1.14-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>net.shrine</groupId>
+        <artifactId>shrine-utilities</artifactId>
+        <version>1.14-SNAPSHOT</version>
+    </parent>
 
-	<properties>
-		<typesafe-config-version>1.0.0</typesafe-config-version>
-	</properties>
+    <properties>
+        <typesafe-config-version>1.0.0</typesafe-config-version>
+        <opencsv-version>2.0</opencsv-version>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.typesafe</groupId>
-			<artifactId>config</artifactId>
-			<version>${typesafe-config-version}</version>
-		</dependency>
-        
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${opencsv-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>${typesafe-config-version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.spin</groupId>
             <artifactId>spin-client</artifactId>
             <version>${spin-base-version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>net.shrine</groupId>
             <artifactId>shrine-broadcaster-aggregator</artifactId>
             <version>${project.version}</version>
         </dependency>
-	</dependencies>
+    </dependencies>
 
-	<build>
-		<sourceDirectory>src/main/scala</sourceDirectory>
-		<testSourceDirectory>src/test/scala</testSourceDirectory>
-		<plugins>
-			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>scala-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<finalName>shrine-scanner-${project.version}.zip</finalName>
-					<appendAssemblyId>false</appendAssemblyId>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <finalName>shrine-scanner-${project.version}.zip</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

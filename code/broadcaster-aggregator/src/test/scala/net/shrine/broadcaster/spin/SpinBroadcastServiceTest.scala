@@ -24,6 +24,7 @@ import net.shrine.protocol.DeleteQueryRequest
 import org.spin.message.Failure
 import org.spin.client.SpinClientConfig
 import org.spin.client.Credentials
+import org.spin.client.SpinClientDefaults
 
 /**
  * @author clint
@@ -60,9 +61,9 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
 
     val resultSetWithNulls = ResultSet.of("query-id", true, results.size, results.asJava, Seq.empty.asJava)
 
-    val spinAgent = new MockSpinClient(resultSetWithNulls, None)
+    val spinClient = new MockSpinClient(resultSetWithNulls, None)
 
-    val broadcastService = new SpinBroadcastService(spinAgent)
+    val broadcastService = new SpinBroadcastService(spinClient, SpinClientDefaults.forkJoinExecutionContext)
 
     val aggregator = new Aggregator {
       def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = ErrorResponse(spinCacheResults.size.toString)
@@ -80,26 +81,26 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
 
     //shouldBroadcast = true
     {
-      val service = new SpinBroadcastService(new MockSpinClient(null, None))
+      val service = new SpinBroadcastService(new MockSpinClient(null, None), SpinClientDefaults.forkJoinExecutionContext)
 
       service.determinePeergroup(projectId, true) should equal(projectId)
     }
 
     {
-      val service = new SpinBroadcastService(new MockSpinClient(null, Option(expectedPeerGroup)))
+      val service = new SpinBroadcastService(new MockSpinClient(null, Option(expectedPeerGroup)), SpinClientDefaults.forkJoinExecutionContext)
 
       service.determinePeergroup(projectId, true) should equal(expectedPeerGroup)
     }
     
     //shouldBroadcast = false
     {
-      val service = new SpinBroadcastService(new MockSpinClient(null, None))
+      val service = new SpinBroadcastService(new MockSpinClient(null, None), SpinClientDefaults.forkJoinExecutionContext)
 
       service.determinePeergroup(projectId, false) should equal(DefaultPeerGroups.LOCAL.name)
     }
 
     {
-      val service = new SpinBroadcastService(new MockSpinClient(null, Option(expectedPeerGroup)))
+      val service = new SpinBroadcastService(new MockSpinClient(null, Option(expectedPeerGroup)), SpinClientDefaults.forkJoinExecutionContext)
 
       service.determinePeergroup(projectId, false) should equal(DefaultPeerGroups.LOCAL.name)
     }
@@ -111,7 +112,7 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
     val peerGroupToQuery = projectId
     val mockClient = new MockSpinClient(null, Some(peerGroupToQuery))
     val nodeId = new CertID("98345")
-    val service = new SpinBroadcastService(mockClient)
+    val service = new SpinBroadcastService(mockClient, SpinClientDefaults.forkJoinExecutionContext)
     val authn = new AuthenticationInfo("domain", "username", new Credential("passwd", false))
     val message = new BroadcastMessage(1L, new DeleteQueryRequest(projectId, 1L, authn, 1L))
     val queryType = message.request.requestType.name
@@ -141,7 +142,7 @@ final class SpinBroadcastServiceTest extends TestCase with ShouldMatchersForJUni
 
     val resultSetWithNulls = ResultSet.of("query-id", true, results.size + failures.size, results.asJava, failures.asJava)
 
-    val broadcastService = new SpinBroadcastService(new MockSpinClient(resultSetWithNulls, None))
+    val broadcastService = new SpinBroadcastService(new MockSpinClient(resultSetWithNulls, None), SpinClientDefaults.forkJoinExecutionContext)
 
     val aggregator = new Aggregator {
       def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]): ShrineResponse = ErrorResponse(spinCacheResults.size.toString + "," + errors.size.toString)
