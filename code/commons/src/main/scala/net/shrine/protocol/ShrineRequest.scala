@@ -135,5 +135,6 @@ object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshalle
     "readQueryInstances" -> ReadQueryInstancesRequest,
     "renameQuery" -> RenameQueryRequest,
     "runQuery" -> RunQueryRequest,
-    "readResult" -> ReadResultRequest)
+    "readResult" -> ReadResultRequest,
+    "readQueryResult" -> ReadQueryResultRequest)
 }

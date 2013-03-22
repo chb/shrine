@@ -18,18 +18,18 @@ final class ReadQueryResultRequestTest extends TestCase with ShouldMatchersForJU
   @Test
   def testToXml {
     val expected = XmlUtil.stripWhitespace(
-      <readPreviousQueryResult>
+      <readQueryResult>
         <projectId>some-project-id</projectId>
         <waitTimeMs>1000</waitTimeMs>
         { authn.toXml }
         <queryId>123</queryId>
-      </readPreviousQueryResult>).toString
+      </readQueryResult>).toString
 
     req.toXmlString should equal(expected)
   }
 
   @Test
   def testXmlRoundTrip {
-    ReadQueryResultRequest.fromXml(req.toXml).get should equal(req)
+    ReadQueryResultRequest.fromXml(req.toXml) should equal(req)
   }
 }

@@ -1,17 +1,16 @@
 package net.shrine.protocol
 
 import junit.framework.TestCase
-import org.scalatest.junit.AssertionsForJUnit
-import org.scalatest.matchers.ShouldMatchers
 import org.junit.Test
 import net.shrine.util.XmlUtil
 import scala.xml.NodeSeq
+import org.scalatest.junit.ShouldMatchersForJUnit
 
 /**
  * @author clint
  * @date Aug 16, 2012
  */
-final class ShrineRequestUnmarshallerTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
+final class ShrineRequestUnmarshallerTest extends TestCase with ShouldMatchersForJUnit {
   private val projectId = "jksahjksafhkafkla"
     
   private val waitTimeMs = 12345L

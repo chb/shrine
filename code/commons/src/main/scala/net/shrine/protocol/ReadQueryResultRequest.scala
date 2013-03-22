@@ -31,17 +31,17 @@ final case class ReadQueryResultRequest(
   protected def i2b2MessageBody: NodeSeq = ???
   
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(
-    <readPreviousQueryResult>
+    <readQueryResult>
       <projectId>{ projectId }</projectId>
       <waitTimeMs>{ waitTimeMs }</waitTimeMs>
       { authn.toXml }
       <queryId>{ queryId }</queryId>
-    </readPreviousQueryResult>)
+    </readQueryResult>)
 }
 
-object ReadQueryResultRequest extends XmlUnmarshaller[Try[ReadQueryResultRequest]] {
-  def fromXml(xml: NodeSeq): Try[ReadQueryResultRequest] = {
-    for {
+object ReadQueryResultRequest extends XmlUnmarshaller[ReadQueryResultRequest] {
+  override def fromXml(xml: NodeSeq): ReadQueryResultRequest = {
+    val resultAttempt = for {
       projectId <- Try((xml \ "projectId").text)
       waitTimeMs <- Try((xml \ "waitTimeMs").text.toLong)
       authn <- Try(xml \ "authenticationInfo").map(AuthenticationInfo.fromXml)
@@ -49,5 +49,7 @@ object ReadQueryResultRequest extends XmlUnmarshaller[Try[ReadQueryResultRequest
     } yield {
       ReadQueryResultRequest(projectId, waitTimeMs, authn, queryId)
     }
+    
+    resultAttempt.toOption.orNull
   }
 }
