@@ -2,7 +2,7 @@ package net.shrine.config
 
 import java.io.File
 import java.io.FileReader
-import org.spin.tools.JAXBUtils.unmarshal
+import java.io.Reader
 
 /**
  * @author clint
@@ -14,9 +14,9 @@ final class FileSystemAdapterMappingsSource(mappingFile: File) extends AdapterMa
   def this(mappingFileName: String) = this(new File(mappingFileName)) 
 
   //NB: Will blow up loudly if mapping file isn't found
-  override def load: AdapterMappings = {
+  override protected def reader: Reader = {
     require(mappingFile.exists, s"Couldn't find adapter mapping file '${ mappingFile.getCanonicalPath }'")
     
-    AdapterMappings(unmarshal(mappingFile, classOf[JaxbableAdapterMappings]))
+    new FileReader(mappingFile)
   }
 }

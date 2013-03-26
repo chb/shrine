@@ -2,6 +2,7 @@ package net.shrine.config
 
 import org.spin.tools.JAXBUtils.unmarshal
 import java.io.InputStreamReader
+import java.io.Reader
 
 /**
  * @author clint
@@ -11,11 +12,11 @@ final class ClasspathAdapterMappingsSource(mappingFileName: String) extends Adap
   require(mappingFileName != null)
   
   //NB: Will blow up loudly if mapping file isn't found
-  override def load: AdapterMappings = {
+  override protected def reader: Reader = {
     val mappingStream = getClass.getClassLoader.getResourceAsStream(mappingFileName)
     
     require(mappingStream != null, "Couldn't find adapter mapping file '" + mappingFileName + "' on the classpath")
     
-    AdapterMappings(unmarshal(new InputStreamReader(mappingStream), classOf[JaxbableAdapterMappings]))
+    new InputStreamReader(mappingStream)
   }
 }
