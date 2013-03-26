@@ -38,7 +38,7 @@
 
         <dependency>
             <groupId>net.liftweb</groupId>
-            <artifactId>lift-json_${lift-scala-version}</artifactId>
+            <artifactId>lift-json_${scala-major-version}</artifactId>
             <version>${lift-version}</version>
         </dependency>
 

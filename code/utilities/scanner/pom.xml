@@ -14,15 +14,25 @@
     <properties>
         <typesafe-config-version>1.0.0</typesafe-config-version>
         <opencsv-version>2.0</opencsv-version>
+        <scallop-version>0.8.1</scallop-version>
     </properties>
 
     <dependencies>
+        <!--  For command-line argument parsing -->
+        <dependency>
+            <groupId>org.rogach</groupId>
+            <artifactId>scallop_${scala-major-version}</artifactId>
+            <version>${scallop-version}</version>
+        </dependency>
+    
+        <!-- For writing CSV data -->
         <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>${opencsv-version}</version>
         </dependency>
 
+        <!-- For config file loading -->
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>

@@ -16,18 +16,15 @@
         <jaxws-api-version>2.1-1</jaxws-api-version>
         <jaxws-impl-version>2.1.4</jaxws-impl-version>
         <lift-version>2.5-M4</lift-version>
-        <lift-scala-version>2.10</lift-scala-version>
         <scala-version>2.10.1</scala-version>
+        <scala-major-version>2.10</scala-major-version>
         <junit-version>4.7</junit-version>
         <slf4j-version>1.5.10</slf4j-version>
         <log4j-version>1.2.12</log4j-version>
         <jersey-version>1.7</jersey-version>
-        <scalatest-scala-version>2.10</scalatest-scala-version>
         <scalatest-version>1.9.1</scalatest-version>
-        <slick-scala-version>2.10</slick-scala-version>
         <slick-version>1.0.0</slick-version>
         <scala-maven-plugin-version>3.1.3</scala-maven-plugin-version>
-	<!--<cxf-version>2.2.9</cxf-version>-->
 	<cxf-version>2.4.0</cxf-version>
     </properties>
     <build>
@@ -288,7 +285,7 @@
 
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_${scalatest-scala-version}</artifactId>
+            <artifactId>scalatest_${scala-major-version}</artifactId>
             <version>${scalatest-version}</version>
             <scope>test</scope>
         </dependency>
