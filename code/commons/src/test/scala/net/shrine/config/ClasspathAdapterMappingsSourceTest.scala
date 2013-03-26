@@ -13,10 +13,10 @@ final class ClasspathAdapterMappingsSourceTest extends AssertionsForJUnit with S
   @Test
   def testLoad {
     {
-      val shouldNotThrowWhenConstructed = new ClasspathAdapterMappingsSource("askjdklasd")
+      val shouldNotThrowWhenInvoked = new ClasspathAdapterMappingsSource("askjdklasd")
       
       intercept[Exception] {
-        shouldNotThrowWhenConstructed.load
+        shouldNotThrowWhenInvoked.load
       }
     }
     
