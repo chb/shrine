@@ -8,7 +8,7 @@ import java.io.Reader
  * @author clint
  * @date Mar 6, 2012
  */
-final class ClasspathAdapterMappingsSource(mappingFileName: String) extends AdapterMappingsSource {
+final class ClasspathAdapterMappingsSource(mappingFileName: String) extends UnmarshallingAdapterMappingsSource {
   require(mappingFileName != null)
   
   //NB: Will blow up loudly if mapping file isn't found

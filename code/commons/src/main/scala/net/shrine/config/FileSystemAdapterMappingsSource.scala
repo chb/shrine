@@ -8,7 +8,7 @@ import java.io.Reader
  * @author clint
  * @date Mar 26, 2013
  */
-final class FileSystemAdapterMappingsSource(mappingFile: File) extends AdapterMappingsSource {
+final class FileSystemAdapterMappingsSource(mappingFile: File) extends UnmarshallingAdapterMappingsSource {
   require(mappingFile != null)
   
   def this(mappingFileName: String) = this(new File(mappingFileName)) 

@@ -9,7 +9,5 @@ import org.spin.tools.JAXBUtils.unmarshal
  * @date Mar 6, 2012
  */
 trait AdapterMappingsSource {
-  def load: AdapterMappings = AdapterMappings(unmarshal(reader, classOf[JaxbableAdapterMappings]))
-  
-  protected def reader: Reader 
+  def load: AdapterMappings 
 }
