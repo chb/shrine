@@ -51,7 +51,7 @@ final class ScannerModule(config: ScannerConfig) extends Scanner {
   private def classpathStream(fileName: String) = getClass.getClassLoader.getResourceAsStream(fileName)
 }
 
-object ScannerModule extends HasSingleThreadExecutionContextComponent {
+object ScannerModule {
   def main(args: Array[String]) {
     
     val config = ScannerConfig("testAdapterMappings.xml", 
@@ -63,20 +63,22 @@ object ScannerModule extends HasSingleThreadExecutionContextComponent {
     				
     val scanner = new ScannerModule(config)
     
-    /*val scanResults = scanner.scan()
+    val scanResults = scanner.scan()
     
     val command = Output.to("foo.csv")
     
-    command(scanResults)*/
+    command(scanResults)
     
-    val futureResult = scanner.client.query("""\\SHRINE\SHRINE\Diagnoses\Diseases of the respiratory system\Respiratory infections\Pneumonia (except that caused by TB or STD)\""")
+    /*val futureResult = scanner.client.query("""\\SHRINE\SHRINE\Diagnoses\Diseases of the respiratory system\Respiratory infections\Pneumonia (except that caused by TB or STD)\""")
+    
+    import scanner.client.executionContext
     
     val retriedFutureResult = futureResult.flatMap(scanner.client.retrieveResults)
     
     val retriedResult = Await.result(retriedFutureResult, 1.day)
     
-    println(retriedResult)
+    println(retriedResult)*/
     
-    shutdownExecutor()
+    scanner.client.shutdownExecutor()
   }
 }

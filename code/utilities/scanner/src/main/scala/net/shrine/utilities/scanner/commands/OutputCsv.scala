@@ -3,14 +3,17 @@ package net.shrine.utilities.scanner.commands
 import au.com.bytecode.opencsv.CSVWriter
 import net.shrine.utilities.scanner.csv.CsvData
 import java.io.FileWriter
+import java.io.StringWriter
 
 /**
  * @author clint
  * @date Mar 21, 2013
  */
-final case class OutputCsv(fileName: String) extends Command[CsvData, Unit] {
-  override def apply(csvData: CsvData) {
-    val csvWriter = new CSVWriter(new FileWriter(fileName))
+case object OutputCsv extends (CsvData >>> String) {
+  override def apply(csvData: CsvData): String = {
+    val stringWriter = new StringWriter
+    
+    val csvWriter = new CSVWriter(stringWriter)
     
     try {
       val rowsAsArraysOfFields = csvData.rows.map(_.toArray.map(String.valueOf))
@@ -19,5 +22,7 @@ final case class OutputCsv(fileName: String) extends Command[CsvData, Unit] {
     } finally {
       csvWriter.close()
     }
+    
+    stringWriter.toString
   }
 }

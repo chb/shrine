@@ -21,21 +21,21 @@ object SEnumTest {
 
 final class SEnumTest extends TestCase with AssertionsForJUnit with ShouldMatchers {
   import SEnumTest._
-  
+ 
   @Test
   def testValues {
     import TestEnum._
     
     TestEnum.values should equal(Seq(Foo, Bar, Baz))
     
-    Foo should not be(Bar)
-    Bar should not be(Foo)
+    Foo should not equal(Bar)
+    Bar should not equal(Foo)
     
-    Bar should not be(Baz)
-    Baz should not be(Bar)
+    Bar should not equal(Baz)
+    Baz should not equal(Bar)
     
-    Baz should not be(Foo)
-    Foo should not be(Baz)
+    Baz should not equal(Foo)
+    Foo should not equal(Baz)
   }
   
   @Test

@@ -30,7 +30,9 @@ abstract class Adapter extends AbstractQueryAction[BroadcastMessage] with Loggab
       case e: AdapterLockoutException => new ErrorResponse(e.getMessage)
       case e: Exception => {
         //for now we'll warn on all errors and work towards more specific logging later
-        warn(String.format("Exception %s in Adapter with stack trace:\r\n%s caused on request\r\n %s", e.toString, e.getStackTraceString, message.toXmlString), e)
+        def messageXml = Option(message).map(_.toXmlString).getOrElse("(Null message)")
+        
+        warn(String.format("Exception %s in Adapter with stack trace:\r\n%s caused on request\r\n %s", e.toString, e.getStackTraceString, messageXml), e)
         
         ErrorResponse(e.getMessage)
       }

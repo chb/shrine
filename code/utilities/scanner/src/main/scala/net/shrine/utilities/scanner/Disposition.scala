@@ -1,13 +1,15 @@
 package net.shrine.utilities.scanner
 
+import net.shrine.util.SEnum
+
 /**
  * @author clint
  * @date Mar 21, 2013
  */
-sealed trait Disposition
+final class Disposition(val name: String) extends Disposition.Value
 
-object Disposition {
-  final case object ShouldNotHaveBeenMapped extends Disposition
-  final case object ShouldHaveBeenMapped extends Disposition
-  final case object NeverFinished extends Disposition
+object Disposition extends SEnum[Disposition] {
+  val ShouldNotHaveBeenMapped = new Disposition("ShouldNotHaveBeenMapped")
+  val ShouldHaveBeenMapped = new Disposition("ShouldHaveBeenMapped")
+  val NeverFinished = new Disposition("NeverFinished")
 }

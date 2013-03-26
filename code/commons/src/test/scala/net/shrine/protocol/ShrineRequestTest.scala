@@ -13,6 +13,20 @@ import net.shrine.protocol.query.Term
  */
 final class ShrineRequestTest extends TestCase with ShouldMatchersForJUnit {
   @Test
+  def testFromXmlThrowsOnBadInput {
+    intercept[Exception] {
+      ShrineRequest.fromXml("jksahdjkashdjkashdjkashdjksad")
+    }
+  }
+  
+  @Test
+  def testFromI2b2ThrowsOnBadInput {
+    intercept[Exception] {
+      ShrineRequest.fromI2b2("jksahdjkashdjkashdjkashdjksad")
+    }
+  }
+  
+  @Test
   def testFromXml {
     val projectId = "salkdjksaljdkla"
     val waitTimeMs = 98374L

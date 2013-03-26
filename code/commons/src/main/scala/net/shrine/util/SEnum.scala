@@ -30,6 +30,14 @@ trait SEnum[T] {
 
     //Enums can be ordered by their ordinal field
     final override def compare(other: Value): Int = this.ordinal - other.asInstanceOf[Value].ordinal
+    
+    override def hashCode: Int = ordinal.hashCode
+    
+    override def equals(other: Any): Boolean = {
+      val isRightType = other != null && other.isInstanceOf[ValueType]
+      
+      isRightType && other.asInstanceOf[ValueType].ordinal == this.ordinal
+    }
   }
   
   implicit object ordering extends Ordering[ValueType] {

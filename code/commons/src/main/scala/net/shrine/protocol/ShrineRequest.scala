@@ -71,12 +71,12 @@ abstract class ShrineRequest(
 }
 
 object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshaller[ShrineRequest] {
-  def fromI2b2(i2b2Request: NodeSeq): ShrineRequest = {
+  override def fromI2b2(i2b2Request: NodeSeq): ShrineRequest = {
     i2b2Request match {
       case x if isPsmRequest(x) => parsePsmRequest(x)
       case x if isPdoRequest(x) => parsePdoRequest(x)
       case x if isSheriffRequest(x) => parseSheriffRequest(x)
-      case _ => null
+      case _ => throw new Exception(s"Request not understood: $i2b2Request")
     }
   }
 
@@ -111,8 +111,12 @@ object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshalle
     ReadApprovedQueryTopicsRequest.fromI2b2(requestXml)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
-    shrineUnmarshallers.get(nodeSeq.head.label).map(_.fromXml(nodeSeq)).orNull
+  override def fromXml(nodeSeq: NodeSeq): ShrineRequest = {
+    val tagName = nodeSeq.head.label
+    
+    require(shrineUnmarshallers.contains(tagName))
+    
+    shrineUnmarshallers(tagName).fromXml(nodeSeq)
   }
   
   private val i2b2Unmarshallers: Map[String, I2b2Unmarshaller[_ <: ShrineRequest]] = Map(

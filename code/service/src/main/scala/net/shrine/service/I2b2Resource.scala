@@ -1,14 +1,14 @@
 package net.shrine.service
 
-import javax.ws.rs.core.{Response, MediaType}
+import javax.ws.rs.core.{ Response, MediaType }
 import org.springframework.stereotype.Component
 import org.springframework.context.annotation.Scope
 import xml.XML
 import org.springframework.beans.factory.annotation.Autowired
-import javax.ws.rs.{PathParam, POST, Produces, Path}
-import net.shrine.protocol.{ErrorResponse, ShrineRequestHandler, ShrineRequest}
+import javax.ws.rs.{ PathParam, POST, Produces, Path }
+import net.shrine.protocol.{ ErrorResponse, ShrineRequestHandler, ShrineRequest }
 import net.shrine.util.Loggable
-
+import scala.util.Try
 
 /**
  * @author Bill Simons
@@ -24,33 +24,39 @@ import net.shrine.util.Loggable
 @Produces(Array(MediaType.APPLICATION_XML))
 @Component
 @Scope("singleton")
-class I2b2Resource @Autowired()(private val shrineRequestHandler: ShrineRequestHandler) extends Loggable {
+class I2b2Resource @Autowired() (private val shrineRequestHandler: ShrineRequestHandler) extends Loggable {
 
-  @POST 
+  @POST
   @Path("request")
   def doRequest(i2b2Request: String): Response = {
     processI2b2Message(i2b2Request)
   }
 
-  @POST 
+  @POST
   @Path("pdorequest")
   def doPDORequest(i2b2Request: String): Response = {
     processI2b2Message(i2b2Request)
   }
 
   def processI2b2Message(i2b2Request: String): Response = {
-    val shrineRequest = ShrineRequest.fromI2b2(i2b2Request)
-    
-    info("Running request from user: %s of type %s".format(shrineRequest.authn.username,shrineRequest.requestType.toString))
-    
-    //NB: Always broadcast when receiving requests from the legacy i2b2/Shrine webclient, since we can't retrofit it to 
-    //Say whether broadcasting is desired for a praticular query/operation
-    val shouldBroadcast = true
-    
-    val shrineResponse = shrineRequest.handle(shrineRequestHandler, shouldBroadcast)
-    
-    val responseString = shrineResponse.toI2b2String
-    
-    Response.ok.entity(responseString).build()
+    Try {
+      ShrineRequest.fromI2b2(i2b2Request)
+    }.map {
+      shrineRequest =>
+        info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))
+
+        //NB: Always broadcast when receiving requests from the legacy i2b2/Shrine webclient, since we can't retrofit it to 
+        //Say whether broadcasting is desired for a praticular query/operation
+        val shouldBroadcast = true
+
+        val shrineResponse = shrineRequest.handle(shrineRequestHandler, shouldBroadcast)
+
+        val responseString = shrineResponse.toI2b2String
+
+        Response.ok.entity(responseString).build()
+    }.getOrElse { 
+      //TODO: I'm not sure if this is right; need to see what the legacy client expects to be returned in case of an error
+      Response.status(400).build()
+    }
   }
 }
