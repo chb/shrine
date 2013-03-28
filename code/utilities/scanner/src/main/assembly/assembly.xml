@@ -9,12 +9,19 @@
 	<includeBaseDirectory>true</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>etc</directory>
+			<directory>src/main/sh</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
-				<include>**/*</include>
+				<include>scanner</include>
 			</includes>
 		</fileSet>
+        <fileSet>
+            <directory>src/main/cmd</directory>
+            <outputDirectory>.</outputDirectory>
+            <includes>
+                <include>**/*.cmd</include>
+            </includes>
+        </fileSet>
 		<fileSet>
 			<directory>src/main/resources</directory>
 			<outputDirectory>lib</outputDirectory>

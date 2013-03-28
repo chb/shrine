@@ -13,6 +13,10 @@ trait HasSingleThreadExecutionContextComponent extends HasExecutionContextCompon
   
   override implicit lazy val executionContext: ExecutionContext = ExecutionContext.fromExecutorService(executor)
   
+  def shutdownAfter[T](f: => T) = {
+    try { f } finally { shutdownExecutor() }
+  }
+  
   def shutdownExecutor() {
     try {
       executor.shutdown()

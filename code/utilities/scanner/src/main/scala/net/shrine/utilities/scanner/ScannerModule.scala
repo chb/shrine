@@ -23,6 +23,8 @@ import net.shrine.utilities.scanner.components.HasSpinClientComponent
 import net.shrine.utilities.scanner.components.HasSpinClientConfigComponent
 import net.shrine.utilities.scanner.components.HasRemoteSpinClientComponent
 import net.shrine.utilities.scanner.components.HasSingleThreadExecutionContextComponent
+import com.typesafe.config.ConfigFactory
+import net.shrine.util.Versions
 
 /**
  * @author clint
@@ -48,18 +50,49 @@ final class ScannerModule(config: ScannerConfig) extends Scanner {
     new SpinBroadcastServiceScannerClient(config.projectId, config.authorization, spinClientConfig) with HasSingleThreadExecutionContextComponent 
   }
   
+  override def scan() = client.shutdownAfter { super.scan() }
+  
   private def classpathStream(fileName: String) = getClass.getClassLoader.getResourceAsStream(fileName)
 }
 
 object ScannerModule {
+  def printVersionInfo() {
+    println(s"Shrine Scanner version: ${ Versions.version} built on ${ Versions.buildDate }")
+    println(s"SCM branch: ${ Versions.scmBranch } SCM revision: ${ Versions.scmRevision })")
+    println()
+  }
+  
   def main(args: Array[String]) {
     
-    val config = ScannerConfig("testAdapterMappings.xml", 
+    val argsToUse = if(args.isEmpty) Seq("--help") else args.toSeq
+    
+    val commandLineProps = CommandLineScannerConfig(argsToUse)
+    
+    if(commandLineProps.showVersionToggle.isSupplied) {
+      printVersionInfo()
+    }
+    
+    if(commandLineProps.showHelpToggle.isSupplied) {
+      println("Usage: scanner [options]")
+      
+      commandLineProps.printHelp()
+      
+      System.exit(0)
+    }
+    
+    /*val config = ScannerConfig("testAdapterMappings.xml", 
     						   "testShrineWithSyns.sql",
     						   10.seconds, 
     						   "https://shrine-dev1.chip.org:6060/shrine-cell/soap/aggregate?wsdl", 
     						   "SHRINE", 
-    						   AuthenticationInfo("HarvardDemo", "bsimons", Credential("testtest", false)))
+    						   AuthenticationInfo("HarvardDemo", "bsimons", Credential("testtest", false)))*/
+    val config = {
+      val configFileProps = ConfigFactory.load
+    
+      val commandLineProps = CommandLineScannerConfig(args).toTypesafeConfig
+      
+      ScannerConfig(commandLineProps.withFallback(configFileProps))
+    }
     				
     val scanner = new ScannerModule(config)
     
@@ -68,17 +101,5 @@ object ScannerModule {
     val command = Output.to("foo.csv")
     
     command(scanResults)
-    
-    /*val futureResult = scanner.client.query("""\\SHRINE\SHRINE\Diagnoses\Diseases of the respiratory system\Respiratory infections\Pneumonia (except that caused by TB or STD)\""")
-    
-    import scanner.client.executionContext
-    
-    val retriedFutureResult = futureResult.flatMap(scanner.client.retrieveResults)
-    
-    val retriedResult = Await.result(retriedFutureResult, 1.day)
-    
-    println(retriedResult)*/
-    
-    scanner.client.shutdownExecutor()
   }
 }

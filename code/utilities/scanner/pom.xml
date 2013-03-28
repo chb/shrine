@@ -61,9 +61,41 @@
                 <artifactId>scala-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>1.3.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Needed to create a seperate shaded, executable 
+                                jar in addition to the jar that contains this module's classes. -->
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <!-- <shadedArtifactId>shrine-scanner</shadedArtifactId> -->
+                            <finalName>shrine-scanner</finalName>
+                            <!-- Set the main class in the shaded jar -->
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>net.shrine.utilities.scanner.ScannerModule</mainClass>
+                                </transformer>
+                            </transformers>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>junit:junit</exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>shrine-scanner-${project.version}.zip</finalName>
+                    <finalName>shrine-scanner-${project.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
             </plugin>

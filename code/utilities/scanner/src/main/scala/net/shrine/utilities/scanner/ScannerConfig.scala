@@ -6,6 +6,7 @@ import net.shrine.protocol.Credential
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigException
+import scala.util.Try
 
 /**
  * @author clint
@@ -23,19 +24,19 @@ object ScannerConfig {
   private[scanner] def getReScanTimeout(subConfig: Config): Duration = {
     import scala.concurrent.duration._
     import Keys._
-    
+
     if (subConfig.hasPath(milliseconds)) { subConfig.getLong(milliseconds).milliseconds }
     else if (subConfig.hasPath(seconds)) { subConfig.getLong(seconds).seconds }
     else if (subConfig.hasPath(minutes)) { subConfig.getLong(minutes).minutes }
-    else { throw new ConfigException.Missing(s"Expected to find one of scanner.reScanTimeout.{${ milliseconds }, ${ seconds }, ${ minutes }} at subConfig") }
+    else { throw new ConfigException.Missing(s"Expected to find one of scanner.reScanTimeout.{${milliseconds}, ${seconds}, ${minutes}} at subConfig") }
   }
 
   def apply(config: Config): ScannerConfig = {
     import Keys._
-    
+
     def getAuthInfo(subConfig: Config): AuthenticationInfo = {
-      def requirePath(path: String) = if(!subConfig.hasPath(path)) throw new ConfigException.Missing(s"Expected to find '$path' in $subConfig")
-      
+      def requirePath(path: String) = if (!subConfig.hasPath(path)) throw new ConfigException.Missing(s"Expected to find '$path' in $subConfig")
+
       requirePath(domain)
       requirePath(username)
       requirePath(password)
@@ -67,7 +68,7 @@ object ScannerConfig {
     val ontologySqlFile = subKey("ontologySqlFile")
     val reScanTimeout = subKey("reScanTimeout")
     val shrineUrl = subKey("shrineUrl")
-    val projectId= subKey("projectId")
+    val projectId = subKey("projectId")
     val credentials = subKey("credentials")
   }
 }
