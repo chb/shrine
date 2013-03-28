@@ -15,6 +15,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.collection.GenTraversableOnce
 import scala.concurrent.Await
+import net.shrine.utilities.scanner.components.HasScannerConfig
 
 /**
  * @author clint

@@ -15,16 +15,16 @@
 				<include>scanner</include>
 			</includes>
 		</fileSet>
-        <fileSet>
-            <directory>src/main/cmd</directory>
-            <outputDirectory>.</outputDirectory>
-            <includes>
-                <include>**/*.cmd</include>
-            </includes>
-        </fileSet>
+		<fileSet>
+			<directory>src/main/examples</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>application.conf</include>
+			</includes>
+		</fileSet>
 		<fileSet>
 			<directory>src/main/resources</directory>
-			<outputDirectory>lib</outputDirectory>
+			<outputDirectory>conf</outputDirectory>
 			<includes>
 				<include>log4j.properties</include>
 			</includes>
