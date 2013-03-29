@@ -23,17 +23,17 @@ final case class ReadQueryDefinitionRequest(
   override val authn: AuthenticationInfo,
   val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
-  val requestType = GetRequestXml
+  override val requestType = GetRequestXml
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace(
     <readQueryDefinition>
       { headerFragment }
       <queryId>{ queryId }</queryId>
     </readQueryDefinition>)
 
-  def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
 
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:master_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -44,7 +44,7 @@ final case class ReadQueryDefinitionRequest(
 
 object ReadQueryDefinitionRequest extends I2b2Unmarshaller[ReadQueryDefinitionRequest] with ShrineRequestUnmarshaller[ReadQueryDefinitionRequest] {
 
-  def fromI2b2(nodeSeq: NodeSeq): ReadQueryDefinitionRequest = {
+  override def fromI2b2(nodeSeq: NodeSeq): ReadQueryDefinitionRequest = {
     new ReadQueryDefinitionRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
@@ -52,7 +52,7 @@ object ReadQueryDefinitionRequest extends I2b2Unmarshaller[ReadQueryDefinitionRe
       (nodeSeq \ "message_body" \ "request" \ "query_master_id").text.toLong)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     new ReadQueryDefinitionRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),
