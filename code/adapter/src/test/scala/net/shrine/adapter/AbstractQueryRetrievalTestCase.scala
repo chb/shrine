@@ -32,6 +32,7 @@ import net.shrine.protocol.ReadInstanceResultsRequest
 import net.shrine.protocol.ReadResultRequest
 import net.shrine.protocol.ReadInstanceResultsResponse
 import net.shrine.protocol.ReadResultResponse
+import net.shrine.protocol.WillComeFromI2b2ShrineRequest
 
 /**
  * @author clint
@@ -108,7 +109,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     
     final class AlwaysWorksMockHttpClient extends HttpClient {
       override def post(input: String, url: String): String = {
-        val response = ShrineRequest.fromI2b2(input) match {
+        val response = WillComeFromI2b2ShrineRequest.fromI2b2(input) match {
           case req: ReadInstanceResultsRequest => {
             ReadInstanceResultsResponse(shrineNetworkQueryId, incompleteCountResult.copy(statusType = QueryResult.StatusType.Finished))
           }
@@ -246,10 +247,6 @@ object AbstractQueryRetrievalTestCase {
   
   final class BogusRequest extends ShrineRequest("fooProject", 1000L, null) {
     protected override def i2b2MessageBody: NodeSeq = <foo></foo>
-
-    protected override type Handler = Any
-      
-    override def handle(handler: Handler, shouldBroadcast: Boolean): ShrineResponse = null
 
     override val requestType: CRCRequestType = CRCRequestType.GetRequestXml
 

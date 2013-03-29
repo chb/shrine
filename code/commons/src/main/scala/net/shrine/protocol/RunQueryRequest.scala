@@ -27,7 +27,7 @@ final case class RunQueryRequest(
   val networkQueryId: Long,
   val topicId: String,
   val outputTypes: Set[ResultOutputType],
-  val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
+  val queryDefinition: QueryDefinition) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
 
   override val requestType = QueryDefinitionRequestType
 

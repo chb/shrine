@@ -69,7 +69,7 @@ class ReadPdoRequestTest extends ShrineRequestValidator {
 
   @Test
   def testShrineRequestFromI2b2() {
-    val shrineRequest = ShrineRequest.fromI2b2(request)
+    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[ReadPdoRequest])
   }
 

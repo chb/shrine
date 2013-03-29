@@ -22,10 +22,6 @@ abstract class ShrineRequest(
 
   protected def i2b2MessageBody: NodeSeq
   
-  protected type Handler >: ShrineRequestHandler
-  
-  def handle(handler: Handler, shouldBroadcast: Boolean): ShrineResponse
-
   val requestType: CRCRequestType
 
   def toI2b2 = XmlUtil.stripWhitespace {
@@ -73,46 +69,7 @@ abstract class ShrineRequest(
   }
 }
 
-object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshaller[ShrineRequest] {
-  override def fromI2b2(i2b2Request: NodeSeq): ShrineRequest = {
-    i2b2Request match {
-      case x if isPsmRequest(x) => parsePsmRequest(x)
-      case x if isPdoRequest(x) => parsePdoRequest(x)
-      case x if isSheriffRequest(x) => parseSheriffRequest(x)
-      case _ => throw new Exception(s"Request not understood: $i2b2Request")
-    }
-  }
-
-  private def isPsmRequest(requestXml: NodeSeq): Boolean = {
-    (requestXml \ "message_body" \ "psmheader").nonEmpty
-  }
-
-  private def isPdoRequest(requestXml: NodeSeq): Boolean = {
-    (requestXml \ "message_body" \ "pdoheader").nonEmpty
-  }
-
-  private def isSheriffRequest(requestXml: NodeSeq): Boolean = {
-    (requestXml \ "message_body" \ "sheriff_header").nonEmpty
-  }
-
-  private def parsePsmRequest(requestXml: NodeSeq): ShrineRequest = {
-    val incomingRequestType = (requestXml \ "message_body" \ "psmheader" \ "request_type").text
-    
-    i2b2Unmarshallers.get(incomingRequestType).map(_.fromI2b2(requestXml)).orNull
-  }
-
-  import CRCRequestType._
-  
-  private def parsePdoRequest(requestXml: NodeSeq): ReadPdoRequest = {
-    (requestXml \ "message_body" \ "pdoheader" \ "request_type").text match {
-      case x if x == GetPDOFromInputListRequestType.unsafeI2b2RequestType => ReadPdoRequest.fromI2b2(requestXml)
-      case _ => null
-    }
-  }
-
-  private def parseSheriffRequest(requestXml: NodeSeq): ReadApprovedQueryTopicsRequest = {
-    ReadApprovedQueryTopicsRequest.fromI2b2(requestXml)
-  }
+object ShrineRequest extends XmlUnmarshaller[ShrineRequest] {
 
   override def fromXml(nodeSeq: NodeSeq): ShrineRequest = {
     val tagName = nodeSeq.head.label
@@ -121,16 +78,6 @@ object ShrineRequest extends I2b2Unmarshaller[ShrineRequest] with XmlUnmarshalle
     
     shrineUnmarshallers(tagName).fromXml(nodeSeq)
   }
-  
-  private val i2b2Unmarshallers: Map[String, I2b2Unmarshaller[_ <: ShrineRequest]] = Map(
-    InstanceRequestType -> ReadInstanceResultsRequest,
-    UserRequestType -> ReadPreviousQueriesRequest,
-    GetRequestXml -> ReadQueryDefinitionRequest,
-    MasterRequestType -> ReadQueryInstancesRequest,
-    QueryDefinitionRequestType -> RunQueryRequest,
-    MasterRenameRequestType -> RenameQueryRequest,
-    MasterDeleteRequestType -> DeleteQueryRequest,
-    ResultRequestType -> ReadResultRequest).map { case (rt, u) => (rt.unsafeI2b2RequestType, u) }
   
   private val shrineUnmarshallers: Map[String, XmlUnmarshaller[_ <: ShrineRequest]] = Map(
     "deleteQuery" -> DeleteQueryRequest,

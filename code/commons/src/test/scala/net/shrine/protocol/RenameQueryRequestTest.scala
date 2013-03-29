@@ -51,7 +51,7 @@ class RenameQueryRequestTest extends ShrineRequestValidator {
 
   @Test
   def testShrineRequestFromI2b2() {
-    val shrineRequest = ShrineRequest.fromI2b2(request)
+    val shrineRequest = WillComeFromI2b2ShrineRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[RenameQueryRequest])
   }
 

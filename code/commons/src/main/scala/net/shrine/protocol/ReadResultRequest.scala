@@ -16,7 +16,7 @@ final case class ReadResultRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val localResultId: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with WontComeFromI2b2Request {
+  val localResultId: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
   def this(header: RequestHeader, localResultId: String) = this(header.projectId, header.waitTimeMs, header.authn, localResultId)
 

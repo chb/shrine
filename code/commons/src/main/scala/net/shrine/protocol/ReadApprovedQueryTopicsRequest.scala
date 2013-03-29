@@ -24,7 +24,7 @@ final case class ReadApprovedQueryTopicsRequest(
     override val waitTimeMs: Long,
     override val authn: AuthenticationInfo,
     
-    val userId: String) extends ShrineRequest(projectId, waitTimeMs, authn) {
+    val userId: String) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) {
 
   override val requestType = SheriffRequestType
 

@@ -16,7 +16,7 @@ final case class ReadQueryResultRequest(
     override val projectId: String, //TODO: needed?
     override val waitTimeMs: Long,  //TODO: needed?
     override val authn: AuthenticationInfo, //TODO: needed?
-    queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with NonI2b2ableRequest with WontComeFromI2b2Request {
+    queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with NonI2b2ableRequest {
   
   //TODO: what to do about this one, that has no meaningful i2b2 representation 
   

@@ -73,6 +73,7 @@ trait ShrineRequestValidator extends AssertionsForJUnit with ShouldMatchersForJU
     </ns6:request>)
 
   val credential = new Credential(passwd, false)
+  
   val authn = new AuthenticationInfo(domain, username, credential)
 
   def requestHeaderFragment: NodeBuffer = <projectId>{projectId}</projectId><waitTimeMs>{waitTimeMs}</waitTimeMs> &+ authn.toXml
@@ -87,6 +88,7 @@ trait ShrineRequestValidator extends AssertionsForJUnit with ShouldMatchersForJU
 
   def validateRequestWith(request: ShrineRequest)(validator: => Unit) = {
     validateBaseRequest(request)
+    
     validator
   }
 }

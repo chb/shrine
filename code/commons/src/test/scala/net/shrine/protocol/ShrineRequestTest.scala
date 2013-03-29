@@ -20,13 +20,6 @@ final class ShrineRequestTest extends TestCase with ShouldMatchersForJUnit {
   }
   
   @Test
-  def testFromI2b2ThrowsOnBadInput {
-    intercept[Exception] {
-      ShrineRequest.fromI2b2("jksahdjkashdjkashdjkashdjksad")
-    }
-  }
-  
-  @Test
   def testFromXml {
     val projectId = "salkdjksaljdkla"
     val waitTimeMs = 98374L

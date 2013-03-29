@@ -23,7 +23,7 @@ final case class ReadPreviousQueriesRequest(
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
   val userId: String,
-  val fetchSize: Int) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val fetchSize: Int) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
   override val requestType = UserRequestType
 

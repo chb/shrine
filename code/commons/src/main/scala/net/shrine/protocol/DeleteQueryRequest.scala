@@ -22,7 +22,7 @@ final case class DeleteQueryRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[DeleteQueryRequest] {
+  val queryId: Long) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[DeleteQueryRequest] {
 
   val requestType = MasterDeleteRequestType
 
