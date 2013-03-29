@@ -16,30 +16,30 @@ final case class ReadResultRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val localResultId: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val localResultId: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with WontComeFromI2b2Request {
 
   def this(header: RequestHeader, localResultId: String) = this(header.projectId, header.waitTimeMs, header.authn, localResultId)
 
   override val requestType: CRCRequestType = ResultRequestType
-
-  //TODO: This request is never sent through the broadcaster-aggregator/shrine service, so it doesn't make sense
-  //to have it be handled by a ShrineRequestHandler.  Should a subclass of ShrineRequest be introduced for Requests
-  //like this?
-  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean): ShrineResponse = ???
-
-  override protected def i2b2MessageBody: NodeSeq = XmlUtil.stripWhitespace(
+  
+  //NB: This request is never sent through the broadcaster-aggregator/shrine service, so it doesn't make sense
+  //to have it be handled by a ShrineRequestHandler.
+  
+  override protected def i2b2MessageBody: NodeSeq = XmlUtil.stripWhitespace {
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:result_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <query_result_instance_id>{ localResultId }</query_result_instance_id>
       </ns4:request>
-    </message_body>)
+    </message_body>
+  }
 
-  override def toXml: NodeSeq = XmlUtil.stripWhitespace(
+  override def toXml: NodeSeq = XmlUtil.stripWhitespace {
     <readResult>
       { headerFragment }
       <resultId>{ localResultId }</resultId>
-    </readResult>)
+    </readResult>
+  }
 }
 
 object ReadResultRequest extends ShrineRequestUnmarshaller[ReadResultRequest] with I2b2Unmarshaller[ReadResultRequest] {

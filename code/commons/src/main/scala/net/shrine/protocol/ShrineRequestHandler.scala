@@ -1,5 +1,16 @@
 package net.shrine.protocol
 
+import net.shrine.protocol.handlers.DeleteQueryHandler
+import net.shrine.protocol.handlers.ReadApprovedTopicsHandler
+import net.shrine.protocol.handlers.ReadInstanceResultsHandler
+import net.shrine.protocol.handlers.ReadPdoHandler
+import net.shrine.protocol.handlers.ReadPreviousQueriesHandler
+import net.shrine.protocol.handlers.ReadQueryDefinitionHandler
+import net.shrine.protocol.handlers.ReadQueryInstancesHandler
+import net.shrine.protocol.handlers.ReadQueryResultHandler
+import net.shrine.protocol.handlers.RenameQueryHandler
+import net.shrine.protocol.handlers.RunQueryHandler
+
 /**
  * @author Bill Simons
  * @date 3/9/11
@@ -10,24 +21,14 @@ package net.shrine.protocol
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-trait ShrineRequestHandler {
-  def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest, shouldBroadcast: Boolean = true): ShrineResponse
-
-  def readPreviousQueries(request: ReadPreviousQueriesRequest, shouldBroadcast: Boolean = true): ShrineResponse
-
-  def readQueryInstances(request: ReadQueryInstancesRequest, shouldBroadcast: Boolean = true): ShrineResponse
-
-  def readInstanceResults(request: ReadInstanceResultsRequest, shouldBroadcast: Boolean = true): ShrineResponse
-
-  def readPdo(request: ReadPdoRequest, shouldBroadcast: Boolean = true): ShrineResponse
-
-  def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean = true): ShrineResponse
-
-  def runQuery(request: RunQueryRequest, shouldBroadcast: Boolean = true): ShrineResponse
-
-  def deleteQuery(request: DeleteQueryRequest, shouldBroadcast: Boolean = true): ShrineResponse
-
-  def renameQuery(request: RenameQueryRequest, shouldBroadcast: Boolean = true): ShrineResponse
-  
-  def readQueryResult(request: ReadQueryResultRequest, shouldBroadcast: Boolean = true): ShrineResponse
-}
+trait ShrineRequestHandler extends 
+	ReadPreviousQueriesHandler with
+	ReadApprovedTopicsHandler with
+	ReadQueryInstancesHandler with 
+	ReadInstanceResultsHandler with
+	ReadPdoHandler with 
+	ReadQueryDefinitionHandler with 
+	RunQueryHandler with 
+	DeleteQueryHandler with
+	RenameQueryHandler with 
+	ReadQueryResultHandler

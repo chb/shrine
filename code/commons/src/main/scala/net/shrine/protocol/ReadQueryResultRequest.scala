@@ -6,6 +6,7 @@ import net.shrine.util.XmlUtil
 import net.shrine.serialization.XmlUnmarshaller
 import scala.util.Try
 import net.shrine.util.Util
+import net.shrine.protocol.handlers.ReadQueryResultHandler
 
 /**
  * @author clint
@@ -15,20 +16,11 @@ final case class ReadQueryResultRequest(
     override val projectId: String, //TODO: needed?
     override val waitTimeMs: Long,  //TODO: needed?
     override val authn: AuthenticationInfo, //TODO: needed?
-    queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) {
+    queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with NonI2b2ableRequest with WontComeFromI2b2Request {
   
   //TODO: what to do about this one, that has no meaningful i2b2 representation 
   
-  //NB: Unimplemented for now
-  def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean): ShrineResponse = ???
-
-  val requestType: CRCRequestType = CRCRequestType.GetQueryResult
-  
-  //NB: Intentionally left out
-  override def toI2b2 = ???
-
-  //NB: intentionally left unimplemented
-  protected def i2b2MessageBody: NodeSeq = ???
+  override val requestType: CRCRequestType = CRCRequestType.GetQueryResult
   
   override def toXml: NodeSeq = XmlUtil.stripWhitespace(
     <readQueryResult>

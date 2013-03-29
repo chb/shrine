@@ -245,9 +245,11 @@ object AbstractQueryRetrievalTestCase {
   val hiveCredentials = HiveCredentials("some-hive-domain", "hive-username", "hive-password", "hive-project")
   
   final class BogusRequest extends ShrineRequest("fooProject", 1000L, null) {
-    override protected def i2b2MessageBody: NodeSeq = <foo></foo>
+    protected override def i2b2MessageBody: NodeSeq = <foo></foo>
 
-    override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean): ShrineResponse = null
+    protected override type Handler = Any
+      
+    override def handle(handler: Handler, shouldBroadcast: Boolean): ShrineResponse = null
 
     override val requestType: CRCRequestType = CRCRequestType.GetRequestXml
 

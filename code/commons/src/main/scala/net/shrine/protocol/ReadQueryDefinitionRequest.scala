@@ -4,6 +4,7 @@ import xml.NodeSeq
 import net.shrine.protocol.CRCRequestType.GetRequestXml
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.protocol.handlers.ReadQueryDefinitionHandler
 
 /**
  * @author Bill Simons
@@ -25,21 +26,25 @@ final case class ReadQueryDefinitionRequest(
 
   override val requestType = GetRequestXml
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override type Handler = ReadQueryDefinitionHandler
+    
+  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
+
+  override def toXml = XmlUtil.stripWhitespace {
     <readQueryDefinition>
       { headerFragment }
       <queryId>{ queryId }</queryId>
-    </readQueryDefinition>)
-
-  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
-
-  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
+    </readQueryDefinition>
+  }
+  
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:master_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <query_master_id>{ queryId }</query_master_id>
       </ns4:request>
-    </message_body>)
+    </message_body>
+  }
 }
 
 object ReadQueryDefinitionRequest extends I2b2Unmarshaller[ReadQueryDefinitionRequest] with ShrineRequestUnmarshaller[ReadQueryDefinitionRequest] {

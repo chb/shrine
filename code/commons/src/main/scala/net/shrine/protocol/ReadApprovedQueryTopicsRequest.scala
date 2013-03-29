@@ -4,6 +4,7 @@ import xml.NodeSeq
 import net.shrine.protocol.CRCRequestType.SheriffRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.protocol.handlers.ReadApprovedTopicsHandler
 
 
 /**
@@ -27,16 +28,17 @@ final case class ReadApprovedQueryTopicsRequest(
 
   override val requestType = SheriffRequestType
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override type Handler = ReadApprovedTopicsHandler
+  
+  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readApprovedQueryTopics(this, shouldBroadcast)
+
+  override def toXml = XmlUtil.stripWhitespace {
     <readApprovedQueryTopics>
       {headerFragment}
       <userId>{userId}</userId>
-    </readApprovedQueryTopics>)
-
-  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = {
-    handler.readApprovedQueryTopics(this, shouldBroadcast)
+    </readApprovedQueryTopics>
   }
-
+  
   protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
     <message_body>
       <ns8:sheriff_header xsi:type="ns8:sheriffHeaderType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>

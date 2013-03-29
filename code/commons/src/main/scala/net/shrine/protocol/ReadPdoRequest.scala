@@ -2,9 +2,10 @@ package net.shrine.protocol
 
 import net.shrine.protocol.CRCRequestType.GetPDOFromInputListRequestType
 import xml._
-import transform.{RuleTransformer, RewriteRule}
+import transform.{ RuleTransformer, RewriteRule }
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.protocol.handlers.ReadPdoHandler
 
 /**
  * @author Bill Simons
@@ -15,7 +16,7 @@ import net.shrine.serialization.I2b2Unmarshaller
  *       NOTICE: This software comes with NO guarantees whatsoever and is
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
- * 
+ *
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
 final case class ReadPdoRequest(
@@ -25,34 +26,35 @@ final case class ReadPdoRequest(
     val patientSetCollId: String,
     val optionsXml: NodeSeq) extends ShrineRequest(projectId, waitTimeMs, authn) with TranslatableRequest[ReadPdoRequest] {
 
-  val requestType = GetPDOFromInputListRequestType
+  override val requestType = GetPDOFromInputListRequestType
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override type Handler = ReadPdoHandler
+
+  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readPdo(this, shouldBroadcast)
+
+  override def toXml = XmlUtil.stripWhitespace {
     <readPdo>
-      {headerFragment}
+      { headerFragment }
       <optionsXml>
-        {getOptionsXml}
+        { getOptionsXml }
       </optionsXml>
       <patientSetCollId>
-        {patientSetCollId}
+        { patientSetCollId }
       </patientSetCollId>
-    </readPdo>)
-
-  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = {
-    handler.readPdo(this, shouldBroadcast)
+    </readPdo>
   }
-  
+
   private[protocol] def getOptionsXml = ReadPdoRequest.updateCollId(optionsXml.head, patientSetCollId).toSeq
 
-  protected override  def i2b2MessageBody =
-    XmlUtil.stripWhitespace(
-      <message_body>
-        <ns3:pdoheader>
-          <patient_set_limit>0</patient_set_limit>
-          <estimated_time>180000</estimated_time>
-          <request_type>getPDO_fromInputList</request_type>
-        </ns3:pdoheader>{getOptionsXml}
-      </message_body>)
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
+    <message_body>
+      <ns3:pdoheader>
+        <patient_set_limit>0</patient_set_limit>
+        <estimated_time>180000</estimated_time>
+        <request_type>getPDO_fromInputList</request_type>
+      </ns3:pdoheader>{ getOptionsXml }
+    </message_body>
+  }
 
   override def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
@@ -91,9 +93,9 @@ object ReadPdoRequest extends I2b2Unmarshaller[ReadPdoRequest] with ShrineReques
         case other => other
       }
     }
-    
+
     val transformed = NodeSeq.Empty ++ (new RuleTransformer(rule)).transform(nodes)
-    
+
     transformed.headOption
   }
 }

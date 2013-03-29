@@ -6,6 +6,7 @@ import net.shrine.util.XmlUtil
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.util.AsExtractor
+import net.shrine.protocol.handlers.RunQueryHandler
 
 /**
  * @author Bill Simons
@@ -28,9 +29,13 @@ final case class RunQueryRequest(
   val outputTypes: Set[ResultOutputType],
   val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
 
-  val requestType = QueryDefinitionRequestType
+  override val requestType = QueryDefinitionRequestType
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override type Handler = RunQueryHandler
+  
+  override def handle(handler: RunQueryHandler, shouldBroadcast: Boolean) = handler.runQuery(this, shouldBroadcast)
+
+  override def toXml = XmlUtil.stripWhitespace {
     <runQuery>
       { headerFragment }
       <queryId>{ networkQueryId }</queryId>
@@ -43,11 +48,10 @@ final case class RunQueryRequest(
         }
       </outputTypes>
       { queryDefinition.toXml }
-    </runQuery>)
-
-  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.runQuery(this, shouldBroadcast)
-
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+    </runQuery>
+  }
+  
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>
       { i2b2PsmHeaderWithDomain }
       <ns4:request xsi:type="ns4:query_definition_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -64,7 +68,8 @@ final case class RunQueryRequest(
         </result_output_list>
       </ns4:request>
       <shrine><queryTopicID>{ topicId }</queryTopicID></shrine>
-    </message_body>)
+    </message_body>
+  }
 
   override def withProject(proj: String) = this.copy(projectId = proj)
 

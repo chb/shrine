@@ -4,6 +4,7 @@ import xml.NodeSeq
 import net.shrine.protocol.CRCRequestType.InstanceRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.protocol.handlers.ReadInstanceResultsHandler
 
 /**
  * @author Bill Simons
@@ -40,14 +41,15 @@ final case class ReadInstanceResultsRequest(
 
   override val requestType = InstanceRequestType
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override type Handler = ReadInstanceResultsHandler
+  
+  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readInstanceResults(this, shouldBroadcast)
+  
+  override def toXml = XmlUtil.stripWhitespace {
     <readInstanceResults>
       { headerFragment }
       <shrineNetworkQueryId>{ shrineNetworkQueryId }</shrineNetworkQueryId>
-    </readInstanceResults>)
-
-  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = {
-    handler.readInstanceResults(this, shouldBroadcast)
+    </readInstanceResults>
   }
 
   def withId(id: Long) = this.copy(shrineNetworkQueryId = id)
@@ -56,13 +58,14 @@ final case class ReadInstanceResultsRequest(
 
   def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
-  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:instance_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <query_instance_id>{ shrineNetworkQueryId }</query_instance_id>
       </ns4:request>
-    </message_body>)
+    </message_body>
+  }
 }
 
 object ReadInstanceResultsRequest extends I2b2Unmarshaller[ReadInstanceResultsRequest] with ShrineRequestUnmarshaller[ReadInstanceResultsRequest] {

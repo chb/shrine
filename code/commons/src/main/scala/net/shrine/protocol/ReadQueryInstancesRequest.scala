@@ -4,6 +4,7 @@ import xml.NodeSeq
 import net.shrine.protocol.CRCRequestType.MasterRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.protocol.handlers.ReadQueryInstancesHandler
 
 /**
  * @author Bill Simons
@@ -23,23 +24,27 @@ final case class ReadQueryInstancesRequest(
   override val authn: AuthenticationInfo,
   val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
 
-  val requestType = MasterRequestType
+  override val requestType = MasterRequestType
+  
+  override type Handler = ReadQueryInstancesHandler   
 
-  def toXml = XmlUtil.stripWhitespace(
+  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readQueryInstances(this, shouldBroadcast)
+  
+  override def toXml = XmlUtil.stripWhitespace {
     <readQueryInstances>
       { headerFragment }
       <queryId>{ queryId }</queryId>
-    </readQueryInstances>)
+    </readQueryInstances>
+  }
 
-  def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readQueryInstances(this, shouldBroadcast)
-
-  protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:master_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <query_master_id>{ queryId }</query_master_id>
       </ns4:request>
-    </message_body>)
+    </message_body>
+  }
 
   def withProject(proj: String) = this.copy(projectId = proj)
 
@@ -50,7 +55,7 @@ final case class ReadQueryInstancesRequest(
 
 object ReadQueryInstancesRequest extends I2b2Unmarshaller[ReadQueryInstancesRequest] with ShrineRequestUnmarshaller[ReadQueryInstancesRequest] {
 
-  def fromI2b2(nodeSeq: NodeSeq): ReadQueryInstancesRequest = {
+  override def fromI2b2(nodeSeq: NodeSeq): ReadQueryInstancesRequest = {
     new ReadQueryInstancesRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
@@ -58,7 +63,7 @@ object ReadQueryInstancesRequest extends I2b2Unmarshaller[ReadQueryInstancesRequ
       (nodeSeq \ "message_body" \ "request" \ "query_master_id").text.toLong)
   }
 
-  def fromXml(nodeSeq: NodeSeq) = {
+  override def fromXml(nodeSeq: NodeSeq) = {
     new ReadQueryInstancesRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),

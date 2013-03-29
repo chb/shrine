@@ -4,6 +4,7 @@ import xml.NodeSeq
 import net.shrine.protocol.CRCRequestType.MasterRenameRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.protocol.handlers.RenameQueryHandler
 
 /**
  * @author Bill Simons
@@ -24,16 +25,19 @@ final case class RenameQueryRequest(
   val queryId: Long,
   val queryName: String) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RenameQueryRequest] {
 
-  val requestType = MasterRenameRequestType
+  override val requestType = MasterRenameRequestType
+  
+  override type Handler = RenameQueryHandler
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override def handle(handler: RenameQueryHandler, shouldBroadcast: Boolean) = handler.renameQuery(this, shouldBroadcast)
+  
+  override def toXml = XmlUtil.stripWhitespace {
     <renameQuery>
       { headerFragment }
       <queryId>{ queryId }</queryId>
       <queryName>{ queryName }</queryName>
-    </renameQuery>)
-
-  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.renameQuery(this, shouldBroadcast)
+    </renameQuery>
+  }
 
   def withId(id: Long) = this.copy(queryId = id)
 
@@ -41,7 +45,7 @@ final case class RenameQueryRequest(
 
   override def withProject(proj: String) = this.copy(projectId = proj)
 
-  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:master_rename_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -49,7 +53,8 @@ final case class RenameQueryRequest(
         <query_master_id>{ queryId }</query_master_id>
         <query_name>{ queryName }</query_name>
       </ns4:request>
-    </message_body>)
+    </message_body>
+  }
 }
 
 object RenameQueryRequest extends I2b2Unmarshaller[RenameQueryRequest] with ShrineRequestUnmarshaller[RenameQueryRequest] {

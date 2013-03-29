@@ -4,6 +4,7 @@ import xml.NodeSeq
 import net.shrine.protocol.CRCRequestType.MasterDeleteRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
+import net.shrine.protocol.handlers.DeleteQueryHandler
 
 /**
  * @author Bill Simons
@@ -25,30 +26,32 @@ final case class DeleteQueryRequest(
 
   val requestType = MasterDeleteRequestType
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override type Handler = DeleteQueryHandler
+
+  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.deleteQuery(this, shouldBroadcast)
+
+  override def toXml = XmlUtil.stripWhitespace {
     <deleteQuery>
       { headerFragment }
       <queryId>{ queryId }</queryId>
-    </deleteQuery>)
-
-  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = {
-    handler.deleteQuery(this, shouldBroadcast)
+    </deleteQuery>
   }
-
+  
   def withId(id: Long) = this.copy(queryId = id)
 
   override def withAuthn(ai: AuthenticationInfo) = this.copy(authn = ai)
 
   override def withProject(proj: String) = this.copy(projectId = proj)
 
-  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>
       { i2b2PsmHeader }
       <ns4:request xsi:type="ns4:master_delete_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         <user_id>{ authn.username }</user_id>
         <query_master_id>{ queryId }</query_master_id>
       </ns4:request>
-    </message_body>)
+    </message_body>
+  }
 }
 
 object DeleteQueryRequest extends I2b2Unmarshaller[DeleteQueryRequest] with ShrineRequestUnmarshaller[DeleteQueryRequest] {
