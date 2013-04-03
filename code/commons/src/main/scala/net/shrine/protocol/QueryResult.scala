@@ -6,6 +6,7 @@ import org.spin.tools.NetworkTime.makeXMLGregorianCalendar
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.{ I2b2Marshaller, I2b2Unmarshaller, XmlMarshaller, XmlUnmarshaller }
 import net.shrine.util.SEnum
+import scala.util.Try
 
 /**
  * @author Bill Simons
@@ -166,7 +167,7 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
     new QueryResult(
       asLong("resultId"),
       asLong("instanceId"),
-      tryOrNone(ResultOutputType.valueOf((nodeSeq \ "resultType").text)),
+      ResultOutputType.valueOf((nodeSeq \ "resultType").text),
       asLong("setSize"),
       extractDate("startDate"),
       extractDate("endDate"),
@@ -192,17 +193,13 @@ object QueryResult extends I2b2Unmarshaller[QueryResult] with XmlUnmarshaller[Qu
     def asXmlGc(elemName: String) = Option(asText(elemName)).filter(!_.isEmpty).map(makeXMLGregorianCalendar)
 
     def asResultOutputType(elemNames: String*) = {
-      try {
-        ResultOutputType.valueOf(asText(elemNames: _*))
-      } catch {
-        case e: Exception => null
-      }
+      Try(ResultOutputType.valueOf(asText(elemNames: _*))).toOption.flatten
     }
 
     new QueryResult(
       asLong("result_instance_id"),
       asLong("query_instance_id"),
-      tryOrNone(asResultOutputType("query_result_type", "name")),
+      asResultOutputType("query_result_type", "name"),
       asLong("set_size"),
       asXmlGc("start_date"),
       asXmlGc("end_date"),

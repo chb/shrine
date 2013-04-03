@@ -45,7 +45,9 @@ object OutputTypeSet {
       if (outputTypesString == "") {
         Set.empty
       } else {
-        decode(outputTypesString).split(",").map(ResultOutputType.valueOf).toSet
+        //Intentionally use .get on the result of ResultOutputType.valueOf, to fail fast and preserve the 
+        //contract of throwing a WebApplicationException
+        decode(outputTypesString).split(",").map(r => ResultOutputType.valueOf(r).get).toSet
       }
     } catch {
       case e: Exception => throw new WebApplicationException(Response.status(Status.BAD_REQUEST)

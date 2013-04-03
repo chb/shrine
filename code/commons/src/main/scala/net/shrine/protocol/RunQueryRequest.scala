@@ -121,7 +121,7 @@ object RunQueryRequest extends I2b2Unmarshaller[RunQueryRequest] with ShrineRequ
   }
 
   private def determineShrineOutputTypes(nodeSeq: NodeSeq): Set[ResultOutputType] = {
-    (nodeSeq \ "outputType").map(x => ResultOutputType.valueOf(x.text)).toSet
+    (nodeSeq \ "outputType").flatMap(x => ResultOutputType.valueOf(x.text)).toSet
   }
 
   override def fromXml(nodeSeq: NodeSeq) = {

@@ -102,14 +102,14 @@ object I2b2ResultEnvelope extends I2b2Unmarshaller[Option[I2b2ResultEnvelope]] w
 
   override def fromXml(xml: NodeSeq): Option[I2b2ResultEnvelope] = {
     unmarshal(xml, 
-              x => tryOrNone(ResultOutputType.valueOf((x \ "resultType").text)), 
+              x => tryOrNone(ResultOutputType.valueOf((x \ "resultType").text).get), 
               _ \ "column", 
               Column.fromXml)
   }
   
   override def fromI2b2(i2b2Xml: NodeSeq): Option[I2b2ResultEnvelope] = {
     unmarshal(i2b2Xml \ "body" \ "result", 
-              x => tryOrNone(ResultOutputType.valueOf((x \ "@name").text)), 
+              x => tryOrNone(ResultOutputType.valueOf((x \ "@name").text).get), 
               _ \ "data", 
               Column.fromI2b2)
   }
