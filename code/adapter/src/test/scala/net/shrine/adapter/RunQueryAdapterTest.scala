@@ -38,7 +38,7 @@ import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.util.Loggable
 import net.shrine.util.Util
-import net.shrine.protocol.WillComeFromI2b2ShrineRequest
+import net.shrine.protocol.CrcRequest
 
 /**
  * @author Bill Simons
@@ -226,7 +226,7 @@ final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContext
 
     val httpClient = new HttpClient {
       override def post(input: String, url: String): String = {
-        val resp = WillComeFromI2b2ShrineRequest.fromI2b2(input) match {
+        val resp = CrcRequest.fromI2b2(input) match {
           case req: RunQueryRequest => {
             //NB: Terms should be translated
             req.queryDefinition.expr should equal(expectedLocalTerm)

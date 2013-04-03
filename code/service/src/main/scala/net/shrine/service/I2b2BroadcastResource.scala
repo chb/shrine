@@ -8,10 +8,12 @@ import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.core.Response
-import net.shrine.protocol.DoubleDispatchingShrineRequest
-import net.shrine.protocol.ShrineRequestHandler
 import net.shrine.util.Loggable
 import javax.ws.rs.core.MediaType
+import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
+import net.shrine.protocol.DoubleDispatchingShrineRequest
+import net.shrine.protocol.ShrineRequestHandler
+import net.shrine.protocol.HandledByShrineRequestHandler
 
 /**
  * @author Bill Simons
@@ -27,7 +29,7 @@ import javax.ws.rs.core.MediaType
 @Produces(Array(MediaType.APPLICATION_XML))
 @Component
 @Scope("singleton")
-class I2b2Resource @Autowired() (private val shrineRequestHandler: ShrineRequestHandler) extends Loggable {
+class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler: ShrineRequestHandler) extends Loggable {
 
   //NB: Always broadcast when receiving requests from the legacy i2b2/Shrine webclient, since we can't retrofit it to 
   //Say whether broadcasting is desired for a praticular query/operation
@@ -48,6 +50,8 @@ class I2b2Resource @Autowired() (private val shrineRequestHandler: ShrineRequest
   final def processI2b2Message(i2b2Request: String): Response = {
     Try {
       DoubleDispatchingShrineRequest.fromI2b2(i2b2Request)
+    }.toOption.collect { 
+      case req: HandledByShrineRequestHandler => req
     }.map {
       shrineRequest =>
         info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))

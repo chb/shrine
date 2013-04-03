@@ -30,7 +30,7 @@ import net.shrine.i2b2.protocol.pm.GetUserConfigurationRequest
 import net.shrine.i2b2.protocol.pm.HiveConfig
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.BroadcastMessage
-import net.shrine.protocol.CRCRequestType
+import net.shrine.protocol.CrcRequestType
 import net.shrine.protocol.Credential
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.RunQueryRequest
@@ -193,7 +193,7 @@ class HappyShrineService @Autowired() (
         </adapter>).toString
     } else {
       val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
-      val queryInfo: QueryInfo = new QueryInfo("LOCAL", identity, CRCRequestType.QueryDefinitionRequestType.name, endpointConfig)
+      val queryInfo: QueryInfo = new QueryInfo("LOCAL", identity, CrcRequestType.QueryDefinitionRequestType.name, endpointConfig)
       val req = newRunQueryRequest
       val message = BroadcastMessage(req.networkQueryId, req)
 
@@ -201,7 +201,7 @@ class HappyShrineService @Autowired() (
       
       //TODO: Allow different serializers
       //BroadcastMessage.serializer
-      val resultSet = Await.result(spinClient.query(CRCRequestType.QueryDefinitionRequestType.name, message), 1.minute)
+      val resultSet = Await.result(spinClient.query(CrcRequestType.QueryDefinitionRequestType.name, message), 1.minute)
 
       val (results, failures) = partitionSpinResults(resultSet)
 

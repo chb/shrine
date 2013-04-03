@@ -40,7 +40,7 @@ class ReadPreviousQueriesRequestTest extends ShrineRequestValidator {
       </readPreviousQueries>)
 
   @Test
-  def testFromI2b2() {
+  def testFromI2b2 {
     val translatedRequest = ReadPreviousQueriesRequest.fromI2b2(request)
     validateRequestWith(translatedRequest) {
       translatedRequest.userId should equal(username)
@@ -49,23 +49,29 @@ class ReadPreviousQueriesRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromI2b2() {
-    val shrineRequest = WillComeFromI2b2ShrineRequest.fromI2b2(request)
+  def testShrineRequestFromI2b2 {
+    val shrineRequest = CrcRequest.fromI2b2(request)
+    assertTrue(shrineRequest.isInstanceOf[ReadPreviousQueriesRequest])
+  }
+  
+  @Test
+  def testDoubleDispatchingShrineRequestFromI2b2 {
+    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[ReadPreviousQueriesRequest])
   }
 
   @Test
-  def testToXml() {
+  def testToXml {
     new ReadPreviousQueriesRequest(projectId, waitTimeMs, authn, username, fetchSize).toXml should equal(readPreviousQueriesRequest)
   }
 
   @Test
-  def testToI2b2() {
+  def testToI2b2 {
     new ReadPreviousQueriesRequest(projectId, waitTimeMs, authn, username, fetchSize).toI2b2 should equal(request)
   }
 
   @Test
-  def testFromXml() {
+  def testFromXml {
     val actual = ReadPreviousQueriesRequest.fromXml(readPreviousQueriesRequest)
     validateRequestWith(actual) {
       actual.userId should equal(username)
@@ -74,9 +80,7 @@ class ReadPreviousQueriesRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromXml() {
+  def testShrineRequestFromXml {
     assertTrue(ShrineRequest.fromXml(readPreviousQueriesRequest).isInstanceOf[ReadPreviousQueriesRequest])
   }
-
-
 }

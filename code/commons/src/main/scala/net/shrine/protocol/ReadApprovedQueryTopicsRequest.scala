@@ -1,7 +1,6 @@
 package net.shrine.protocol
 
 import xml.NodeSeq
-import net.shrine.protocol.CRCRequestType.SheriffRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.protocol.handlers.ReadApprovedTopicsHandler
@@ -23,12 +22,9 @@ final case class ReadApprovedQueryTopicsRequest(
     override val projectId: String,
     override val waitTimeMs: Long,
     override val authn: AuthenticationInfo,
-    
-    val userId: String) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) {
+    val userId: String) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) {
 
-  override val requestType = SheriffRequestType
-
-  override type Handler = ReadApprovedTopicsHandler
+  override val requestType = RequestType.SheriffRequest
   
   override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readApprovedQueryTopics(this, shouldBroadcast)
 
@@ -39,17 +35,18 @@ final case class ReadApprovedQueryTopicsRequest(
     </readApprovedQueryTopics>
   }
   
-  protected override def i2b2MessageBody = XmlUtil.stripWhitespace(
+  protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>
       <ns8:sheriff_header xsi:type="ns8:sheriffHeaderType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
       <ns8:sheriff_request xsi:type="ns8:sheriffRequestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
-    </message_body>)
+    </message_body>
+  }
 }
 
 object ReadApprovedQueryTopicsRequest extends ShrineRequestUnmarshaller[ReadApprovedQueryTopicsRequest] with I2b2Unmarshaller[ReadApprovedQueryTopicsRequest] {
 
   override def fromI2b2(nodeSeq: NodeSeq): ReadApprovedQueryTopicsRequest = {
-    new ReadApprovedQueryTopicsRequest(
+    ReadApprovedQueryTopicsRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
       i2b2AuthenticationInfo(nodeSeq),
@@ -57,7 +54,7 @@ object ReadApprovedQueryTopicsRequest extends ShrineRequestUnmarshaller[ReadAppr
   }
 
   override def fromXml(nodeSeq: NodeSeq) = {
-    new ReadApprovedQueryTopicsRequest(
+    ReadApprovedQueryTopicsRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),
       shrineAuthenticationInfo(nodeSeq),

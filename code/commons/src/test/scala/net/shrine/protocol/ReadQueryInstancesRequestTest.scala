@@ -37,7 +37,7 @@ class ReadQueryInstancesRequestTest extends ShrineRequestValidator {
       </readQueryInstances>)
 
   @Test
-  def testFromI2b2() {
+  def testFromI2b2 {
     val translatedRequest = ReadQueryInstancesRequest.fromI2b2(request)
     validateRequestWith(translatedRequest) {
       translatedRequest.queryId should equal(queryId)
@@ -45,23 +45,29 @@ class ReadQueryInstancesRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromI2b2() {
-    val shrineRequest = WillComeFromI2b2ShrineRequest.fromI2b2(request)
+  def testShrineRequestFromI2b2 {
+    val shrineRequest = CrcRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[ReadQueryInstancesRequest])
   }
-
+  
   @Test
-  def testToXml() {
+  def testDoubleDispatchingShrineRequestFromI2b2 {
+    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
+    assertTrue(shrineRequest.isInstanceOf[ReadQueryInstancesRequest])
+  }
+  
+  @Test
+  def testToXml {
     new ReadQueryInstancesRequest(projectId, waitTimeMs, authn, queryId).toXml should equal(readQueryInstancesRequest)
   }
 
   @Test
-  def testToI2b2() {
+  def testToI2b2 {
     new ReadQueryInstancesRequest(projectId, waitTimeMs, authn, queryId).toI2b2 should equal(request)
   }
 
   @Test
-  def testFromXml() {
+  def testFromXml {
     val actual = ReadQueryInstancesRequest.fromXml(readQueryInstancesRequest)
     validateRequestWith(actual) {
       actual.queryId should equal(queryId)
@@ -69,9 +75,7 @@ class ReadQueryInstancesRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromXml() {
+  def testShrineRequestFromXml {
     assertTrue(ShrineRequest.fromXml(readQueryInstancesRequest).isInstanceOf[ReadQueryInstancesRequest])
   }
-
-
 }

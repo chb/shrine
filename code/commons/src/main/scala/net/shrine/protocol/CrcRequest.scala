@@ -2,17 +2,20 @@ package net.shrine.protocol
 
 import scala.xml.NodeSeq
 import net.shrine.util.XmlUtil
+import CrcRequestType._
 
 /**
  * @author clint
  * @date Aug 15, 2012
  */
 trait CrcRequest { self: ShrineRequest =>
+  def crcRequestType: Option[CrcRequestType] = requestType.crcRequestType
+  
   def i2b2PsmHeaderWithDomain: NodeSeq = makeI2b2PsmHeader(Option(authn.domain))
   
   def i2b2PsmHeader: NodeSeq = makeI2b2PsmHeader(None)
   
-  private def makeI2b2PsmHeader(domainOption: Option[String] = None): NodeSeq = XmlUtil.stripWhitespace(
+  private def makeI2b2PsmHeader(domainOption: Option[String] = None): NodeSeq = XmlUtil.stripWhitespace {
     <ns4:psmheader>
       {
         domainOption match {
@@ -22,6 +25,28 @@ trait CrcRequest { self: ShrineRequest =>
       }
       <patient_set_limit>0</patient_set_limit>
       <estimated_time>0</estimated_time>
-      <request_type>{requestType.i2b2RequestType.get}</request_type>
-    </ns4:psmheader>)
+      { crcRequestType.map(rt => <request_type> { rt.i2b2RequestType } </request_type>).orNull }
+    </ns4:psmheader>
+  }
 }
+
+object CrcRequest extends AbstractUnmarshallerCompanion[ShrineRequest with CrcRequest](
+  Map(
+    InstanceRequestType -> ReadInstanceResultsRequest,
+    UserRequestType -> ReadPreviousQueriesRequest,
+    GetRequestXml -> ReadQueryDefinitionRequest,
+    MasterRequestType -> ReadQueryInstancesRequest,
+    QueryDefinitionRequestType -> RunQueryRequest,
+    MasterRenameRequestType -> RenameQueryRequest,
+    MasterDeleteRequestType -> DeleteQueryRequest,
+    ResultRequestType -> ReadResultRequest)) {
+
+  override def fromI2b2(i2b2Request: NodeSeq): ShrineRequest with CrcRequest = {
+    if (isPsmRequest(i2b2Request)) {
+      parsePsmRequest(i2b2Request)
+    } else {
+      throw new Exception(s"Request not understood: $i2b2Request")
+    }
+  }
+}
+ 

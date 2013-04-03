@@ -1,38 +1,36 @@
 package net.shrine.adapter
 
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests
-import org.scalatest.junit.ShouldMatchersForJUnit
-import net.shrine.protocol.QueryResult
 import scala.xml.NodeSeq
-import net.shrine.protocol.ShrineRequestHandler
-import net.shrine.protocol.ShrineRequest
-import net.shrine.protocol.CRCRequestType
-import net.shrine.protocol.ShrineResponse
-import net.shrine.protocol.BroadcastMessage
-import org.spin.tools.crypto.signature.Identity
-import net.shrine.serialization.XmlMarshaller
+import org.scalatest.junit.ShouldMatchersForJUnit
+import org.springframework.test.AbstractDependencyInjectionSpringContextTests
+import ObfuscatorTest.within3
+import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.adapter.dao.AdapterDao
-import org.junit.Test
-import net.shrine.protocol.ErrorResponse
+import net.shrine.config.HiveCredentials
 import net.shrine.protocol.AuthenticationInfo
+import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.Credential
+import net.shrine.protocol.ErrorResponse
+import net.shrine.protocol.I2b2ResultEnvelope
+import net.shrine.protocol.QueryResult
+import net.shrine.protocol.ReadInstanceResultsRequest
+import net.shrine.protocol.ReadInstanceResultsResponse
+import net.shrine.protocol.ReadResultRequest
+import net.shrine.protocol.ReadResultResponse
+import net.shrine.protocol.ResultOutputType.PATIENT_AGE_COUNT_XML
+import net.shrine.protocol.ResultOutputType.PATIENT_COUNT_XML
+import net.shrine.protocol.ResultOutputType.PATIENT_GENDER_COUNT_XML
+import net.shrine.protocol.ShrineRequest
+import net.shrine.protocol.ShrineResponse
 import net.shrine.protocol.query.Term
+import net.shrine.util.HttpClient
+import net.shrine.util.Util.now
+import net.shrine.util.XmlGcEnrichments.EnrichedLong
+import net.shrine.util.XmlGcEnrichments.EnrichedXmlGc
 import net.shrine.protocol.ResultOutputType
 import net.shrine.util.Util
-import net.shrine.protocol.I2b2ResultEnvelope
-import net.shrine.protocol.RunQueryResponse
-import net.shrine.protocol.RawCrcRunQueryResponse
-import net.shrine.protocol.query.QueryDefinition
-import net.shrine.config.HiveCredentials
-import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.util.XmlGcEnrichments
-import net.shrine.util.HttpClient
-import net.shrine.protocol.RunQueryRequest
-import net.shrine.protocol.ReadInstanceResultsRequest
-import net.shrine.protocol.ReadResultRequest
-import net.shrine.protocol.ReadInstanceResultsResponse
-import net.shrine.protocol.ReadResultResponse
-import net.shrine.protocol.WillComeFromI2b2ShrineRequest
+import net.shrine.protocol.CrcRequest
 
 /**
  * @author clint
@@ -109,7 +107,7 @@ abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     
     final class AlwaysWorksMockHttpClient extends HttpClient {
       override def post(input: String, url: String): String = {
-        val response = WillComeFromI2b2ShrineRequest.fromI2b2(input) match {
+        val response = CrcRequest.fromI2b2(input) match {
           case req: ReadInstanceResultsRequest => {
             ReadInstanceResultsResponse(shrineNetworkQueryId, incompleteCountResult.copy(statusType = QueryResult.StatusType.Finished))
           }
@@ -246,9 +244,9 @@ object AbstractQueryRetrievalTestCase {
   val hiveCredentials = HiveCredentials("some-hive-domain", "hive-username", "hive-password", "hive-project")
   
   final class BogusRequest extends ShrineRequest("fooProject", 1000L, null) {
+    override val requestType = null 
+    
     protected override def i2b2MessageBody: NodeSeq = <foo></foo>
-
-    override val requestType: CRCRequestType = CRCRequestType.GetRequestXml
 
     override def toXml = <x></x>
   }

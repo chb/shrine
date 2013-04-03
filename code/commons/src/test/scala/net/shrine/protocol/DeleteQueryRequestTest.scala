@@ -47,23 +47,26 @@ class DeleteQueryRequestTest extends ShrineRequestValidator {
 
   @Test
   def testShrineRequestFromI2b2 {
-    val shrineRequest = WillComeFromI2b2ShrineRequest.fromI2b2(request)
-    
-    assertTrue(shrineRequest.isInstanceOf[DeleteQueryRequest])
+    assertTrue(CrcRequest.fromI2b2(request).isInstanceOf[DeleteQueryRequest])
   }
 
   @Test
-  def testToXml() {
+  def testDoubleDispatchingShrineRequestFromI2b2 {
+    assertTrue(DoubleDispatchingShrineRequest.fromI2b2(request).isInstanceOf[DeleteQueryRequest])
+  }
+  
+  @Test
+  def testToXml {
     new DeleteQueryRequest(projectId, waitTimeMs, authn, queryId).toXml should equal(deleteQueryRequest)
   }
 
   @Test
-  def testToI2b2() {
+  def testToI2b2 {
     new DeleteQueryRequest(projectId, waitTimeMs, authn, queryId).toI2b2 should equal(request)
   }
 
   @Test
-  def testFromXml() {
+  def testFromXml {
     val actual = DeleteQueryRequest.fromXml(deleteQueryRequest)
     validateRequestWith(actual) {
       actual.queryId should equal(queryId)
@@ -71,7 +74,7 @@ class DeleteQueryRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromXml() {
+  def testShrineRequestFromXml {
     assertTrue(ShrineRequest.fromXml(deleteQueryRequest).isInstanceOf[DeleteQueryRequest])
   }
 }

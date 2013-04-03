@@ -1,7 +1,6 @@
 package net.shrine.protocol
 
-import xml.NodeSeq
-import net.shrine.protocol.CRCRequestType.GetRequestXml
+import scala.xml.NodeSeq
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.protocol.handlers.ReadQueryDefinitionHandler
@@ -22,12 +21,10 @@ final case class ReadQueryDefinitionRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val queryId: Long) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
 
-  override val requestType = GetRequestXml
+  override val requestType = RequestType.GetRequestXml
 
-  override type Handler = ReadQueryDefinitionHandler
-    
   override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
 
   override def toXml = XmlUtil.stripWhitespace {

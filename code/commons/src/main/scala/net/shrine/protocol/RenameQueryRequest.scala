@@ -1,7 +1,6 @@
 package net.shrine.protocol
 
-import xml.NodeSeq
-import net.shrine.protocol.CRCRequestType.MasterRenameRequestType
+import scala.xml.NodeSeq
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.protocol.handlers.RenameQueryHandler
@@ -23,13 +22,11 @@ final case class RenameQueryRequest(
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
   val queryId: Long,
-  val queryName: String) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RenameQueryRequest] {
+  val queryName: String) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RenameQueryRequest] {
 
-  override val requestType = MasterRenameRequestType
-  
-  override type Handler = RenameQueryHandler
+  override val requestType = RequestType.MasterRenameRequest
 
-  override def handle(handler: RenameQueryHandler, shouldBroadcast: Boolean) = handler.renameQuery(this, shouldBroadcast)
+  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.renameQuery(this, shouldBroadcast)
   
   override def toXml = XmlUtil.stripWhitespace {
     <renameQuery>

@@ -14,8 +14,8 @@ import net.shrine.protocol.ShrineRequestHandler
 final class I2b2ResourceTest extends TestCase with ShouldMatchersForJUnit with EasyMockSugar {
   @Test
   def testHandleBadInput {
-    def doTestHandleBanInput(resourceMethod: I2b2Resource => String => Response) {
-      val resource: I2b2Resource = new I2b2Resource(mock[ShrineRequestHandler])
+    def doTestHandleBanInput(resourceMethod: I2b2BroadcastResource => String => Response) {
+      val resource = new I2b2BroadcastResource(mock[ShrineRequestHandler])
       
       val fourHundredResponse = Response.status(400).build()
       

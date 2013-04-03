@@ -98,7 +98,13 @@ class RunQueryRequestTest extends ShrineRequestValidator {
 
   @Test
   override def testShrineRequestFromI2b2 {
-    val shrineRequest = WillComeFromI2b2ShrineRequest.fromI2b2(request)
+    val shrineRequest = CrcRequest.fromI2b2(request)
+    assertTrue(shrineRequest.isInstanceOf[RunQueryRequest])
+  }
+  
+  @Test
+  def testDoubleDispatchingShrineRequestFromI2b2 {
+    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[RunQueryRequest])
   }
 

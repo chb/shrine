@@ -1,6 +1,6 @@
 package net.shrine.protocol
 
-import net.shrine.protocol.CRCRequestType._
+import CrcRequestType._
 import scala.xml.NodeSeq
 
 /**
@@ -11,13 +11,15 @@ abstract class DoubleDispatchingShrineRequest(
     override val projectId: String,
     override val waitTimeMs: Long,
     override val authn: AuthenticationInfo) extends ShrineRequest(projectId, waitTimeMs, authn) {
-
-  protected type Handler >: ShrineRequestHandler
+  
+  type Handler
 
   def handle(handler: Handler, shouldBroadcast: Boolean): ShrineResponse
+  
+  def isHandledBy[T : Manifest]: Boolean
 }
 
-object DoubleDispatchingShrineRequest extends AbstractI2b2UnmarshallerCompanion[DoubleDispatchingShrineRequest](
+object DoubleDispatchingShrineRequest extends AbstractUnmarshallerCompanion[DoubleDispatchingShrineRequest](
   Map(
     InstanceRequestType -> ReadInstanceResultsRequest,
     UserRequestType -> ReadPreviousQueriesRequest,
@@ -36,11 +38,11 @@ object DoubleDispatchingShrineRequest extends AbstractI2b2UnmarshallerCompanion[
     }
   }
   
-  import CRCRequestType._
+  import CrcRequestType._
 
   private def parsePdoRequest(requestXml: NodeSeq): ReadPdoRequest = {
     (requestXml \ "message_body" \ "pdoheader" \ "request_type").text match {
-      case x if x == GetPDOFromInputListRequestType.unsafeI2b2RequestType => ReadPdoRequest.fromI2b2(requestXml)
+      case x if x == GetPDOFromInputListRequestType.i2b2RequestType => ReadPdoRequest.fromI2b2(requestXml)
       case _ => null
     }
   }

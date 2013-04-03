@@ -7,10 +7,9 @@ import scala.xml.Elem
 import net.shrine.util.XmlUtil
 import net.liftweb.json._
 import net.liftweb.json.JsonDSL._
-import net.shrine.serialization.{JsonMarshaller, I2b2Marshaller, XmlMarshaller, XmlUnmarshaller}
+import net.shrine.serialization.{ JsonMarshaller, I2b2Marshaller, XmlMarshaller, XmlUnmarshaller }
 import net.shrine.util.Util
 import scala.util.Try
-
 
 /**
  *
@@ -24,7 +23,7 @@ import scala.util.Try
  *
  * Classes to form expression trees representing Shrine queries
  */
-final case class QueryDefinition(name: String, expr: Expression) extends I2b2Marshaller with XmlMarshaller  with JsonMarshaller {
+final case class QueryDefinition(name: String, expr: Expression) extends I2b2Marshaller with XmlMarshaller with JsonMarshaller {
 
   import QueryDefinition._
 
@@ -32,27 +31,25 @@ final case class QueryDefinition(name: String, expr: Expression) extends I2b2Mar
 
   override def toJson: JValue = ("name" -> name) ~ ("expression" -> expr.toJson)
 
-  override def toXml: NodeSeq = {
-    XmlUtil.stripWhitespace(
-      <queryDefinition>
-        <name>{name}</name>
-        <expr>{expr.toXml}</expr>
-      </queryDefinition>)
+  override def toXml: NodeSeq = XmlUtil.stripWhitespace {
+    <queryDefinition>
+      <name>{ name }</name>
+      <expr>{ expr.toXml }</expr>
+    </queryDefinition>
   }
 
   //TODO: Will <use_shrine> and <specificity_scale> ever change?
-  override def toI2b2: NodeSeq = {
-    XmlUtil.stripWhitespace(
-      <query_definition>
-        <query_name>{ name }</query_name>
-        <specificity_scale>0</specificity_scale>
-        <use_shrine>1</use_shrine>
-        {
-          //Sequence of <panel>s
-          toPanels(expr).map(_.toI2b2)
-        }
-      </query_definition>).asInstanceOf[Elem]
-  }
+  override def toI2b2: NodeSeq = XmlUtil.stripWhitespace {
+    <query_definition>
+      <query_name>{ name }</query_name>
+      <specificity_scale>0</specificity_scale>
+      <use_shrine>1</use_shrine>
+      {
+        //Sequence of <panel>s
+        toPanels(expr).map(_.toI2b2)
+      }
+    </query_definition>
+  }.asInstanceOf[Elem]
 }
 
 object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
@@ -61,11 +58,11 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
     val outerTag = nodeSeq.head
 
     val name = (outerTag \ "name").text
-    
+
     val exprXml = (outerTag \ "expr").head.asInstanceOf[Elem]
-    
+
     val innerExprXml = exprXml.child.head
-    
+
     Expression.fromXml(innerExprXml).map(QueryDefinition(name, _))
   }.flatten
 
@@ -76,18 +73,18 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
   //I2b2 query definition XML => Expression
   def fromI2b2(nodeSeq: NodeSeq): Try[QueryDefinition] = {
     val outerTag = nodeSeq.head
-    
+
     val name = (outerTag \ "query_name").text
 
     val panelsXml = outerTag \ "panel"
-    
+
     import Util.Tries.sequence
-    
+
     val panels = sequence(panelsXml.map(Panel.fromI2b2))
 
     val exprs = panels.map(ps => ps.map(_.toExpression))
-    
-    val consolidatedExpr = exprs.map(es => if(es.size == 1) es.head else And(es: _*))
+
+    val consolidatedExpr = exprs.map(es => if (es.size == 1) es.head else And(es: _*))
 
     consolidatedExpr.map(consolidated => QueryDefinition(name, consolidated.normalize))
   }
@@ -112,10 +109,10 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
     val resultPanels = expr.normalize match {
       case t: Term => Seq(panelWithDefaults(Seq(t)))
       case Not(e) => toPanels(e).map(_.invert)
-      case And(exprs@_*) => {
+      case And(exprs @ _*) => {
         exprs.flatMap(e => toPanels(e)).toSeq
       }
-      case Or(exprs@_*) => exprs match {
+      case Or(exprs @ _*) => exprs match {
         case Nil => Nil
         case _ => {
           //Or-expressions must be comprised of terms only, dues to limitations in i2b2's query representation
@@ -136,7 +133,7 @@ object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {
       case OccuranceLimited(min, e) => toPanels(e).map(_.withMinOccurrences(min))
       case q: Query => ??? //TODO: implement for query-in-query
       case _ => ??? //We should never get here, but fail loudly just in case.  Also fixes compiler
-    		  	    //warning about unhandled cases for abstract, non-instantiatable Expression subtypes 
+      //warning about unhandled cases for abstract, non-instantiatable Expression subtypes 
     }
 
     //Assign indicies; i2b2 indicies start from 1 

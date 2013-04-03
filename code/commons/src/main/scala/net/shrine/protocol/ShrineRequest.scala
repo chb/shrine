@@ -18,13 +18,14 @@ abstract class ShrineRequest(
     val projectId: String, 
     val waitTimeMs: Long, 
     val authn: AuthenticationInfo) extends XmlMarshaller with I2b2Marshaller {
+  
+  val requestType: RequestType
+  
   protected def headerFragment: NodeBuffer = <projectId>{ projectId }</projectId><waitTimeMs>{ waitTimeMs }</waitTimeMs> &+ authn.toXml
 
   protected def i2b2MessageBody: NodeSeq
   
-  val requestType: CRCRequestType
-
-  def toI2b2 = XmlUtil.stripWhitespace {
+  override def toI2b2 = XmlUtil.stripWhitespace {
     <ns6:request xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns8="http://sheriff.shrine.net/" xmlns:ns7="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/plugin/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/hive/msg/1.1/">
       <message_header>
         <proxy>

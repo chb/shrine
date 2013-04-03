@@ -19,7 +19,7 @@ class RenameQueryRequestTest extends ShrineRequestValidator {
   val queryId = 2422297885846950097L
   val queryName = "Cholecystitis w@14:41:52 [3-28-2011]"
 
-  def messageBody = <message_body>
+  override def messageBody = <message_body>
 		<ns4:psmheader>
 			<user login={username}>{username}</user>
 			<patient_set_limit>0</patient_set_limit>
@@ -41,7 +41,7 @@ class RenameQueryRequestTest extends ShrineRequestValidator {
       </renameQuery>)
 
   @Test
-  def testFromI2b2() {
+  override def testFromI2b2 {
     val translatedRequest = RenameQueryRequest.fromI2b2(request)
     validateRequestWith(translatedRequest) {
       translatedRequest.queryId should equal(queryId)
@@ -50,23 +50,29 @@ class RenameQueryRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromI2b2() {
-    val shrineRequest = WillComeFromI2b2ShrineRequest.fromI2b2(request)
+  override def testShrineRequestFromI2b2 {
+    val shrineRequest = CrcRequest.fromI2b2(request)
+    assertTrue(shrineRequest.isInstanceOf[RenameQueryRequest])
+  }
+  
+  @Test
+  def testDoubleDispatchingShrineRequestFromI2b2 {
+    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[RenameQueryRequest])
   }
 
   @Test
-  def testToXml() {
+  override def testToXml {
     new RenameQueryRequest(projectId, waitTimeMs, authn, queryId, queryName).toXml should equal(renameQueryRequest)
   }
 
   @Test
-  def testToI2b2() {
+  override def testToI2b2 {
     new RenameQueryRequest(projectId, waitTimeMs, authn, queryId, queryName).toI2b2 should equal(request)
   }
 
   @Test
-  def testFromXml() {
+  override def testFromXml {
     val actual = RenameQueryRequest.fromXml(renameQueryRequest)
     validateRequestWith(actual) {
       actual.queryId should equal(queryId)
@@ -75,7 +81,7 @@ class RenameQueryRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromXml() {
+  def testShrineRequestFromXml {
     assertTrue(ShrineRequest.fromXml(renameQueryRequest).isInstanceOf[RenameQueryRequest])
   }
 }

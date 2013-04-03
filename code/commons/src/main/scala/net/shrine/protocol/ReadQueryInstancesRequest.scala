@@ -1,7 +1,6 @@
 package net.shrine.protocol
 
 import xml.NodeSeq
-import net.shrine.protocol.CRCRequestType.MasterRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.protocol.handlers.ReadQueryInstancesHandler
@@ -22,11 +21,9 @@ final case class ReadQueryInstancesRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val queryId: Long) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
 
-  override val requestType = MasterRequestType
-  
-  override type Handler = ReadQueryInstancesHandler   
+  override val requestType = RequestType.MasterRequest
 
   override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readQueryInstances(this, shouldBroadcast)
   

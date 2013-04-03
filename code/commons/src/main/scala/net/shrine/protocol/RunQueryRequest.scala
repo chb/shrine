@@ -1,12 +1,13 @@
 package net.shrine.protocol
 
-import net.shrine.protocol.CRCRequestType.QueryDefinitionRequestType
-import xml._
 import net.shrine.util.XmlUtil
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.util.AsExtractor
 import net.shrine.protocol.handlers.RunQueryHandler
+import scala.xml.Text
+import scala.xml.NodeSeq
+import scala.xml.Elem
 
 /**
  * @author Bill Simons
@@ -27,13 +28,11 @@ final case class RunQueryRequest(
   val networkQueryId: Long,
   val topicId: String,
   val outputTypes: Set[ResultOutputType],
-  val queryDefinition: QueryDefinition) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
+  val queryDefinition: QueryDefinition) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
 
-  override val requestType = QueryDefinitionRequestType
-
-  override type Handler = RunQueryHandler
+  override val requestType = RequestType.QueryDefinitionRequest
   
-  override def handle(handler: RunQueryHandler, shouldBroadcast: Boolean) = handler.runQuery(this, shouldBroadcast)
+  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.runQuery(this, shouldBroadcast)
 
   override def toXml = XmlUtil.stripWhitespace {
     <runQuery>

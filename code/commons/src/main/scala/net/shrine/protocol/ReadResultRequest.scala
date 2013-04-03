@@ -1,11 +1,9 @@
 package net.shrine.protocol
 
-import CRCRequestType.ResultRequestType
 import scala.xml.NodeSeq
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.XmlMarshaller
 import net.shrine.serialization.I2b2Marshaller
-import net.shrine.serialization.XmlUnmarshaller
 import net.shrine.serialization.I2b2Unmarshaller
 
 /**
@@ -20,7 +18,7 @@ final case class ReadResultRequest(
 
   def this(header: RequestHeader, localResultId: String) = this(header.projectId, header.waitTimeMs, header.authn, localResultId)
 
-  override val requestType: CRCRequestType = ResultRequestType
+  override val requestType = RequestType.ResultRequest
   
   //NB: This request is never sent through the broadcaster-aggregator/shrine service, so it doesn't make sense
   //to have it be handled by a ShrineRequestHandler.

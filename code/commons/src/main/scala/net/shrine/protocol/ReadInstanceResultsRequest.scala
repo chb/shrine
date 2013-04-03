@@ -1,7 +1,6 @@
 package net.shrine.protocol
 
-import xml.NodeSeq
-import net.shrine.protocol.CRCRequestType.InstanceRequestType
+import scala.xml.NodeSeq
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.protocol.handlers.ReadInstanceResultsHandler
@@ -37,11 +36,9 @@ final case class ReadInstanceResultsRequest(
    * CRC from Shrine's datastore.
    * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    */ 
-  val shrineNetworkQueryId: Long) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val shrineNetworkQueryId: Long) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
 
-  override val requestType = InstanceRequestType
-
-  override type Handler = ReadInstanceResultsHandler
+  override val requestType = RequestType.InstanceRequest
   
   override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readInstanceResults(this, shouldBroadcast)
   

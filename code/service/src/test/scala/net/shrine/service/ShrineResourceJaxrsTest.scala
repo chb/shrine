@@ -64,7 +64,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     val param = MockShrineRequestHandler.readApprovedQueryTopicsParam
 
-    validateCachedParam(param, CRCRequestType.SheriffRequestType)
+    validateCachedParam(param, RequestType.SheriffRequest)
 
     param.userId should equal(userId)
   }
@@ -89,7 +89,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     val param = MockShrineRequestHandler.readPreviousQueriesParam
 
-    validateCachedParam(param, CRCRequestType.UserRequestType)
+    validateCachedParam(param, RequestType.UserRequest)
 
     param.fetchSize should equal(fetchSize)
     param.userId should equal(userId)
@@ -134,7 +134,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
       val param = MockShrineRequestHandler.runQueryParam
 
-      validateCachedParam(param, CRCRequestType.QueryDefinitionRequestType)
+      validateCachedParam(param, RequestType.QueryDefinitionRequest)
 
       param.outputTypes should equal(expectedOutputTypes)
       param.queryDefinition should equal(queryDef)
@@ -177,7 +177,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     val param = MockShrineRequestHandler.readQueryInstancesParam
 
-    validateCachedParam(param, CRCRequestType.MasterRequestType)
+    validateCachedParam(param, RequestType.MasterRequest)
 
     param.queryId should equal(queryId)
   }
@@ -202,7 +202,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     val param = MockShrineRequestHandler.readInstanceResultsParam
 
-    validateCachedParam(param, CRCRequestType.InstanceRequestType)
+    validateCachedParam(param, RequestType.InstanceRequest)
 
     param.shrineNetworkQueryId should equal(shrineNetworkQueryId)
   }
@@ -228,7 +228,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     val param = MockShrineRequestHandler.readPdoParam
 
-    validateCachedParam(param, CRCRequestType.GetPDOFromInputListRequestType)
+    validateCachedParam(param, RequestType.GetPDOFromInputListRequest)
 
     param.patientSetCollId should equal(patientSetId)
     //Turn NodeSeqs to Strings for reliable comparisons
@@ -255,7 +255,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     val param = MockShrineRequestHandler.readQueryDefinitionParam
 
-    validateCachedParam(param, CRCRequestType.GetRequestXml)
+    validateCachedParam(param, RequestType.GetRequestXml)
 
     param.queryId should equal(queryId)
   }
@@ -279,7 +279,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     
     val param = MockShrineRequestHandler.deleteQueryParam
 
-    validateCachedParam(param, CRCRequestType.MasterDeleteRequestType)
+    validateCachedParam(param, RequestType.MasterDeleteRequest)
 
     param.queryId should equal(queryId)
   }
@@ -304,7 +304,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     
     val param = MockShrineRequestHandler.renameQueryParam
 
-    validateCachedParam(param, CRCRequestType.MasterRenameRequestType)
+    validateCachedParam(param, RequestType.MasterRenameRequest)
 
     param.queryId should equal(queryId)
     param.queryName should equal(queryName)
@@ -329,12 +329,12 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     
     val param = MockShrineRequestHandler.readQueryResultParam
 
-    validateCachedParam(param, CRCRequestType.GetQueryResult)
+    validateCachedParam(param, RequestType.GetQueryResult)
 
     param.queryId should equal(queryId)
   }
   
-  private def validateCachedParam(param: ShrineRequest, expectedRequestType: CRCRequestType) {
+  private def validateCachedParam(param: ShrineRequest, expectedRequestType: RequestType) {
     MockShrineRequestHandler.shouldBroadcastParam should be(true)
     param should not(be(null))
     param.projectId should equal(projectId)

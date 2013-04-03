@@ -1,7 +1,6 @@
 package net.shrine.protocol
 
 import xml.NodeSeq
-import net.shrine.protocol.CRCRequestType.UserRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.protocol.handlers.ReadPreviousQueriesHandler
@@ -23,12 +22,10 @@ final case class ReadPreviousQueriesRequest(
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
   val userId: String,
-  val fetchSize: Int) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  val fetchSize: Int) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
 
-  override val requestType = UserRequestType
+  override val requestType = RequestType.UserRequest
 
-  override type Handler = ReadPreviousQueriesHandler
-  
   override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readPreviousQueries(this, shouldBroadcast)
   
   override def toXml = XmlUtil.stripWhitespace {

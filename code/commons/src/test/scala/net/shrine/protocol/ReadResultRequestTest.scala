@@ -65,7 +65,7 @@ final class ReadResultRequestTest extends TestCase with AssertionsForJUnit with 
           <user login={ exampleReq.authn.username }>{ exampleReq.authn.username }</user>
           <patient_set_limit>0</patient_set_limit>
           <estimated_time>0</estimated_time>
-          <request_type>{ CRCRequestType.ResultRequestType.unsafeI2b2RequestType }</request_type>
+          <request_type>{ CrcRequestType.ResultRequestType.i2b2RequestType }</request_type>
         </ns4:psmheader>
         <ns4:request xsi:type="ns4:result_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <query_result_instance_id>{ resultId }</query_result_instance_id>
@@ -82,8 +82,13 @@ final class ReadResultRequestTest extends TestCase with AssertionsForJUnit with 
     </readResult>)
 
   @Test
+  def testCrcRequestType {
+    ReadResultRequest("", 123L, null, "456L").crcRequestType should equal(Some(CrcRequestType.ResultRequestType))
+  }
+  
+  @Test
   def testRequestType {
-    ReadResultRequest("", 123L, null, "456L").requestType should equal(CRCRequestType.ResultRequestType)
+    ReadResultRequest("", 123L, null, "456L").requestType should equal(RequestType.ResultRequest)
   }
 
   @Test

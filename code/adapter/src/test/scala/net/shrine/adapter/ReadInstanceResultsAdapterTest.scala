@@ -7,8 +7,6 @@ import javax.annotation.Resource
 import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.RunQueryRequest
 import net.shrine.protocol.ShrineRequest
-import net.shrine.protocol.CRCRequestType
-import net.shrine.protocol.CRCRequestType
 import scala.xml.NodeSeq
 import net.shrine.protocol.ShrineResponse
 import net.shrine.protocol.ShrineRequestHandler

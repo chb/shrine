@@ -1,7 +1,6 @@
 package net.shrine.protocol
 
 import xml.NodeSeq
-import net.shrine.protocol.CRCRequestType.MasterDeleteRequestType
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.protocol.handlers.DeleteQueryHandler
@@ -22,11 +21,9 @@ final case class DeleteQueryRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[DeleteQueryRequest] {
+  val queryId: Long) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[DeleteQueryRequest] {
 
-  val requestType = MasterDeleteRequestType
-
-  override type Handler = DeleteQueryHandler
+  override val requestType = RequestType.MasterDeleteRequest
 
   override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.deleteQuery(this, shouldBroadcast)
 

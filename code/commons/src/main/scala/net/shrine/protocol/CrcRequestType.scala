@@ -17,36 +17,26 @@ import net.shrine.util.SEnum
  * licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final class CRCRequestType private[CRCRequestType] (val name: String, val i2b2RequestType: Option[String]) extends CRCRequestType.Value {
-  def this(name: String, i2b2RequestType: String) = this(name, Option(i2b2RequestType))
-  
-  def hasI2b2RequestType = i2b2RequestType.isDefined
-  
-  def unsafeI2b2RequestType = i2b2RequestType.get
-}
+final class CrcRequestType private[CrcRequestType] (val name: String, val i2b2RequestType: String) extends CrcRequestType.Value
 
 //TODO: Rename these, add unit test
 
-object CRCRequestType extends SEnum[CRCRequestType] {
-  val GetPDOFromInputListRequestType = new CRCRequestType("GetPDOFromInputListRequestType", "getPDO_fromInputList")
+object CrcRequestType extends SEnum[CrcRequestType] {
+  val GetPDOFromInputListRequestType = new CrcRequestType("GetPDOFromInputListRequestType", "getPDO_fromInputList")
   
-  val InstanceRequestType = new CRCRequestType("InstanceRequestType", "CRC_QRY_getQueryResultInstanceList_fromQueryInstanceId")
+  val InstanceRequestType = new CrcRequestType("InstanceRequestType", "CRC_QRY_getQueryResultInstanceList_fromQueryInstanceId")
   
-  val MasterRequestType = new CRCRequestType("MasterRequestType", "CRC_QRY_getQueryInstanceList_fromQueryMasterId")
+  val MasterRequestType = new CrcRequestType("MasterRequestType", "CRC_QRY_getQueryInstanceList_fromQueryMasterId")
   
-  val QueryDefinitionRequestType = new CRCRequestType("QueryDefinitionRequestType", "CRC_QRY_runQueryInstance_fromQueryDefinition")
+  val QueryDefinitionRequestType = new CrcRequestType("QueryDefinitionRequestType", "CRC_QRY_runQueryInstance_fromQueryDefinition")
   
-  val UserRequestType = new CRCRequestType("UserRequestType", "CRC_QRY_getQueryMasterList_fromUserId")
+  val UserRequestType = new CrcRequestType("UserRequestType", "CRC_QRY_getQueryMasterList_fromUserId")
   
-  val SheriffRequestType = new CRCRequestType("SheriffRequestType", None)
+  val ResultRequestType = new CrcRequestType("ResultRequestType", "CRC_QRY_getResultDocument_fromResultInstanceId")
   
-  val ResultRequestType = new CRCRequestType("ResultRequestType", "CRC_QRY_getResultDocument_fromResultInstanceId")
+  val MasterDeleteRequestType = new CrcRequestType("MasterDeleteRequestType", "CRC_QRY_deleteQueryMaster")
   
-  val MasterDeleteRequestType = new CRCRequestType("MasterDeleteRequestType", "CRC_QRY_deleteQueryMaster")
+  val MasterRenameRequestType = new CrcRequestType("MasterRenameRequestType", "CRC_QRY_renameQueryMaster")
   
-  val MasterRenameRequestType = new CRCRequestType("MasterRenameRequestType", "CRC_QRY_renameQueryMaster")
-  
-  val GetRequestXml = new CRCRequestType("GetRequestXml", "CRC_QRY_getRequestXml_fromQueryMasterId")
-  
-  val GetQueryResult = new CRCRequestType("GetQueryResult", None)
+  val GetRequestXml = new CrcRequestType("GetRequestXml", "CRC_QRY_getRequestXml_fromQueryMasterId")
 }

@@ -46,10 +46,16 @@ class ReadInstanceResultsRequestTest extends ShrineRequestValidator {
 
   @Test
   def testShrineRequestFromI2b2 {
-    val shrineRequest = WillComeFromI2b2ShrineRequest.fromI2b2(request)
+    val shrineRequest = CrcRequest.fromI2b2(request)
     assertTrue(shrineRequest.isInstanceOf[ReadInstanceResultsRequest])
   }
-
+  
+  @Test
+  def testDoubleDispatchingShrineRequestFromI2b2 {
+    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
+    assertTrue(shrineRequest.isInstanceOf[ReadInstanceResultsRequest])
+  }
+  
   @Test
   def testToI2b2 {
     new ReadInstanceResultsRequest(projectId, waitTimeMs, authn, shrineNetworkQueryId).toI2b2 should equal(request)
