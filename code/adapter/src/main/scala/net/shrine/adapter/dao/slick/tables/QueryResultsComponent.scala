@@ -40,7 +40,7 @@ trait QueryResultsComponent extends HasColumns { self: HasDriver with ShrineQuer
     private implicit val resultOutputType2StringMapper: TypeMapper[ResultOutputType] =
       MappedTypeMapper.base[ResultOutputType, String](
         _.toString,
-        ResultOutputType.valueOf) //NB: Fail loudly on purpose
+        ResultOutputType.valueOf(_).get) //NB: Fail loudly on purpose
 
     private implicit val statusType2StringMapper: TypeMapper[StatusType] =
       MappedTypeMapper.base[StatusType, String](

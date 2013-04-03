@@ -20,15 +20,12 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
   maxResults: Int,
   sortOrder: ReadI2b2AdminPreviousQueriesRequest.SortOrder = ReadI2b2AdminPreviousQueriesRequest.SortOrder.Descending,
   categoryToSearchWithin: ReadI2b2AdminPreviousQueriesRequest.Category = ReadI2b2AdminPreviousQueriesRequest.Category.Top,
-  searchStrategy: ReadI2b2AdminPreviousQueriesRequest.Strategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) with CrcRequest {
+  searchStrategy: ReadI2b2AdminPreviousQueriesRequest.Strategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains
+  ) extends HandledByI2b2AdminRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
 
   override val requestType = RequestType.ReadI2b2AdminPreviousQueriesRequest
 
-  override type Handler = I2b2AdminRequestHandler 
-
   override def handle(handler: Handler, shouldBroadcast: Boolean): ShrineResponse = handler.readI2b2AdminPreviousQueries(this, shouldBroadcast)
-  
-  final override def isHandledBy[T : Manifest] = manifest[T].runtimeClass.isAssignableFrom(classOf[I2b2AdminRequestHandler])
   
   protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>

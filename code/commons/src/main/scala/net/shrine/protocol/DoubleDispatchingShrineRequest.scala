@@ -15,8 +15,6 @@ abstract class DoubleDispatchingShrineRequest(
   type Handler
 
   def handle(handler: Handler, shouldBroadcast: Boolean): ShrineResponse
-  
-  def isHandledBy[T : Manifest]: Boolean
 }
 
 object DoubleDispatchingShrineRequest extends AbstractUnmarshallerCompanion[DoubleDispatchingShrineRequest](
