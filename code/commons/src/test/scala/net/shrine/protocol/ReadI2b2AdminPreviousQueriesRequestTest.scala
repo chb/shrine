@@ -20,12 +20,6 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
 
   import ReadI2b2AdminPreviousQueriesRequest._
 
-  def request(tuple: (SortOrder, Category, Strategy)) = {
-    val (sortOrder, category, strategy) = tuple
-
-    ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, category, strategy)
-  }
-
   @Test
   def testToXml = doTestToXml(makeShrineXml, _.toXml)
 
@@ -63,6 +57,12 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
     doTestRoundTrip(_.toI2b2, ReadI2b2AdminPreviousQueriesRequest.fromI2b2)
   }
 
+  private def request(tuple: (SortOrder, Category, Strategy)) = {
+    val (sortOrder, category, strategy) = tuple
+
+    ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, category, strategy)
+  }
+  
   private def doTestToXml(makeExpectedXml: (SortOrder, Category, Strategy) => NodeSeq, serialize: ReadI2b2AdminPreviousQueriesRequest => NodeSeq) {
     for {
       t @ (sortOrder, category, strategy) <- flagCombinations
