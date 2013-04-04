@@ -1,18 +1,16 @@
 package net.shrine.adapter
 
 import org.spin.tools.crypto.signature.Identity
-import net.shrine.protocol.{ ReadQueryDefinitionResponse, ReadQueryDefinitionRequest, BroadcastMessage }
-import org.spin.tools.NetworkTime._
-import net.shrine.config.{ HiveCredentials }
-import net.shrine.util.HttpClient
-import net.shrine.serialization.XmlMarshaller
-import net.shrine.util.Util
+
+import net.shrine.adapter.components.QueryDefinitionSourceComponent
 import net.shrine.adapter.dao.AdapterDao
-import net.shrine.protocol.ErrorResponse
-import net.shrine.protocol.query.QueryDefinition
+import net.shrine.protocol.BroadcastMessage
+import net.shrine.protocol.ReadQueryDefinitionRequest
+import net.shrine.serialization.XmlMarshaller
 
 /**
  * @author Bill Simons
+ * @author clint
  * @date 4/11/11
  * @link http://cbmi.med.harvard.edu
  * @link http://chip.org
@@ -21,23 +19,11 @@ import net.shrine.protocol.query.QueryDefinition
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-class ReadQueryDefinitionAdapter(dao: AdapterDao) extends Adapter {
+class ReadQueryDefinitionAdapter(override val dao: AdapterDao) extends Adapter with QueryDefinitionSourceComponent {
 
   override protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller = {
-    val newRequest = message.request.asInstanceOf[ReadQueryDefinitionRequest]
+    val request = message.request.asInstanceOf[ReadQueryDefinitionRequest]
 
-    val resultOption = for {
-      shrineQuery <- dao.findQueryByNetworkId(newRequest.queryId)
-    } yield {
-      new ReadQueryDefinitionResponse(
-        shrineQuery.networkId,
-        shrineQuery.name,
-        shrineQuery.username,
-        shrineQuery.dateCreated,
-        //TODO: I2b2 or Shrine format?
-        QueryDefinition(shrineQuery.name, shrineQuery.queryExpr).toI2b2String) 
-    }
-    
-    resultOption.getOrElse(ErrorResponse("Couldn't find query with network id: " + newRequest.queryId))
+    QueryDefinitions.get(request)
   }
 }

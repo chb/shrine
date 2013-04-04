@@ -51,25 +51,23 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
 }
 
 object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[ReadI2b2AdminPreviousQueriesRequest] with I2b2Unmarshaller[ReadI2b2AdminPreviousQueriesRequest] {
-  private def textIn(xml: NodeSeq)(tagName: String): String = (xml \ tagName).text.trim
-  
-  private def textInAttr(xml: NodeSeq)(tagName: String, attribute: String): String = (xml \ tagName \ s"@$attribute").text.trim
-
   def enumValue[T](enumCompanion: SEnum[T])(name: String): T = {
     //TODO: Remove unsafe get call
     enumCompanion.valueOf(name).get
   }
 
   override def fromXml(xml: NodeSeq): ReadI2b2AdminPreviousQueriesRequest = {
+    def textIn(tagName: String) = (xml \ tagName).text.trim
+    
     ReadI2b2AdminPreviousQueriesRequest(
       shrineProjectId(xml),
       shrineWaitTimeMs(xml),
       shrineAuthenticationInfo(xml),
-      textIn(xml)("searchString"),
-      textIn(xml)("maxResults").toInt,
-      enumValue(SortOrder)(textIn(xml)("sortOrder")),
-      enumValue(Category)(textIn(xml)("categoryToSearchWithin")),
-      enumValue(Strategy)(textIn(xml)("searchStrategy")))
+      textIn("searchString"),
+      textIn("maxResults").toInt,
+      enumValue(SortOrder)(textIn("sortOrder")),
+      enumValue(Category)(textIn("categoryToSearchWithin")),
+      enumValue(Strategy)(textIn("searchStrategy")))
   }
 
   override def fromI2b2(xml: NodeSeq): ReadI2b2AdminPreviousQueriesRequest = {
@@ -92,7 +90,7 @@ object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[Rea
       enumValueFrom(Strategy)(matchStrElem \ "@strategy"))
   }
 
-  sealed class Category(override val name: String) extends Category.Value
+  final case class Category private[Category] (override val name: String) extends Category.Value
 
   object Category extends SEnum[Category] {
     val All = new Category("@")
@@ -101,16 +99,18 @@ object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[Rea
     val Pdo = new Category("pdo")
   }
 
-  sealed class Strategy(override val name: String) extends Strategy.Value
-
-  object Strategy extends SEnum[Strategy] {
-    val Exact = new Strategy("exact")
-    val Left = new Strategy("left")
-    val Right = new Strategy("right")
-    val Contains = new Strategy("contains")
+  final case class Strategy private[Strategy] (override val name: String, compare: (String, String) => Boolean) extends Strategy.Value {
+    def isMatch(field: String, searchTerm: String) = compare(field, searchTerm)
   }
 
-  sealed class SortOrder(override val name: String) extends SortOrder.Value {
+  object Strategy extends SEnum[Strategy] {
+    val Exact = new Strategy("exact", _ == _)
+    val Left = new Strategy("left", _.startsWith(_))
+    val Right = new Strategy("right", _.endsWith(_))
+    val Contains = new Strategy("contains", _.contains(_))
+  }
+
+  final case class SortOrder private[SortOrder] (override val name: String) extends SortOrder.Value {
     def isAscending = this == SortOrder.Ascending
     def isDescending = this == SortOrder.Descending
   }
