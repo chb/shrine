@@ -7,6 +7,7 @@ import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.serialization.XmlUnmarshaller
 import net.shrine.protocol.handlers.ReadI2b2AdminPreviousQueriesHandler
 import scala.xml.NodeSeq
+import scala.util.Try
 
 /**
  * @author clint
@@ -52,7 +53,7 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
 object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[ReadI2b2AdminPreviousQueriesRequest] with I2b2Unmarshaller[ReadI2b2AdminPreviousQueriesRequest] {
   private def textIn(xml: NodeSeq)(tagName: String): String = (xml \ tagName).text.trim
   
-  private def textInAttr(xml: NodeSeq)(tagName: String, attribute: String): String = (xml \ tagName).text.trim
+  private def textInAttr(xml: NodeSeq)(tagName: String, attribute: String): String = (xml \ tagName \ s"@$attribute").text.trim
 
   def enumValue[T](enumCompanion: SEnum[T])(name: String): T = {
     //TODO: Remove unsafe get call
@@ -72,17 +73,23 @@ object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[Rea
   }
 
   override def fromI2b2(xml: NodeSeq): ReadI2b2AdminPreviousQueriesRequest = {
-    def enumValueFromAttr[T](enumCompanion: SEnum[T])(tagName: String, attribute: String) = enumValue(enumCompanion)((xml \ tagName \ s"@$attribute").text)
+    def enumValueFrom[T](enumCompanion: SEnum[T])(elem: NodeSeq) = enumValue(enumCompanion)(elem.text)
+    
+    val messageBody = xml \ "message_body"
+    
+    val getNameInfo = messageBody \ "get_name_info"
+    
+    val matchStrElem = getNameInfo \ "match_str"
     
     ReadI2b2AdminPreviousQueriesRequest(
       i2b2ProjectId(xml),
       i2b2WaitTimeMs(xml),
       i2b2AuthenticationInfo(xml),
-      textIn(xml)("match_str"),
-      textInAttr(xml)("get_name_info", "max").toInt,
-      if(textIn(xml)("ascending").toBoolean) SortOrder.Ascending else SortOrder.Descending,
-      enumValueFromAttr(Category)("get_name_info", "category"),
-      enumValueFromAttr(Strategy)("match_str", "strategy"))
+      (getNameInfo \ "match_str").text.trim,
+      (getNameInfo \ "@max").text.toInt,
+      if((getNameInfo \ "ascending").text.toBoolean) SortOrder.Ascending else SortOrder.Descending,
+      enumValueFrom(Category)(getNameInfo \ "@category"),
+      enumValueFrom(Strategy)(matchStrElem \ "@strategy"))
   }
 
   sealed class Category(override val name: String) extends Category.Value

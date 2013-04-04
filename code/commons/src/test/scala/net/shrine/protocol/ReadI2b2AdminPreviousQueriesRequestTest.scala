@@ -129,11 +129,21 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
   }
 
   @Test
+  def testToXmlRoundTrip {
+    doTestRoundTrip(_.toXml, ReadI2b2AdminPreviousQueriesRequest.fromXml)
+  }
+  
+  @Test
+  def testShrineRequestXmlRoundTrip {
+    doTestRoundTrip(_.toXml, ShrineRequest.fromXml)
+  }
+  
+  @Test
   def testDoubleDispatchingShrineRequestToI2b2RoundTrip {
     doTestRoundTrip(_.toI2b2, DoubleDispatchingShrineRequest.fromI2b2)
   }
 
-  private def doTestRoundTrip[R <: DoubleDispatchingShrineRequest](serialize: ReadI2b2AdminPreviousQueriesRequest => NodeSeq, deserialize: NodeSeq => R) {
+  private def doTestRoundTrip[R](serialize: ReadI2b2AdminPreviousQueriesRequest => NodeSeq, deserialize: NodeSeq => R) {
     for {
       req <- flagCombinationReqs
     } {

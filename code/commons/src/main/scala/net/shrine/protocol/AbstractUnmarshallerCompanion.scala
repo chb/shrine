@@ -15,19 +15,21 @@ abstract class AbstractUnmarshallerCompanion[Req <: ShrineRequest](i2b2CrcReques
   }
 
   protected def isPsmRequest(requestXml: NodeSeq): Boolean = {
-    (requestXml \ "message_body" \ "psmheader").nonEmpty
+    val hasPsmHeader = hasMessageBodySubElement(requestXml, "psmheader") 
+    
+    val hasRequestType = requestType(requestXml).nonEmpty
+    
+    hasPsmHeader && hasRequestType
   }
 
-  protected def isPdoRequest(requestXml: NodeSeq): Boolean = {
-    (requestXml \ "message_body" \ "pdoheader").nonEmpty
+  protected def hasMessageBodySubElement(requestXml: NodeSeq, tagName: String): Boolean = {
+    (requestXml \ "message_body" \ tagName).nonEmpty
   }
-
-  protected def isSheriffRequest(requestXml: NodeSeq): Boolean = {
-    (requestXml \ "message_body" \ "sheriff_header").nonEmpty
-  }
-
+  
+  private def requestType(requestXml: NodeSeq): NodeSeq = requestXml \ "message_body" \ "psmheader" \ "request_type"
+  
   protected def parsePsmRequest(requestXml: NodeSeq): Req = {
-    val incomingRequestType = (requestXml \ "message_body" \ "psmheader" \ "request_type").text
+    val incomingRequestType = requestType(requestXml).text
 
     crcRequestUnmarshallersByI2b2RequestType.get(incomingRequestType) match {
       case None => null.asInstanceOf[Req]

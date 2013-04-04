@@ -91,5 +91,6 @@ object ShrineRequest extends XmlUnmarshaller[ShrineRequest] {
     "renameQuery" -> RenameQueryRequest,
     "runQuery" -> RunQueryRequest,
     "readResult" -> ReadResultRequest,
-    "readQueryResult" -> ReadQueryResultRequest)
+    "readQueryResult" -> ReadQueryResultRequest,
+    "readAdminPreviousQueries" -> ReadI2b2AdminPreviousQueriesRequest)
 }
