@@ -16,7 +16,7 @@ trait ShrineResponse extends XmlMarshaller with I2b2Marshaller {
   protected def status = <status type="DONE">DONE</status>
 
   //TODO better xmlns strategy
-  override def toI2b2: NodeSeq = XmlUtil.stripWhitespace(
+  override def toI2b2: NodeSeq = XmlUtil.stripWhitespace {
     <ns4:response xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns7="http://sheriff.shrine.net/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns11="http://www.i2b2.org/xsd/hive/msg/result/1.1/">
       <message_header>
         <i2b2_version_compatible>1.1</i2b2_version_compatible>
@@ -40,7 +40,8 @@ trait ShrineResponse extends XmlMarshaller with I2b2Marshaller {
       <message_body>
         { i2b2MessageBody }
       </message_body>
-    </ns4:response>)
+    </ns4:response>
+  }
 }
 
 object ShrineResponse extends XmlUnmarshaller[Option[ShrineResponse]] {

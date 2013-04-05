@@ -4,6 +4,7 @@ import net.shrine.serialization.I2b2Marshaller
 import net.shrine.util.XmlUtil
 import javax.xml.datatype.DatatypeFactory
 import java.util.GregorianCalendar
+import net.shrine.util.Util
 
 /**
  * @author Bill Simons
@@ -15,9 +16,9 @@ import java.util.GregorianCalendar
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final class GetUserConfigurationRequest(val domain: String, val username: String, val password: String) extends I2b2Marshaller {
+final case class GetUserConfigurationRequest(val domain: String, val username: String, val password: String) extends I2b2Marshaller {
 
-  override def toI2b2 = XmlUtil.stripWhitespace(
+  override def toI2b2 = XmlUtil.stripWhitespace {
     <ns2:request xmlns:ns2="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/cell/pm/1.1/">
       <message_header>
         <i2b2_version_compatible>1.1</i2b2_version_compatible>
@@ -29,11 +30,11 @@ final class GetUserConfigurationRequest(val domain: String, val username: String
         <sending_facility>
           <facility_name>SHRINE</facility_name>
         </sending_facility>
-        <datetime_of_message>{DatatypeFactory.newInstance.newXMLGregorianCalendar(new GregorianCalendar)}</datetime_of_message>
+        <datetime_of_message>{ Util.now }</datetime_of_message>
         <security>
-          <domain>{domain}</domain>
-          <username>{username}</username>
-          <password>{password}</password>
+          <domain>{ domain }</domain>
+          <username>{ username }</username>
+          <password>{ password }</password>
         </security>
         <project_id></project_id>
       </message_header>
@@ -45,5 +46,6 @@ final class GetUserConfigurationRequest(val domain: String, val username: String
           <project>undefined</project>
         </ns5:get_user_configuration>
       </message_body>
-    </ns2:request>)
+    </ns2:request>
+  }
 }

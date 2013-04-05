@@ -1,7 +1,7 @@
 package net.shrine.i2b2.protocol.pm
 
 import net.shrine.util.XmlUtil
-import net.shrine.serialization.{I2b2Unmarshaller, XmlMarshaller}
+import net.shrine.serialization.{ I2b2Unmarshaller, XmlMarshaller }
 import xml.NodeSeq
 
 /**
@@ -14,21 +14,24 @@ import xml.NodeSeq
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final class HiveConfig(val crcUrl: String, val ontologyUrl: String) extends XmlMarshaller {
-  override def toXml = XmlUtil.stripWhitespace(
+final case class HiveConfig(val crcUrl: String, val ontologyUrl: String) extends XmlMarshaller {
+  override def toXml = XmlUtil.stripWhitespace {
     <hiveConfig>
-        <crcUrl>{crcUrl}</crcUrl>
-      <ontUrl>{ontologyUrl}</ontUrl>
-    </hiveConfig>)
+      <crcUrl>{ crcUrl }</crcUrl>
+      <ontUrl>{ ontologyUrl }</ontUrl>
+    </hiveConfig>
+  }
 }
 
 object HiveConfig extends I2b2Unmarshaller[HiveConfig] {
   override def fromI2b2(nodeSeq: NodeSeq) = {
     val cellDataSeq = nodeSeq \ "message_body" \ "configure" \ "cell_datas" \ "cell_data"
+    
     //TODO review for error handling - dangerous Option.get?
     val crcUrl = (cellDataSeq.find(a => (a \\ "@id").text == "CRC").get \ "url").text
-    val ontUrl = (cellDataSeq.find(a => (a \\ "@id").text =="ONT").get \ "url").text
     
-    new HiveConfig(crcUrl, ontUrl)
+    val ontUrl = (cellDataSeq.find(a => (a \\ "@id").text == "ONT").get \ "url").text
+
+    HiveConfig(crcUrl, ontUrl)
   }
 }

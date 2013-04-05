@@ -10,6 +10,8 @@ import net.shrine.protocol.query.QueryDefinition
 /**
  * @author clint
  * @date Apr 4, 2013
+ * 
+ * NB: Tested by ReadQueryDefinitionAdapterTest
  */
 trait QueryDefinitionSourceComponent {
   val dao: AdapterDao

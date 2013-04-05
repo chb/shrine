@@ -15,23 +15,34 @@ import net.shrine.protocol.AuthenticationInfo
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final class User(val fullName: String, val username: String, val domain: String, val credential: Credential, val params: Map[String, String]) {
+final case class User(val fullName: String, val username: String, val domain: String, val credential: Credential, val params: Map[String, String]) {
   def toAuthInfo = AuthenticationInfo(domain, username, credential)
 }
 
 object User extends I2b2Unmarshaller[User] {
   override def fromI2b2(nodeSeq: NodeSeq) = {
     val params = Map.empty ++ (nodeSeq \ "message_body" \ "configure" \ "user" \ "param").map { param =>
-      ((param \ "@name").text, param.text)
+      (param \ "@name").text -> param.text
     }
 
     val userXml = nodeSeq \ "message_body" \ "configure" \ "user"
     
-    new User(
-      (userXml \ "full_name").text,
-      (userXml \ "user_name").text,
-      (userXml \ "domain").text,
-      Credential.fromI2b2(userXml \ "password"),
+    val fullNameXml = userXml \ "full_name"
+    val userNameXml = userXml \ "user_name"
+    val domainXml = userXml \ "domain"
+    val credentialXml = userXml \ "password"
+    
+    //NB: Fail loudly
+    require(fullNameXml.nonEmpty)
+    require(userNameXml.nonEmpty)
+    require(domainXml.nonEmpty)
+    require(credentialXml.nonEmpty)
+    
+    User(
+      fullNameXml.text,
+      userNameXml.text,
+      domainXml.text,
+      Credential.fromI2b2(credentialXml),
       params)
   }
 }

@@ -12,12 +12,24 @@ import net.shrine.adapter.components.QueryDefinitionSourceComponent
 import net.shrine.adapter.components.I2b2AdminPreviousQueriesSourceComponent
 import net.shrine.protocol.ShrineRequest
 import net.shrine.protocol.ErrorResponse
+import net.shrine.adapter.components.PmAuthorizerComponent
+import net.shrine.util.HttpClient
+import net.shrine.adapter.components.PmHttpClientComponent
 
 /**
  * @author clint
  * @date Apr 4, 2013
  */
-final class I2b2AdminService(override val dao: AdapterDao) extends I2b2AdminRequestHandler with QueryDefinitionSourceComponent with I2b2AdminPreviousQueriesSourceComponent with Loggable {
+final class I2b2AdminService(
+	override val dao: AdapterDao,
+	override val httpClient: HttpClient,
+	override val pmEndpoint: String) extends 
+		I2b2AdminRequestHandler with 
+		QueryDefinitionSourceComponent with 
+		I2b2AdminPreviousQueriesSourceComponent with 
+		PmAuthorizerComponent with
+		PmHttpClientComponent with
+		Loggable {
 
   //NB: shouldBroadcast is ignored; we never broadcast
   override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean): ShrineResponse = {
@@ -33,17 +45,12 @@ final class I2b2AdminService(override val dao: AdapterDao) extends I2b2AdminRequ
     }
   }
 
-  def checkWithPm(request: ShrineRequest) {
-    //TODO: Should this return something?  Authorized/NotAuthorized, perhaps?
-  }
-
   def checkWithPmAndThen[Req <: ShrineRequest](request: Req)(f: Req => ShrineResponse): ShrineResponse = {
-    try {
-      checkWithPm(request)
+    import PmAuthorizerComponent._
 
-      f(request)
-    } catch {
-      case e: Exception => ErrorResponse(s"Error communicating with the PM cell: ${e.getMessage}")
+    Pm.authorize(request.authn) match {
+      case Authorized(user) => f(request) //TODO: do something with user; check that user has proper roles 
+      case na: NotAuthorized => na.toErrorResponse
     }
   }
 }

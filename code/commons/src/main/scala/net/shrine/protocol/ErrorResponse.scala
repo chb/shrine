@@ -3,6 +3,7 @@ package net.shrine.protocol
 import xml.NodeSeq
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.XmlUnmarshaller
+import net.shrine.serialization.I2b2Unmarshaller
 
 /**
  * @author Bill Simons
@@ -22,12 +23,27 @@ final case class ErrorResponse(val errorMessage: String) extends ShrineResponse 
 
   override protected def i2b2MessageBody = null
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace {
     <errorResponse>
       <message>{errorMessage}</message>
-    </errorResponse>)
+    </errorResponse>
+  }
 }
 
-object ErrorResponse extends XmlUnmarshaller[ErrorResponse] {
-  override def fromXml(nodeSeq: NodeSeq) = new ErrorResponse((nodeSeq \ "message").text)
+object ErrorResponse extends XmlUnmarshaller[ErrorResponse] with I2b2Unmarshaller[ErrorResponse] {
+  override def fromXml(xml: NodeSeq): ErrorResponse = {
+    val messageXml = (xml \ "message")
+    
+    require(messageXml.nonEmpty)
+    
+    ErrorResponse(messageXml.text)
+  }
+  
+  override def fromI2b2(xml: NodeSeq): ErrorResponse = {
+    val statusXml = xml \ "response_header" \ "result_status" \ "status"
+    
+    require((statusXml \ "@type").text == "ERROR")
+    
+    ErrorResponse((xml \ "response_header" \ "result_status" \ "status").text)
+  }
 }
