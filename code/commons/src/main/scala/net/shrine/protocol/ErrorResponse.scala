@@ -34,6 +34,7 @@ object ErrorResponse extends XmlUnmarshaller[ErrorResponse] with I2b2Unmarshalle
   override def fromXml(xml: NodeSeq): ErrorResponse = {
     val messageXml = (xml \ "message")
     
+    //NB: Fail fast
     require(messageXml.nonEmpty)
     
     ErrorResponse(messageXml.text)
@@ -42,6 +43,7 @@ object ErrorResponse extends XmlUnmarshaller[ErrorResponse] with I2b2Unmarshalle
   override def fromI2b2(xml: NodeSeq): ErrorResponse = {
     val statusXml = xml \ "response_header" \ "result_status" \ "status"
     
+    //NB: Fail fast
     require((statusXml \ "@type").text == "ERROR")
     
     ErrorResponse((xml \ "response_header" \ "result_status" \ "status").text)
