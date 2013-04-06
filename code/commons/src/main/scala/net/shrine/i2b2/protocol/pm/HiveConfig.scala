@@ -27,10 +27,16 @@ object HiveConfig extends I2b2Unmarshaller[HiveConfig] {
   override def fromI2b2(nodeSeq: NodeSeq) = {
     val cellDataSeq = nodeSeq \ "message_body" \ "configure" \ "cell_datas" \ "cell_data"
     
-    //TODO review for error handling - dangerous Option.get?
-    val crcUrl = (cellDataSeq.find(a => (a \\ "@id").text == "CRC").get \ "url").text
+    def hasId(id: String): NodeSeq => Boolean = {
+      xml => (xml \\ "@id").text == id
+    }
     
-    val ontUrl = (cellDataSeq.find(a => (a \\ "@id").text == "ONT").get \ "url").text
+    def findUrlById(id: String): String = (cellDataSeq.find(hasId(id)).toSeq \ "url").text
+    
+    //TODO review for error handling - if given ID isn't found, urls will be empty strings. Should we fail loudly instead?
+    val crcUrl = findUrlById("CRC")
+    
+    val ontUrl = findUrlById("ONT")
 
     HiveConfig(crcUrl, ontUrl)
   }
