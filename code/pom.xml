@@ -25,7 +25,7 @@
         <scalatest-version>1.9.1</scalatest-version>
         <slick-version>1.0.0</slick-version>
         <scala-maven-plugin-version>3.1.3</scala-maven-plugin-version>
-	<cxf-version>2.4.0</cxf-version>
+        <cxf-version>2.4.0</cxf-version>
     </properties>
     <build>
         <pluginManagement>
