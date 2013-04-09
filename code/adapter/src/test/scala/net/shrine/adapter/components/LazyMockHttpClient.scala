@@ -6,7 +6,7 @@ import net.shrine.util.HttpClient
  * @author clint
  * @date Apr 5, 2013
  */
-final class MockHttpClient(toReturn: => String) extends HttpClient {
+final class LazyMockHttpClient(toReturn: => String) extends HttpClient {
   var urlParam: Option[String] = None
   var inputParam: Option[String] = None
 

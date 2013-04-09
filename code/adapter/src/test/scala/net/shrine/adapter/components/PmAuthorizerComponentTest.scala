@@ -22,7 +22,7 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
   
   @Test
   def testGoodResponse {
-    val httpClient = new MockHttpClient(validUserResponseXml.toString)
+    val httpClient = new LazyMockHttpClient(validUserResponseXml.toString)
     
     val component = new TestPmAuthorizerComponent(httpClient)
     
@@ -41,7 +41,7 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
   
   @Test
   def testErrorResponse {
-    val component = new TestPmAuthorizerComponent(new MockHttpClient(i2b2ErrorXml.toString))
+    val component = new TestPmAuthorizerComponent(new LazyMockHttpClient(i2b2ErrorXml.toString))
     
     val NotAuthorized(reason) = component.Pm.authorize(authn)
     
@@ -50,7 +50,7 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
   
   @Test
   def testJunkResponse {
-    val component = new TestPmAuthorizerComponent(new MockHttpClient("jahfskajhkjashfdkjashkfd"))
+    val component = new TestPmAuthorizerComponent(new LazyMockHttpClient("jahfskajhkjashfdkjashkfd"))
     
     val NotAuthorized(reason) = component.Pm.authorize(authn)
     
@@ -60,7 +60,7 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
   
   @Test
   def testResponseThatBlowsUp {
-    val component = new TestPmAuthorizerComponent(new MockHttpClient(throw new Exception with scala.util.control.NoStackTrace))
+    val component = new TestPmAuthorizerComponent(new LazyMockHttpClient(throw new Exception with scala.util.control.NoStackTrace))
     
     val NotAuthorized(reason) = component.Pm.authorize(authn)
     

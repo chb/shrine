@@ -15,7 +15,7 @@ final class PmHttpClientComponentTest extends TestCase with ShouldMatchersForJUn
     val pmUrl = "lasdjlkasjdlkasjdlkasdjl"
     
     val component = new PmHttpClientComponent {
-      val httpClient = new MockHttpClient("")
+      val httpClient = new LazyMockHttpClient("")
       val pmEndpoint = pmUrl
     } 
     
