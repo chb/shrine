@@ -21,11 +21,12 @@ final case class User(val fullName: String, val username: String, val domain: St
 
 object User extends I2b2Unmarshaller[User] {
   override def fromI2b2(nodeSeq: NodeSeq) = {
-    val params = Map.empty ++ (nodeSeq \ "message_body" \ "configure" \ "user" \ "param").map { param =>
+    
+    val userXml = nodeSeq \ "message_body" \ "configure" \ "user"
+    
+    val params = Map.empty ++ (userXml \ "param").map { param =>
       (param \ "@name").text -> param.text
     }
-
-    val userXml = nodeSeq \ "message_body" \ "configure" \ "user"
     
     val fullNameXml = userXml \ "full_name"
     val userNameXml = userXml \ "user_name"

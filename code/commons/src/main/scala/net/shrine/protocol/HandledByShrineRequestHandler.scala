@@ -10,4 +10,6 @@ abstract class HandledByShrineRequestHandler(
   override val authn: AuthenticationInfo) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) {
   
   override type Handler = ShrineRequestHandler
+  
+  override val handlerClass = classOf[ShrineRequestHandler]
 }

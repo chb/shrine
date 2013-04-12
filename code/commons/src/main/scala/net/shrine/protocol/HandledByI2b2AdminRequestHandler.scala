@@ -10,4 +10,6 @@ abstract class HandledByI2b2AdminRequestHandler(
   override val authn: AuthenticationInfo) extends DoubleDispatchingShrineRequest(projectId, waitTimeMs, authn) {
   
   override type Handler = I2b2AdminRequestHandler
+  
+  override val handlerClass = classOf[I2b2AdminRequestHandler]
 }

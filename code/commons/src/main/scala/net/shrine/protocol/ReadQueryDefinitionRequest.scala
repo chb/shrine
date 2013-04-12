@@ -21,7 +21,7 @@ final case class ReadQueryDefinitionRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
+  val queryId: Long) extends HandledByReadQueryDefinitionHandler(projectId, waitTimeMs, authn) with CrcRequest {
 
   override val requestType = RequestType.GetRequestXml
 

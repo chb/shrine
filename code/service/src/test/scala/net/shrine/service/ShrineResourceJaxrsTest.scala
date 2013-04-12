@@ -1,25 +1,55 @@
 package net.shrine.service
 
-import com.sun.jersey.test.framework.JerseyTest
-import com.sun.jersey.test.framework.LowLevelAppDescriptor.Builder
 import org.junit.Test
-import com.sun.jersey.test.framework.AppDescriptor
-import com.sun.jersey.api.core.ResourceConfig
-import com.sun.jersey.api.core.ClassNamesResourceConfig
-import com.sun.jersey.spi.inject.InjectableProvider
-import java.lang.reflect.Type
-import com.sun.jersey.core.spi.component.ComponentScope
-import com.sun.jersey.spi.inject.Injectable
-import com.sun.jersey.core.spi.component.ComponentContext
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.matchers.ShouldMatchers
-import net.shrine.protocol._
+import org.spin.tools.RandomTool
+import org.springframework.context.annotation.Scope
+import org.springframework.stereotype.Component
+
+import com.sun.jersey.api.client.UniformInterfaceException
+import com.sun.jersey.test.framework.JerseyTest
+
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import net.shrine.client.JerseyShrineClient
+import net.shrine.protocol.AggregatedReadInstanceResultsResponse
+import net.shrine.protocol.AggregatedReadQueryResultResponse
+import net.shrine.protocol.AggregatedRunQueryResponse
+import net.shrine.protocol.ApprovedTopic
+import net.shrine.protocol.AuthenticationInfo
+import net.shrine.protocol.Credential
+import net.shrine.protocol.DeleteQueryRequest
+import net.shrine.protocol.DeleteQueryResponse
+import net.shrine.protocol.EventResponse
+import net.shrine.protocol.ObservationResponse
+import net.shrine.protocol.ParamResponse
+import net.shrine.protocol.PatientResponse
+import net.shrine.protocol.QueryResult
+import net.shrine.protocol.ReadApprovedQueryTopicsRequest
+import net.shrine.protocol.ReadApprovedQueryTopicsResponse
+import net.shrine.protocol.ReadInstanceResultsRequest
+import net.shrine.protocol.ReadPdoRequest
+import net.shrine.protocol.ReadPdoResponse
+import net.shrine.protocol.ReadPreviousQueriesRequest
+import net.shrine.protocol.ReadPreviousQueriesResponse
+import net.shrine.protocol.ReadQueryDefinitionRequest
+import net.shrine.protocol.ReadQueryDefinitionResponse
+import net.shrine.protocol.ReadQueryInstancesRequest
+import net.shrine.protocol.ReadQueryInstancesResponse
+import net.shrine.protocol.ReadQueryResultRequest
+import net.shrine.protocol.RenameQueryRequest
+import net.shrine.protocol.RenameQueryResponse
+import net.shrine.protocol.RequestType
+import net.shrine.protocol.ResultOutputType
+import net.shrine.protocol.RunQueryRequest
+import net.shrine.protocol.ShrineRequest
+import net.shrine.protocol.ShrineRequestHandler
+import net.shrine.protocol.ShrineResponse
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
-import org.spin.tools.{RandomTool, NetworkTime}
-import net.shrine.client.JerseyShrineClient
+import net.shrine.util.JerseyAppDescriptor
 import net.shrine.util.Util
-import com.sun.jersey.api.client.UniformInterfaceException
 
 /**
  *
@@ -46,6 +76,12 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
   private val shrineClient = new JerseyShrineClient(resource.getURI.toString, projectId, authenticationInfo)
 
+  /**
+   * We invoked the no-arg superclass constructor, so we must override configure() to provide an AppDescriptor
+   * That tells Jersey to instantiate and expose ShrineResource
+   */
+  override def configure = JerseyAppDescriptor.forResource[ShrineResource].using(MockShrineRequestHandler)
+  
   @Test
   def testReadApprovedQueryTopics {
     val response = shrineClient.readApprovedQueryTopics(userId)
@@ -94,12 +130,12 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     param.fetchSize should equal(fetchSize)
     param.userId should equal(userId)
   }
-  
+
   @Test
   def testReadPreviousQueriesUsernameMismatch = resetMockThen {
-	intercept[UniformInterfaceException] {
+    intercept[UniformInterfaceException] {
       shrineClient.readPreviousQueries("foo", 123)
-	}
+    }
 
     MockShrineRequestHandler.readApprovedQueryTopicsParam should be(null)
     MockShrineRequestHandler.runQueryParam should be(null)
@@ -160,7 +196,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
   @Test
   def testReadQueryInstances = resetMockThen {
     val queryId = 123L
-    
+
     val response = shrineClient.readQueryInstances(queryId)
 
     response should not(be(null))
@@ -181,11 +217,11 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     param.queryId should equal(queryId)
   }
-  
+
   @Test
   def testReadInstanceResults = resetMockThen {
     val shrineNetworkQueryId = 98765L
-    
+
     val response = shrineClient.readInstanceResults(shrineNetworkQueryId)
 
     response should not(be(null))
@@ -206,12 +242,12 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     param.shrineNetworkQueryId should equal(shrineNetworkQueryId)
   }
-  
+
   @Test
   def testReadPdo = resetMockThen {
     val patientSetId = "patientSetId"
     val optionsXml = <foo><bar/></foo>
-    
+
     val response = shrineClient.readPdo(patientSetId, optionsXml)
 
     response should not(be(null))
@@ -234,11 +270,11 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     //Turn NodeSeqs to Strings for reliable comparisons
     param.optionsXml.toString should equal(optionsXml.toString)
   }
-  
+
   @Test
   def testReadQueryDefinition = resetMockThen {
     val queryId = 3789894L
-    
+
     val response = shrineClient.readQueryDefinition(queryId)
 
     response should not(be(null))
@@ -259,11 +295,11 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
     param.queryId should equal(queryId)
   }
-  
+
   @Test
   def testDeleteQuery = resetMockThen {
     val queryId = 3789894L
-    
+
     val response = shrineClient.deleteQuery(queryId)
 
     response should not(be(null))
@@ -276,19 +312,19 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
     MockShrineRequestHandler.readQueryResultParam should be(null)
-    
+
     val param = MockShrineRequestHandler.deleteQueryParam
 
     validateCachedParam(param, RequestType.MasterDeleteRequest)
 
     param.queryId should equal(queryId)
   }
-  
+
   @Test
   def testRenameQuery = resetMockThen {
     val queryId = 3789894L
     val queryName = "aslkfhkasfh"
-    
+
     val response = shrineClient.renameQuery(queryId, queryName)
 
     response should not(be(null))
@@ -301,7 +337,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.readQueryResultParam should be(null)
-    
+
     val param = MockShrineRequestHandler.renameQueryParam
 
     validateCachedParam(param, RequestType.MasterRenameRequest)
@@ -309,11 +345,11 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     param.queryId should equal(queryId)
     param.queryName should equal(queryName)
   }
-  
+
   @Test
   def testReadQueryResult = resetMockThen {
     val queryId = 3789894L
-    
+
     val response = shrineClient.readQueryResult(queryId)
 
     response should not(be(null))
@@ -326,14 +362,14 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.readInstanceResultsParam should be(null)
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
-    
+
     val param = MockShrineRequestHandler.readQueryResultParam
 
     validateCachedParam(param, RequestType.GetQueryResult)
 
     param.queryId should equal(queryId)
   }
-  
+
   private def validateCachedParam(param: ShrineRequest, expectedRequestType: RequestType) {
     MockShrineRequestHandler.shouldBroadcastParam should be(true)
     param should not(be(null))
@@ -341,30 +377,6 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     param.authn should equal(authenticationInfo)
     param.requestType should equal(expectedRequestType)
     param.waitTimeMs should equal(ShrineResource.waitTimeMs)
-  }
-  
-  /**
-   * We invoked the no-arg superclass constructor, so we must override configure() to provide an AppDescriptor
-   * That tells Jersey to instantiate and expose ShrineResource
-   */
-  override def configure: AppDescriptor = {
-    //Make a ResourceConfig that describes the one class - ShrineResource - we want Jersey to instantiate and expose 
-    val resourceConfig: ResourceConfig = new ClassNamesResourceConfig(classOf[ShrineResource])
-
-    //Register an InjectableProvider that produces a mock ShrineRequestHandler that will be provided to the ShrineResource
-    //instantiated by Jersey.  For this to work, the ShrineRequestHandler constructor param on ShrineResource must be 
-    //annotated with @net.shrine.service.annotation.ShrineRequestHandler.  Here, we map that annotation to an 
-    //InjectableProvider that produces mock ShrineRequestHandlers and register this with the ResourceConfig. 
-    resourceConfig.getSingletons.add(new InjectableProvider[annotation.RequestHandler, Type] {
-      override def getScope: ComponentScope = ComponentScope.Singleton
-
-      override def getInjectable(context: ComponentContext, a: annotation.RequestHandler, t: Type) = new Injectable[AnyRef] {
-        def getValue: AnyRef = MockShrineRequestHandler
-      }
-    })
-
-    //Make an AppDescriptor from the ResourceConfig
-    new Builder(resourceConfig).build
   }
 
   private def resetMockThen(body: => Any) {
@@ -381,7 +393,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     MockShrineRequestHandler.deleteQueryParam should be(null)
     MockShrineRequestHandler.renameQueryParam should be(null)
     MockShrineRequestHandler.readQueryResultParam should be(null)
-    
+
     body
   }
 
@@ -391,11 +403,11 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
    */
   private object MockShrineRequestHandler extends ShrineRequestHandler {
     var shouldBroadcastParam = false
-    
+
     var readApprovedQueryTopicsParam: ReadApprovedQueryTopicsRequest = _
     var readPreviousQueriesParam: ReadPreviousQueriesRequest = _
     var runQueryParam: RunQueryRequest = _
-    var readQueryInstancesParam: ReadQueryInstancesRequest =_
+    var readQueryInstancesParam: ReadQueryInstancesRequest = _
     var readInstanceResultsParam: ReadInstanceResultsRequest = _
     var readPdoParam: ReadPdoRequest = _
     var readQueryDefinitionParam: ReadQueryDefinitionRequest = _
@@ -416,7 +428,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       renameQueryParam = null
       readQueryResultParam = null
     }
-    
+
     import Util.now
 
     private def setShouldBroadcastAndThen(shouldBroadcast: Boolean)(f: => ShrineResponse): ShrineResponse = {
@@ -424,7 +436,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
         shouldBroadcastParam = shouldBroadcast
       }
     }
-    
+
     override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readApprovedQueryTopicsParam = request
 
@@ -453,10 +465,10 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
       readPdoParam = request
 
       import RandomTool.randomString
-  
+
       def paramResponse = new ParamResponse(randomString, randomString, randomString)
-      
-      ReadPdoResponse(Seq(new EventResponse("event", "patient", None, None, Seq.empty)), Seq(new PatientResponse("patientId", Seq(paramResponse))), Seq(new ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode",None,None,None,None,None,None,None, Seq(paramResponse))))
+
+      ReadPdoResponse(Seq(new EventResponse("event", "patient", None, None, Seq.empty)), Seq(new PatientResponse("patientId", Seq(paramResponse))), Seq(new ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode", None, None, None, None, None, None, None, Seq(paramResponse))))
     }
 
     override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
@@ -482,10 +494,10 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
 
       RenameQueryResponse(873468L, "some-name")
     }
-    
+
     override def readQueryResult(request: ReadQueryResultRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readQueryResultParam = request
-      
+
       AggregatedReadQueryResultResponse(1234567890L, Seq.empty)
     }
   }

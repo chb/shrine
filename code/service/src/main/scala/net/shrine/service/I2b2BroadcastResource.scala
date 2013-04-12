@@ -14,6 +14,7 @@ import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
 import net.shrine.protocol.DoubleDispatchingShrineRequest
 import net.shrine.protocol.ShrineRequestHandler
 import net.shrine.protocol.HandledByShrineRequestHandler
+import net.shrine.protocol.ReadQueryDefinitionRequest
 
 /**
  * @author Bill Simons
@@ -51,7 +52,9 @@ class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler: Shri
     Try {
       DoubleDispatchingShrineRequest.fromI2b2(i2b2Request)
     }.toOption.collect { 
+      //TODO: VERY Ugly. :(
       case req: HandledByShrineRequestHandler => req
+      case req: ReadQueryDefinitionRequest => req 
     }.map {
       shrineRequest =>
         info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))

@@ -1,17 +1,16 @@
 package net.shrine.util
 
 import junit.framework.TestCase
-import org.scalatest.junit.AssertionsForJUnit
-import org.scalatest.matchers.ShouldMatchers
 import org.junit.Test
 import com.sun.jersey.api.client.config.DefaultClientConfig
 import com.sun.jersey.client.urlconnection.HTTPSProperties
+import org.scalatest.junit.ShouldMatchersForJUnit
 
 /**
  * @author clint
  * @date Aug 2, 2012
  */
-final class JerseyHttpClientTest extends TestCase with AssertionsForJUnit with ShouldMatchers{
+final class JerseyHttpClientTest extends TestCase with ShouldMatchersForJUnit {
   @Test
   def testTrustsAllCertsHostnameVerifier {
     import JerseyHttpClient.TrustsAllCertsHostnameVerifier._
