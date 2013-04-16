@@ -36,7 +36,7 @@ final class ShrineResponseTest extends TestCase with ShouldMatchersForJUnit {
     doTestFromXml(new DeleteQueryResponse(123L))
     doTestFromXml(new ReadInstanceResultsResponse(2342L, queryResult1))
     doTestFromXml(new AggregatedReadInstanceResultsResponse(2342L, Seq(queryResult1)))
-    doTestFromXml(new ReadPreviousQueriesResponse("userId", "groupId", Seq.empty))
+    doTestFromXml(new ReadPreviousQueriesResponse(Some("userId"), Some("groupId"), Seq.empty))
     doTestFromXml(new ReadQueryDefinitionResponse(8457L, "name", "userId", now, "queryDefXml"))
     doTestFromXml(new ReadQueryInstancesResponse(12345L, "userId", "groupId", Seq.empty))
     doTestFromXml(new RenameQueryResponse(12345L, "name"))

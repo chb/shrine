@@ -34,7 +34,7 @@ class ReadPreviousQueriesAggregator(
 
     val sortedMasters = mostRecentMastersForEachId.sortWith(newestToOldest)
     
-    val result = new ReadPreviousQueriesResponse(userId, groupId, sortedMasters)
+    val result = new ReadPreviousQueriesResponse(Option(userId), Option(groupId), sortedMasters)
     
     //debug("Previous queries: ")
     

@@ -47,7 +47,7 @@ final case class ReadQueryDefinitionRequest(
 object ReadQueryDefinitionRequest extends I2b2Unmarshaller[ReadQueryDefinitionRequest] with ShrineRequestUnmarshaller[ReadQueryDefinitionRequest] {
 
   override def fromI2b2(nodeSeq: NodeSeq): ReadQueryDefinitionRequest = {
-    new ReadQueryDefinitionRequest(
+    ReadQueryDefinitionRequest(
       i2b2ProjectId(nodeSeq),
       i2b2WaitTimeMs(nodeSeq),
       i2b2AuthenticationInfo(nodeSeq),
@@ -55,7 +55,7 @@ object ReadQueryDefinitionRequest extends I2b2Unmarshaller[ReadQueryDefinitionRe
   }
 
   override def fromXml(nodeSeq: NodeSeq) = {
-    new ReadQueryDefinitionRequest(
+    ReadQueryDefinitionRequest(
       shrineProjectId(nodeSeq),
       shrineWaitTimeMs(nodeSeq),
       shrineAuthenticationInfo(nodeSeq),

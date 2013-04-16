@@ -17,72 +17,88 @@ import net.shrine.serialization.{ I2b2Unmarshaller, XmlUnmarshaller }
  *
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
-final case class ReadPreviousQueriesResponse(val userId: String, val groupId: String, val queryMasters: Seq[QueryMaster]) extends ShrineResponse {
-  override def i2b2MessageBody = XmlUtil.stripWhitespace(
+final case class ReadPreviousQueriesResponse(val userId: Option[String], val groupId: Option[String], val queryMasters: Seq[QueryMaster]) extends ShrineResponse {
+  override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:master_responseType">
       <status>
         <condition type="DONE">DONE</condition>
       </status>
       {
-        queryMasters.map { master =>
-          XmlUtil.stripWhitespace(
+        for {
+          uid <- userId.toSeq
+          gid <- groupId.toSeq
+          master <- queryMasters
+        } yield {
+          XmlUtil.stripWhitespace {
             <query_master>
               <query_master_id>{ master.queryMasterId }</query_master_id>
               <name>{ master.name }</name>
-              <user_id>{ userId }</user_id>
-              <group_id>{ groupId }</group_id>
+              <user_id>{ uid }</user_id>
+              <group_id>{ gid }</group_id>
               <create_date>{ master.createDate }</create_date>
-            </query_master>)
+            </query_master>
+          }
         }
       }
-    </ns5:response>)
+    </ns5:response>
+  }
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace {
     <readPreviousQueriesResponse>
-      <userId>{ userId }</userId>
-      <groupId>{ groupId }</groupId>
+      { 
+        //TODO: Is this right?
+        userId.map(uid => <userId>{ uid }</userId>).orNull
+      }
+      {
+        //TODO: Is this right?
+        groupId.map(gid => <groupId>{ gid }</groupId>).orNull
+      }
       {
         queryMasters.map { master =>
-          XmlUtil.stripWhitespace(
+          XmlUtil.stripWhitespace {
             <queryMaster>
               <id>{ master.queryMasterId }</id>
               <name>{ master.name }</name>
               <createDate>{ master.createDate }</createDate>
-            </queryMaster>)
+            </queryMaster>
+          }
         }
       }
-    </readPreviousQueriesResponse>)
+    </readPreviousQueriesResponse>
+  }
 }
 
 object ReadPreviousQueriesResponse extends I2b2Unmarshaller[ReadPreviousQueriesResponse] with XmlUnmarshaller[ReadPreviousQueriesResponse] {
   override def fromI2b2(nodeSeq: NodeSeq): ReadPreviousQueriesResponse = {
-    val queryMasters = (nodeSeq \ "message_body" \ "response" \ "query_master").map { x =>
-      val queryMasterId = (x \ "query_master_id").text
-      val name = (x \ "name").text
-      val userId = (x \ "user_id").text
-      val groupId = (x \ "group_id").text
-      val createDate = makeXMLGregorianCalendar((x \ "create_date").text)
+    val queryMasters = (nodeSeq \ "message_body" \ "response" \ "query_master").map { querymasterXml =>
+      val queryMasterId = (querymasterXml \ "query_master_id").text
+      val name = (querymasterXml \ "name").text
+      val userId = (querymasterXml \ "user_id").text
+      val groupId = (querymasterXml \ "group_id").text
+      val createDate = makeXMLGregorianCalendar((querymasterXml \ "create_date").text)
 
       QueryMaster(queryMasterId, name, userId, groupId, createDate)
     }
-    
-    val firstMaster = queryMasters.head //TODO - parsing error if no masters - need to deal with "no result" case
 
-    ReadPreviousQueriesResponse(firstMaster.userId, firstMaster.groupId, queryMasters)
+    val firstMaster = queryMasters.headOption
+
+    ReadPreviousQueriesResponse(firstMaster.map(_.userId), firstMaster.map(_.groupId), queryMasters)
   }
 
   override def fromXml(nodeSeq: NodeSeq): ReadPreviousQueriesResponse = {
-    val userId = (nodeSeq \ "userId").text
-    val groupId = (nodeSeq \ "groupId").text
+    val userId = (nodeSeq \ "userId").text.trim
+    val groupId = (nodeSeq \ "groupId").text.trim
 
-    val queryMasters = (nodeSeq \ "queryMaster").map { x =>
-      val queryMasterId = (x \ "id").text
-      val name = (x \ "name").text
-      val createDate = makeXMLGregorianCalendar((x \ "createDate").text)
+    val queryMasters = (nodeSeq \ "queryMaster").map { querymasterXml =>
+      val queryMasterId = (querymasterXml \ "id").text
+      val name = (querymasterXml \ "name").text
+      val createDate = makeXMLGregorianCalendar((querymasterXml \ "createDate").text)
 
       QueryMaster(queryMasterId, name, userId, groupId, createDate)
     }
 
-    ReadPreviousQueriesResponse(userId, groupId, queryMasters)
+    def notEmpty(o: Option[String]) = o.filter(!_.isEmpty)
+
+    ReadPreviousQueriesResponse(notEmpty(Option(userId)), notEmpty(Option(groupId)), queryMasters)
   }
 }

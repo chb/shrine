@@ -32,7 +32,7 @@ abstract class AbstractRunQueryResponse(
 
   final def queryName = requestXml.name
 
-  override protected final def i2b2MessageBody = XmlUtil.stripWhitespace(
+  override protected final def i2b2MessageBody = XmlUtil.stripWhitespace {
     <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:master_instance_result_responseType">
       <status>
         <condition type="DONE">DONE</condition>
@@ -59,9 +59,10 @@ abstract class AbstractRunQueryResponse(
       {
         results.map(_.withInstanceId(queryInstanceId).toI2b2)
       }
-    </ns5:response>)
+    </ns5:response>
+  }
 
-  override final def toXml = XmlUtil.stripWhitespace(
+  override final def toXml = XmlUtil.stripWhitespace {
     XmlUtil.renameRootTag(rootTagName) {
       <placeHolder>
         <queryId>{ queryId }</queryId>
@@ -76,7 +77,8 @@ abstract class AbstractRunQueryResponse(
           }
         </queryResults>
       </placeHolder>
-    })
+    }
+  }
 }
 
 object AbstractRunQueryResponse {
@@ -114,11 +116,15 @@ object AbstractRunQueryResponse {
     override def fromI2b2(nodeSeq: NodeSeq): R = {
       def firstChild(nodeSeq: NodeSeq) = nodeSeq.head.asInstanceOf[Elem].child.head
 
-      val results = (nodeSeq \ "message_body" \ "response" \ "query_result_instance").map(QueryResult.fromI2b2)
-      val queryId = (nodeSeq \ "message_body" \ "response" \ "query_master" \ "query_master_id").text.toLong
-      val userId = (nodeSeq \ "message_body" \ "response" \ "query_master" \ "user_id").text
-      val groupId = (nodeSeq \ "message_body" \ "response" \ "query_master" \ "group_id").text
-      val createDate = (nodeSeq \ "message_body" \ "response" \ "query_master" \ "create_date").text
+      val responseXml = nodeSeq \ "message_body" \ "response"
+
+      val queryMasterXml = responseXml \ "query_master"
+
+      val results = (responseXml \ "query_result_instance").map(QueryResult.fromI2b2)
+      val queryId = (queryMasterXml \ "query_master_id").text.toLong
+      val userId = (queryMasterXml \ "user_id").text
+      val groupId = (queryMasterXml \ "group_id").text
+      val createDate = (queryMasterXml \ "create_date").text
 
       def asString(a: Atom[_]): String = a.data.asInstanceOf[String]
 
@@ -127,12 +133,12 @@ object AbstractRunQueryResponse {
       //NB: We need to handle the query def situtation two different ways:
       // 1) Where the query def is an escaped String, as is returned by the CRC
       // 2) Where the query def is plain XML, as is provided by Shrine
-      val requestXml = firstChild(nodeSeq \ "message_body" \ "response" \ "query_master" \ "request_xml") match {
+      val requestXml = firstChild(queryMasterXml \ "request_xml") match {
         case a: Atom[_] if holdsString(a) => QueryDefinition.fromI2b2(asString(a))
         case xml: NodeSeq => QueryDefinition.fromI2b2(xml)
       }
 
-      val queryInstanceId = (nodeSeq \ "message_body" \ "response" \ "query_instance" \ "query_instance_id").text.toLong
+      val queryInstanceId = (responseXml \ "query_instance" \ "query_instance_id").text.toLong
 
       //TODO: Remove unsafe requestXml.get call
       createResponse(queryId, makeXMLGregorianCalendar(createDate), userId, groupId, requestXml.get, queryInstanceId, results)

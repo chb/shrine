@@ -114,7 +114,7 @@ final class JerseyShrineClientTest extends TestCase with AssertionsForJUnit with
 
     doTestDeserializer(new ReadApprovedQueryTopicsResponse(Seq(new ApprovedTopic(123L, "asjkhjkas"))), JerseyShrineClient.Deserializer.readApprovedQueryTopicsResponseDeserializer)
 
-    doTestDeserializer(new ReadPreviousQueriesResponse("userId", "groupId", Seq.empty), JerseyShrineClient.Deserializer.readPreviousQueriesResponseDeserializer)
+    doTestDeserializer(new ReadPreviousQueriesResponse(Some("userId"), Some("groupId"), Seq.empty), JerseyShrineClient.Deserializer.readPreviousQueriesResponseDeserializer)
 
     doTestDeserializer(new ReadQueryInstancesResponse(999L, "userId", "groupId", Seq.empty), JerseyShrineClient.Deserializer.readQueryInstancesResponseDeserializer)
 

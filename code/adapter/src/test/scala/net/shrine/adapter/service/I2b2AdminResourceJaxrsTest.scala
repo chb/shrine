@@ -131,7 +131,7 @@ object I2b2AdminResourceJaxrsTest {
     override def readI2b2AdminPreviousQueries(request: ReadI2b2AdminPreviousQueriesRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       lock.synchronized { _readI2b2AdminPreviousQueriesParam = request }
       
-      ReadPreviousQueriesResponse(request.authn.username, request.authn.domain, Seq(queryMaster))
+      ReadPreviousQueriesResponse(Option(request.authn.username), Option(request.authn.domain), Seq(queryMaster))
     }
     
     override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {

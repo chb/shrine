@@ -33,7 +33,7 @@ import org.junit.After
  * We work around this issue by mising in JerseyTestCOmponent, which brings in a JerseyTest by composition, and ensures
  * that it is set up and torn down properly.
  */
-abstract class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpringTest with JerseyTestComponent[I2b2AdminService] with AdapterDbTest with ShouldMatchersForJUnit {
+final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpringTest with JerseyTestComponent[I2b2AdminService] with AdapterDbTest with ShouldMatchersForJUnit {
 
   import I2b2AdminResourceEndToEndJaxrsTest._
 
