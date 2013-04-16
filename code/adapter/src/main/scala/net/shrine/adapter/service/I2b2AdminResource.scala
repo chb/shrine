@@ -30,29 +30,28 @@ class I2b2AdminResource @Autowired() (@RequestHandler i2b2AdminRequestHandler: I
   //NB: Never broadcast when receiving requests from the legacy i2b2/Shrine webclient, since we can't retrofit it to 
   //Say whether broadcasting is desired for a praticular query/operation
   val shouldBroadcast = false
-  
+
   @POST
   @Path("request")
   final def doRequest(i2b2Request: String): Response = {
     Try {
       DoubleDispatchingShrineRequest.fromI2b2(i2b2Request)
-    }.toOption.collect { 
+    }.toOption.collect {
       //TODO: VERY Ugly. :(
       case req: ReadI2b2AdminPreviousQueriesRequest => req
       case req: ReadQueryDefinitionRequest => req
-    }.map {
-      shrineRequest =>
-        info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))
+    }.map { shrineRequest =>
+      info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))
 
-        val shrineResponse = shrineRequest match {
-          case req: ReadI2b2AdminPreviousQueriesRequest => req.handle(i2b2AdminRequestHandler, shouldBroadcast)
-          case req: ReadQueryDefinitionRequest => req.handle(i2b2AdminRequestHandler, shouldBroadcast)
-        }
+      val shrineResponse = shrineRequest match {
+        case req: ReadI2b2AdminPreviousQueriesRequest => req.handle(i2b2AdminRequestHandler, shouldBroadcast)
+        case req: ReadQueryDefinitionRequest => req.handle(i2b2AdminRequestHandler, shouldBroadcast)
+      }
 
-        val responseString = shrineResponse.toI2b2String
+      val responseString = shrineResponse.toI2b2String
 
-        Response.ok.entity(responseString).build()
-    }.getOrElse { 
+      Response.ok.entity(responseString).build()
+    }.getOrElse {
       //TODO: I'm not sure if this is right; need to see what the legacy client expects to be returned in case of an error
       Response.status(400).build()
     }

@@ -15,5 +15,5 @@ import xml.NodeSeq
 trait I2b2Marshaller {
   def toI2b2: NodeSeq
 
-  def toI2b2String: String = toI2b2.toString()
+  def toI2b2String: String = toI2b2.toString
 }

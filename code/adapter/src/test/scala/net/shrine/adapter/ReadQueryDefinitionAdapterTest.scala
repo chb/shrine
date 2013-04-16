@@ -1,7 +1,6 @@
 package net.shrine.adapter
 
 import org.scalatest.junit.ShouldMatchersForJUnit
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import org.junit.Test
 import net.shrine.protocol.BroadcastMessage
 import net.shrine.protocol.RenameQueryRequest
@@ -10,12 +9,13 @@ import net.shrine.protocol.ReadQueryDefinitionResponse
 import net.shrine.protocol.ErrorResponse
 import net.shrine.protocol.query.Term
 import net.shrine.protocol.query.QueryDefinition
+import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 
 /**
  * @author clint
  * @date Nov 28, 2012
  */
-final class ReadQueryDefinitionAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit {
+final class ReadQueryDefinitionAdapterTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit {
   @Test
   def testProcessRequest = afterCreatingTables {
     val name = "blarg"

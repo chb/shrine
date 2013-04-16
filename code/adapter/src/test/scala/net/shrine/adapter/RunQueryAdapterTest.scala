@@ -34,11 +34,11 @@ import net.shrine.protocol.query.Term
 import net.shrine.util.HttpClient
 import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.RawCrcRunQueryResponse
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.util.Loggable
 import net.shrine.util.Util
 import net.shrine.protocol.CrcRequest
+import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 
 /**
  * @author Bill Simons
@@ -46,7 +46,7 @@ import net.shrine.protocol.CrcRequest
  * @date 4/19/11
  * @link http://cbmi.med.harvard.edu
  */
-final class RunQueryAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit with Loggable {
+final class RunQueryAdapterTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with ShouldMatchersForJUnit with Loggable {
   private val queryDef = QueryDefinition("foo", Term("foo"))
 
   private val broadcastMessageId = 1234563789L

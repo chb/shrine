@@ -24,14 +24,14 @@ final case class ReadPreviousQueriesResponse(val userId: String, val groupId: St
         <condition type="DONE">DONE</condition>
       </status>
       {
-        queryMasters.map { x =>
+        queryMasters.map { master =>
           XmlUtil.stripWhitespace(
             <query_master>
-              <query_master_id>{ x.queryMasterId }</query_master_id>
-              <name>{ x.name }</name>
+              <query_master_id>{ master.queryMasterId }</query_master_id>
+              <name>{ master.name }</name>
               <user_id>{ userId }</user_id>
               <group_id>{ groupId }</group_id>
-              <create_date>{ x.createDate }</create_date>
+              <create_date>{ master.createDate }</create_date>
             </query_master>)
         }
       }
@@ -42,12 +42,12 @@ final case class ReadPreviousQueriesResponse(val userId: String, val groupId: St
       <userId>{ userId }</userId>
       <groupId>{ groupId }</groupId>
       {
-        queryMasters.map { x =>
+        queryMasters.map { master =>
           XmlUtil.stripWhitespace(
             <queryMaster>
-              <id>{ x.queryMasterId }</id>
-              <name>{ x.name }</name>
-              <createDate>{ x.createDate }</createDate>
+              <id>{ master.queryMasterId }</id>
+              <name>{ master.name }</name>
+              <createDate>{ master.createDate }</createDate>
             </queryMaster>)
         }
       }

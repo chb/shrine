@@ -20,28 +20,26 @@ import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
 import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
 import net.shrine.protocol.QueryMaster
+import net.shrine.util.XmlUtil
+import scala.xml.XML
+import I2b2AdminResourceJaxrsTest._
 
 /**
  * @author clint
  * @date Apr 10, 2013
  */
 final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersForJUnit {
-  import I2b2AdminResourceJaxrsTest._
   
-  private var handler: MockShrineRequestHandler = _
+  var handler: MockShrineRequestHandler = _
+  
+  def resourceUrl = resource.getURI.toString + "i2b2/admin/request"
   
   override def configure: AppDescriptor = {
     JerseyAppDescriptor.forResource[I2b2AdminResource].using { 
-      val newHandler = new MockShrineRequestHandler
-      
-      handler = newHandler
+      handler = new MockShrineRequestHandler
       
       handler
     }
-  }
-  
-  private def resourceUrl = {
-    resource.getURI.toString + "i2b2/admin/request"
   }
   
   @Test
@@ -61,8 +59,12 @@ final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersFor
     response.name should equal("some-query-name")
     response.createDate should not be(null)
     
-    //TODO: 
-    //response.queryDefinition should equal(queryDef.toI2b2String)
+    def stripNamespaces(s: String) = XmlUtil.stripNamespaces(XML.loadString(s))
+    
+    //NB: I'm not sure why whacky namespaces were coming back from the resource;
+    //this checks that the gist of the queryDef XML makes it back.
+    //TODO: revisit this
+    stripNamespaces(response.queryDefinition) should equal(stripNamespaces(queryDef.toI2b2String))
     
     currentHandler.shouldBroadcastParam should be(false)
     currentHandler.readI2b2AdminPreviousQueriesParam should be(null)
@@ -115,7 +117,7 @@ object I2b2AdminResourceJaxrsTest {
    * Mock ShrineRequestHandler; stores passed parameters for later inspection.
    * Private, since this is (basically) the enclosing test class's state
    */
-  private final class MockShrineRequestHandler extends I2b2AdminRequestHandler {
+  final class MockShrineRequestHandler extends I2b2AdminRequestHandler {
     private val lock = new AnyRef
     
     def shouldBroadcastParam = lock.synchronized(_shouldBroadcastParam)

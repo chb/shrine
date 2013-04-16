@@ -4,7 +4,6 @@ import scala.io.Source
 import org.junit.Test
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.spin.tools.NetworkTime
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import javax.annotation.Resource
 import net.shrine.adapter.dao.model.ObfuscatedPair
 import net.shrine.adapter.dao.model.ShrineQuery
@@ -26,12 +25,13 @@ import net.shrine.protocol.query.Term
 import net.shrine.adapter.AdapterDbTest
 import org.spin.tools.crypto.signature.Identity
 import net.shrine.util.Loggable
+import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 
 /**
  * @author clint
  * @date Oct 24, 2012
  */
-final class SlickAdapterDaoTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit with Loggable {
+final class SlickAdapterDaoTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with ShouldMatchersForJUnit with Loggable {
 
   private val authn = AuthenticationInfo("some-domain", "some-user", Credential("laskhdakslhd", false))
 

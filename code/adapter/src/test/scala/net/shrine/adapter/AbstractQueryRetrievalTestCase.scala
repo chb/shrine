@@ -31,6 +31,7 @@ import net.shrine.protocol.ResultOutputType
 import net.shrine.util.Util
 import net.shrine.util.XmlGcEnrichments
 import net.shrine.protocol.CrcRequest
+import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 
 /**
  * @author clint
@@ -39,7 +40,7 @@ import net.shrine.protocol.CrcRequest
 abstract class AbstractQueryRetrievalTestCase[R <: ShrineResponse](
     makeAdapter: (AdapterDao, HttpClient) => Adapter, 
     makeRequest: (Long, AuthenticationInfo) => ShrineRequest, 
-    extractor: R => Option[(Long, QueryResult)]) extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
+    extractor: R => Option[(Long, QueryResult)]) extends AbstractShrineJUnitSpringTest with AdapterDbTest with ShouldMatchersForJUnit {
   
   private val authn = AuthenticationInfo("some-domain", "some-user", Credential("alskdjlkasd", false))
   

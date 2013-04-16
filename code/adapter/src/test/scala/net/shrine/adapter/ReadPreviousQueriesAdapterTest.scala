@@ -7,7 +7,6 @@ import net.shrine.adapter.dao.model.ShrineQuery
 import net.shrine.util.Util
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.query.Term
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.Credential
 import net.shrine.protocol.query.Term
@@ -16,12 +15,13 @@ import net.shrine.protocol.ReadPreviousQueriesResponse
 import net.shrine.protocol.QueryMaster
 import net.shrine.protocol.ReadPreviousQueriesRequest
 import net.shrine.protocol.BroadcastMessage
+import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 
 /**
  * @author clint
  * @date Oct 30, 2012
  */
-final class ReadPreviousQueriesAdapterTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
+final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with ShouldMatchersForJUnit {
   @Test
   def testProcessRequest = afterCreatingTables {
     val Seq((masterId1, queryId1, name1, authn1, expr1), (masterId2, queryId2, name2, authn2, expr2)) = (1 to 2).map(i => ("masterid:" + i, i, "query" + i, AuthenticationInfo("some-domain", "user" + i, Credential("salkhfkjas", false)), Term(i.toString)))

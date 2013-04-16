@@ -23,7 +23,7 @@ final case class ReadQueryDefinitionResponse(
     val createDate: XMLGregorianCalendar,
     val queryDefinition: String) extends ShrineResponse {
 
-  override protected def i2b2MessageBody = XmlUtil.stripWhitespace(
+  override protected def i2b2MessageBody = XmlUtil.stripWhitespace {
     <ns6:response xsi:type="ns6:master_responseType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       <status>
         <condition type="DONE">DONE</condition>
@@ -35,16 +35,18 @@ final case class ReadQueryDefinitionResponse(
         <create_date>{createDate}</create_date>
         <request_xml>{XML.loadString(queryDefinition)}</request_xml>
       </query_master>
-    </ns6:response>)
+    </ns6:response>
+  }
 
-  override def toXml = XmlUtil.stripWhitespace(
+  override def toXml = XmlUtil.stripWhitespace {
     <readQueryDefinitionResponse>
       <masterId>{masterId}</masterId>
       <name>{name}</name>
       <userId>{userId}</userId>
       <createDate>{createDate}</createDate>
       <queryDefinition>{queryDefinition}</queryDefinition>
-    </readQueryDefinitionResponse>)
+    </readQueryDefinitionResponse>
+  }
 
   override def canEqual(other: Any): Boolean = other.isInstanceOf[ReadQueryDefinitionResponse]
 
@@ -61,17 +63,19 @@ final case class ReadQueryDefinitionResponse(
   }
 
   //NB: Does not include create date in hashCode
-  override def hashCode(): Int = 41 * (41 * (41 * (41 + masterId.hashCode) + name.hashCode) + userId.hashCode()) + queryDefinition.hashCode()
+  override def hashCode: Int = 41 * (41 * (41 * (41 + masterId.hashCode) + name.hashCode) + userId.hashCode) + queryDefinition.hashCode
 }
 
 object ReadQueryDefinitionResponse extends I2b2Unmarshaller[ReadQueryDefinitionResponse] with XmlUnmarshaller[ReadQueryDefinitionResponse] {
   override def fromI2b2(nodeSeq: NodeSeq) = {
+    val queryMasterXml = nodeSeq \ "message_body" \ "response" \ "query_master"
+    
     new ReadQueryDefinitionResponse(
-      (nodeSeq \ "message_body" \ "response" \ "query_master" \ "query_master_id").text.toLong,
-      (nodeSeq \ "message_body" \ "response" \ "query_master" \ "name").text,
-      (nodeSeq \ "message_body" \ "response" \ "query_master" \ "user_id").text,
-      makeXMLGregorianCalendar((nodeSeq \ "message_body" \ "response" \ "query_master" \ "create_date").text),
-      (nodeSeq \ "message_body" \ "response" \ "query_master" \ "request_xml" \ "query_definition").toString)
+      (queryMasterXml \ "query_master_id").text.toLong,
+      (queryMasterXml \ "name").text,
+      (queryMasterXml \ "user_id").text,
+      makeXMLGregorianCalendar((queryMasterXml \ "create_date").text),
+      (queryMasterXml \ "request_xml" \ "query_definition").toString)
   }
 
   override def fromXml(nodeSeq: NodeSeq) = new ReadQueryDefinitionResponse(

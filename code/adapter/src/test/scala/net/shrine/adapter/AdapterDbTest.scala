@@ -3,7 +3,6 @@ package net.shrine.adapter
 import scala.io.Source
 import javax.annotation.Resource
 import net.shrine.adapter.dao.AdapterDao
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import scala.slick.session.Database
 import scala.slick.driver.ExtendedProfile
 import scala.slick.driver.BasicDriver.Table
@@ -12,12 +11,13 @@ import scala.slick.session.Session
 import net.shrine.adapter.dao.slick.tables.Tables
 import scala.slick.driver.BasicProfile
 import scala.slick.driver.BasicDriver
+import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 
 /**
  * @author clint
  * @date Nov 7, 2012
  */
-trait AdapterDbTest { self: AbstractDependencyInjectionSpringContextTests =>
+trait AdapterDbTest { self: AbstractShrineJUnitSpringTest =>
   @Resource
   var database: Database = _
   
@@ -30,7 +30,7 @@ trait AdapterDbTest { self: AbstractDependencyInjectionSpringContextTests =>
   @Resource
   var tables: Tables = _
   
-  override protected final def getConfigPath = "/testApplicationContext.xml"
+  //override protected final def getConfigPath = "/testApplicationContext.xml"
   
   protected lazy val queryRows = for(row <- Query(tables.ShrineQueries)) yield row.*
 

@@ -49,7 +49,7 @@ final case class QueryDefinition(name: String, expr: Expression) extends I2b2Mar
         toPanels(expr).map(_.toI2b2)
       }
     </query_definition>
-  }.asInstanceOf[Elem]
+  }
 }
 
 object QueryDefinition extends XmlUnmarshaller[Try[QueryDefinition]] {

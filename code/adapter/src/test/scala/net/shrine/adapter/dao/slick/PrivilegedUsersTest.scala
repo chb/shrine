@@ -1,6 +1,5 @@
 package net.shrine.adapter.dao.slick
 
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import net.shrine.adapter.AdapterDbTest
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.spin.tools.crypto.signature.Identity
@@ -21,6 +20,7 @@ import net.shrine.dao.slick.tables.DateHelpers
 import net.shrine.protocol.RawCrcRunQueryResponse
 import scala.slick.session.Session
 import scala.slick.lifted.Parameters
+import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 
 /**
  * @author clint
@@ -28,7 +28,7 @@ import scala.slick.lifted.Parameters
  *
  * Ported
  */
-final class PrivilegedUsersTest extends AbstractDependencyInjectionSpringContextTests with AdapterDbTest with ShouldMatchersForJUnit {
+final class PrivilegedUsersTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with ShouldMatchersForJUnit {
 
   private val testDomain = "testDomain"
   private val testUsername = "testUsername"

@@ -19,29 +19,35 @@ trait PmAuthorizerComponent { self: PmHttpClientComponent with Loggable =>
   object Pm {
     def authorize(authn: AuthenticationInfo): AuthorizationStatus = {
       val request = GetUserConfigurationRequest(authn.domain, authn.username, authn.credential.value)
-      
+
       def parsePmResult(responseXml: String): Either[ErrorResponse, User] = {
-        Try{
+        Try {
           Right(User.fromI2b2(responseXml))
-        }.recoverWith {
-          case e: Exception => Try(Left(ErrorResponse.fromI2b2(responseXml)))
         }.recover {
-          case e: Exception => Left(ErrorResponse(s"Error authorizing ${ authn.domain }:${ authn.username }: ${ e.getMessage }"))
+          case e: Exception => {
+            try {
+              Left(ErrorResponse.fromI2b2(responseXml))
+            } catch {
+              case e: Exception => {
+                error(s"Error authorizing ${authn.domain}:${authn.username}:", e)
+
+                Left(ErrorResponse(s"Error authorizing ${authn.domain}:${authn.username}: ${e.getMessage}"))
+              }
+            }
+          }
         }.get
       }
+
+      debug(s"Authorizing with PM cell at $pmEndpoint")
       
-      val responseAttempt = Try {
-        debug(s"Authorizing with PM cell at $pmEndpoint")
-        
-        httpClient.post(request.toI2b2String, pmEndpoint)
-      }
-      
-      val authStatusAttempt = responseAttempt.map(parsePmResult).map {
+      val responseAttempt = Try(httpClient.post(request.toI2b2String, pmEndpoint)).map(parsePmResult)
+
+      val authStatusAttempt = responseAttempt.map {
         case Right(user) => Authorized(user)
         case Left(ErrorResponse(message)) => NotAuthorized(message)
       }
-      
-      authStatusAttempt.getOrElse(NotAuthorized(s"Error authorizing ${ authn.domain }:${ authn.username } with PM at $pmEndpoint"))
+
+      authStatusAttempt.getOrElse(NotAuthorized(s"Error authorizing ${authn.domain}:${authn.username} with PM at $pmEndpoint"))
     }
   }
 }
