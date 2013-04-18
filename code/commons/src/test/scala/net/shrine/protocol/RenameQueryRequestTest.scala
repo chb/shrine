@@ -19,7 +19,8 @@ class RenameQueryRequestTest extends ShrineRequestValidator {
   val queryId = 2422297885846950097L
   val queryName = "Cholecystitis w@14:41:52 [3-28-2011]"
 
-  override def messageBody = <message_body>
+  override def messageBody = XmlUtil.stripWhitespace {
+    <message_body>
 		<ns4:psmheader>
 			<user login={username}>{username}</user>
 			<patient_set_limit>0</patient_set_limit>
@@ -32,17 +33,20 @@ class RenameQueryRequestTest extends ShrineRequestValidator {
 			<query_name>{queryName}</query_name>
 		</ns4:request>
 	</message_body>
+  }
 
-  val renameQueryRequest = XmlUtil.stripWhitespace(
+  val renameQueryRequest = XmlUtil.stripWhitespace {
       <renameQuery>
         {requestHeaderFragment}
         <queryId>{queryId}</queryId>
         <queryName>{queryName}</queryName>
-      </renameQuery>)
+      </renameQuery>
+  }
 
   @Test
   override def testFromI2b2 {
     val translatedRequest = RenameQueryRequest.fromI2b2(request)
+    
     validateRequestWith(translatedRequest) {
       translatedRequest.queryId should equal(queryId)
       translatedRequest.queryName should equal(queryName)
@@ -52,28 +56,31 @@ class RenameQueryRequestTest extends ShrineRequestValidator {
   @Test
   override def testShrineRequestFromI2b2 {
     val shrineRequest = CrcRequest.fromI2b2(request)
+    
     assertTrue(shrineRequest.isInstanceOf[RenameQueryRequest])
   }
   
   @Test
   def testDoubleDispatchingShrineRequestFromI2b2 {
-    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
+    val shrineRequest = HandleableShrineRequest.fromI2b2(request)
+    
     assertTrue(shrineRequest.isInstanceOf[RenameQueryRequest])
   }
 
   @Test
   override def testToXml {
-    new RenameQueryRequest(projectId, waitTimeMs, authn, queryId, queryName).toXml should equal(renameQueryRequest)
+    RenameQueryRequest(projectId, waitTimeMs, authn, queryId, queryName).toXml should equal(renameQueryRequest)
   }
 
   @Test
   override def testToI2b2 {
-    new RenameQueryRequest(projectId, waitTimeMs, authn, queryId, queryName).toI2b2 should equal(request)
+    RenameQueryRequest(projectId, waitTimeMs, authn, queryId, queryName).toI2b2 should equal(request)
   }
 
   @Test
   override def testFromXml {
     val actual = RenameQueryRequest.fromXml(renameQueryRequest)
+    
     validateRequestWith(actual) {
       actual.queryId should equal(queryId)
       actual.queryName should equal(queryName)

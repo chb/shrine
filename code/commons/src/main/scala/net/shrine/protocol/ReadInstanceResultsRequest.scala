@@ -36,11 +36,11 @@ final case class ReadInstanceResultsRequest(
    * CRC from Shrine's datastore.
    * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    */ 
-  val shrineNetworkQueryId: Long) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
+  val shrineNetworkQueryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with HandleableShrineRequest {
 
   override val requestType = RequestType.InstanceRequest
   
-  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readInstanceResults(this, shouldBroadcast)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readInstanceResults(this, shouldBroadcast)
   
   override def toXml = XmlUtil.stripWhitespace {
     <readInstanceResults>

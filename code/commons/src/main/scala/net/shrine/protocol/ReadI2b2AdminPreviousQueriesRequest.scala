@@ -22,11 +22,11 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
   sortOrder: ReadI2b2AdminPreviousQueriesRequest.SortOrder = ReadI2b2AdminPreviousQueriesRequest.SortOrder.Descending,
   categoryToSearchWithin: ReadI2b2AdminPreviousQueriesRequest.Category = ReadI2b2AdminPreviousQueriesRequest.Category.Top,
   searchStrategy: ReadI2b2AdminPreviousQueriesRequest.Strategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains
-  ) extends HandledByI2b2AdminRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
+  ) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with HandleableAdminShrineRequest {
 
   override val requestType = RequestType.ReadI2b2AdminPreviousQueriesRequest
 
-  override def handle(handler: Handler, shouldBroadcast: Boolean): ShrineResponse = handler.readI2b2AdminPreviousQueries(this, shouldBroadcast)
+  override def handleAdmin(handler: I2b2AdminRequestHandler, shouldBroadcast: Boolean): ShrineResponse = handler.readI2b2AdminPreviousQueries(this, shouldBroadcast)
   
   protected override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <message_body>

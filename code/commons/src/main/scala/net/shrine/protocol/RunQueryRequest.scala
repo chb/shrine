@@ -28,11 +28,11 @@ final case class RunQueryRequest(
   val networkQueryId: Long,
   val topicId: String,
   val outputTypes: Set[ResultOutputType],
-  val queryDefinition: QueryDefinition) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] {
+  val queryDefinition: QueryDefinition) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[RunQueryRequest] with HandleableShrineRequest {
 
   override val requestType = RequestType.QueryDefinitionRequest
   
-  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.runQuery(this, shouldBroadcast)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.runQuery(this, shouldBroadcast)
 
   override def toXml = XmlUtil.stripWhitespace {
     <runQuery>

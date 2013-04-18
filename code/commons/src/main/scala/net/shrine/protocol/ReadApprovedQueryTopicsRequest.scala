@@ -5,7 +5,6 @@ import net.shrine.util.XmlUtil
 import net.shrine.serialization.I2b2Unmarshaller
 import net.shrine.protocol.handlers.ReadApprovedTopicsHandler
 
-
 /**
  * @author Bill Simons
  * @date 3/9/11
@@ -22,11 +21,11 @@ final case class ReadApprovedQueryTopicsRequest(
     override val projectId: String,
     override val waitTimeMs: Long,
     override val authn: AuthenticationInfo,
-    val userId: String) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) {
+    val userId: String) extends ShrineRequest(projectId, waitTimeMs, authn) with HandleableShrineRequest {
 
   override val requestType = RequestType.SheriffRequest
   
-  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readApprovedQueryTopics(this, shouldBroadcast)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readApprovedQueryTopics(this, shouldBroadcast)
 
   override def toXml = XmlUtil.stripWhitespace {
     <readApprovedQueryTopics>

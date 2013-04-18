@@ -25,13 +25,14 @@ class RunQueryRequestTest extends ShrineRequestValidator {
   val queryDefinition = QueryDefinition("Ostium secundum@14:01:35", Term("""\\SHRINE\SHRINE\Diagnoses\Congenital anomalies\Cardiac and circulatory congenital anomalies\Atrial septal defect\Ostium secundum type atrial septal defect\"""))
 
   //add weird casing to make sure the code isn't case senstive, the client will send all sorts of weirdness
-  val resultOutputTypes = XmlUtil.stripWhitespace(
+  val resultOutputTypes = XmlUtil.stripWhitespace {
     <result_output_list>
       <result_output priority_index="1" name="PatiEntSet"/>
       <result_output priority_index="2" name="patIent_Count_Xml"/>
-    </result_output_list>)
+    </result_output_list>
+  }
 
-  override def messageBody = XmlUtil.stripWhitespace(
+  override def messageBody = XmlUtil.stripWhitespace {
     <message_body>
       <ns4:psmheader>
         <user group={ domain } login={ username }>{ username }</user>
@@ -44,9 +45,10 @@ class RunQueryRequestTest extends ShrineRequestValidator {
         { resultOutputTypes }
       </ns4:request>
       <shrine><queryTopicID>{ topicId }</queryTopicID></shrine>
-    </message_body>)
+    </message_body>
+  }
 
-  val runQueryRequest = XmlUtil.stripWhitespace(
+  val runQueryRequest = XmlUtil.stripWhitespace {
     <runQuery>
       { requestHeaderFragment }
       <queryId>{ queryId }</queryId>
@@ -56,11 +58,13 @@ class RunQueryRequestTest extends ShrineRequestValidator {
         <outputType>PATIENT_COUNT_XML</outputType>
       </outputTypes>
       { queryDefinition.toXml }
-    </runQuery>)
+    </runQuery>
+  }
 
   @Test
   override def testFromI2b2 {
     val translatedRequest = RunQueryRequest.fromI2b2(request)
+    
     validateRequestWith(translatedRequest) {
       translatedRequest.topicId should equal(topicId)
       translatedRequest.outputTypes should contain(ResultOutputType.PATIENT_COUNT_XML)
@@ -99,18 +103,20 @@ class RunQueryRequestTest extends ShrineRequestValidator {
   @Test
   override def testShrineRequestFromI2b2 {
     val shrineRequest = CrcRequest.fromI2b2(request)
+    
     assertTrue(shrineRequest.isInstanceOf[RunQueryRequest])
   }
-  
+
   @Test
   def testDoubleDispatchingShrineRequestFromI2b2 {
-    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
+    val shrineRequest = HandleableShrineRequest.fromI2b2(request)
+    
     assertTrue(shrineRequest.isInstanceOf[RunQueryRequest])
   }
 
   @Test
   override def testToXml {
-    new RunQueryRequest(
+    RunQueryRequest(
       projectId,
       waitTimeMs,
       authn,
@@ -144,6 +150,7 @@ class RunQueryRequestTest extends ShrineRequestValidator {
   @Test
   override def testFromXml {
     val actual = RunQueryRequest.fromXml(runQueryRequest)
+    
     validateRequestWith(actual) {
       actual.networkQueryId should equal(queryId)
       actual.topicId should equal(topicId)

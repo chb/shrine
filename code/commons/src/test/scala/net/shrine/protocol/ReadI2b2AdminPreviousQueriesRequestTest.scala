@@ -49,7 +49,7 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
   
   @Test
   def testDoubleDispatchingShrineRequestToI2b2RoundTrip {
-    doTestRoundTrip(_.toI2b2, DoubleDispatchingShrineRequest.fromI2b2)
+    doTestRoundTrip(_.toI2b2, HandleableAdminShrineRequest.fromI2b2)
   }
   
   @Test

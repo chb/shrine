@@ -16,7 +16,7 @@ import net.shrine.util.XmlUtil
  * @link http://www.gnu.org/licenses/lgpl.html
  */
 class ReadPdoRequestTest extends ShrineRequestValidator {
-  val pdoRequest = XmlUtil.stripWhitespace(
+  val pdoRequest = XmlUtil.stripWhitespace {
     <ns3:request xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GetPDOFromInputList_requestType">
       <input_list>
         <patient_list max="123" min="1">
@@ -38,54 +38,60 @@ class ReadPdoRequestTest extends ShrineRequestValidator {
         </panel>
       </filter_list>
       <output_option>
-          <patient_set onlykeys="false" select="using_input_list"/>
+        <patient_set onlykeys="false" select="using_input_list"/>
       </output_option>
-    </ns3:request>)
+    </ns3:request>
+  }
 
-  def messageBody = XmlUtil.stripWhitespace(
+  def messageBody = XmlUtil.stripWhitespace {
     <message_body>
       <ns3:pdoheader>
         <patient_set_limit>0</patient_set_limit>
         <estimated_time>180000</estimated_time>
         <request_type>getPDO_fromInputList</request_type>
-      </ns3:pdoheader>{pdoRequest}
-    </message_body>)
+      </ns3:pdoheader>{ pdoRequest }
+    </message_body>
+  }
 
-  val readPdoRequest = XmlUtil.stripWhitespace(
+  val readPdoRequest = XmlUtil.stripWhitespace {
     <readPdo>
-      {requestHeaderFragment}<optionsXml>
-      {pdoRequest}
-    </optionsXml>
-    <patientSetCollId>blah</patientSetCollId>
-    </readPdo>)
+      { requestHeaderFragment }<optionsXml>
+                                 { pdoRequest }
+                               </optionsXml>
+      <patientSetCollId>blah</patientSetCollId>
+    </readPdo>
+  }
 
   @Test
-  def testFromI2b2() {
+  def testFromI2b2 {
     val translatedRequest = ReadPdoRequest.fromI2b2(request)
+
     validateRequestWith(translatedRequest) {
       translatedRequest.optionsXml.toString should equal(pdoRequest.toString)
     }
   }
 
   @Test
-  def testShrineRequestFromI2b2() {
-    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
+  def testShrineRequestFromI2b2 {
+    val shrineRequest = HandleableShrineRequest.fromI2b2(request)
+
     assertTrue(shrineRequest.isInstanceOf[ReadPdoRequest])
   }
 
   @Test
-  def testToXml() {
-    new ReadPdoRequest(projectId, waitTimeMs, authn, "blah", pdoRequest).toXml.toString() should equal(readPdoRequest.toString())
+  def testToXml {
+    ReadPdoRequest(projectId, waitTimeMs, authn, "blah", pdoRequest).toXml.toString() should equal(readPdoRequest.toString())
   }
 
   @Test
-  def testToI2b2() {
-    new ReadPdoRequest(projectId, waitTimeMs, authn, "blah", pdoRequest).toI2b2.toString() should equal(request.toString())
+  def testToI2b2 {
+    ReadPdoRequest(projectId, waitTimeMs, authn, "blah", pdoRequest).toI2b2.toString() should equal(request.toString())
   }
 
   @Test
-  def testFromXml() {
+  def testFromXml {
     val actual = ReadPdoRequest.fromXml(readPdoRequest)
+
     validateRequestWith(actual) {
       (actual.optionsXml).toString() should equal(pdoRequest.toString())
       actual.patientSetCollId should equal("blah")
@@ -93,12 +99,12 @@ class ReadPdoRequestTest extends ShrineRequestValidator {
   }
 
   @Test
-  def testShrineRequestFromXml() {
+  def testShrineRequestFromXml {
     assertTrue(ShrineRequest.fromXml(readPdoRequest).isInstanceOf[ReadPdoRequest])
   }
 
   @Test
-  def testReplacePatientSetColId(): Unit = {
+  def testReplacePatientSetColId: Unit = {
     val xml = XmlUtil.stripWhitespace(
       <message_body xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/">
         <ns3:pdoheader>
@@ -106,8 +112,7 @@ class ReadPdoRequestTest extends ShrineRequestValidator {
           <estimated_time>180000</estimated_time>
           <request_type>getPDO_fromInputList</request_type>
         </ns3:pdoheader>
-        <ns3:request xsi:type="ns3:GetPDOFromInputList_requestType"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <ns3:request xsi:type="ns3:GetPDOFromInputList_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           <input_list>
             <patient_list max="1000000" min="0">
               <patient_set_coll_id>5475</patient_set_coll_id>
@@ -118,18 +123,18 @@ class ReadPdoRequestTest extends ShrineRequestValidator {
 
     val transformed = ReadPdoRequest.updateCollId(xml, "test")
     transformed.isDefined should be(true)
-    
+
     (transformed.get \ "request" \ "input_list" \ "patient_list" \ "patient_set_coll_id").text should equal("test")
 
-    var request = new ReadPdoRequest(projectId, waitTimeMs, authn, "blah", pdoRequest)
-    request = request.withPatientSetCollId("test")
-    request.patientSetCollId should equal("test")
-    request = ReadPdoRequest.fromXml(request.toXml)
-    (request.optionsXml \ "input_list" \ "patient_list" \ "patient_set_coll_id").text should equal("test")
-    request.patientSetCollId should equal("test")
-    request = ReadPdoRequest.fromI2b2(request.toI2b2)
-    (request.optionsXml \ "input_list" \ "patient_list" \ "patient_set_coll_id").text should equal("test")
+    val request = ReadPdoRequest(projectId, waitTimeMs, authn, "blah", pdoRequest).withPatientSetCollId("test")
     request.patientSetCollId should equal("test")
 
+    val request2 = ReadPdoRequest.fromXml(request.toXml)
+    (request2.optionsXml \ "input_list" \ "patient_list" \ "patient_set_coll_id").text should equal("test")
+    request2.patientSetCollId should equal("test")
+
+    val request3 = ReadPdoRequest.fromI2b2(request.toI2b2)
+    (request3.optionsXml \ "input_list" \ "patient_list" \ "patient_set_coll_id").text should equal("test")
+    request3.patientSetCollId should equal("test")
   }
 }

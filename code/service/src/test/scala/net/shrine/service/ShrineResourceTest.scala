@@ -61,7 +61,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
       this.setUp()
 
       val expectedRequest = new ReadPreviousQueriesRequest(projectId, waitTimeMs, authenticationInfo, userId, expectedFetchSize)
-      val expectedResponse = new ReadPreviousQueriesResponse(userId, "groupId", Seq.empty)
+      val expectedResponse = new ReadPreviousQueriesResponse(Option(userId), Option("groupId"), Seq.empty)
 
       setExpectations(_.readPreviousQueries, expectedRequest, expectedResponse)
 

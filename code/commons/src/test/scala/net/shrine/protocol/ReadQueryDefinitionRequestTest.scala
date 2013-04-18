@@ -18,27 +18,31 @@ import net.shrine.util.XmlUtil
 class ReadQueryDefinitionRequestTest extends ShrineRequestValidator {
   val queryId = 2422297885846950097L
 
-  def messageBody = <message_body>
+  def messageBody = XmlUtil.stripWhitespace {
+    <message_body>
       <ns4:psmheader>
-        <user login={username}>{username}</user>
+        <user login={ username }>{ username }</user>
         <patient_set_limit>0</patient_set_limit>
         <estimated_time>0</estimated_time>
         <request_type>CRC_QRY_getRequestXml_fromQueryMasterId</request_type>
       </ns4:psmheader>
       <ns4:request xsi:type="ns4:master_requestType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <query_master_id>{queryId}</query_master_id>
+        <query_master_id>{ queryId }</query_master_id>
       </ns4:request>
     </message_body>
+  }
 
-  val readQueryDefinitionRequest = XmlUtil.stripWhitespace(
-      <readQueryDefinition>
-        {requestHeaderFragment}
-        <queryId>{queryId}</queryId>
-      </readQueryDefinition>)
+  val readQueryDefinitionRequest = XmlUtil.stripWhitespace {
+    <readQueryDefinition>
+      { requestHeaderFragment }
+      <queryId>{ queryId }</queryId>
+    </readQueryDefinition>
+  }
 
   @Test
   override def testFromI2b2 {
     val translatedRequest = ReadQueryDefinitionRequest.fromI2b2(request)
+   
     validateRequestWith(translatedRequest) {
       translatedRequest.queryId should equal(queryId)
     }
@@ -47,28 +51,31 @@ class ReadQueryDefinitionRequestTest extends ShrineRequestValidator {
   @Test
   override def testShrineRequestFromI2b2 {
     val shrineRequest = CrcRequest.fromI2b2(request)
+    
     assertTrue(shrineRequest.isInstanceOf[ReadQueryDefinitionRequest])
   }
-  
+
   @Test
   def testDoubleDispatchingShrineRequestFromI2b2 {
-    val shrineRequest = DoubleDispatchingShrineRequest.fromI2b2(request)
+    val shrineRequest = HandleableShrineRequest.fromI2b2(request)
+    
     assertTrue(shrineRequest.isInstanceOf[ReadQueryDefinitionRequest])
   }
-  
+
   @Test
   override def testToXml {
-    new ReadQueryDefinitionRequest(projectId, waitTimeMs, authn, queryId).toXml should equal(readQueryDefinitionRequest)
+    ReadQueryDefinitionRequest(projectId, waitTimeMs, authn, queryId).toXml should equal(readQueryDefinitionRequest)
   }
 
   @Test
   override def testToI2b2 {
-    new ReadQueryDefinitionRequest(projectId, waitTimeMs, authn, queryId).toI2b2 should equal(request)
+    ReadQueryDefinitionRequest(projectId, waitTimeMs, authn, queryId).toI2b2 should equal(request)
   }
 
   @Test
   override def testFromXml {
     val actual = ReadQueryDefinitionRequest.fromXml(readQueryDefinitionRequest)
+    
     validateRequestWith(actual) {
       actual.queryId should equal(queryId)
     }

@@ -22,11 +22,11 @@ final case class ReadPreviousQueriesRequest(
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
   val userId: String,
-  val fetchSize: Int) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest {
+  val fetchSize: Int) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with HandleableShrineRequest {
 
   override val requestType = RequestType.UserRequest
 
-  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readPreviousQueries(this, shouldBroadcast)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readPreviousQueries(this, shouldBroadcast)
   
   override def toXml = XmlUtil.stripWhitespace {
     <readPreviousQueries>

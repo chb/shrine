@@ -21,11 +21,13 @@ final case class ReadQueryDefinitionRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends HandledByReadQueryDefinitionHandler(projectId, waitTimeMs, authn) with CrcRequest {
+  val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with HandleableAdminShrineRequest with HandleableShrineRequest {
 
   override val requestType = RequestType.GetRequestXml
 
-  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
+  
+  override def handleAdmin(handler: I2b2AdminRequestHandler, shouldBroadcast: Boolean) = handler.readQueryDefinition(this, shouldBroadcast)
 
   override def toXml = XmlUtil.stripWhitespace {
     <readQueryDefinition>

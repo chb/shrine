@@ -446,7 +446,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     override def readPreviousQueries(request: ReadPreviousQueriesRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readPreviousQueriesParam = request
 
-      ReadPreviousQueriesResponse("userId", "groupId", Seq.empty)
+      ReadPreviousQueriesResponse(Option("userId"), Option("groupId"), Seq.empty)
     }
 
     override def readQueryInstances(request: ReadQueryInstancesRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {

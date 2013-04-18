@@ -11,10 +11,9 @@ import javax.ws.rs.core.Response
 import net.shrine.util.Loggable
 import javax.ws.rs.core.MediaType
 import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
-import net.shrine.protocol.DoubleDispatchingShrineRequest
 import net.shrine.protocol.ShrineRequestHandler
-import net.shrine.protocol.HandledByShrineRequestHandler
 import net.shrine.protocol.ReadQueryDefinitionRequest
+import net.shrine.protocol.HandleableShrineRequest
 
 /**
  * @author Bill Simons
@@ -49,12 +48,8 @@ class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler: Shri
   }
 
   final def processI2b2Message(i2b2Request: String): Response = {
-    Try {
-      DoubleDispatchingShrineRequest.fromI2b2(i2b2Request)
-    }.toOption.collect { 
-      //TODO: VERY Ugly. :(
-      case req: HandledByShrineRequestHandler => req
-      case req: ReadQueryDefinitionRequest => req 
+    val builder = Try {
+      HandleableShrineRequest.fromI2b2(i2b2Request)
     }.map {
       shrineRequest =>
         info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))
@@ -63,10 +58,12 @@ class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler: Shri
 
         val responseString = shrineResponse.toI2b2String
 
-        Response.ok.entity(responseString).build()
+        Response.ok.entity(responseString)
     }.getOrElse { 
       //TODO: I'm not sure if this is right; need to see what the legacy client expects to be returned in case of an error
-      Response.status(400).build()
+      Response.status(400)
     }
+    
+    builder.build()
   }
 }

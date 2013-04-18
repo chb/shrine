@@ -26,11 +26,11 @@ final case class ReadPdoRequest(
     override val waitTimeMs: Long,
     override val authn: AuthenticationInfo,
     val patientSetCollId: String,
-    val optionsXml: NodeSeq) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with TranslatableRequest[ReadPdoRequest] {
+    val optionsXml: NodeSeq) extends ShrineRequest(projectId, waitTimeMs, authn) with TranslatableRequest[ReadPdoRequest] with HandleableShrineRequest {
 
   override val requestType = RequestType.GetPDOFromInputListRequest
 
-  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.readPdo(this, shouldBroadcast)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.readPdo(this, shouldBroadcast)
 
   override def toXml = XmlUtil.stripWhitespace {
     <readPdo>

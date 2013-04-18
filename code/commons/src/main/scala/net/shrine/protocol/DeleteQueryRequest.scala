@@ -21,11 +21,11 @@ final case class DeleteQueryRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
-  val queryId: Long) extends HandledByShrineRequestHandler(projectId, waitTimeMs, authn) with CrcRequest with TranslatableRequest[DeleteQueryRequest] {
+  val queryId: Long) extends ShrineRequest(projectId, waitTimeMs, authn) with HandleableShrineRequest with CrcRequest with TranslatableRequest[DeleteQueryRequest] {
 
   override val requestType = RequestType.MasterDeleteRequest
 
-  override def handle(handler: Handler, shouldBroadcast: Boolean) = handler.deleteQuery(this, shouldBroadcast)
+  override def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean) = handler.deleteQuery(this, shouldBroadcast)
 
   override def toXml = XmlUtil.stripWhitespace {
     <deleteQuery>

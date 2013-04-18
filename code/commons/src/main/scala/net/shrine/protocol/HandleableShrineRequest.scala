@@ -5,21 +5,13 @@ import scala.xml.NodeSeq
 
 /**
  * @author clint
- * @date Mar 29, 2013
+ * @date Apr 17, 2013
  */
-abstract class DoubleDispatchingShrineRequest(
-    override val projectId: String,
-    override val waitTimeMs: Long,
-    override val authn: AuthenticationInfo) extends ShrineRequest(projectId, waitTimeMs, authn) {
-
-  type Handler
-  
-  val handlerClass: Class[Handler]
-
-  def handle(handler: Handler, shouldBroadcast: Boolean): ShrineResponse
+trait HandleableShrineRequest { self: ShrineRequest =>
+  def handle(handler: ShrineRequestHandler, shouldBroadcast: Boolean): ShrineResponse
 }
 
-object DoubleDispatchingShrineRequest extends AbstractUnmarshallerCompanion[DoubleDispatchingShrineRequest](
+object HandleableShrineRequest extends AbstractUnmarshallerCompanion[ShrineRequest with HandleableShrineRequest](
   Map(
     InstanceRequestType -> ReadInstanceResultsRequest,
     UserRequestType -> ReadPreviousQueriesRequest,
@@ -29,15 +21,13 @@ object DoubleDispatchingShrineRequest extends AbstractUnmarshallerCompanion[Doub
     MasterRenameRequestType -> RenameQueryRequest,
     MasterDeleteRequestType -> DeleteQueryRequest)) {
 
-  override def fromI2b2(i2b2Request: NodeSeq): DoubleDispatchingShrineRequest = {
+  override def fromI2b2(i2b2Request: NodeSeq): ShrineRequest with HandleableShrineRequest = {
     if (isPsmRequest(i2b2Request)) {
       parsePsmRequest(i2b2Request)
     } else if (isPdoRequest(i2b2Request)) {
       parsePdoRequest(i2b2Request)
     } else if (isSheriffRequest(i2b2Request)) {
       parseSheriffRequest(i2b2Request)
-    } else if (isI2b2AdminPreviousQueriesRequest(i2b2Request)) {
-      parseI2b2AdminPreviousQueriesRequest(i2b2Request)
     } else {
       throw new Exception(s"Request not understood: $i2b2Request")
     }
@@ -48,8 +38,6 @@ object DoubleDispatchingShrineRequest extends AbstractUnmarshallerCompanion[Doub
   protected def isSheriffRequest(requestXml: NodeSeq): Boolean = hasMessageBodySubElement(requestXml, "sheriff_header")
 
   protected def isI2b2AdminPreviousQueriesRequest(requestXml: NodeSeq): Boolean = hasMessageBodySubElement(requestXml, "get_name_info")
-
-  import CrcRequestType._
 
   private def parsePdoRequest(requestXml: NodeSeq): ReadPdoRequest = {
     (requestXml \ "message_body" \ "pdoheader" \ "request_type").text match {
