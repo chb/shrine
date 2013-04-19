@@ -88,8 +88,8 @@ final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersFor
     val response = client.readI2b2AdminPreviousQueries(request)
     
     response should not be(null)
-    response.userId should equal(request.authn.username)
-    response.groupId should equal(request.authn.domain)
+    response.userId should equal(Some(request.authn.username))
+    response.groupId should equal(Some(request.authn.domain))
     response.queryMasters should equal(Seq(queryMaster))
     
     currentHandler.shouldBroadcastParam should be(false)
