@@ -49,8 +49,8 @@ final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest
         
       val result = processRequest(new Identity(bogusDomain, bogusUser), req)
       
-      result.groupId should equal(bogusDomain)
-      result.userId should equal(bogusUser)
+      result.groupId should equal(Some(bogusDomain))
+      result.userId should equal(Some(bogusUser))
       result.queryMasters should equal(Nil)
     }
     
@@ -60,8 +60,8 @@ final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest
       
       val result = processRequest(toIdentity(authn1), req)
       
-      result.groupId should equal(authn1.domain)
-      result.userId should equal(authn1.username)
+      result.groupId should equal(Some(authn1.domain))
+      result.userId should equal(Some(authn1.username))
       
       val Seq(queryMaster1, queryMaster2) = result.queryMasters.sortBy(_.queryMasterId)
       
@@ -84,8 +84,8 @@ final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest
       
       val result = processRequest(toIdentity(authn2), req)
       
-      result.groupId should equal(authn2.domain)
-      result.userId should equal(authn2.username)
+      result.groupId should equal(Some(authn2.domain))
+      result.userId should equal(Some(authn2.username))
       val Seq(queryMaster) = result.queryMasters
       
       queryMaster.queryMasterId should equal(queryId2.toString)
@@ -101,8 +101,8 @@ final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest
       
       val result = processRequest(toIdentity(authn1), req)
       
-      result.groupId should equal(authn1.domain)
-      result.userId should equal(authn1.username)
+      result.groupId should equal(Some(authn1.domain))
+      result.userId should equal(Some(authn1.username))
       
       val Seq(queryMaster1) = result.queryMasters.sortBy(_.queryMasterId)
       
