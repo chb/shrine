@@ -22,6 +22,9 @@ import net.shrine.util.XmlUtil
 import net.shrine.protocol.ErrorResponse
 import org.junit.Before
 import org.junit.After
+import net.shrine.protocol.ReadQueryDefinitionResponse
+import scala.xml.XML
+import net.shrine.protocol.ReadPreviousQueriesResponse
 
 /**
  * @author clint
@@ -46,39 +49,33 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpring
   def tearDown() = this.JerseyTest.tearDown()
 
   @Test
-  def testReadQueryDefinition = afterCreatingTables {
+  def testReadQueryDefinition = afterLoadingTestData {
     val client = I2b2AdminClient(resourceUrl, new JerseyHttpClient)
 
-    val queryId = 987654321L
-
-    val request = ReadQueryDefinitionRequest(projectId, waitTimeMs, authn, queryId)
+    val request = ReadQueryDefinitionRequest(projectId, waitTimeMs, authn, networkQueryId1)
 
     val currentHandler = handler
 
-    val response = client.readQueryDefinition(request)
+    val ReadQueryDefinitionResponse(masterId, name, userId, createDate, queryDefinition) = client.readQueryDefinition(request)
 
-    /*response should not be(null)
-    response.masterId should equal(queryId)
-    response.name should equal("some-query-name")
-    response.createDate should not be(null)
-    
     def stripNamespaces(s: String) = XmlUtil.stripNamespaces(XML.loadString(s))
     
+    masterId should be(networkQueryId1)
+    name should be(queryName1)
+    userId should be(authn.username)
+    createDate should not be (null)
+
     //NB: I'm not sure why whacky namespaces were coming back from the resource;
     //this checks that the gist of the queryDef XML makes it back.
     //TODO: revisit this
-    stripNamespaces(response.queryDefinition) should equal(stripNamespaces(queryDef.toI2b2String))
-    
-    currentHandler.shouldBroadcastParam should be(false)
-    currentHandler.readI2b2AdminPreviousQueriesParam should be(null)
-    currentHandler.readQueryDefinitionParam should equal(request)*/
+    stripNamespaces(queryDefinition) should equal(stripNamespaces(queryDef1.toI2b2String))
   }
 
   @Test
-  def testReadI2b2AdminPreviousQueries = afterCreatingTables {
+  def testReadI2b2AdminPreviousQueries = afterLoadingTestData {
     val client = I2b2AdminClient(resourceUrl, new JerseyHttpClient)
 
-    val searchString = "asdk;laskd;lask;gdjsg"
+    val searchString = queryName1
     val maxResults = 123
     val sortOrder = ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending
     val categoryToSearchWithin = ReadI2b2AdminPreviousQueriesRequest.Category.All
@@ -88,27 +85,44 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpring
 
     val currentHandler = handler
 
-    val response = client.readI2b2AdminPreviousQueries(request)
+    val ReadPreviousQueriesResponse(Some(userId), Some(groupId), Seq(queryMaster)) = client.readI2b2AdminPreviousQueries(request)
 
-    /*response should not be(null)
-    response.userId should equal(request.authn.username)
-    response.groupId should equal(request.authn.domain)
-    response.queryMasters should equal(Seq(queryMaster))
-    
-    currentHandler.shouldBroadcastParam should be(false)
-    currentHandler.readI2b2AdminPreviousQueriesParam should be(request)
-    currentHandler.readQueryDefinitionParam should be(null)*/
+    userId should equal(request.authn.username)
+    groupId should equal(request.authn.domain)
+    queryMaster.createDate should not be(null)
+    queryMaster.groupId should equal(queryMaster1.groupId)
+    queryMaster.name should equal(queryMaster1.name)
+    queryMaster.queryMasterId should equal(networkQueryId1.toString)
+    queryMaster.userId should equal(queryMaster1.userId)
+  }
+
+  private def loadTestData() {
+    dao.insertQuery(masterId1, networkQueryId1, queryName1, authn, queryDef1.expr)
+  }
+
+  private def afterLoadingTestData(f: => Any): Unit = afterCreatingTables {
+    try {
+      loadTestData()
+    } finally {
+      f
+    }
   }
 }
 
 object I2b2AdminResourceEndToEndJaxrsTest {
-  private val queryDef = QueryDefinition("foo", Term("x"))
+  private val masterId1 = "1"
 
-  private val userId = "some-user-id"
+  private val networkQueryId1 = 999L
 
-  private val domain = "some-domain"
+  private val queryName1 = "query-name1"
 
-  private val password = "some-val"
+  private val queryDef1 = QueryDefinition(queryName1, Term("x"))
+
+  private[this] val userId = "some-user-id"
+
+  private[this] val domain = "some-domain"
+
+  private[this] val password = "some-val"
 
   private lazy val authn = new AuthenticationInfo(domain, userId, new Credential(password, false))
 
@@ -116,7 +130,7 @@ object I2b2AdminResourceEndToEndJaxrsTest {
 
   private val waitTimeMs = 12345L
 
-  private lazy val queryMaster = QueryMaster("queryMasterId", "name", userId, domain, Util.now)
+  private lazy val queryMaster1 = QueryMaster(masterId1, queryName1, userId, domain, Util.now)
 
   private object AlwaysAuthenticatesMockPmHttpClient extends HttpClient {
     override def post(input: String, url: String): String = {

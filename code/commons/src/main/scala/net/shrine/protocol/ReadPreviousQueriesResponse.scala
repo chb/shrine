@@ -17,7 +17,11 @@ import net.shrine.serialization.{ I2b2Unmarshaller, XmlUnmarshaller }
  *
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
-final case class ReadPreviousQueriesResponse(val userId: Option[String], val groupId: Option[String], val queryMasters: Seq[QueryMaster]) extends ShrineResponse {
+final case class ReadPreviousQueriesResponse(
+    val userId: Option[String], 
+    val groupId: Option[String], 
+    val queryMasters: Seq[QueryMaster]) extends ShrineResponse {
+  
   override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:master_responseType">
       <status>

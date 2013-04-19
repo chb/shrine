@@ -79,7 +79,7 @@ final class ReadPreviousQueriesAggregatorTest extends AssertionsForJUnit with Sh
     actual.queryMasters(0).createDate should equal(lastQmb.createDate)
     actual.queryMasters(1) should equal(middleQm)
     actual.queryMasters(2) should equal(firstQm)
-    actual.userId should equal(userId)
-    actual.groupId should equal(groupId)
+    actual.userId should equal(Some(userId))
+    actual.groupId should equal(Some(groupId))
   }
 }

@@ -19,7 +19,7 @@ trait I2b2AdminPreviousQueriesSourceComponent {
   protected object I2b2AdminPreviousQueries {
     def get(request: ReadI2b2AdminPreviousQueriesRequest): ShrineResponse = {
       val queries = for {
-        query <- dao.findQueriesByUserAndDomain(request.authn.domain, request.authn.domain, request.maxResults)
+        query <- dao.findQueriesByUserAndDomain(request.authn.domain, request.authn.username, request.maxResults)
         if request.searchStrategy.isMatch(query.name, request.searchString)
       } yield query
       
