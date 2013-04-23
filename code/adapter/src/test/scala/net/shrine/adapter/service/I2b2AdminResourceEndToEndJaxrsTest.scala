@@ -65,22 +65,24 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpring
 
     val currentHandler = handler
     
-    val response @ ReadQueryDefinitionResponse(masterId, name, userId, createDate, queryDefinition) = adminClient.readQueryDefinition(request)
+    val resp = adminClient.readQueryDefinition(request)
 
     def stripNamespaces(s: String) = XmlUtil.stripNamespaces(XML.loadString(s))
 
     expectedQueryNameAndQueryDef match {
       case Some((expectedQueryName, expectedQueryDef)) => {
-        masterId.get should be(networkQueryId)
-        name.get should be(expectedQueryName)
-        userId.get should be(authn.username)
-        createDate.get should not be (null)
+        val response @ ReadQueryDefinitionResponse(masterId, name, userId, createDate, queryDefinition) = resp
+        
+        masterId should be(networkQueryId)
+        name should be(expectedQueryName)
+        userId should be(authn.username)
+        createDate should not be (null)
         //NB: I'm not sure why whacky namespaces were coming back from the resource;
         //this checks that the gist of the queryDef XML makes it back.
         //TODO: revisit this
-        stripNamespaces(queryDefinition.get) should equal(stripNamespaces(expectedQueryDef.toI2b2String))
+        stripNamespaces(queryDefinition) should equal(stripNamespaces(expectedQueryDef.toI2b2String))
       } 
-      case None => response should equal(ReadQueryDefinitionResponse.Empty)
+      case None => resp.isInstanceOf[ErrorResponse] should be(true)
     }
   }
 
@@ -122,7 +124,11 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpring
         queryMasters.head.queryMasterId should equal(expected.queryMasterId)
         queryMasters.head.userId should equal(expected.userId)
       }
-      case None => queryMasters.isEmpty should be(true)
+      case None => {
+        userIdOption should be(None)
+        groupIdOption should be(None)
+        queryMasters.isEmpty should be(true)
+      }
     }
   }
 

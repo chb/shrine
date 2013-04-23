@@ -51,11 +51,11 @@ final class ReadQueryDefinitionAdapterTest extends AbstractShrineJUnitSpringTest
       //try to read a real query
       val ReadQueryDefinitionResponse(rQueryId, rName, userId, createDate, queryDefinition) = adapter.processRequest(id, new BroadcastMessage(123L, new ReadQueryDefinitionRequest("proj", 1000L, authn, queryId)))
 
-      rQueryId.get should equal(queryId)
-      rName.get should equal(name)
-      userId.get should equal(authn.username)
-      createDate.get should not be(null) // :(
-      queryDefinition.get should equal(QueryDefinition(name, expr).toI2b2String)
+      rQueryId should equal(queryId)
+      rName should equal(name)
+      userId should equal(authn.username)
+      createDate should not be(null) // :(
+      queryDefinition should equal(QueryDefinition(name, expr).toI2b2String)
     }
   }
   

@@ -474,7 +474,7 @@ final class ShrineResourceJaxrsTest extends JerseyTest with AssertionsForJUnit w
     override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       readQueryDefinitionParam = request
 
-      ReadQueryDefinitionResponse(Some(87456L), Some("name"), Some("userId"), Some(now), Some("<foo/>"))
+      ReadQueryDefinitionResponse(87456L, "name", "userId", now, "<foo/>")
     }
 
     override def runQuery(request: RunQueryRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {

@@ -6,7 +6,6 @@ import javax.xml.datatype.XMLGregorianCalendar
 import org.spin.tools.NetworkTime._
 import xml.Utility
 import net.shrine.util.XmlUtil
-import scala.xml.NodeSeq
 
 /**
  * @author Bill Simons
@@ -76,70 +75,34 @@ final class ReadQueryDefinitionResponseTest extends ShrineResponseI2b2Serializab
   }
 
   @Test
-  def testEmpty {
-    ReadQueryDefinitionResponse.Empty.createDate should be(None)
-    ReadQueryDefinitionResponse.Empty.masterId should be(None)
-    ReadQueryDefinitionResponse.Empty.name should be(None)
-    ReadQueryDefinitionResponse.Empty.queryDefinition should be(None)
-    ReadQueryDefinitionResponse.Empty.userId should be(None)
-  }
-
-  @Test
   def testFromXml {
     val actual = ReadQueryDefinitionResponse.fromXml(readQueryDefinitionResponse)
-
-    actual.masterId.get should equal(masterId)
-    actual.name.get should equal(name)
-    actual.userId.get should equal(userId)
-    actual.createDate.get should equal(createDate)
-    actual.queryDefinition.get should equal(queryDefinition.toString)
-  }
-
-  @Test
-  def testFromXmlEmpty {
-    doTestFromNodeSeqEmpty(<readQueryDefinitionResponse></readQueryDefinitionResponse>)
+    
+    actual.masterId should equal(masterId)
+    actual.name should equal(name)
+    actual.userId should equal(userId)
+    actual.createDate should equal(createDate)
+    actual.queryDefinition should equal(queryDefinition.toString)
   }
 
   @Test
   def testToXml {
-    ReadQueryDefinitionResponse(Some(masterId), Some(name), Some(userId), Some(createDate), Some(queryDefinition.toString)).toXml should equal(readQueryDefinitionResponse)
+    ReadQueryDefinitionResponse(masterId, name, userId, createDate, queryDefinition.toString).toXml should equal(readQueryDefinitionResponse)
   }
 
   @Test
   def testFromI2b2 {
     val actual = ReadQueryDefinitionResponse.fromI2b2(response)
-
-    actual.masterId.get should equal(masterId)
-    actual.name.get should equal(name)
-    actual.userId.get should equal(userId)
-    actual.createDate.get should equal(createDate)
-    actual.queryDefinition.get should equal(queryDefinition.toString)
-  }
-
-  private def doTestFromNodeSeqEmpty(emptyXml: NodeSeq) {
-    val actual = ReadQueryDefinitionResponse.fromXml(emptyXml)
-
-    actual should equal(ReadQueryDefinitionResponse.Empty)
-  }
-  
-  @Test
-  def testFromI2b2Empty {
-    val emptyI2b2Xml = XmlUtil.stripWhitespace {
-      <message_body>
-        <ns6:response xsi:type="ns6:master_responseType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <status>
-            <condition type="DONE">DONE</condition>
-          </status>
-        </ns6:response>
-      </message_body>
-    }
-
-    doTestFromNodeSeqEmpty(emptyI2b2Xml)
+    
+    actual.masterId should equal(masterId)
+    actual.name should equal(name)
+    actual.userId should equal(userId)
+    actual.createDate should equal(createDate)
+    actual.queryDefinition should equal(queryDefinition.toString)
   }
 
   @Test
   def testToI2b2 {
-    ReadQueryDefinitionResponse(Some(masterId), Some(name), Some(userId), Some(createDate), Some(queryDefinition.toString)).toI2b2 should equal(response)
+    ReadQueryDefinitionResponse(masterId, name, userId, createDate, queryDefinition.toString).toI2b2 should equal(response)
   }
 }
-

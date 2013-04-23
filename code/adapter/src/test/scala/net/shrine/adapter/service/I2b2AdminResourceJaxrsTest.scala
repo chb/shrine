@@ -52,20 +52,20 @@ final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersFor
     
     val currentHandler = handler
     
-    val response = adminClient.readQueryDefinition(request)
+    val response = adminClient.readQueryDefinition(request).asInstanceOf[ReadQueryDefinitionResponse]
     
     response should not be(null)
-    response.masterId.get should equal(queryId)
-    response.name.get should equal("some-query-name")
-    response.createDate.get should not be(null)
-    response.userId.get should equal(authn.username)
+    response.masterId should equal(queryId)
+    response.name should equal("some-query-name")
+    response.createDate should not be(null)
+    response.userId should equal(authn.username)
     
     def stripNamespaces(s: String) = XmlUtil.stripNamespaces(XML.loadString(s))
     
     //NB: I'm not sure why whacky namespaces were coming back from the resource;
     //this checks that the gist of the queryDef XML makes it back.
     //TODO: revisit this
-    stripNamespaces(response.queryDefinition.get) should equal(stripNamespaces(queryDef.toI2b2String))
+    stripNamespaces(response.queryDefinition) should equal(stripNamespaces(queryDef.toI2b2String))
     
     currentHandler.shouldBroadcastParam should be(false)
     currentHandler.readI2b2AdminPreviousQueriesParam should be(null)
@@ -84,7 +84,7 @@ final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersFor
     
     val currentHandler = handler
     
-    val response = adminClient.readI2b2AdminPreviousQueries(request)
+    val response = adminClient.readI2b2AdminPreviousQueries(request).asInstanceOf[ReadPreviousQueriesResponse]
     
     response should not be(null)
     response.userId should equal(Some(request.authn.username))
@@ -136,7 +136,7 @@ object I2b2AdminResourceJaxrsTest {
     override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       lock.synchronized { _readQueryDefinitionParam = request }
 
-      ReadQueryDefinitionResponse(Option(request.queryId), Option("some-query-name"), Option(request.authn.username), Option(Util.now), Option(queryDef.toI2b2String))
+      ReadQueryDefinitionResponse(request.queryId, "some-query-name", request.authn.username, Util.now, queryDef.toI2b2String)
     }
     
     private def setShouldBroadcastAndThen(shouldBroadcast: Boolean)(f: => ShrineResponse): ShrineResponse = {

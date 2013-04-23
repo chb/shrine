@@ -14,20 +14,20 @@ import net.shrine.protocol.query.QueryDefinition
  * NB: Tested by ReadQueryDefinitionAdapterTest
  */
 trait QueryDefinitionSourceComponent {
-  val dao: AdapterDao
+  def dao: AdapterDao
 
-  protected object QueryDefinitions {
+  object QueryDefinitions {
     def get(request: ReadQueryDefinitionRequest): ShrineResponse = {
       val resultOption = for {
         shrineQuery <- dao.findQueryByNetworkId(request.queryId)
       } yield {
         ReadQueryDefinitionResponse(
-          Option(shrineQuery.networkId),
-          Option(shrineQuery.name),
-          Option(shrineQuery.username),
-          Option(shrineQuery.dateCreated),
+          shrineQuery.networkId,
+          shrineQuery.name,
+          shrineQuery.username,
+          shrineQuery.dateCreated,
           //TODO: I2b2 or Shrine format?
-          Option(QueryDefinition(shrineQuery.name, shrineQuery.queryExpr).toI2b2String))
+          QueryDefinition(shrineQuery.name, shrineQuery.queryExpr).toI2b2String)
       }
 
       resultOption.getOrElse(ErrorResponse(s"Couldn't find query with network id: ${request.queryId}"))

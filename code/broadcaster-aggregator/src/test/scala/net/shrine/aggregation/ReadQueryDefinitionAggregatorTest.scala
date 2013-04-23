@@ -1,11 +1,10 @@
 package net.shrine.aggregation
 
-import org.scalatest.junit.{ ShouldMatchersForJUnit, AssertionsForJUnit }
+import org.scalatest.junit.{ShouldMatchersForJUnit, AssertionsForJUnit}
 import org.junit.Test
 import org.junit.Assert.assertNotNull
 import org.spin.tools.NetworkTime
 import net.shrine.protocol.ReadQueryDefinitionResponse
-import net.shrine.util.Util
 
 /**
  * @author Bill Simons
@@ -21,41 +20,29 @@ final class ReadQueryDefinitionAggregatorTest extends AssertionsForJUnit with Sh
 
   val aggregator = new ReadQueryDefinitionAggregator
 
-  val queryId = 1L
-  val userId = "userId"
-  val queryName = "queryname"
-  val queryDefinition = "<queryDef/>"
-
   @Test
   def testAggregate {
-    val response1 = ReadQueryDefinitionResponse(Some(queryId), Some(queryName), Some(userId), Some(Util.now), Some(queryDefinition))
-
-    val response2 = ReadQueryDefinitionResponse(Some(queryId), Some(queryName), Some(userId), Some(Util.now), Some(queryDefinition))
-
-    doTestAggregate(response1, response2)
-  }
-
-  @Test
-  def testAggregateSomeEmpty {
-    doTestAggregate(ReadQueryDefinitionResponse.Empty, ReadQueryDefinitionResponse(Some(queryId), Some(queryName), Some(userId), Some(Util.now), Some(queryDefinition)))
+    val queryId = 1L
+    val userId = "userId"
+    val queryName = "queryname"
+    val queryDefinition = "<queryDef/>"
     
-    doTestAggregate(ReadQueryDefinitionResponse(Some(queryId), Some(queryName), Some(userId), Some(Util.now), Some(queryDefinition)), ReadQueryDefinitionResponse.Empty)
+    val response1 = new ReadQueryDefinitionResponse(queryId, queryName, userId, new NetworkTime().getXMLGregorianCalendar, queryDefinition)
     
-    doTestAggregate(ReadQueryDefinitionResponse.Empty, ReadQueryDefinitionResponse.Empty, ReadQueryDefinitionResponse.Empty) 
-  }
-
-  private def doTestAggregate(responses: ReadQueryDefinitionResponse*) {
-    val results = responses.map(resp => SpinResultEntry(resp.toXmlString, null))
+    val result1 = new SpinResultEntry(response1.toXmlString, null)
+    
+    val response2 = new ReadQueryDefinitionResponse(queryId, queryName, userId, new NetworkTime().getXMLGregorianCalendar, queryDefinition)
+    
+    val result2 = new SpinResultEntry(response2.toXmlString, null)
     
     //TODO: test handling error responses
-    val actual = aggregator.aggregate(results, Nil).asInstanceOf[ReadQueryDefinitionResponse]
-
+    val actual = aggregator.aggregate(Vector(result1, result2), Nil).asInstanceOf[ReadQueryDefinitionResponse]
+    
     assertNotNull(actual)
-
-    actual.masterId should equal(responses.head.masterId)
-    actual.name should equal(responses.head.name)
-    actual.userId should equal(responses.head.userId)
-    actual.createDate should equal(responses.head.createDate)
-    actual.queryDefinition should equal(responses.head.queryDefinition)
+    
+    actual.masterId should equal(queryId)
+    actual.name should equal(queryName)
+    actual.userId should equal(userId)
+    actual.queryDefinition should equal(queryDefinition)
   }
 }

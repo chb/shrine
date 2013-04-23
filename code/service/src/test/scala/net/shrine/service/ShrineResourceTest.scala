@@ -171,7 +171,7 @@ final class ShrineResourceTest extends TestCase with AssertionsForJUnit with Sho
     
     val expectedRequest = new ReadQueryDefinitionRequest(projectId, waitTimeMs, authenticationInfo, queryId)
     
-    val expectedResponse = new ReadQueryDefinitionResponse(Some(queryId), Some("name"), Some("userId"), Some(now), Some("<foo/>"))
+    val expectedResponse = new ReadQueryDefinitionResponse(queryId, "name", "userId", now, "<foo/>")
     
     setExpectations(_.readQueryDefinition, expectedRequest, expectedResponse)
     
