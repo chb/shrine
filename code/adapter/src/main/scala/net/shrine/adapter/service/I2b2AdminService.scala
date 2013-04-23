@@ -30,6 +30,9 @@ final class I2b2AdminService(
 		PmAuthorizerComponent with
 		PmHttpClientComponent with
 		Loggable {
+  
+  require(dao != null)
+  require(httpClient != null)
 
   //NB: shouldBroadcast is ignored; we never broadcast
   override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean): ShrineResponse = {

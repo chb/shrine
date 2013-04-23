@@ -22,12 +22,12 @@ trait QueryDefinitionSourceComponent {
         shrineQuery <- dao.findQueryByNetworkId(request.queryId)
       } yield {
         ReadQueryDefinitionResponse(
-          shrineQuery.networkId,
-          shrineQuery.name,
-          shrineQuery.username,
-          shrineQuery.dateCreated,
+          Option(shrineQuery.networkId),
+          Option(shrineQuery.name),
+          Option(shrineQuery.username),
+          Option(shrineQuery.dateCreated),
           //TODO: I2b2 or Shrine format?
-          QueryDefinition(shrineQuery.name, shrineQuery.queryExpr).toI2b2String)
+          Option(QueryDefinition(shrineQuery.name, shrineQuery.queryExpr).toI2b2String))
       }
 
       resultOption.getOrElse(ErrorResponse(s"Couldn't find query with network id: ${request.queryId}"))

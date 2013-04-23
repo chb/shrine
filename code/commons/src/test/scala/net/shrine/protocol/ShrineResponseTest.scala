@@ -20,7 +20,9 @@ final class ShrineResponseTest extends TestCase with ShouldMatchersForJUnit {
     ShrineResponse.fromXml(NodeSeq.Empty) should be(None)
     
     def doTestFromXml(response: ShrineResponse) {
-      val unmarshalled = ShrineResponse.fromXml(response.toXml)
+      val marshalled = response.toXml
+      
+      val unmarshalled = ShrineResponse.fromXml(marshalled)
       
       unmarshalled.get.getClass should equal(response.getClass)
       unmarshalled should not be(null)
@@ -31,17 +33,22 @@ final class ShrineResponseTest extends TestCase with ShouldMatchersForJUnit {
     
     val queryResult1 = QueryResult(1L, 2342L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished, None, Map.empty)
     
-    doTestFromXml(new ReadQueryResultResponse(123L, queryResult1))
-    doTestFromXml(new AggregatedReadQueryResultResponse(123L, Seq(queryResult1)))
-    doTestFromXml(new DeleteQueryResponse(123L))
-    doTestFromXml(new ReadInstanceResultsResponse(2342L, queryResult1))
-    doTestFromXml(new AggregatedReadInstanceResultsResponse(2342L, Seq(queryResult1)))
-    doTestFromXml(new ReadPreviousQueriesResponse(Some("userId"), Some("groupId"), Seq.empty))
-    doTestFromXml(new ReadQueryDefinitionResponse(8457L, "name", "userId", now, "queryDefXml"))
-    doTestFromXml(new ReadQueryInstancesResponse(12345L, "userId", "groupId", Seq.empty))
-    doTestFromXml(new RenameQueryResponse(12345L, "name"))
-    doTestFromXml(new RunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, queryResult1))
-    doTestFromXml(new AggregatedRunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, Seq(queryResult1)))
+    doTestFromXml(ReadQueryResultResponse(123L, queryResult1))
+    doTestFromXml(AggregatedReadQueryResultResponse(123L, Seq(queryResult1)))
+    doTestFromXml(DeleteQueryResponse(123L))
+    doTestFromXml(ReadInstanceResultsResponse(2342L, queryResult1))
+    doTestFromXml(AggregatedReadInstanceResultsResponse(2342L, Seq(queryResult1)))
+    
+    doTestFromXml(ReadPreviousQueriesResponse(Some("userId"), Some("groupId"), Seq.empty))
+    doTestFromXml(ReadPreviousQueriesResponse.Empty)
+    
+    doTestFromXml(ReadQueryDefinitionResponse(Some(8457L), Some("name"), Some("userId"), Some(now), Some("queryDefXml")))
+    doTestFromXml(ReadQueryDefinitionResponse.Empty)
+    
+    doTestFromXml(ReadQueryInstancesResponse(12345L, "userId", "groupId", Seq.empty))
+    doTestFromXml(RenameQueryResponse(12345L, "name"))
+    doTestFromXml(RunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, queryResult1))
+    doTestFromXml(AggregatedRunQueryResponse(38957L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 2342L, Seq(queryResult1)))
     
     doTestFromXml(new ErrorResponse("errorMessage"))
   }

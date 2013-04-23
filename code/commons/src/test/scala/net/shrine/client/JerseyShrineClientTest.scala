@@ -110,25 +110,29 @@ final class JerseyShrineClientTest extends TestCase with AssertionsForJUnit with
     val queryResult1 = QueryResult(1L, 456L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished, None, Map.empty)
     val queryResult2 = QueryResult(2L, 456L, Some(ResultOutputType.PATIENT_COUNT_XML), 123L, None, None, None, QueryResult.StatusType.Finished, None, Map.empty)
     
-    doTestDeserializer(new AggregatedRunQueryResponse(123L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 456L, Seq(queryResult1, queryResult2)), JerseyShrineClient.Deserializer.aggregatedRunQueryResponseDeserializer)
+    doTestDeserializer(AggregatedRunQueryResponse(123L, now, "userId", "groupId", QueryDefinition("foo", Term("bar")), 456L, Seq(queryResult1, queryResult2)), JerseyShrineClient.Deserializer.aggregatedRunQueryResponseDeserializer)
 
-    doTestDeserializer(new ReadApprovedQueryTopicsResponse(Seq(new ApprovedTopic(123L, "asjkhjkas"))), JerseyShrineClient.Deserializer.readApprovedQueryTopicsResponseDeserializer)
+    doTestDeserializer(ReadApprovedQueryTopicsResponse(Seq(ApprovedTopic(123L, "asjkhjkas"))), JerseyShrineClient.Deserializer.readApprovedQueryTopicsResponseDeserializer)
 
-    doTestDeserializer(new ReadPreviousQueriesResponse(Some("userId"), Some("groupId"), Seq.empty), JerseyShrineClient.Deserializer.readPreviousQueriesResponseDeserializer)
-
-    doTestDeserializer(new ReadQueryInstancesResponse(999L, "userId", "groupId", Seq.empty), JerseyShrineClient.Deserializer.readQueryInstancesResponseDeserializer)
-
-    doTestDeserializer(new AggregatedReadInstanceResultsResponse(1337L, Seq(dummyQueryResult(1337L))), JerseyShrineClient.Deserializer.aggregatedReadInstanceResultsResponseDeserializer)
+    doTestDeserializer(ReadPreviousQueriesResponse(Some("userId"), Some("groupId"), Seq.empty), JerseyShrineClient.Deserializer.readPreviousQueriesResponseDeserializer)
     
-    doTestDeserializer(new AggregatedReadQueryResultResponse(1337L, Seq(dummyQueryResult(1337L))), JerseyShrineClient.Deserializer.aggregatedReadQueryResultResponseDeserializer)
+    doTestDeserializer(ReadPreviousQueriesResponse.Empty, JerseyShrineClient.Deserializer.readPreviousQueriesResponseDeserializer)
 
-    doTestDeserializer(new ReadPdoResponse(Seq(new EventResponse("event", "patient", None, None, Seq.empty)), Seq(new PatientResponse("patientId", Seq(paramResponse))), Seq(new ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode",None,None,None,None,None,None,None, Seq(paramResponse)))), JerseyShrineClient.Deserializer.readPdoResponseDeserializer)
+    doTestDeserializer(ReadQueryInstancesResponse(999L, "userId", "groupId", Seq.empty), JerseyShrineClient.Deserializer.readQueryInstancesResponseDeserializer)
 
-    doTestDeserializer(new ReadQueryDefinitionResponse(87456L, "name", "userId", now, "<foo/>"), JerseyShrineClient.Deserializer.readQueryDefinitionResponseDeserializer)
+    doTestDeserializer(AggregatedReadInstanceResultsResponse(1337L, Seq(dummyQueryResult(1337L))), JerseyShrineClient.Deserializer.aggregatedReadInstanceResultsResponseDeserializer)
+    
+    doTestDeserializer(AggregatedReadQueryResultResponse(1337L, Seq(dummyQueryResult(1337L))), JerseyShrineClient.Deserializer.aggregatedReadQueryResultResponseDeserializer)
 
-    doTestDeserializer(new DeleteQueryResponse(56834756L), JerseyShrineClient.Deserializer.deleteQueryResponseDeserializer)
+    doTestDeserializer(ReadPdoResponse(Seq(EventResponse("event", "patient", None, None, Seq.empty)), Seq(PatientResponse("patientId", Seq(paramResponse))), Seq(ObservationResponse(None, "eventId", None, "patientId", None, None, None, "observerCode", "startDate", None, "valueTypeCode",None,None,None,None,None,None,None, Seq(paramResponse)))), JerseyShrineClient.Deserializer.readPdoResponseDeserializer)
 
-    doTestDeserializer(new RenameQueryResponse(56834756L, "some-name"), JerseyShrineClient.Deserializer.renameQueryResponseDeserializer)
+    doTestDeserializer(ReadQueryDefinitionResponse(Some(87456L), Some("name"), Some("userId"), Some(now), Some("<foo/>")), JerseyShrineClient.Deserializer.readQueryDefinitionResponseDeserializer)
+    
+    doTestDeserializer(ReadQueryDefinitionResponse.Empty, JerseyShrineClient.Deserializer.readQueryDefinitionResponseDeserializer)
+
+    doTestDeserializer(DeleteQueryResponse(56834756L), JerseyShrineClient.Deserializer.deleteQueryResponseDeserializer)
+
+    doTestDeserializer(RenameQueryResponse(56834756L, "some-name"), JerseyShrineClient.Deserializer.renameQueryResponseDeserializer)
   }
 
   private def now = (new NetworkTime).getXMLGregorianCalendar

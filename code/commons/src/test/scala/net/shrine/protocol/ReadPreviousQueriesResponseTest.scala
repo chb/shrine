@@ -77,6 +77,13 @@ final class ReadPreviousQueriesResponseTest extends ShrineResponseI2b2Serializab
   }
 
   @Test
+  def testEmpty {
+    ReadPreviousQueriesResponse.Empty.groupId should be(None)
+    ReadPreviousQueriesResponse.Empty.userId should be(None)
+    ReadPreviousQueriesResponse.Empty.queryMasters should equal(Nil)
+  }
+  
+  @Test
   def testFromXml {
     val actual = ReadPreviousQueriesResponse.fromXml(readPreviousQueriesResponse)
 

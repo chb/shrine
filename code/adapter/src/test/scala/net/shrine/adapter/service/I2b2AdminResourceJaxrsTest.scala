@@ -42,29 +42,30 @@ final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersFor
     }
   }
   
+  def adminClient = I2b2AdminClient(resourceUrl, new JerseyHttpClient)
+  
   @Test
   def testReadQueryDefinition {
-    val client = I2b2AdminClient(resourceUrl, new JerseyHttpClient)
-    
     val queryId = 987654321L
     
     val request = ReadQueryDefinitionRequest(projectId, waitTimeMs, authn, queryId)
     
     val currentHandler = handler
     
-    val response = client.readQueryDefinition(request)
+    val response = adminClient.readQueryDefinition(request)
     
     response should not be(null)
-    response.masterId should equal(queryId)
-    response.name should equal("some-query-name")
-    response.createDate should not be(null)
+    response.masterId.get should equal(queryId)
+    response.name.get should equal("some-query-name")
+    response.createDate.get should not be(null)
+    response.userId.get should equal(authn.username)
     
     def stripNamespaces(s: String) = XmlUtil.stripNamespaces(XML.loadString(s))
     
     //NB: I'm not sure why whacky namespaces were coming back from the resource;
     //this checks that the gist of the queryDef XML makes it back.
     //TODO: revisit this
-    stripNamespaces(response.queryDefinition) should equal(stripNamespaces(queryDef.toI2b2String))
+    stripNamespaces(response.queryDefinition.get) should equal(stripNamespaces(queryDef.toI2b2String))
     
     currentHandler.shouldBroadcastParam should be(false)
     currentHandler.readI2b2AdminPreviousQueriesParam should be(null)
@@ -73,8 +74,6 @@ final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersFor
   
   @Test
   def testReadI2b2AdminPreviousQueries {
-    val client = I2b2AdminClient(resourceUrl, new JerseyHttpClient)
-    
     val searchString = "asdk;laskd;lask;gdjsg"
     val maxResults = 123
     val sortOrder = ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending
@@ -85,7 +84,7 @@ final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersFor
     
     val currentHandler = handler
     
-    val response = client.readI2b2AdminPreviousQueries(request)
+    val response = adminClient.readI2b2AdminPreviousQueries(request)
     
     response should not be(null)
     response.userId should equal(Some(request.authn.username))
@@ -137,7 +136,7 @@ object I2b2AdminResourceJaxrsTest {
     override def readQueryDefinition(request: ReadQueryDefinitionRequest, shouldBroadcast: Boolean): ShrineResponse = setShouldBroadcastAndThen(shouldBroadcast) {
       lock.synchronized { _readQueryDefinitionParam = request }
 
-      ReadQueryDefinitionResponse(request.queryId, "some-query-name", request.authn.username, Util.now, queryDef.toI2b2String)
+      ReadQueryDefinitionResponse(Option(request.queryId), Option("some-query-name"), Option(request.authn.username), Option(Util.now), Option(queryDef.toI2b2String))
     }
     
     private def setShouldBroadcastAndThen(shouldBroadcast: Boolean)(f: => ShrineResponse): ShrineResponse = {

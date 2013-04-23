@@ -73,6 +73,8 @@ final case class ReadPreviousQueriesResponse(
 }
 
 object ReadPreviousQueriesResponse extends I2b2Unmarshaller[ReadPreviousQueriesResponse] with XmlUnmarshaller[ReadPreviousQueriesResponse] {
+  val Empty = ReadPreviousQueriesResponse(None, None, Seq.empty)
+  
   override def fromI2b2(nodeSeq: NodeSeq): ReadPreviousQueriesResponse = {
     val queryMasters = (nodeSeq \ "message_body" \ "response" \ "query_master").map { querymasterXml =>
       val queryMasterId = (querymasterXml \ "query_master_id").text
