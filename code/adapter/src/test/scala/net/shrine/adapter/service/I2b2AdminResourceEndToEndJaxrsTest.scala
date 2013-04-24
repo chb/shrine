@@ -26,6 +26,9 @@ import net.shrine.protocol.ReadQueryDefinitionResponse
 import scala.xml.XML
 import net.shrine.protocol.ReadPreviousQueriesResponse
 import net.shrine.adapter.AdapterTestHelpers
+import net.shrine.adapter.dao.I2b2AdminPreviousQueriesDao
+import net.shrine.adapter.dao.slick.SlickI2b2AdminPreviousQueriesDao
+import net.shrine.adapter.HasI2b2AdminPreviousQueriesDao
 
 /**
  * @author clint
@@ -37,9 +40,9 @@ import net.shrine.adapter.AdapterTestHelpers
  * We work around this issue by mising in JerseyTestCOmponent, which brings in a JerseyTest by composition, and ensures
  * that it is set up and torn down properly.
  */
-final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractI2b2AdminResourceJaxrsTest {
+final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractI2b2AdminResourceJaxrsTest with HasI2b2AdminPreviousQueriesDao {
 
-  override def makeHandler = new I2b2AdminService(dao, AlwaysAuthenticatesMockPmHttpClient, "")
+  override def makeHandler = new I2b2AdminService(dao, i2b2AdminDao, AlwaysAuthenticatesMockPmHttpClient, "")
 
   @Test
   def testReadQueryDefinition = afterLoadingTestData {

@@ -1,34 +1,29 @@
 package net.shrine.adapter.dao.slick
 
-import java.util.Calendar
-import org.spin.tools.NetworkTime
+import scala.slick.jdbc.MutatingUnitInvoker
+import scala.slick.lifted.Join
+import scala.slick.lifted.Parameters
+import scala.slick.lifted.Query
+import scala.slick.session.Database
+import scala.slick.session.Session
+
 import org.spin.tools.crypto.signature.Identity
+
 import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.adapter.dao.model.ObfuscatedPair
 import net.shrine.adapter.dao.model.ShrineQuery
 import net.shrine.adapter.dao.model.ShrineQueryResult
+import net.shrine.adapter.dao.slick.tables.Tables
 import net.shrine.dao.slick.tables.DateHelpers
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.protocol.I2b2ResultEnvelope
 import net.shrine.protocol.QueryResult
-import net.shrine.protocol.QueryResult.StatusType
 import net.shrine.protocol.ResultOutputType
-import net.shrine.protocol.RunQueryResponse
 import net.shrine.protocol.query.Expression
-import net.shrine.util.Util
-import net.shrine.util.Loggable
-import net.shrine.protocol.RawCrcRunQueryResponse
 import net.shrine.protocol.query.QueryDefinition
-import scala.slick.session.Database
-import scala.slick.driver.ExtendedProfile
-import scala.slick.session.Session
-import scala.slick.jdbc.MutatingUnitInvoker
-import scala.slick.lifted.Parameters
-import scala.slick.lifted.Query
-import scala.slick.lifted.Join
-import net.shrine.adapter.dao.slick.tables.Tables
-import scala.slick.lifted.Column
+import net.shrine.util.Loggable
+import net.shrine.util.Util
 
 /**
  * @author clint
@@ -40,7 +35,8 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
 
   override def inTransaction[T](f: => T): T = database.withTransaction { f }
 
-  override def storeResults(authn: AuthenticationInfo,
+  override def storeResults(
+    authn: AuthenticationInfo,
     masterId: String,
     networkQueryId: Long,
     queryDefinition: QueryDefinition,
@@ -93,7 +89,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
   }
 
   private[adapter] def storeBreakdownFailures(failures: Seq[ResultOutputType],
-    insertedIds: Map[ResultOutputType, Seq[Int]]) {
+                                              insertedIds: Map[ResultOutputType, Seq[Int]]) {
     for {
       failedBreakdownType <- failures
       Seq(resultId) <- insertedIds.get(failedBreakdownType)
@@ -301,14 +297,14 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
     }
 
     override def storeResults(authn: AuthenticationInfo,
-      masterId: String,
-      networkQueryId: Long,
-      queryDefinition: QueryDefinition,
-      rawQueryResults: Seq[QueryResult],
-      obfuscatedQueryResults: Seq[QueryResult],
-      failedBreakdownTypes: Seq[ResultOutputType],
-      mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
-      obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) {
+                              masterId: String,
+                              networkQueryId: Long,
+                              queryDefinition: QueryDefinition,
+                              rawQueryResults: Seq[QueryResult],
+                              obfuscatedQueryResults: Seq[QueryResult],
+                              failedBreakdownTypes: Seq[ResultOutputType],
+                              mergedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope],
+                              obfuscatedBreakdowns: Map[ResultOutputType, I2b2ResultEnvelope]) {
 
       database.withTransaction(outer.storeResults(authn, masterId, networkQueryId, queryDefinition, rawQueryResults, obfuscatedQueryResults, failedBreakdownTypes, mergedBreakdowns, obfuscatedBreakdowns))
     }
@@ -396,6 +392,6 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       qr <- QueryResults if qr.queryId === q.id
       breakdownRow <- BreakdownResults if breakdownRow.resultId === qr.id
       //NB: using groupBy here is too much of a pain; do it 'manually' later
-    } yield (qr.resultType, breakdownRow) 
+    } yield (qr.resultType, breakdownRow)
   }
 }

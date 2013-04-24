@@ -8,15 +8,17 @@ import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
 import net.shrine.protocol.ReadPreviousQueriesResponse
 import org.scalatest.junit.ShouldMatchersForJUnit
 import net.shrine.adapter.service.CanLoadTestData
+import net.shrine.adapter.dao.slick.SlickI2b2AdminPreviousQueriesDao
+import net.shrine.adapter.HasI2b2AdminPreviousQueriesDao
 
 /**
  * @author clint
  * @date Apr 23, 2013
  */
-final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit with CanLoadTestData {
+final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit with CanLoadTestData with HasI2b2AdminPreviousQueriesDao {
 
   object TestI2b2AdminPreviousQueriesSourceComponent extends I2b2AdminPreviousQueriesSourceComponent {
-    override def dao = I2b2AdminPreviousQueriesSourceComponentTest.this.dao
+    override def i2b2AdminDao = I2b2AdminPreviousQueriesSourceComponentTest.this.i2b2AdminDao
   }
 
   private def get = TestI2b2AdminPreviousQueriesSourceComponent.I2b2AdminPreviousQueries.get _
@@ -114,6 +116,29 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
 
     {
       val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Right)
+
+      val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
+
+      validateUserAndGroupId(resp)
+
+      resp.queryMasters should equal(Nil)
+    }
+  }
+  
+  @Test
+  def testReadPreviousQueriesContains = afterLoadingTestData {
+    {
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "-name", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains)
+
+      val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
+
+      validateUserAndGroupId(resp)
+
+      resp.queryMasters.map(_.name) should equal(Seq(queryName1, queryName2))
+    }
+
+    {
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains)
 
       val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 

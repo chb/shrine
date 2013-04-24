@@ -1,27 +1,29 @@
 package net.shrine.adapter.service
 
+import net.shrine.adapter.components.I2b2AdminPreviousQueriesSourceComponent
+import net.shrine.adapter.components.PmAuthorizerComponent
+import net.shrine.adapter.components.PmAuthorizerComponent.Authorized
+import net.shrine.adapter.components.PmAuthorizerComponent.NotAuthorized
+import net.shrine.adapter.components.PmHttpClientComponent
+import net.shrine.adapter.components.QueryDefinitionSourceComponent
+import net.shrine.adapter.dao.AdapterDao
+import net.shrine.adapter.dao.I2b2AdminPreviousQueriesDao
 import net.shrine.protocol.I2b2AdminRequestHandler
 import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
-import net.shrine.protocol.ReadPreviousQueriesResponse
-import net.shrine.protocol.ShrineResponse
 import net.shrine.protocol.ReadQueryDefinitionRequest
-import net.shrine.util.Loggable
-import scala.concurrent.duration.Duration
-import net.shrine.adapter.dao.AdapterDao
-import net.shrine.adapter.components.QueryDefinitionSourceComponent
-import net.shrine.adapter.components.I2b2AdminPreviousQueriesSourceComponent
 import net.shrine.protocol.ShrineRequest
-import net.shrine.protocol.ErrorResponse
-import net.shrine.adapter.components.PmAuthorizerComponent
+import net.shrine.protocol.ShrineResponse
 import net.shrine.util.HttpClient
-import net.shrine.adapter.components.PmHttpClientComponent
+import net.shrine.util.Loggable
+
 
 /**
  * @author clint
  * @date Apr 4, 2013
  */
 final class I2b2AdminService(
-	override val dao: AdapterDao,
+    override val dao: AdapterDao,
+	override val i2b2AdminDao: I2b2AdminPreviousQueriesDao,
 	override val httpClient: HttpClient,
 	override val pmEndpoint: String) extends 
 		I2b2AdminRequestHandler with 

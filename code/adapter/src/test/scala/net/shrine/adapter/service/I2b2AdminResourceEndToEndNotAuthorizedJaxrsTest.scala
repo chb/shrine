@@ -12,14 +12,15 @@ import org.junit.After
 import org.junit.Test
 import net.shrine.protocol.ReadQueryDefinitionRequest
 import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
+import net.shrine.adapter.HasI2b2AdminPreviousQueriesDao
 
 /**
  * @author clint
  * @date Apr 24, 2013
  */
-final class I2b2AdminResourceEndToEndNotAuthorizedJaxrsTest extends AbstractI2b2AdminResourceJaxrsTest {
+final class I2b2AdminResourceEndToEndNotAuthorizedJaxrsTest extends AbstractI2b2AdminResourceJaxrsTest with HasI2b2AdminPreviousQueriesDao {
   
-  override def makeHandler = new I2b2AdminService(dao, NeverAuthenticatesMockPmHttpClient, "")
+  override def makeHandler = new I2b2AdminService(dao, i2b2AdminDao, NeverAuthenticatesMockPmHttpClient, "")
   
   @Test
   def testReadQueryDefinitionNotAuthorized = afterLoadingTestData {
