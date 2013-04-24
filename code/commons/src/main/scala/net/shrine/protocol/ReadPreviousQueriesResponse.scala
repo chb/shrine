@@ -18,10 +18,10 @@ import net.shrine.serialization.{ I2b2Unmarshaller, XmlUnmarshaller }
  * NB: this is a case class to get a structural equality contract in hashCode and equals, mostly for testing
  */
 final case class ReadPreviousQueriesResponse(
-    val userId: Option[String], 
-    val groupId: Option[String], 
+    val userId: Option[String],
+    val groupId: Option[String],
     val queryMasters: Seq[QueryMaster]) extends ShrineResponse {
-  
+
   override def i2b2MessageBody = XmlUtil.stripWhitespace {
     <ns5:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns5:master_responseType">
       <status>
@@ -33,15 +33,13 @@ final case class ReadPreviousQueriesResponse(
           gid <- groupId.toSeq
           master <- queryMasters
         } yield {
-          XmlUtil.stripWhitespace {
-            <query_master>
-              <query_master_id>{ master.queryMasterId }</query_master_id>
-              <name>{ master.name }</name>
-              <user_id>{ uid }</user_id>
-              <group_id>{ gid }</group_id>
-              <create_date>{ master.createDate }</create_date>
-            </query_master>
-          }
+          <query_master>
+            <query_master_id>{ master.queryMasterId }</query_master_id>
+            <name>{ master.name }</name>
+            <user_id>{ uid }</user_id>
+            <group_id>{ gid }</group_id>
+            <create_date>{ master.createDate }</create_date>
+          </query_master>
         }
       }
     </ns5:response>
@@ -49,7 +47,7 @@ final case class ReadPreviousQueriesResponse(
 
   override def toXml = XmlUtil.stripWhitespace {
     <readPreviousQueriesResponse>
-      { 
+      {
         //TODO: Is this right?
         userId.map(uid => <userId>{ uid }</userId>).orNull
       }
@@ -73,9 +71,10 @@ final case class ReadPreviousQueriesResponse(
 }
 
 object ReadPreviousQueriesResponse extends I2b2Unmarshaller[ReadPreviousQueriesResponse] with XmlUnmarshaller[ReadPreviousQueriesResponse] {
-  val Empty = ReadPreviousQueriesResponse(None, None, Seq.empty)
-  
   override def fromI2b2(nodeSeq: NodeSeq): ReadPreviousQueriesResponse = {
+    //NB: Fail fast
+    require((nodeSeq \ "response_header" \ "result_status" \ "status" \ "@type").text == "DONE")
+    
     val queryMasters = (nodeSeq \ "message_body" \ "response" \ "query_master").map { querymasterXml =>
       val queryMasterId = (querymasterXml \ "query_master_id").text
       val name = (querymasterXml \ "name").text

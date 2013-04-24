@@ -77,10 +77,14 @@ final class ReadPreviousQueriesResponseTest extends ShrineResponseI2b2Serializab
   }
 
   @Test
-  def testEmpty {
-    ReadPreviousQueriesResponse.Empty.groupId should be(None)
-    ReadPreviousQueriesResponse.Empty.userId should be(None)
-    ReadPreviousQueriesResponse.Empty.queryMasters should equal(Nil)
+  def testFromI2b2FailsFast {
+    intercept[Exception] {
+      ReadPreviousQueriesResponse.fromI2b2(<foo/>)
+    }
+    
+    intercept[Exception] {
+      ReadPreviousQueriesResponse.fromI2b2(ErrorResponse("foo!").toI2b2)
+    }
   }
   
   @Test

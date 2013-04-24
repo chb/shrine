@@ -51,7 +51,9 @@ final class I2b2AdminService(
   def checkWithPmAndThen[Req <: ShrineRequest](request: Req)(f: Req => ShrineResponse): ShrineResponse = {
     import PmAuthorizerComponent._
 
-    Pm.authorize(request.authn) match {
+    val authorized = Pm.authorize(request.authn) 
+    
+    authorized match {
       case Authorized(user) => f(request) //TODO: do something with user; check that user has proper roles 
       case na: NotAuthorized => na.toErrorResponse
     }

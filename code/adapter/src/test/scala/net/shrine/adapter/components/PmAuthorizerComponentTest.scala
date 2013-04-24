@@ -33,10 +33,6 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
     user.username should be(username)
     user.domain should be(domain)
     user.credential should be(authn.credential)
-    
-    /*val expectedAuthRequestXml = GetUserConfigurationRequest(authn.domain, authn.username, authn.credential.value).toI2b2String
-    
-    httpClient.inputParam.get should equal(expectedAuthRequestXml)*/
   }
   
   @Test
