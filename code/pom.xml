@@ -142,8 +142,6 @@
         <module>utilities</module>
         <module>happy</module>
         <module>install</module>
-        <module>ont-service</module>
-        <module>webclient</module>
         <module>integration</module>
     </modules>
     <scm>

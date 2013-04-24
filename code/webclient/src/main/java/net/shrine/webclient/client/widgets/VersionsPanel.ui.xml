@@ -1,7 +1,0 @@
-<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-    xmlns:g="urn:import:com.google.gwt.user.client.ui">
-    <g:HTMLPanel styleName="versionsFooter">
-      Application Version: <span ui:field="versionSpan"></span> revision: <span ui:field="revisionSpan"></span> branch: <span ui:field="branchSpan"></span> built on: <span ui:field="buildDateSpan"></span>
-    </g:HTMLPanel>
-</ui:UiBinder>
