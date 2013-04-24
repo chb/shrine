@@ -323,7 +323,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       (username, domain) <- Parameters[(String, String)]
       row <- PrivilegedUsers
       if row.username === username && row.domain === domain
-    } yield row.*
+    } yield row
 
     val repeatedResults = {
       import DateHelpers.Implicit._
@@ -346,7 +346,7 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
     val queriesForAllUsers = {
       import DateHelpers.Implicit._
 
-      (for (row <- ShrineQueries) yield row).sortBy(_.creationDate.desc)
+      Query(ShrineQueries).sortBy(_.creationDate.desc)
     }
 
     //TODO: Find a way to parameterize on limit, to avoid building the query every time
@@ -361,13 +361,9 @@ final class SlickAdapterDao(database: Database, val tables: Tables) extends Adap
       }
     }
 
-    def queriesByNetworkId(networkQueryId: Long) = {
-      for (row <- ShrineQueries if row.networkId === networkQueryId) yield row
-    }
+    def queriesByNetworkId(networkQueryId: Long) = Query(ShrineQueries).filter(_.networkId === networkQueryId)
 
-    def queryNamesByNetworkId(networkQueryId: Long) = {
-      for (query <- ShrineQueries if query.networkId === networkQueryId) yield query.name
-    }
+    def queryNamesByNetworkId(networkQueryId: Long) = queriesByNetworkId(networkQueryId).map(_.name)
 
     def resultsForQuery(networkQueryId: Long) = {
       val queriesJoinedWithResults = ShrineQueries.innerJoin(QueryResults).on(_.id === _.queryId)
