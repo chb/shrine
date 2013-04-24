@@ -36,24 +36,50 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
 
   @Test
   def testReadPreviousQueriesAscending = afterLoadingTestData {
-    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "query-name", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending)
+    val baseRequest = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "query-name", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending)
 
-    val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
+    {
+      val resp = get(baseRequest).asInstanceOf[ReadPreviousQueriesResponse]
 
-    validateUserAndGroupId(resp)
+      validateUserAndGroupId(resp)
 
-    resp.queryMasters.map(_.name) should equal(Seq(queryName1, queryName2))
+      resp.queryMasters.map(_.name) should equal(Seq(queryName1, queryName2))
+    }
+
+    {
+      val request = baseRequest.copy(maxResults = 1)
+
+      val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
+
+      validateUserAndGroupId(resp)
+
+      resp.queryMasters.map(_.name) should equal(Seq(queryName1))
+    }
   }
 
   @Test
   def testReadPreviousQueriesDescending = afterLoadingTestData {
-    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "query-name", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Descending)
+    val baseRequest = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "query-name", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Descending)
 
-    val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
+    {
+      val req = baseRequest
 
-    validateUserAndGroupId(resp)
+      val resp = get(req).asInstanceOf[ReadPreviousQueriesResponse]
 
-    resp.queryMasters.map(_.name) should equal(Seq(queryName2, queryName1))
+      validateUserAndGroupId(resp)
+
+      resp.queryMasters.map(_.name) should equal(Seq(queryName2, queryName1))
+    }
+
+    {
+      val req = baseRequest.copy(maxResults = 1)
+
+      val resp = get(req).asInstanceOf[ReadPreviousQueriesResponse]
+
+      validateUserAndGroupId(resp)
+
+      resp.queryMasters.map(_.name) should equal(Seq(queryName2))
+    }
   }
 
   @Test
@@ -78,7 +104,7 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
       resp.queryMasters should equal(Nil)
     }
   }
-  
+
   @Test
   def testReadPreviousQueriesEndsWith = afterLoadingTestData {
     {
@@ -124,7 +150,7 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
       resp.queryMasters should equal(Nil)
     }
   }
-  
+
   @Test
   def testReadPreviousQueriesContains = afterLoadingTestData {
     {
