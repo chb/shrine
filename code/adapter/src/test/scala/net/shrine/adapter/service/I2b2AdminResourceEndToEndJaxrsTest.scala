@@ -25,6 +25,7 @@ import org.junit.After
 import net.shrine.protocol.ReadQueryDefinitionResponse
 import scala.xml.XML
 import net.shrine.protocol.ReadPreviousQueriesResponse
+import net.shrine.adapter.AdapterTestHelpers
 
 /**
  * @author clint
@@ -36,7 +37,7 @@ import net.shrine.protocol.ReadPreviousQueriesResponse
  * We work around this issue by mising in JerseyTestCOmponent, which brings in a JerseyTest by composition, and ensures
  * that it is set up and torn down properly.
  */
-final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpringTest with JerseyTestComponent[I2b2AdminService] with AdapterDbTest with ShouldMatchersForJUnit {
+final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpringTest with JerseyTestComponent[I2b2AdminService] with AdapterDbTest with ShouldMatchersForJUnit with CanLoadTestData with AdapterTestHelpers {
 
   import I2b2AdminResourceEndToEndJaxrsTest._
 
@@ -94,7 +95,7 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpring
     val categoryToSearchWithin = ReadI2b2AdminPreviousQueriesRequest.Category.All
     val searchStrategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Exact
 
-    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, categoryToSearchWithin, searchStrategy)
+    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, searchStrategy, categoryToSearchWithin)
 
     doTestReadI2b2AdminPreviousQueries(request, Some(queryMaster1.copy(queryMasterId = networkQueryId1.toString)))
   }
@@ -132,41 +133,10 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractShrineJUnitSpring
     }
   }
 
-  private def loadTestData() {
-    dao.insertQuery(masterId1, networkQueryId1, queryName1, authn, queryDef1.expr)
-  }
-
-  private def afterLoadingTestData(f: => Any): Unit = afterCreatingTables {
-    try {
-      loadTestData()
-    } finally {
-      f
-    }
-  }
+  
 }
 
-object I2b2AdminResourceEndToEndJaxrsTest {
-  private val masterId1 = "1"
-
-  private val networkQueryId1 = 999L
-
-  private val queryName1 = "query-name1"
-
-  private val queryDef1 = QueryDefinition(queryName1, Term("x"))
-
-  private[this] val userId = "some-user-id"
-
-  private[this] val domain = "some-domain"
-
-  private[this] val password = "some-val"
-
-  private lazy val authn = AuthenticationInfo(domain, userId, Credential(password, false))
-
-  private val projectId = "some-project-id"
-
-  private val waitTimeMs = 12345L
-
-  private lazy val queryMaster1 = QueryMaster(masterId1, queryName1, userId, domain, Util.now)
+object I2b2AdminResourceEndToEndJaxrsTest extends AdapterTestHelpers {
 
   private object AlwaysAuthenticatesMockPmHttpClient extends HttpClient {
     override def post(input: String, url: String): String = {

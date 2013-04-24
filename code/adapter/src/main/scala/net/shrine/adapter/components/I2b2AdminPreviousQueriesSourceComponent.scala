@@ -14,13 +14,13 @@ import net.shrine.protocol.ReadPreviousQueriesResponse
  * @date Apr 4, 2013
  */
 trait I2b2AdminPreviousQueriesSourceComponent {
-  val dao: AdapterDao
+  def dao: AdapterDao
 
-  protected object I2b2AdminPreviousQueries {
+  object I2b2AdminPreviousQueries {
     def get(request: ReadI2b2AdminPreviousQueriesRequest): ShrineResponse = {
       val queries = for {
         query <- dao.findQueriesByUserAndDomain(request.authn.domain, request.authn.username, request.maxResults)
-        if request.searchStrategy.isMatch(query.name, request.searchString)
+        if request.searchStrategy.isMatch(query.name, request.searchString) //TODO: Do this via the DB, not in Scala
       } yield query
       
       import ReadI2b2AdminPreviousQueriesRequest.SortOrder._

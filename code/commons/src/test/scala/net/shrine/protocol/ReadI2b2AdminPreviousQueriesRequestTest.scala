@@ -60,7 +60,7 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
   private def request(tuple: (SortOrder, Category, Strategy)) = {
     val (sortOrder, category, strategy) = tuple
 
-    ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, category, strategy)
+    ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, strategy, category)
   }
   
   private def doTestToXml(makeExpectedXml: (SortOrder, Category, Strategy) => NodeSeq, serialize: ReadI2b2AdminPreviousQueriesRequest => NodeSeq) {

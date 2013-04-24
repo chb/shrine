@@ -20,8 +20,8 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
   searchString: String,
   maxResults: Int,
   sortOrder: ReadI2b2AdminPreviousQueriesRequest.SortOrder = ReadI2b2AdminPreviousQueriesRequest.SortOrder.Descending,
-  categoryToSearchWithin: ReadI2b2AdminPreviousQueriesRequest.Category = ReadI2b2AdminPreviousQueriesRequest.Category.Top,
-  searchStrategy: ReadI2b2AdminPreviousQueriesRequest.Strategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains
+  searchStrategy: ReadI2b2AdminPreviousQueriesRequest.Strategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains,
+  categoryToSearchWithin: ReadI2b2AdminPreviousQueriesRequest.Category = ReadI2b2AdminPreviousQueriesRequest.Category.Top
   ) extends ShrineRequest(projectId, waitTimeMs, authn) with CrcRequest with HandleableAdminShrineRequest {
 
   override val requestType = RequestType.ReadI2b2AdminPreviousQueriesRequest
@@ -66,8 +66,8 @@ object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[Rea
       textIn("searchString"),
       textIn("maxResults").toInt,
       enumValue(SortOrder)(textIn("sortOrder")),
-      enumValue(Category)(textIn("categoryToSearchWithin")),
-      enumValue(Strategy)(textIn("searchStrategy")))
+      enumValue(Strategy)(textIn("searchStrategy")),
+      enumValue(Category)(textIn("categoryToSearchWithin")))
   }
 
   override def fromI2b2(xml: NodeSeq): ReadI2b2AdminPreviousQueriesRequest = {
@@ -86,8 +86,8 @@ object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[Rea
       (getNameInfo \ "match_str").text.trim,
       (getNameInfo \ "@max").text.toInt,
       if((getNameInfo \ "ascending").text.toBoolean) SortOrder.Ascending else SortOrder.Descending,
-      enumValueFrom(Category)(getNameInfo \ "@category"),
-      enumValueFrom(Strategy)(matchStrElem \ "@strategy"))
+      enumValueFrom(Strategy)(matchStrElem \ "@strategy"),
+      enumValueFrom(Category)(getNameInfo \ "@category"))
   }
 
   final case class Category private[Category] (override val name: String) extends Category.Value
