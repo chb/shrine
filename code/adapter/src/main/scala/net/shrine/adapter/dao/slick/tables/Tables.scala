@@ -12,7 +12,6 @@ final class Tables(override val driver: ExtendedProfile) extends
 	BreakdownResultsComponent with 
 	CountResultsComponent with 
 	ErrorResultsComponent with 
-	PatientSetsComponent with 
 	PrivilegedUsersComponent with 
 	QueryResultsComponent with 
 	ShrineQueriesComponent

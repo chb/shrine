@@ -416,13 +416,6 @@ final class SlickAdapterDaoTest extends AbstractShrineJUnitSpringTest with Adapt
   }
 
   @Test
-  def testInsertPatientSet {
-    intercept[scala.NotImplementedError] {
-      dao.insertPatientSet(null.asInstanceOf[Nothing])
-    }
-  }
-
-  @Test
   def testFindResultsFor = afterCreatingTables {
     //A RunQueryResponse with all types of QueryResults: count, breakdown, and error
     val response = countRunQueryResponse.withResults(Seq(countQueryResult, breakdownQueryResult1, breakdownQueryResult2, errorQueryResult1, errorQueryResult2))
