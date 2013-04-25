@@ -28,4 +28,11 @@
         <constructor-arg index="3" ref="broadcastService"/>
         <constructor-arg index="4" ref="queryTimeoutDuration"/>
     </bean>
+    
+    <bean id="i2b2AdminService" class="net.shrine.adapter.service.I2b2AdminService">
+        <constructor-arg index="0" ref="adapterDao"/>
+        <constructor-arg index="1" ref="i2b2AdminDao"/>
+        <constructor-arg index="2" ref="httpClient"/>
+        <constructor-arg index="3" ref="pmEndpoint"/>
+    </bean>
 </beans>

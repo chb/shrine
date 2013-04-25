@@ -223,6 +223,11 @@
     </bean>
     
     <bean id="adapterDao" class="net.shrine.adapter.dao.AdapterDao" factory-bean="nonTransactionalAdapterDao" factory-method="transactional"/>
+    
+    <bean id="i2b2AdminDao" class="net.shrine.adapter.dao.slick.SlickI2b2AdminPreviousQueriesDao">
+    	<constructor-arg ref="slickDatabase"/>
+        <constructor-arg ref="slickTables"/>
+    </bean>
 
 	<bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
 	   <constructor-arg ref="adapterMappingsFileName"/>
