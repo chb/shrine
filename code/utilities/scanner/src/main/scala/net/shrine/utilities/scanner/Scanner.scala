@@ -29,7 +29,9 @@ trait Scanner extends Loggable {
   val ontologyDao: OntologyDAO
   val client: ScannerClient
 
-  def scan(): ScanResults = {
+  def scan(): ScanResults = doScan()
+  
+  protected def doScan(): ScanResults = {
     info("Shrine Scanner starting")
 
     val mappedNetworkTerms = adapterMappingsSource.load.networkTerms
@@ -42,8 +44,6 @@ trait Scanner extends Loggable {
 
     doScan(mappedNetworkTerms, termsExpectedToBeUnmapped)
   }
-
-  import ExecutionContext.Implicits.global
 
   import scala.concurrent.duration._
 

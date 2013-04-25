@@ -25,5 +25,5 @@ trait HasSpinBroadcastServiceScannerClient { self: HasScannerConfig with Scanner
     new SpinBroadcastServiceScannerClient(config.projectId, config.authorization, spinClientConfig) with HasSingleThreadExecutionContextComponent 
   }
   
-  override def scan(): ScanResults = client.shutdownAfter { self.scan() }
+  override def scan(): ScanResults = client.shutdownAfter { self.doScan() }
 }
