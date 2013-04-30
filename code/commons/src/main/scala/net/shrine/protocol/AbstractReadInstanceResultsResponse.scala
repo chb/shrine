@@ -51,6 +51,12 @@ abstract class AbstractReadInstanceResultsResponse(
 }
 
 object AbstractReadInstanceResultsResponse {
+  //
+  //NB: Creatable trait and companion object implement the typeclass pattern:
+  //http://www.casualmiracles.com/2012/05/03/a-small-example-of-the-typeclass-pattern-in-scala/
+  //A typeclass is used here in place of an abstract method with multiple concrete implementations,
+  //or another similar strategy. -Clint
+  
   private trait Creatable[T] {
     def apply(id: Long, results: Seq[QueryResult]): T
   }

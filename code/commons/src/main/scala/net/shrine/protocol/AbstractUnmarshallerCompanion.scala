@@ -7,6 +7,8 @@ import net.shrine.serialization.XmlUnmarshaller
 /**
  * @author clint
  * @date Mar 29, 2013
+ * 
+ * Abstract base for companion objects with methods for unmarshalling CRC requests
  */
 abstract class AbstractUnmarshallerCompanion[Req <: ShrineRequest](i2b2CrcRequestUnmarshallers: Map[CrcRequestType, I2b2Unmarshaller[Req]]) extends I2b2Unmarshaller[Req] {
 

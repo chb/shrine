@@ -12,7 +12,7 @@ import net.shrine.util.Util
  */
 abstract class AbstractReadQueryResultResponse(
     rootTagName: String,
-    val queryId: Long) extends ShrineResponse with HasQueryResults {
+    val queryId: Long) extends ShrineResponse with HasQueryResults with NonI2b2ableResponse {
 
   override def toXml: NodeSeq = XmlUtil.stripWhitespace {
     XmlUtil.renameRootTag(rootTagName) {
@@ -22,19 +22,22 @@ abstract class AbstractReadQueryResultResponse(
       </placeHolder>
     }
   }
-
-  override protected def i2b2MessageBody = ???
-
-  override def toI2b2 = ErrorResponse("ReadQueryResultResponse can't be marshalled to i2b2 XML, as it has no i2b2 analog").toI2b2
 }
 
 object AbstractReadQueryResultResponse {
+  //
+  //NB: Creatable trait and companion object implement the typeclass pattern:
+  //http://www.casualmiracles.com/2012/05/03/a-small-example-of-the-typeclass-pattern-in-scala/
+  //A typeclass is used here in place of an abstract method with multiple concrete implementations,
+  //or another similar strategy. -Clint
+  
   private trait Creatable[T] {
     def apply(id: Long, results: Seq[QueryResult]): T
   }
 
   private object Creatable {
     implicit val readQueryResultResponseIsCreatable: Creatable[ReadQueryResultResponse] = new Creatable[ReadQueryResultResponse] {
+      //NB: Will fail loudly if QueryResults Seq is empty
       override def apply(id: Long, results: Seq[QueryResult]) = ReadQueryResultResponse(id, results.head)
     }
 

@@ -51,6 +51,7 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
     getQueryId: Req => Long,
     toResponse: (Long, QueryResult) => Rsp) extends Adapter {
 
+  //TODO: Use scala.concurrent.ExecutionContext.Implicits.global instead?
   private lazy val executorService = Executors.newFixedThreadPool(Runtime.getRuntime.availableProcessors + 1)
 
   override def destroy() {
@@ -77,17 +78,26 @@ abstract class AbstractReadQueryResultAdapter[Req <: ShrineRequest, Rsp <: Shrin
       case Some(shrineQueryResult) => {
         if (shrineQueryResult.isDone) { shrineQueryResult.toQueryResults(doObfuscation).map(toResponse(queryId, _)).getOrElse(errorResponse) }
         else {
+          //NB: If the requested query was not finished executing on the i2b2 side when Shrine recorded it, attempt to
+          //retrieve it and all its sub-components (breakdown results, if any) in parallel.  Asking for the results in
+          //parallel is quite possibly too clever, but feels subjectively faster than asking for them serially.
+          //TODO: Review this.
+          
+          //Make requests for results in parallel
           val futureResponses = scatter(identity, req, shrineQueryResult)
 
+          //Gather all the results (block until they're all returned)
           val (responseAttempt, breakdownResponseAttempts) = gather(queryId, futureResponses, req.waitTimeMs)
 
           responseAttempt match {
+            //If we successfully received the parent response (the one with query type PATIENT_COUNT_XML), re-store it along
+            //with any retrieved breakdowns before returning it.
             case Success(response) => {
               storeResultIfNecessary(shrineQueryResult, response, req.authn, queryId, getFailedBreakdownTypes(breakdownResponseAttempts))
 
               response
             }
-            case Failure(e) => ErrorResponse("Couldn't retrieve query with id '" + queryId + "' from the CRC: exception message follows: " + e.getMessage + " stack trace: " + e.getStackTrace)
+            case Failure(e) => ErrorResponse(s"Couldn't retrieve query with id '$queryId' from the CRC: exception message follows: ${ e.getMessage } stack trace: ${ e.getStackTrace }")
           }
         }
       }

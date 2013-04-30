@@ -82,6 +82,12 @@ abstract class AbstractRunQueryResponse(
 }
 
 object AbstractRunQueryResponse {
+  //
+  //NB: Creatable trait and companion object implement the typeclass pattern:
+  //http://www.casualmiracles.com/2012/05/03/a-small-example-of-the-typeclass-pattern-in-scala/
+  //A typeclass is used here in place of an abstract method with multiple concrete implementations,
+  //or another similar strategy. -Clint
+  
   private trait Creatable[T] {
     def apply(queryId: Long, createDate: XMLGregorianCalendar, userId: String, groupId: String, requestXml: QueryDefinition, queryInstanceId: Long, results: Seq[QueryResult]): T
   }
