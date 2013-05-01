@@ -42,25 +42,14 @@ final class FileNameSourceTest extends TestCase with ShouldMatchersForJUnit {
 
     numberedFiles should equal(Nil)
 
-    val f0 = new File("foo.0.csv")
-    val f1 = new File("foo.1.csv")
-    val f99 = new File("foo.99.csv")
-
-    val files = Seq(f0, f1, f99)
-
-    files.foreach { f =>
-      f.createNewFile()
-
-      f.exists should be(true)
-    }
-
-    try {
-      numberedFiles.map(_.getCanonicalPath).toSet should equal(files.map(_.getCanonicalPath).toSet)
-    } finally {
-      files.foreach { f =>
-        f.delete()
-
-        f.exists should be(false)
+    withFile(file("foo.0.csv")) { f0 =>
+      withFile(file("foo.1.csv")) { f1 =>
+        withFile(file("foo.99.csv")) { f99 =>
+          
+          val files = Seq(f0, f1, f99)
+          
+          numberedFiles.map(_.getCanonicalPath).toSet should equal(files.map(_.getCanonicalPath).toSet)
+        }
       }
     }
   }
@@ -76,18 +65,14 @@ final class FileNameSourceTest extends TestCase with ShouldMatchersForJUnit {
     endsWithDotNumberDotCsv(nextOutputFileName) should be(false)
 
     {
-      val file0 = new File(nextOutputFileName)
-
-      withFile(file0) { _ =>
+      withFile(file(nextOutputFileName)) { file0 =>
         val nextName = nextOutputFileName
         
         nextName.startsWith(FileNameSource.base + "-") should be(true)
         
         FileNameSource.numberOf(nextName) should be(Some(0))
 
-        val file1 = new File(nextName)
-
-        withFile(file1) { _ =>
+        withFile(file(nextName)) { file1 =>
           val nextNextName = nextOutputFileName
           
           nextNextName.startsWith(FileNameSource.base + "-") should be(true)
@@ -98,6 +83,8 @@ final class FileNameSourceTest extends TestCase with ShouldMatchersForJUnit {
     }
   }
 
+  private def file(name: String) = new File(name)
+  
   private def withFile(file: File)(f: File => Any) {
     try {
       file.createNewFile()
