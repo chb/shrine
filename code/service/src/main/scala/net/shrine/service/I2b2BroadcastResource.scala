@@ -29,7 +29,7 @@ import net.shrine.protocol.HandleableShrineRequest
 @Produces(Array(MediaType.APPLICATION_XML))
 @Component
 @Scope("singleton")
-class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler: ShrineRequestHandler) extends Loggable {
+final class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler: ShrineRequestHandler) extends Loggable {
 
   //NB: Always broadcast when receiving requests from the legacy i2b2/Shrine webclient, since we can't retrofit it to 
   //Say whether broadcasting is desired for a praticular query/operation
@@ -37,17 +37,13 @@ class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler: Shri
   
   @POST
   @Path("request")
-  final def doRequest(i2b2Request: String): Response = {
-    processI2b2Message(i2b2Request)
-  }
+  def doRequest(i2b2Request: String): Response = processI2b2Message(i2b2Request)
 
   @POST
   @Path("pdorequest")
-  final def doPDORequest(i2b2Request: String): Response = {
-    processI2b2Message(i2b2Request)
-  }
+  def doPDORequest(i2b2Request: String): Response = processI2b2Message(i2b2Request)
 
-  final def processI2b2Message(i2b2Request: String): Response = {
+  def processI2b2Message(i2b2Request: String): Response = {
     val builder = Try {
       HandleableShrineRequest.fromI2b2(i2b2Request)
     }.map {

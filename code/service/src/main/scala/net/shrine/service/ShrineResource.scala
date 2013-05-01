@@ -1,13 +1,10 @@
 package net.shrine.service
 
-import java.net.URLDecoder.decode
-import java.net.URLEncoder.encode
-import scala.Array.canBuildFrom
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import ShrineResource.waitTimeMs
 import javax.ws.rs.Consumes
+import javax.ws.rs.DELETE
 import javax.ws.rs.GET
 import javax.ws.rs.HeaderParam
 import javax.ws.rs.POST
@@ -16,14 +13,24 @@ import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
-import net.shrine.protocol._
-import net.shrine.service.annotation.RequestHandler
-import scala.xml.NodeSeq
-import java.io.StringReader
-import javax.ws.rs.DELETE
-import net.shrine.protocol.query.QueryDefinition
-import scala.xml.XML
 import javax.ws.rs.core.Response
+import net.shrine.protocol.AuthenticationInfo
+import net.shrine.protocol.DeleteQueryRequest
+import net.shrine.protocol.OutputTypeSet
+import net.shrine.protocol.ReadApprovedQueryTopicsRequest
+import net.shrine.protocol.ReadInstanceResultsRequest
+import net.shrine.protocol.ReadPdoRequest
+import net.shrine.protocol.ReadPreviousQueriesRequest
+import net.shrine.protocol.ReadQueryDefinitionRequest
+import net.shrine.protocol.ReadQueryInstancesRequest
+import net.shrine.protocol.ReadQueryResultRequest
+import net.shrine.protocol.RenameQueryRequest
+import net.shrine.protocol.RunQueryRequest
+import net.shrine.protocol.ShrineRequestHandler
+import net.shrine.protocol.ShrineResponse
+import net.shrine.protocol.query.QueryDefinition
+import net.shrine.service.annotation.RequestHandler
+import scala.xml.XML
 
 /**
  * @author Bill Simons
@@ -54,7 +61,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @PathParam("userId") userId: String,
     @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readApprovedQueryTopics(new ReadApprovedQueryTopicsRequest(projectId, waitTimeMs, authorization, userId), shouldBroadcast))
+    performAndSerialize(_.readApprovedQueryTopics(ReadApprovedQueryTopicsRequest(projectId, waitTimeMs, authorization, userId), shouldBroadcast))
   }
 
   @GET
@@ -73,7 +80,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
       val fSize = if (fetchSize != 0) fetchSize else 20
 
       Response.ok.entity {
-        performAndSerialize(_.readPreviousQueries(new ReadPreviousQueriesRequest(projectId, waitTimeMs, authorization, userId, fSize), shouldBroadcast))
+        performAndSerialize(_.readPreviousQueries(ReadPreviousQueriesRequest(projectId, waitTimeMs, authorization, userId, fSize), shouldBroadcast))
       }.build
     }
   }
@@ -95,7 +102,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
 
     //NB: Create the RunQueryRequest with a dummy networkQueryId of '-1'; 
     //this will be filled in with an appropriately-generated value by the ShrineRequestHandler
-    performAndSerialize(_.runQuery(new RunQueryRequest(projectId, waitTimeMs, authorization, -1, topicId, outputTypes.toSet, queryDef), shouldBroadcast))
+    performAndSerialize(_.runQuery(RunQueryRequest(projectId, waitTimeMs, authorization, -1, topicId, outputTypes.toSet, queryDef), shouldBroadcast))
   }
 
   @GET
@@ -107,7 +114,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @PathParam("queryId") queryId: Long,
     @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readQueryInstances(new ReadQueryInstancesRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
+    performAndSerialize(_.readQueryInstances(ReadQueryInstancesRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
   }
 
   @GET
@@ -119,7 +126,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @PathParam("instanceId") instanceId: Long,
     @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readInstanceResults(new ReadInstanceResultsRequest(projectId, waitTimeMs, authorization, instanceId), shouldBroadcast))
+    performAndSerialize(_.readInstanceResults(ReadInstanceResultsRequest(projectId, waitTimeMs, authorization, instanceId), shouldBroadcast))
   }
 
   @POST //This must be POST, since we're sending content in the request body
@@ -135,7 +142,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
 
     import XML.loadString
 
-    performAndSerialize(_.readPdo(new ReadPdoRequest(projectId, waitTimeMs, authorization, patientSetCollId, loadString(optionsXml)), shouldBroadcast))
+    performAndSerialize(_.readPdo(ReadPdoRequest(projectId, waitTimeMs, authorization, patientSetCollId, loadString(optionsXml)), shouldBroadcast))
   }
 
   @GET
@@ -147,7 +154,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @PathParam("queryId") queryId: Long,
     @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readQueryDefinition(new ReadQueryDefinitionRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
+    performAndSerialize(_.readQueryDefinition(ReadQueryDefinitionRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
   }
 
   @DELETE
@@ -159,7 +166,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @PathParam("queryId") queryId: Long,
     @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.deleteQuery(new DeleteQueryRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
+    performAndSerialize(_.deleteQuery(DeleteQueryRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
   }
 
   @POST
@@ -173,7 +180,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     queryName: String,
     @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.renameQuery(new RenameQueryRequest(projectId, waitTimeMs, authorization, queryId, queryName), shouldBroadcast))
+    performAndSerialize(_.renameQuery(RenameQueryRequest(projectId, waitTimeMs, authorization, queryId, queryName), shouldBroadcast))
   }
 
   @GET
@@ -186,7 +193,7 @@ final class ShrineResource @Autowired() (@RequestHandler private val shrineReque
     @PathParam("queryId") queryId: Long,
     @HeaderParam("shouldBroadcast") shouldBroadcast: Boolean): String = {
 
-    performAndSerialize(_.readQueryResult(new ReadQueryResultRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
+    performAndSerialize(_.readQueryResult(ReadQueryResultRequest(projectId, waitTimeMs, authorization, queryId), shouldBroadcast))
   }
 
   private def performAndSerialize[R <: ShrineResponse](op: ShrineRequestHandler => R): String = {
