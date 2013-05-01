@@ -1,45 +1,37 @@
 package net.shrine.service
 
-import net.shrine.protocol._
-import net.shrine.authorization.QueryAuthorizationService
-import org.spin.tools.crypto.signature.Identity
-import org.spin.tools.config.{ EndpointType, EndpointConfig }
-import org.apache.log4j.MDC
-import net.shrine.filters.LogFilter
-import java.lang.String
-import org.spin.tools.crypto.PKCryptor
-import net.shrine.broadcaster.dao.AuditDao
-import net.shrine.broadcaster.dao.model.AuditEntry
-import org.spin.message.{ AckNack, Failure, Response, Result, ResultSet, QueryInfo }
-import org.apache.log4j.Logger
-import org.spin.tools.crypto.Envelope
-import org.spin.identity.IdentityService
-import org.spin.client.AgentException
-import org.spin.client.SpinClient
-import java.net.MalformedURLException
-import org.spin.tools.NetworkTime
-import net.shrine.util.Util
-import scala.util.Try
-import net.shrine.util.Loggable
-import net.shrine.aggregation.ReadQueryResultAggregator
-import scala.concurrent.Future
 import scala.concurrent.Await
-import org.spin.client.Credentials
-import net.shrine.aggregation.Aggregator
-import net.shrine.aggregation.SpinResultEntry
-import net.shrine.aggregation.RunQueryAggregator
-import net.shrine.aggregation.ReadQueryDefinitionAggregator
-import net.shrine.aggregation.ReadPdoResponseAggregator
-import net.shrine.aggregation.ReadInstanceResultsAggregator
-import net.shrine.aggregation.ReadPreviousQueriesAggregator
-import net.shrine.aggregation.RenameQueryAggregator
-import net.shrine.aggregation.DeleteQueryAggregator
-import org.spin.tools.config.DefaultPeerGroups
-import net.shrine.broadcaster.BroadcastService
+import scala.concurrent.Future
 import scala.concurrent.duration.Duration
+
 import net.shrine.aggregation.Aggregators
-import scala.concurrent.duration.FiniteDuration
-import java.util.concurrent.TimeUnit
+import net.shrine.aggregation.DeleteQueryAggregator
+import net.shrine.aggregation.ReadInstanceResultsAggregator
+import net.shrine.aggregation.ReadPdoResponseAggregator
+import net.shrine.aggregation.ReadPreviousQueriesAggregator
+import net.shrine.aggregation.ReadQueryDefinitionAggregator
+import net.shrine.aggregation.ReadQueryResultAggregator
+import net.shrine.aggregation.RenameQueryAggregator
+import net.shrine.aggregation.RunQueryAggregator
+import net.shrine.authorization.QueryAuthorizationService
+import net.shrine.broadcaster.BroadcastService
+import net.shrine.broadcaster.dao.AuditDao
+import net.shrine.protocol.DeleteQueryRequest
+import net.shrine.protocol.QueryInstance
+import net.shrine.protocol.ReadApprovedQueryTopicsRequest
+import net.shrine.protocol.ReadInstanceResultsRequest
+import net.shrine.protocol.ReadPdoRequest
+import net.shrine.protocol.ReadPreviousQueriesRequest
+import net.shrine.protocol.ReadQueryDefinitionRequest
+import net.shrine.protocol.ReadQueryInstancesRequest
+import net.shrine.protocol.ReadQueryInstancesResponse
+import net.shrine.protocol.ReadQueryResultRequest
+import net.shrine.protocol.RenameQueryRequest
+import net.shrine.protocol.RunQueryRequest
+import net.shrine.protocol.ShrineRequestHandler
+import net.shrine.protocol.ShrineResponse
+import net.shrine.util.Loggable
+import net.shrine.util.Util
 
 /**
  * @author Bill Simons
