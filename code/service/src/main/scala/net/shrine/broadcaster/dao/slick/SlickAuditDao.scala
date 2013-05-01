@@ -1,12 +1,15 @@
 package net.shrine.broadcaster.dao.slick
 
-import net.shrine.broadcaster.dao.AuditDao
-import scala.slick.session.Database
-import net.shrine.broadcaster.dao.slick.tables.Tables
-import net.shrine.broadcaster.dao.model.AuditEntry
+import java.sql.Timestamp
 import java.util.Date
+
+import scala.slick.lifted.Query
+import scala.slick.session.Database
 import scala.slick.session.Session
-import scala.slick.lifted.Parameters
+
+import net.shrine.broadcaster.dao.AuditDao
+import net.shrine.broadcaster.dao.model.AuditEntry
+import net.shrine.broadcaster.dao.slick.tables.Tables
 
 /**
  * @author clint
@@ -17,7 +20,7 @@ final class SlickAuditDao(database: Database, tables: Tables) extends AuditDao {
   import driver.Implicit._
 
   override def addAuditEntry(time: Date, project: String, domain: String, username: String, queryText: String, queryTopic: String) {
-    val timestamp = new java.sql.Timestamp(time.getTime)
+    val timestamp = new Timestamp(time.getTime)
 
     database.withTransaction { implicit session: Session =>
       AuditEntries.withoutId.insert(project, domain, username, timestamp, queryText, queryTopic)
@@ -30,16 +33,14 @@ final class SlickAuditDao(database: Database, tables: Tables) extends AuditDao {
     }
   }
   
-  override def inTransaction[T](f: => T): T = {
-    database.withTransaction(f)
-  }
+  override def inTransaction[T](f: => T): T = database.withTransaction(f)
 
   object Queries {
-    //session.createCriteria(classOf[AuditEntry]).addOrder(Order.desc("time")).setMaxResults(limit).list().asInstanceOf[JList[AuditEntry]].asScala
-
-    lazy val allEntries = (for {
-      row <- AuditEntries
-    } yield (row.time, row.*)).sortBy { case (time, _) => time.desc }.map { case (_, entry) => entry }
+    lazy val allEntries = {
+      val allRowsWithTimes = Query(AuditEntries).map(row => (row.time, row.*))
+      
+      allRowsWithTimes.sortBy { case (time, _) => time.desc }.map { case (_, auditEntryRow) => auditEntryRow }
+    }
 
     def recentEntries(limit: Int) = allEntries.take(limit)
   }
