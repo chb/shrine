@@ -20,7 +20,7 @@ trait PmAuthorizerComponent { self: PmHttpClientComponent with Loggable =>
     def authorize(authn: AuthenticationInfo): AuthorizationStatus = {
       val request = GetUserConfigurationRequest(authn.domain, authn.username, authn.credential.value)
       
-      def parsePmResult(responseXml: String): Either[ErrorResponse, User] = {
+      def parsePmResult(responseXml: String): Try[Either[ErrorResponse, User]] = {
         Try{
           Right(User.fromI2b2(responseXml))
         }.recoverWith {
@@ -35,7 +35,7 @@ trait PmAuthorizerComponent { self: PmHttpClientComponent with Loggable =>
             
             Left(ErrorResponse(s"Error authorizing ${ authn.domain }:${ authn.username }: ${ e.getMessage }")) 
           }
-        }.get //NB: This .get is likely to be safe, since the code in the final recover { } block is very unlikely to throw 
+        } 
       }
       
       val responseAttempt = Try {
@@ -44,7 +44,7 @@ trait PmAuthorizerComponent { self: PmHttpClientComponent with Loggable =>
         httpClient.post(request.toI2b2String, pmEndpoint)
       }
       
-      val authStatusAttempt = responseAttempt.map(parsePmResult).map {
+      val authStatusAttempt = responseAttempt.flatMap(parsePmResult).map {
         case Right(user) => Authorized(user)
         case Left(ErrorResponse(message)) => NotAuthorized(message)
       }
