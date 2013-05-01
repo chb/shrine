@@ -5,13 +5,9 @@ import java.util.Random
 
 /**
  * @author Bill Simons
+ * @author clint
  * @date 4/21/11
  * @link http://cbmi.med.harvard.edu
- * @link http://chip.org
- *       <p/>
- *       NOTICE: This software comes with NO guarantees whatsoever and is
- *       licensed as Lgpl Open Source
- * @link http://www.gnu.org/licenses/lgpl.html
  */
 object Obfuscator {
   def obfuscate(result: QueryResult): QueryResult = {
@@ -38,27 +34,13 @@ object Obfuscator {
   }
 
   /**
-   * [ SUMMARY ]
-   * <p/>
-   * [ Author ] Ricardo De Lima Date: August 18, 2009
-   * <p/>
+   * @author clint
+   * @author Ricardo De Lima 
+   * @date August 18, 2009
+   * 
    * Harvard Medical School Center for BioMedical Informatics
    *
    * @link http://cbmi.med.harvard.edu
-   * <p/>
-   * [ In partnership with ]
-   * @link http://chip.org
-   * @link http://lcs.mgh.harvard.edu
-   * @link http://www.brighamandwomens.org
-   * @link http://bidmc.harvard.edu
-   * @link http://dfhcc.harvard.edu
-   * @link http://spin.nci.nih.gov/
-   * <p/>
-   * <p/>
-   * ------------------------------------------------- [ Licensing ] All
-   * works licensed by the Lesser GPL
-   * @link http://www.gnu.org/licenses/lgpl.html
-   * -------------------------------------------------
    */
   private object GaussianObfuscator {
     private val stdDev = 1.33
@@ -76,7 +58,8 @@ object Obfuscator {
     def determineObfuscationAmount(x: Long): Int = scala.math.round(gaussian(mean, stdDev)).toInt
 
     def determineObfuscatedSetSize(setSize: Long, obfuscationAmount: Int): Long = {
-      if (setSize <= 10) -1L else setSize + obfuscationAmount
+      if (setSize <= 10) { -1L }
+      else { setSize + obfuscationAmount }
     }
 
     /**
