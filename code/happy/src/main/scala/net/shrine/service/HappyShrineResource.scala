@@ -1,11 +1,12 @@
 package net.shrine.service
 
-import scala.Array._
-import javax.ws.rs.core.MediaType
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
-import javax.ws.rs.{GET, Produces, Path}
-import org.springframework.beans.factory.annotation.Autowired
+import javax.ws.rs.GET
+import javax.ws.rs.Path
+import javax.ws.rs.Produces
+import javax.ws.rs.core.MediaType
 
 /**
  * @author Bill Simons
@@ -21,8 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 @Produces(Array(MediaType.APPLICATION_XML))
 @Component
 @Scope("singleton")
-class HappyShrineResource @Autowired()(private val happyService: HappyShrineRequestHandler){
-
+class HappyShrineResource @Autowired() (private val happyService: HappyShrineRequestHandler) {
   @GET
   @Path("keystore")
   def keystoreReport: String = happyService.keystoreReport
@@ -54,7 +54,7 @@ class HappyShrineResource @Autowired()(private val happyService: HappyShrineRequ
   @GET
   @Path("version")
   def versionReport: String = happyService.versionReport
-  
+
   @GET
   @Path("all")
   def all: String = happyService.all

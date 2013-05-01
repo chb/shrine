@@ -1,13 +1,21 @@
 package net.shrine.service
 
 import java.io.StringWriter
+
+import scala.collection.JavaConverters.asScalaBufferConverter
+import scala.collection.JavaConverters.asScalaSetConverter
+import scala.collection.JavaConverters.collectionAsScalaIterableConverter
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
 import scala.xml.NodeSeq
 import scala.xml.XML
+
 import org.spin.client.SpinClient
 import org.spin.message.Failure
 import org.spin.message.QueryInfo
 import org.spin.message.Result
 import org.spin.message.ResultSet
+import org.spin.message.serializer.Stringable
 import org.spin.node.DefaultQueries
 import org.spin.node.actions.discovery.DiscoveryCriteria
 import org.spin.node.actions.discovery.DiscoveryResult
@@ -22,9 +30,11 @@ import org.spin.tools.crypto.signature.CertID
 import org.spin.tools.crypto.signature.Identity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+
 import javax.xml.bind.JAXBContext
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.broadcaster.dao.AuditDao
+import net.shrine.config.HappyShrineConfig
 import net.shrine.config.HiveCredentials
 import net.shrine.i2b2.protocol.pm.GetUserConfigurationRequest
 import net.shrine.i2b2.protocol.pm.HiveConfig
@@ -40,10 +50,6 @@ import net.shrine.protocol.query.Term
 import net.shrine.util.HttpClient
 import net.shrine.util.Versions
 import net.shrine.util.XmlUtil
-import scala.collection.JavaConverters._
-import net.shrine.config.HappyShrineConfig
-import scala.concurrent.Await
-import org.spin.message.serializer.Stringable
 
 /**
  * @author Bill Simons
@@ -57,19 +63,19 @@ import org.spin.message.serializer.Stringable
  */
 @Service
 class HappyShrineService @Autowired() (
-  config: HappyShrineConfig,
-  hiveCredentials: HiveCredentials,
-  spinClient: SpinClient,
-  auditDao: AuditDao,
-  adapterDao: AdapterDao,
-  httpClient: HttpClient,
-  endpointConfig: EndpointConfig) extends HappyShrineRequestHandler {
+    config: HappyShrineConfig,
+    hiveCredentials: HiveCredentials,
+    spinClient: SpinClient,
+    auditDao: AuditDao,
+    adapterDao: AdapterDao,
+    httpClient: HttpClient,
+    endpointConfig: EndpointConfig) extends HappyShrineRequestHandler {
 
   override def keystoreReport: String = {
     val keystoreConfig = ConfigTool.loadKeyStoreConfig
     val pki: PKITool = PKITool.getInstance
     val certId: CertID = pki.getMyX509.getCertID
-    XmlUtil.stripWhitespace(
+    XmlUtil.stripWhitespace {
       <keystoreReport>
         <configFile>{ keystoreConfig.getFile.toURI }</configFile>
         <certId>
@@ -86,33 +92,36 @@ class HappyShrineService @Autowired() (
             }
           }
         </importedCerts>
-      </keystoreReport>).toString
+      </keystoreReport>
+    }.toString
   }
 
   override def routingReport: String = {
     val marshaller = JAXBContext.newInstance(classOf[RoutingTableConfig]).createMarshaller
-    
+
     marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", false);
-    
+
     val sWriter = new StringWriter
-    
+
     marshaller.marshal(ConfigTool.loadRoutingTableConfig, sWriter)
-    
+
     sWriter.toString
   }
 
   override def hiveReport: String = {
-    val pmRequest = new GetUserConfigurationRequest(hiveCredentials.domain, hiveCredentials.username, hiveCredentials.password)
-    val responseXml: String = httpClient.post(pmRequest.toI2b2String, config.pmEndpoint)
+    val pmRequest = GetUserConfigurationRequest(hiveCredentials.domain, hiveCredentials.username, hiveCredentials.password)
+
+    val responseXml = httpClient.post(pmRequest.toI2b2String, config.pmEndpoint)
 
     HiveConfig.fromI2b2(responseXml).toXmlString
   }
 
-  private def invalidSpinConfig = XmlUtil.stripWhitespace(
+  private def invalidSpinConfig = XmlUtil.stripWhitespace {
     <spin>
       <properlyConnected>false</properlyConnected>
       <error>peer group to query is not defined in routing table</error>
-    </spin>).toString
+    </spin>
+  }.toString
 
   private[service] def partitionSpinResults(resultSet: ResultSet): (Seq[Result], Seq[Failure]) = {
     val results = resultSet.getResults.asScala.toSeq
@@ -123,62 +132,64 @@ class HappyShrineService @Autowired() (
   }
 
   private[service] def generateSpinReport(routingTable: RoutingTableConfig): String = {
-    val peerGroupOption = routingTable.getPeerGroups.asScala.find (_.getGroupName == config.broadcasterPeerGroupToQuery)
+    val peerGroupOption = routingTable.getPeerGroups.asScala.find(_.getGroupName == config.broadcasterPeerGroupToQuery)
 
-    if (!peerGroupOption.isDefined) {
-      return invalidSpinConfig
-    }
+    if (peerGroupOption.isEmpty) { invalidSpinConfig }
+    else {
+      val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
 
-    val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
-    
-    import scala.concurrent.duration._
-    
-    implicit def jaxbTypesAreStringable[T]: Stringable[T] = Stringable.jaxb[T]
-    
-    val resultSet = Await.result(spinClient.query(DefaultQueries.Discovery.queryType, DiscoveryCriteria.Instance), 1.minute)
-    
-    val expectedCount = peerGroupOption.get.getChildren.size + 1 //add one to include self
-    
-    val (results, failures) = partitionSpinResults(resultSet)
+      import scala.concurrent.duration._
 
-    XmlUtil.stripWhitespace {
-      <spin>
-        <properlyConnected>{ !resultSet.getFailures.isEmpty }</properlyConnected>
-        <expectedNodeCount>{ expectedCount }</expectedNodeCount>
-        <actualNodeCount>{ resultSet.getResults.size }</actualNodeCount>
-        <failureCount>{ resultSet.getFailures.size }</failureCount>
-        {
-          results.map { spinResult =>
-            val xmlString = (new PKCryptor).decrypt(spinResult.getPayload)
-            val discoveryResult = unmarshal[DiscoveryResult](xmlString)
-            <node>
-              <name>{ discoveryResult.getNodeConfig.getNodeName }</name>
-              <url>{ discoveryResult.getNodeURL }</url>
-            </node>
+      implicit def jaxbTypesAreStringable[T]: Stringable[T] = Stringable.jaxb[T]
+
+      val resultSet = Await.result(spinClient.query(DefaultQueries.Discovery.queryType, DiscoveryCriteria.Instance), 1.minute)
+
+      val expectedCount = peerGroupOption.get.getChildren.size + 1 //add one to include self
+
+      val (results, failures) = partitionSpinResults(resultSet)
+
+      XmlUtil.stripWhitespace {
+        <spin>
+          <properlyConnected>{ !resultSet.getFailures.isEmpty }</properlyConnected>
+          <expectedNodeCount>{ expectedCount }</expectedNodeCount>
+          <actualNodeCount>{ resultSet.getResults.size }</actualNodeCount>
+          <failureCount>{ resultSet.getFailures.size }</failureCount>
+          {
+            val cryptor = new PKCryptor
+
+            results.map { spinResult =>
+              val xmlString = cryptor.decrypt(spinResult.getPayload)
+              val discoveryResult = unmarshal[DiscoveryResult](xmlString)
+              <node>
+                <name>{ discoveryResult.getNodeConfig.getNodeName }</name>
+                <url>{ discoveryResult.getNodeURL }</url>
+              </node>
+            }
           }
-        }
-        {
-          failures.map(toXml)
-        }
-      </spin>
-    }.toString
+          {
+            failures.map(toXml)
+          }
+        </spin>
+      }.toString
+    }
   }
-  
+
   //NB: Use JAXB for Spin JAXBable types, because it's easy and it works
-  private def unmarshal[T : Manifest](xml: String): T = JAXBUtils.unmarshal(xml, manifest[T].runtimeClass.asInstanceOf[Class[T]])
+  private def unmarshal[T: Manifest](xml: String): T = JAXBUtils.unmarshal(xml, manifest[T].runtimeClass.asInstanceOf[Class[T]])
 
   override def spinReport: String = {
     val routingTable: RoutingTableConfig = ConfigTool.loadRoutingTableConfig
+
     generateSpinReport(routingTable)
   }
 
   private def newRunQueryRequest: RunQueryRequest = {
     val queryDefinition = QueryDefinition("PDD", OccuranceLimited(1, Term(config.adapterStatusQuery)))
 
-    new RunQueryRequest(
+    RunQueryRequest(
       "happyProject",
       180000,
-      new AuthenticationInfo("happyDomain", "happy", new Credential("", false)),
+      AuthenticationInfo("happyDomain", "happy", Credential("", false)),
       BroadcastMessage.Ids.next,
       "",
       Set(ResultOutputType.PATIENT_COUNT_XML),
@@ -187,25 +198,26 @@ class HappyShrineService @Autowired() (
 
   override def adapterReport: String = {
     if (!config.isAdapter) {
-      XmlUtil.stripWhitespace(
+      XmlUtil.stripWhitespace {
         <adapter>
           <isAdapter>false</isAdapter>
-        </adapter>).toString
+        </adapter>
+      }.toString
     } else {
-      val identity: Identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
-      val queryInfo: QueryInfo = new QueryInfo("LOCAL", identity, CrcRequestType.QueryDefinitionRequestType.name, endpointConfig)
+      val identity = XMLSignatureUtil.getDefaultInstance.sign(new Identity("happy", "happy"))
+      val queryInfo = new QueryInfo("LOCAL", identity, CrcRequestType.QueryDefinitionRequestType.name, endpointConfig)
       val req = newRunQueryRequest
       val message = BroadcastMessage(req.networkQueryId, req)
 
       import scala.concurrent.duration._
-      
-      //TODO: Allow different serializers
-      //BroadcastMessage.serializer
-      val resultSet = Await.result(spinClient.query(CrcRequestType.QueryDefinitionRequestType.name, message), 1.minute)
+
+      val queryType = CrcRequestType.QueryDefinitionRequestType.name
+
+      val resultSet = Await.result(spinClient.query(queryType, message), 1.minute)
 
       val (results, failures) = partitionSpinResults(resultSet)
 
-      XmlUtil.stripWhitespace(
+      XmlUtil.stripWhitespace {
         <adapter>
           <isAdapter>true</isAdapter>
           {
@@ -224,7 +236,8 @@ class HappyShrineService @Autowired() (
           {
             failures.map(toXml)
           }
-        </adapter>).toString
+        </adapter>
+      }.toString
     }
   }
 
@@ -237,7 +250,7 @@ class HappyShrineService @Autowired() (
 
   override def auditReport: String = {
     val recentEntries = auditDao.findRecentEntries(10)
-    XmlUtil.stripWhitespace(
+    XmlUtil.stripWhitespace {
       <recentAuditEntries>
         {
           recentEntries map { entry =>
@@ -248,13 +261,14 @@ class HappyShrineService @Autowired() (
             </entry>
           }
         }
-      </recentAuditEntries>).toString
+      </recentAuditEntries>
+    }.toString
   }
 
   override def queryReport: String = {
     val recentQueries = adapterDao.findRecentQueries(10)
-    
-    XmlUtil.stripWhitespace(
+
+    XmlUtil.stripWhitespace {
       <recentQueries>
         {
           recentQueries.map { query =>
@@ -265,18 +279,18 @@ class HappyShrineService @Autowired() (
             </query>
           }
         }
-      </recentQueries>).toString
+      </recentQueries>
+    }.toString
   }
 
-  override def versionReport: String = {
-    XmlUtil.stripWhitespace(
-      <versionInfo>
-        <shrineVersion>{ Versions.version }</shrineVersion>
-        <scmRevision>{ Versions.scmRevision }</scmRevision>
-        <scmBranch>{ Versions.scmBranch }</scmBranch>
-        <buildDate>{ Versions.buildDate }</buildDate>
-      </versionInfo>).toString
-  }
+  override def versionReport: String = XmlUtil.stripWhitespace {
+    <versionInfo>
+      <shrineVersion>{ Versions.version }</shrineVersion>
+      <scmRevision>{ Versions.scmRevision }</scmRevision>
+      <scmBranch>{ Versions.scmBranch }</scmBranch>
+      <buildDate>{ Versions.buildDate }</buildDate>
+    </versionInfo>
+  }.toString
 
   override def all: String = {
     new StringBuilder("<all>")
