@@ -5,6 +5,10 @@ import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
 import net.shrine.util.HttpClient
 
+/**
+ * @author ??? (Dave Ortiz? Justin Quan?)
+ * @date ???
+ */
 class ReadPdoAdapter(
     crcUrl: String,
     httpClient: HttpClient,
