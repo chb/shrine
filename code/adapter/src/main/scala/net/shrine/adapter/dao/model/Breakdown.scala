@@ -17,12 +17,13 @@ object Breakdown {
   def fromRows(resultType: ResultOutputType, localId: Long, rows: Seq[BreakdownResultRow]): Option[Breakdown] = {
     require(resultType.isBreakdown)
     
-    if(rows.isEmpty) {
-      None
-    } else {
-      val entries = rows.map(r => (r.dataKey, ObfuscatedPair(r.originalValue, r.obfuscatedValue)))
+    rows match {
+      case Nil => None
+      case head +: _ => {
+        val entries = rows.map(r => (r.dataKey, ObfuscatedPair(r.originalValue, r.obfuscatedValue)))
       
-      Some(Breakdown(rows.head.resultId, localId, resultType, entries.toMap))
+		Some(Breakdown(head.resultId, localId, resultType, entries.toMap))
+      }
     }
   }
 }
