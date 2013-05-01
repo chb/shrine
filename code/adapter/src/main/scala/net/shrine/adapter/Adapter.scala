@@ -32,7 +32,7 @@ abstract class Adapter extends AbstractQueryAction[BroadcastMessage] with Loggab
         //for now we'll warn on all errors and work towards more specific logging later
         def messageXml = Option(message).map(_.toXmlString).getOrElse("(Null message)")
         
-        warn(String.format("Exception %s in Adapter with stack trace:\r\n%s caused on request\r\n %s", e.toString, e.getStackTraceString, messageXml), e)
+        warn(s"Exception ${ e.toString } in Adapter with stack trace:\r\n${ e.getStackTrace } caused on request\r\n $messageXml", e)
         
         ErrorResponse(e.getMessage)
       }

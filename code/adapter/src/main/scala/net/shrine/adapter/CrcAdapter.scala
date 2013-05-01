@@ -6,6 +6,7 @@ import net.shrine.protocol._
 import net.shrine.config.HiveCredentials
 import net.shrine.util.HttpClient
 import net.shrine.serialization.XmlMarshaller
+import net.shrine.util.Util
 
 /**
  * @author Bill Simons
@@ -36,17 +37,13 @@ abstract class CrcAdapter[T <: ShrineRequest, V <: ShrineResponse](
   protected def callCrc(request: ShrineRequest): String = {
     val crcRequest = request.toI2b2String
 
-    debug(String.format("Request to CRC:\r\n%s", crcRequest))
+    debug(s"Request to CRC:\r\n$crcRequest")
 
-    val start = System.currentTimeMillis
+    val crcResponse = Util.time("Calling the CRC")(debug(_)) {
+      httpClient.post(crcRequest, crcUrl)
+    }
 
-    val crcResponse = httpClient.post(crcRequest, crcUrl)
-
-    val elapsed = System.currentTimeMillis - start
-
-    debug("Calling the CRC took " + elapsed + "ms")
-
-    debug(String.format("Response from CRC:\r\n%s", crcResponse))
+    debug(s"Response from CRC:\r\n$crcResponse")
 
     crcResponse
   }

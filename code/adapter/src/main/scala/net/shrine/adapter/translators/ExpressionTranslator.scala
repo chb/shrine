@@ -58,7 +58,7 @@ final class ExpressionTranslator(
       case _ => Or(localTerms.map(Term).toSeq: _*)
     }
     
-    debug("Translated: " + term + " to " + result)
+    debug(s"Translated: $term to $result")
     
     result
   }
