@@ -33,8 +33,8 @@ final case class Count(
                 resultId, //Is this ok?  This field is supposed to be an i2b2 instanceId, but we're passing in an id from the new Shrine adapter DB
                 resultType,
                 obfuscatedValue,
-                Some(startDate),
-                Some(endDate),
+                Option(startDate),
+                Option(endDate),
                 //no desc
                 None, 
                 statusType,

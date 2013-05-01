@@ -10,8 +10,6 @@ import net.shrine.protocol.QueryResult
  */
 final case class ShrineError(id: Int, resultId: Int, message: String) extends HasResultId {
   def toQueryResult: QueryResult = {
-    QueryResult.errorResult(
-        Option(message),
-        QueryResult.StatusType.Error.name)
+    QueryResult.errorResult(Option(message), QueryResult.StatusType.Error.name)
   }
 }

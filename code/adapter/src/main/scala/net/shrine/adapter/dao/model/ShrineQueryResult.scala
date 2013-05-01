@@ -30,8 +30,8 @@ final case class ShrineQueryResult(
       val byType = Map.empty ++ breakdowns.map(b => (b.resultType, b.data))
       
       val getRealOrObfuscated: ObfuscatedPair => Long = { 
-        if(doObfuscation) _.obfuscated
-        else _.original
+        if(doObfuscation) { _.obfuscated }
+        else { _.original }
       }
       
       val typesToData = byType.mapValues(_.mapValues(getRealOrObfuscated))
