@@ -1,7 +1,5 @@
 package net.shrine.proxy
 
-import org.apache.log4j.Logger
-import org.spin.tools.config.ConfigException
 import org.spin.tools.config.ConfigTool
 import java.io.BufferedReader
 import java.io.File
@@ -12,6 +10,7 @@ import java.util.List
 import scala.xml.XML
 import scala.xml.NodeSeq
 import net.shrine.util.JerseyHttpClient
+import net.shrine.util.Loggable
 
 /**
  * [ Author ]
@@ -42,10 +41,7 @@ trait ShrineProxy {
   def redirect(request: NodeSeq): String
 }
 
-object DefaultShrineProxy {
-  private val log = Logger.getLogger(classOf[ShrineProxy])
-  
-  private val DEBUG = log.isDebugEnabled
+object DefaultShrineProxy extends Loggable {
 
   private[proxy] def loadWhiteList: Set[String] = loadList("whitelist")
   
@@ -60,9 +56,9 @@ object DefaultShrineProxy {
       (confXml \\ "lists" \ listname \ "host").map(_.text.trim).toSet
     } catch {
       case e: Exception => {
-        log.error("ShrineProxy encountered a problem while checking ACL permissions: " + e)
+        error("ShrineProxy encountered a problem while checking ACL permissions: " + e)
 
-        throw new ConfigException(e.getStackTrace.toString)
+        throw new ShrineProxyException(e.getStackTrace.toString, e)
       }
     }
   }
@@ -74,16 +70,16 @@ object DefaultShrineProxy {
   }
 }
 
-final class DefaultShrineProxy(val whiteList: Set[String], val blackList: Set[String], val urlPoster: ShrineProxy.UrlPoster ) extends ShrineProxy {
+final class DefaultShrineProxy(val whiteList: Set[String], val blackList: Set[String], val urlPoster: ShrineProxy.UrlPoster ) extends ShrineProxy with Loggable {
 
   def this() = this(DefaultShrineProxy.loadWhiteList, DefaultShrineProxy.loadBlackList, DefaultShrineProxy.JerseyHttpClientUrlPoster)
 
   import DefaultShrineProxy._
   
-  whiteList.foreach(entry => log.info("Whitelist entry:" + entry))
-  whiteList.foreach(entry => log.info("Blacklist entry:" + entry))
+  whiteList.foreach(entry => info(s"Whitelist entry: $entry"))
+  whiteList.foreach(entry => info(s"Blacklist entry: $entry"))
 
-  log.info("Loaded access control lists.")
+  info("Loaded access control lists.")
 
   override def isAllowableUrl(redirectURL: String): Boolean = whiteList.exists(redirectURL.startsWith) && !blackList.exists(redirectURL.startsWith)
 
@@ -98,7 +94,7 @@ final class DefaultShrineProxy(val whiteList: Set[String], val blackList: Set[St
     val redirectUrl = (request \\ "redirect_url").headOption.map(_.text.trim).getOrElse(throw new ShrineMessageFormatException("Error parsing redirect_url tag"))
 
     if (redirectUrl == null || redirectUrl.isEmpty) {
-      log.error("ShrineAdapter detected missing redirect_url tag")
+      error("ShrineAdapter detected missing redirect_url tag")
 
       throw new ShrineMessageFormatException("ShrineAdapter detected missing redirect_url tag")
     }
@@ -108,10 +104,8 @@ final class DefaultShrineProxy(val whiteList: Set[String], val blackList: Set[St
       throw new ShrineMessageFormatException("redirectURL not in white list or is in black list: " + redirectUrl)
     }
 
-    if (DEBUG) {
-      log.debug("Proxy redirecting to " + redirectUrl)
-    }
+    debug(s"Proxy redirecting to $redirectUrl")
 
-    return urlPoster.post(redirectUrl, request.toString)
+    urlPoster.post(redirectUrl, request.toString)
   }
 }
