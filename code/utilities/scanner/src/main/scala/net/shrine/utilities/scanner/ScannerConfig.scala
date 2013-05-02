@@ -18,7 +18,8 @@ final case class ScannerConfig(
   val reScanTimeout: Duration,
   val shrineUrl: String,
   val projectId: String,
-  val authorization: AuthenticationInfo)
+  val authorization: AuthenticationInfo,
+  val outputFile: String)
 
 object ScannerConfig {
   private[scanner] def getReScanTimeout(subConfig: Config): Duration = {
@@ -50,7 +51,8 @@ object ScannerConfig {
       getReScanTimeout(config.getConfig(reScanTimeout)),
       config.getString(shrineUrl),
       config.getString(projectId),
-      getAuthInfo(config.getConfig(credentials)))
+      getAuthInfo(config.getConfig(credentials)),
+      Try(config.getString(outputFile)).getOrElse(FileNameSource.nextOutputFileName))
   }
 
   object Keys {
@@ -70,5 +72,7 @@ object ScannerConfig {
     val shrineUrl = subKey("shrineUrl")
     val projectId = subKey("projectId")
     val credentials = subKey("credentials")
+    
+    val outputFile = subKey("outputFile")
   }
 }

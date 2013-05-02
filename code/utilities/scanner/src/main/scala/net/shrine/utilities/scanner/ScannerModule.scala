@@ -13,7 +13,15 @@ import net.shrine.utilities.scanner.components.HasSpinBroadcastServiceScannerCli
  * @author clint
  * @date Mar 6, 2013
  */
-final class ScannerModule(val args: Seq[String]) extends Scanner with HasArgs with HasCommandLineConfig with HasClasspathAndCommandLineScannerConfig with HasReScanTimeoutFromConfig with HasFileSystemAdapterMappingsSource with HasFileSystemShrineSqlOntologyDao with HasSpinBroadcastServiceScannerClient
+final class ScannerModule(val args: Seq[String]) extends
+	Scanner with 
+	HasArgs with 
+	HasCommandLineConfig with 
+	HasClasspathAndCommandLineScannerConfig with 
+	HasReScanTimeoutFromConfig with 
+	HasFileSystemAdapterMappingsSource with 
+	HasFileSystemShrineSqlOntologyDao with 
+	HasSpinBroadcastServiceScannerClient
 
 object ScannerModule {
   def printVersionInfo() {
@@ -40,9 +48,9 @@ object ScannerModule {
       System.exit(0)
     }
 
+    val command = Output.to(scanner.config.outputFile)
+    
     val scanResults = scanner.scan()
-
-    val command = Output.to(FileNameSource.nextOutputFileName)
 
     command(scanResults)
   }

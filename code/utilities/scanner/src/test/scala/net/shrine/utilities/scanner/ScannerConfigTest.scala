@@ -29,6 +29,7 @@ final class ScannerConfigTest extends TestCase with ShouldMatchersForJUnit {
     scannerConfig.authorization.username should be("testuser")
     scannerConfig.authorization.credential.value should be("testpassword")
     scannerConfig.authorization.credential.isToken should be(false)
+    scannerConfig.outputFile should equal(FileNameSource.nextOutputFileName)
   }
 
   @Test

@@ -23,11 +23,12 @@ final case class CommandLineScannerConfig(arguments: Seq[String]) extends Scallo
   import CommandLineScannerConfig._
 
   val adapterMappingsFile = opt[String](required = false)
-  val ontologySqlFile = opt[String](required = false)
+  val ontologySqlFile = opt[String](short = 's', required = false)
   val rescanTimeout = opt[Duration](short = 't', required = false)
   val projectId = opt[String](required = false)
   val credentials = opt[AuthenticationInfo](required = false)
   val url = opt[String](required = false)
+  val outputFile = opt[String](short = 'o', required = false)
   val showVersionToggle = toggle("version")
   val showHelpToggle = toggle("help")
 
@@ -43,6 +44,7 @@ final case class CommandLineScannerConfig(arguments: Seq[String]) extends Scallo
       Keys.ontologySqlFile -> ontologySqlFile.get,
       Keys.projectId -> projectId.get,
       Keys.shrineUrl -> url.get,
+      Keys.outputFile -> outputFile.get,
       credentialKey(Keys.domain) -> credentials.get.map(_.domain),
       credentialKey(Keys.username) -> credentials.get.map(_.username),
       credentialKey(Keys.password) -> credentials.get.map(_.credential.value))

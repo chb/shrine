@@ -68,11 +68,12 @@ final class CommandLineScannerConfigTest extends TestCase with ShouldMatchersFor
   private def allArgs(short: Boolean, showVersion: Boolean = true, showHelp: Boolean = true): Seq[String] = {
     Seq(
       (if (short) "-a" else "--adapter-mappings-file"), "foo.xml",
-      (if (short) "-o" else "--ontology-sql-file"), "foo.sql",
+      (if (short) "-s" else "--ontology-sql-file"), "foo.sql",
       (if (short) "-t" else "--rescan-timeout"), "5", "seconds",
       (if (short) "-p" else "--project-id"), projectId,
       (if (short) "-c" else "--credentials"), authn.domain, authn.username, authn.credential.value,
-      (if (short) "-u" else "--url"), url) ++ 
+      (if (short) "-u" else "--url"), url,
+      (if (short) "-o" else "--output-file"), "blarg.csv") ++ 
       (if(showVersion) Seq((if (short) "-v" else "--version")) else Nil)  ++
       (if(showHelp) Seq((if (short) "-h" else "--help")) else Nil)
   }
@@ -105,11 +106,11 @@ final class CommandLineScannerConfigTest extends TestCase with ShouldMatchersFor
       config.getString(s"${Keys.credentials}.${Keys.password}") should equal(authn.credential.value)
 
       config.getString(Keys.shrineUrl) should equal(url)
+      
+      intercept[Exception] {
+        config.getString(Keys.outputFile)
+      }
     }
-
-    doSomeArgsTest(123, Keys.milliseconds, _.milliseconds)
-    doSomeArgsTest(42, Keys.seconds, _.seconds)
-    doSomeArgsTest(99, Keys.minutes, _.minutes)
 
     //All args
     def doAllArgsTest(short: Boolean) {
@@ -125,8 +126,13 @@ final class CommandLineScannerConfigTest extends TestCase with ShouldMatchersFor
       config.getString(s"${Keys.credentials}.${Keys.username}") should equal(authn.username)
       config.getString(s"${Keys.credentials}.${Keys.password}") should equal(authn.credential.value)
       config.getString(Keys.shrineUrl) should equal(url)
+      config.getString(Keys.outputFile) should equal("blarg.csv")
     }
 
+    doSomeArgsTest(123, Keys.milliseconds, _.milliseconds)
+    doSomeArgsTest(42, Keys.seconds, _.seconds)
+    doSomeArgsTest(99, Keys.minutes, _.minutes)
+    
     doAllArgsTest(true)
     doAllArgsTest(false)
   }
@@ -144,6 +150,7 @@ final class CommandLineScannerConfigTest extends TestCase with ShouldMatchersFor
       config.projectId() should equal(projectId)
       config.credentials() should equal(authn)
       config.url() should equal(url)
+      config.outputFile() should equal("blarg.csv")
     }
 
     doAllArgsTest(true)
@@ -159,6 +166,7 @@ final class CommandLineScannerConfigTest extends TestCase with ShouldMatchersFor
       config.projectId.get should be(None)
       config.credentials.get should be(None)
       config.url.get should be(None)
+      config.outputFile.get should be(None)
     }
   }
 
