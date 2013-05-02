@@ -48,13 +48,15 @@ trait Scanner extends Loggable {
   import scala.concurrent.duration._
 
   //TODO: Evaluate, possibly don't block?
-  private val howLongToWaitForAllResults = 1.day
+  private val howLongToWaitForAllResults = 1 day
 
   private def doScan(mappedNetworkTerms: Set[String], termsExpectedToBeUnmapped: Set[String]): ScanResults = {
 
-    val resultsForMappedTerms = mappedNetworkTerms.map(t => Await.result(client.query(t), 1.day))
+    def queryFor(t: String) = Await.result(client.query(t), howLongToWaitForAllResults)
+    
+    val resultsForMappedTerms = mappedNetworkTerms.map(queryFor)
 
-    val resultsForUnMappedTerms = termsExpectedToBeUnmapped.map(t => Await.result(client.query(t), 1.day))
+    val resultsForUnMappedTerms = termsExpectedToBeUnmapped.map(queryFor)
 
     val (finishedAndShouldHaveBeenMapped, didntFinishAndShouldHaveBeenMapped) = resultsForMappedTerms.partition(_.status.isDone)
 
@@ -85,9 +87,11 @@ trait Scanner extends Loggable {
 
       Thread.sleep(reScanTimeout.toMillis)
 
-      val neverFinishedShouldHaveBeenMappedRetries = neverFinishedShouldHaveBeenMapped.map(termResult => Await.result(client.retrieveResults(termResult), 1.day))
+      def retrieve(termResult: TermResult) = Await.result(client.retrieveResults(termResult), howLongToWaitForAllResults)
+      
+      val neverFinishedShouldHaveBeenMappedRetries = neverFinishedShouldHaveBeenMapped.map(retrieve)
 
-      val neverFinishedShouldNotHaveBeenMappedRetries = neverFinishedShouldNotHaveBeenMapped.map(termResult => Await.result(client.retrieveResults(termResult), 1.day))
+      val neverFinishedShouldNotHaveBeenMappedRetries = neverFinishedShouldNotHaveBeenMapped.map(retrieve)
 
       val (doneShouldHaveBeenMapped, stillNotFinishedShouldHaveBeenMapped) = neverFinishedShouldHaveBeenMappedRetries.partition(_.status.isDone)
 
