@@ -64,7 +64,7 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractI2b2AdminResource
 
     val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, searchStrategy, categoryToSearchWithin)
 
-    doTestReadI2b2AdminPreviousQueries(request, Some(queryMaster1.copy(queryMasterId = networkQueryId1.toString)))
+    doTestReadI2b2AdminPreviousQueries(request, Some(queryMaster1))
   }
   
   @Test

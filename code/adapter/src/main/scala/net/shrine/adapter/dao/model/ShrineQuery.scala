@@ -19,7 +19,13 @@ final case class ShrineQuery(
   queryExpr: Expression,
   dateCreated: XMLGregorianCalendar) {
   
-  def toQueryMaster: QueryMaster = {
-    QueryMaster(networkId.toString, name, username, domain, dateCreated)
+  def withName(newName: String) = this.copy(name = newName)
+  
+  def withQueryExpr(newQueryExpr: Expression) = this.copy(queryExpr = newQueryExpr)
+  
+  //NB: Due to the new i2b2 admin previous queries API, we need to be able to transform
+  //ourselves into a QueryMaster using either the network or local id .
+  def toQueryMaster(idField: ShrineQuery => String = _.networkId.toString): QueryMaster = {
+    QueryMaster(idField(this), name, username, domain, dateCreated)
   }
 }

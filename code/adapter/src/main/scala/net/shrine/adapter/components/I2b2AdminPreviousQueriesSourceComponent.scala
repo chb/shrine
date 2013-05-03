@@ -23,7 +23,7 @@ trait I2b2AdminPreviousQueriesSourceComponent {
       
       //TODO: Category BS
       
-      ReadPreviousQueriesResponse(Option(request.authn.username), Option(request.authn.domain), queries.map(_.toQueryMaster))
+      ReadPreviousQueriesResponse(Option(request.authn.username), Option(request.authn.domain), queries.map(_.toQueryMaster(_.localId)))
     }
   }
 }

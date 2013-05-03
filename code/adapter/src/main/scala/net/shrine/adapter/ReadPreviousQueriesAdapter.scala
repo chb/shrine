@@ -33,6 +33,6 @@ class ReadPreviousQueriesAdapter(dao: AdapterDao) extends Adapter with Loggable 
     
     val previousQueries = dao.findQueriesByUserAndDomain(identity.getDomain, identity.getUsername, fetchSize)
     
-    ReadPreviousQueriesResponse(Option(identity.getUsername), Option(identity.getDomain), previousQueries.map(_.toQueryMaster))
+    ReadPreviousQueriesResponse(Option(identity.getUsername), Option(identity.getDomain), previousQueries.map(_.toQueryMaster()))
   }
 }
