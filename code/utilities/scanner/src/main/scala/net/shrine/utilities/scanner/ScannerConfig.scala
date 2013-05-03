@@ -45,6 +45,10 @@ object ScannerConfig {
       AuthenticationInfo(subConfig.getString(domain), subConfig.getString(username), Credential(subConfig.getString(password), false))
     }
 
+    val rt = config.getConfig(reScanTimeout)
+    
+    val rt2 = getReScanTimeout(config.getConfig(reScanTimeout))
+    
     ScannerConfig(
       config.getString(adapterMappingsFile),
       config.getString(ontologySqlFile),

@@ -16,20 +16,30 @@ final class ScannerConfigTest extends TestCase with ShouldMatchersForJUnit {
 
   @Test
   def testFromConfig {
-    val scannerConfig = ScannerConfig(ConfigFactory.load())
+    val fromClassPath = ConfigFactory.load
 
-    scannerConfig should not be (null)
-    scannerConfig.adapterMappingsFile should be("testAdapterMappings.xml")
-    scannerConfig.ontologySqlFile should be("testShrineWithSyns.sql")
-    scannerConfig.reScanTimeout should be(99.seconds)
-    scannerConfig.shrineUrl should be("https://example.com")
-    scannerConfig.projectId should be("SHRINE-PROJECT")
-    scannerConfig.authorization should not be (null)
-    scannerConfig.authorization.domain should be("TestDomain")
-    scannerConfig.authorization.username should be("testuser")
-    scannerConfig.authorization.credential.value should be("testpassword")
-    scannerConfig.authorization.credential.isToken should be(false)
-    scannerConfig.outputFile should equal(FileNameSource.nextOutputFileName)
+    {
+      val scannerConfig = ScannerConfig(fromClassPath)
+
+      scannerConfig should not be (null)
+      scannerConfig.adapterMappingsFile should be("testAdapterMappings.xml")
+      scannerConfig.ontologySqlFile should be("testShrineWithSyns.sql")
+      scannerConfig.reScanTimeout should be(99.seconds)
+      scannerConfig.shrineUrl should be("https://example.com")
+      scannerConfig.projectId should be("SHRINE-PROJECT")
+      scannerConfig.authorization should not be (null)
+      scannerConfig.authorization.domain should be("TestDomain")
+      scannerConfig.authorization.username should be("testuser")
+      scannerConfig.authorization.credential.value should be("testpassword")
+      scannerConfig.authorization.credential.isToken should be(false)
+      scannerConfig.outputFile should equal("foo.csv")
+    }
+
+    {
+      val scannerConfig = ScannerConfig(fromClassPath.withoutPath(ScannerConfig.Keys.outputFile))
+
+      scannerConfig.outputFile should equal(FileNameSource.nextOutputFileName)
+    }
   }
 
   @Test
@@ -37,21 +47,21 @@ final class ScannerConfigTest extends TestCase with ShouldMatchersForJUnit {
     intercept[ConfigException.Missing] {
       ScannerConfig.getReScanTimeout(ConfigFactory.empty())
     }
-    
+
     import scala.collection.JavaConverters._
-    
-    import ScannerConfig.Keys.{milliseconds, seconds, minutes}
-    
+
+    import ScannerConfig.Keys.{ milliseconds, seconds, minutes }
+
     ScannerConfig.getReScanTimeout(ConfigFactory.parseMap(Map(milliseconds -> "123").asJava)) should be(123.milliseconds)
-    
+
     ScannerConfig.getReScanTimeout(ConfigFactory.parseMap(Map(seconds -> "123").asJava)) should be(123.seconds)
-    
+
     ScannerConfig.getReScanTimeout(ConfigFactory.parseMap(Map(minutes -> "123").asJava)) should be(123.minutes)
-    
+
     //Priority should be millis > seconds > minutes
-    
-    ScannerConfig.getReScanTimeout(ConfigFactory.parseMap(Map(milliseconds -> "123", seconds -> "456", minutes -> "789" ).asJava)) should be(123.milliseconds)
-    
-    ScannerConfig.getReScanTimeout(ConfigFactory.parseMap(Map(seconds -> "456", minutes -> "789" ).asJava)) should be(456.seconds)
+
+    ScannerConfig.getReScanTimeout(ConfigFactory.parseMap(Map(milliseconds -> "123", seconds -> "456", minutes -> "789").asJava)) should be(123.milliseconds)
+
+    ScannerConfig.getReScanTimeout(ConfigFactory.parseMap(Map(seconds -> "456", minutes -> "789").asJava)) should be(456.seconds)
   }
 }
