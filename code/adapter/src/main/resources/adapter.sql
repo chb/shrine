@@ -50,14 +50,6 @@ create table BREAKDOWN_RESULT(
   constraint fk_BREAKDOWN_RESULT_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id) on delete cascade
 ) engine=innodb default charset=latin1;
 
-create table PATIENT_SET(
-  id int not null auto_increment,
-  result_id int not null,
-  patient_num varchar(255) not null,
-  constraint PATIENT_SET_id_pk primary key(id),
-  constraint fk_PATIENT_SET_QUERY_RESULT_id foreign key (result_id) references QUERY_RESULT (id) on delete cascade
-) engine=innodb default charset=latin1;
-
 create table PRIVILEGED_USER(
   id int not null auto_increment,
   username varchar(255) not null,
