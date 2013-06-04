@@ -19,7 +19,27 @@ import junit.framework.TestCase
  */
 final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatchersForJUnit {
 
-  val response = XmlUtil.stripWhitespace {
+  val projectId1 = "foo"
+  
+  val projectId2 = "bar"
+    
+  val params1 = Map("x" -> "1", "y" -> "2")
+  
+  val params2 = Map("y" -> "2", "z" -> "3")
+  
+  val roles1 = Set("a", "b", "c")
+  
+  val roles2 = Set("MANAGER", "x", "y")
+  
+  lazy val projects = Seq((projectId1, params1, roles1), (projectId2, params2, roles2))
+  
+  val fullName = "Full name"
+    
+  val userName = "user name"
+    
+  val domain = "demo"
+  
+  lazy val response = XmlUtil.stripWhitespace {
     <ns4:response xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns7="http://sheriff.shrine.net/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns11="http://www.i2b2.org/xsd/hive/msg/result/1.1/">
       <message_header>
         <i2b2_version_compatible>1.1</i2b2_version_compatible>
@@ -45,17 +65,26 @@ final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatcher
           <environment>DEVELOPMENT</environment>
           <helpURL>http://www.i2b2.org</helpURL>
           <user>
-            <full_name>Full name</full_name>
-            <user_name>user name</user_name>
+            <full_name>{ fullName }</full_name>
+            <user_name>{ userName }</user_name>
             <password token_ms_timeout="1800000" is_token="true">SessionKey:key</password>
-            <domain>demo</domain>
-            <param name="ecommons_username">ecommons</param>
-            <param name="other_param">other</param>
-            <project id="Demo">
-              <name>Demo Group</name>
-              <wiki>http://www.i2b2.org</wiki>
-              <role>DATA_OBFSC</role>
-            </project>
+            <domain>{ domain }</domain>
+	  		{
+	  		  projects.map { case (projectId, params, roles) =>
+	  		    <project id={ projectId } >
+                  <name>Demo Group { projectId } </name>
+                  <wiki>http://www.i2b2.org</wiki>
+                  {
+                    params.map { case (name, value) =>
+                      <param name={ name }>{ value }</param>
+                    }
+                  }
+                  {
+                    roles.map(r => <role>{ r }</role>)
+                  }
+                </project>
+	  		  }
+	  		}
           </user>
           <cell_datas>
             <cell_data id="CRC">
@@ -83,7 +112,7 @@ final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatcher
     val domain = "some-domain"
     val credential = Credential("kalsdjald", true)
 
-    val user = new User("some-full-name", username, domain, credential, Map.empty)
+    val user = User("some-full-name", username, domain, credential, Map.empty, Map.empty)
 
     val authn = user.toAuthInfo
 
@@ -96,10 +125,20 @@ final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatcher
   @Test
   def testFromI2b2 {
     val user = User.fromI2b2(response)
+    
+    user.fullName should equal(fullName)
+    
+    user.username should equal(userName)
+    
+    user.domain should equal(domain)
+    
     user.credential.value should equal("SessionKey:key")
+    
     user.credential.isToken should be(true)
-    user.params("ecommons_username") should equal("ecommons")
-    user.params("other_param") should equal("other")
+    
+    user.paramsByProject should equal(Map(projectId1 -> params1, projectId2 -> params2))
+    
+    user.rolesByProject should equal(Map(projectId1 -> roles1, projectId2 -> roles2))
   }
 
   @Test
@@ -141,5 +180,10 @@ final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatcher
     intercept[Exception] {
       User.fromI2b2(i2b2ErrorXml)
     }
+  }
+  
+  @Test
+  def testRoleConstants {
+    User.Roles.Manager should equal("MANAGER")
   }
 }

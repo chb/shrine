@@ -15,17 +15,40 @@ import net.shrine.protocol.AuthenticationInfo
  *       licensed as Lgpl Open Source
  * @link http://www.gnu.org/licenses/lgpl.html
  */
-final case class User(val fullName: String, val username: String, val domain: String, val credential: Credential, val params: Map[String, String]) {
+final case class User(
+    val fullName: String, 
+    val username: String, 
+    val domain: String, 
+    val credential: Credential, 
+    val paramsByProject: Map[String, Map[String, String]], 
+    val rolesByProject: Map[String, Set[String]]) {
+  
   def toAuthInfo = AuthenticationInfo(domain, username, credential)
 }
 
 object User extends I2b2Unmarshaller[User] {
+  object Roles {
+    val Manager = "MANAGER"
+  }
+  
   override def fromI2b2(nodeSeq: NodeSeq) = {
     
     val userXml = nodeSeq \ "message_body" \ "configure" \ "user"
     
-    val params = Map.empty ++ (userXml \ "param").map { param =>
-      (param \ "@name").text -> param.text
+    val projectsXml = userXml \ "project"
+    
+    val paramsByProject = Map.empty ++ projectsXml.map { project => 
+      val params = (project \ "param").map { param =>
+        (param \ "@name").text.trim -> param.text.trim
+      }.toMap
+      
+      (project \ "@id").text.trim -> params
+    }
+
+    val rolesByProject = Map.empty ++ projectsXml.map { project =>
+      val roles = (project \ "role").map(_.text.trim).toSet
+      
+      (project \ "@id").text.trim -> roles
     }
     
     val fullNameXml = userXml \ "full_name"
@@ -44,6 +67,7 @@ object User extends I2b2Unmarshaller[User] {
       userNameXml.text,
       domainXml.text,
       Credential.fromI2b2(credentialXml),
-      params)
+      paramsByProject,
+      rolesByProject)
   }
 }
