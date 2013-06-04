@@ -20,8 +20,6 @@ final class I2b2BroadcastResourceTest extends TestCase with ShouldMatchersForJUn
     def doTestHandleBadInput(resourceMethod: I2b2BroadcastResource => String => Response) {
       val resource = new I2b2BroadcastResource(mock[ShrineRequestHandler])
 
-      val fiveHundredResponse = Response.status(500).build()
-
       //Just junk data
       {
         val resp = resourceMethod(resource)("sadlkhjksafhjksafhjkasgfgjskdfhsjkdfhgjsdfg")
@@ -30,13 +28,13 @@ final class I2b2BroadcastResourceTest extends TestCase with ShouldMatchersForJUn
         resp.getEntity should be(null)
       }
       
-      //A correctly-serialized request that we can't handle
+      //A correctly-serialized request that we can't handle also counts as a bad request
       {
         val authn = AuthenticationInfo("d", "u", Credential("p", false))
         
         val resp = resourceMethod(resource)(ReadI2b2AdminPreviousQueriesRequest("p", 123L, authn, "foo", 20).toI2b2String)
 
-        resp.getStatus should equal(500)
+        resp.getStatus should equal(400)
         resp.getEntity should be(null)
       }
     }

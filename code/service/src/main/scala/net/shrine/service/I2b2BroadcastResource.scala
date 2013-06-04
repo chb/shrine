@@ -46,32 +46,34 @@ final class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler
 
   def processI2b2Message(i2b2Request: String): Response = {
     def handleRequest(shrineRequest: ShrineRequest with HandleableShrineRequest) = Try {
-      info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))
+      info(s"Running request from user: ${ shrineRequest.authn.username } of type ${ shrineRequest.requestType.toString }")
+      println(s"Running request from user: ${ shrineRequest.authn.username } of type ${ shrineRequest.requestType.toString }")
 
       val shrineResponse = shrineRequest.handle(shrineRequestHandler, shouldBroadcast)
 
       val responseString = shrineResponse.toI2b2String
 
       Response.ok.entity(responseString)
+    }.recover {
+      case e => {
+        error("Error processing request: ", e)
+        println("Error processing request: ", e)
+
+        Response.status(500)
+      }
     }
 
     def handleParseError(e: Throwable) = Try {
       debug(s"Failed to unmarshal i2b2 request: $i2b2Request")
+      println(s"Failed to unmarshal i2b2 request: $i2b2Request")
 
       error("Couldn't understand request: ", e)
+      println("Couldn't understand request: ", e)
 
       Response.status(400)
     }
 
-    val builder = Try {
-      HandleableShrineRequest.fromI2b2(i2b2Request)
-    }.transform(handleRequest, handleParseError).recover {
-      case e => {
-        error("Error processing request: ", e)
-
-        Response.status(500)
-      }
-    }.get
+    val builder = Try(HandleableShrineRequest.fromI2b2(i2b2Request)).transform(handleRequest, handleParseError).get
 
     builder.build()
   }
