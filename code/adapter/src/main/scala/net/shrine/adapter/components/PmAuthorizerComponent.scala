@@ -17,7 +17,7 @@ trait PmAuthorizerComponent { self: PmHttpClientComponent with Loggable =>
   import PmAuthorizerComponent._
 
   object Pm {
-    def authorize(authn: AuthenticationInfo): AuthorizationStatus = {
+    def authorize(projectId: String, neededRoles: Set[String], authn: AuthenticationInfo): AuthorizationStatus = {
       val request = GetUserConfigurationRequest(authn.domain, authn.username, authn.credential.value)
       
       def parsePmResult(responseXml: String): Try[Either[ErrorResponse, User]] = {
@@ -45,7 +45,16 @@ trait PmAuthorizerComponent { self: PmHttpClientComponent with Loggable =>
       }
       
       val authStatusAttempt = responseAttempt.flatMap(parsePmResult).map {
-        case Right(user) => Authorized(user)
+        case Right(user) => {
+          val managerUserOption = for {
+            roles <- user.rolesByProject.get(projectId)
+            if neededRoles.forall(roles.contains)
+          } yield user
+          
+          managerUserOption.map(Authorized(_)).getOrElse {
+            NotAuthorized(s"User ${ authn.domain }:${ authn.username } does not have all the needed roles: ${ neededRoles.map("'" + _ + "'").mkString(", ") } in the project '$projectId'")
+          }
+        }
         case Left(ErrorResponse(message)) => NotAuthorized(message)
       }
       

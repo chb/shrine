@@ -41,7 +41,7 @@ import net.shrine.adapter.HasI2b2AdminPreviousQueriesDao
 final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractI2b2AdminResourceJaxrsTest with HasI2b2AdminPreviousQueriesDao {
 
   override def makeHandler = new I2b2AdminService(dao, i2b2AdminDao, AlwaysAuthenticatesMockPmHttpClient, "")
-
+  
   @Test
   def testReadQueryDefinition = afterLoadingTestData {
     doTestReadQueryDefinition(networkQueryId1, Some((queryName1, queryDef1)))

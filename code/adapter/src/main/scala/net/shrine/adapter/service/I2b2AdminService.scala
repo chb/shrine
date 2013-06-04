@@ -15,6 +15,7 @@ import net.shrine.protocol.ShrineRequest
 import net.shrine.protocol.ShrineResponse
 import net.shrine.util.HttpClient
 import net.shrine.util.Loggable
+import net.shrine.i2b2.protocol.pm.User
 
 
 /**
@@ -53,10 +54,10 @@ final class I2b2AdminService(
   def checkWithPmAndThen[Req <: ShrineRequest](request: Req)(f: Req => ShrineResponse): ShrineResponse = {
     import PmAuthorizerComponent._
 
-    val authorized = Pm.authorize(request.authn) 
+    val authorized = Pm.authorize(request.projectId, Set(User.Roles.Manager), request.authn) 
     
     authorized match {
-      case Authorized(user) => f(request) //TODO: do something with user; check that user has proper roles 
+      case Authorized(user) => f(request) 
       case na: NotAuthorized => na.toErrorResponse
     }
   }

@@ -53,7 +53,7 @@ final class SquerylI2b2AdminPreviousQueriesDao(initializer: SquerylInitializer, 
     
     def queriesForUserAndSearchString(domain: String, username: String, searchString: String, nameMatches: (String, String) => BinaryOperatorNodeLogicalBoolean, ordering: SquerylShrineQuery => OrderByArg): Query[ShrineQuery] = {
       from(tables.shrineQueries) { query =>
-        where(query.domain === domain and query.username === username and nameMatches(query.name, searchString)).
+        where(query.domain === domain and nameMatches(query.name, searchString)).
         select(query.toShrineQuery).
         orderBy(ordering(query))
       }

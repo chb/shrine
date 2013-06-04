@@ -21,12 +21,24 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
   import PmAuthorizerComponent._
   
   @Test
-  def testGoodResponse {
+  def testGoodResponseNotManager {
     val httpClient = new LazyMockHttpClient(validUserResponseXml.toString)
     
     val component = new TestPmAuthorizerComponent(httpClient)
     
-    val Authorized(user) = component.Pm.authorize(authn)
+    val NotAuthorized(reason) = component.Pm.authorize(projectId1, Set(User.Roles.Manager), authn)
+    
+    reason should not be(null)
+    reason.size should not be(0) 
+  }
+  
+  @Test
+  def testGoodResponseIsManager {
+    val httpClient = new LazyMockHttpClient(validUserResponseXml.toString)
+    
+    val component = new TestPmAuthorizerComponent(httpClient)
+    
+    val Authorized(user) = component.Pm.authorize(projectId2, Set(User.Roles.Manager), authn)
     
     user should not be(null)
     user.fullName should be(fullName)
@@ -39,7 +51,7 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
   def testErrorResponse {
     val component = new TestPmAuthorizerComponent(new LazyMockHttpClient(i2b2ErrorXml.toString))
     
-    val NotAuthorized(reason) = component.Pm.authorize(authn)
+    val NotAuthorized(reason) = component.Pm.authorize(projectId1, Set.empty, authn)
     
     reason should be(errorMessage)
   } 
@@ -48,7 +60,7 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
   def testJunkResponse {
     val component = new TestPmAuthorizerComponent(new LazyMockHttpClient("jahfskajhkjashfdkjashkfd"))
     
-    val NotAuthorized(reason) = component.Pm.authorize(authn)
+    val NotAuthorized(reason) = component.Pm.authorize(projectId1, Set.empty, authn)
     
     reason should not be(null)
     reason.size should not be(0)
@@ -58,7 +70,7 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
   def testResponseThatBlowsUp {
     val component = new TestPmAuthorizerComponent(new LazyMockHttpClient(throw new Exception with scala.util.control.NoStackTrace))
     
-    val NotAuthorized(reason) = component.Pm.authorize(authn)
+    val NotAuthorized(reason) = component.Pm.authorize(projectId1, Set.empty, authn)
     
     reason should not be(null)
     reason.size should not be(0)
@@ -72,6 +84,20 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
 
   private lazy val authn = AuthenticationInfo(domain, username, Credential(password, true))
     
+  private val projectId1 = "foo"
+  
+  private val projectId2 = "bar"
+    
+  private val params1 = Map("x" -> "1", "y" -> "2")
+  
+  private val params2 = Map("y" -> "2", "z" -> "3")
+  
+  private val roles1 = Set("a", "b", "c")
+  
+  private val roles2 = Set("MANAGER", "x", "y")
+  
+  private lazy val projects = Seq((projectId1, params1, roles1), (projectId2, params2, roles2))
+  
   private lazy val validUserResponseXml = XmlUtil.stripWhitespace {
     <ns4:response xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns7="http://sheriff.shrine.net/" xmlns:ns8="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns9="http://www.i2b2.org/xsd/cell/crc/psm/analysisdefinition/1.1/" xmlns:ns10="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns11="http://www.i2b2.org/xsd/hive/msg/result/1.1/">
       <message_header>
@@ -102,13 +128,22 @@ final class PmAuthorizerComponentTest extends TestCase with ShouldMatchersForJUn
             <user_name>{username}</user_name>
             <password token_ms_timeout="1800000" is_token="true">{password}</password>
             <domain>{domain}</domain>
-            <param name="ecommons_username">ecommons</param>
-            <param name="other_param">other</param>
-            <project id="Demo">
-              <name>Demo Group</name>
-              <wiki>http://www.i2b2.org</wiki>
-              <role>DATA_OBFSC</role>
-            </project>
+            {
+	  		  projects.map { case (projectId, params, roles) =>
+	  		    <project id={ projectId } >
+                  <name>Demo Group { projectId } </name>
+                  <wiki>http://www.i2b2.org</wiki>
+                  {
+                    params.map { case (name, value) =>
+                      <param name={ name }>{ value }</param>
+                    }
+                  }
+                  {
+                    roles.map(r => <role>{ r }</role>)
+                  }
+                </project>
+	  		  }
+	  		}
           </user>
           <cell_datas>
             <cell_data id="CRC">

@@ -47,6 +47,9 @@ abstract class AbstractI2b2AdminResourceJaxrsTest extends AbstractShrineJUnitSpr
                 <user_name>{ userId }</user_name>
                 <domain>{ domain }</domain>
                 <password>{ password }</password>
+                <project id={ projectId }>
+                  <role>MANAGER</role>
+                </project>
               </user>
             </configure>
           </message_body>
