@@ -16,12 +16,13 @@ import net.shrine.protocol.QueryMaster
 import net.shrine.protocol.ReadPreviousQueriesRequest
 import net.shrine.protocol.BroadcastMessage
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
+import net.shrine.adapter.dao.squeryl.AbstractSquerylAdapterTest
 
 /**
  * @author clint
  * @date Oct 30, 2012
  */
-final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with ShouldMatchersForJUnit {
+final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest with AbstractSquerylAdapterTest with ShouldMatchersForJUnit {
   @Test
   def testProcessRequest = afterCreatingTables {
     val Seq((masterId1, queryId1, name1, authn1, expr1), (masterId2, queryId2, name2, authn2, expr2)) = (1 to 2).map(i => ("masterid:" + i, i, "query" + i, AuthenticationInfo("some-domain", "user" + i, Credential("salkhfkjas", false)), Term(i.toString)))

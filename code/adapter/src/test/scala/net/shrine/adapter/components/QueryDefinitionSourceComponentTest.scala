@@ -1,6 +1,5 @@
 package net.shrine.adapter.components
 
-import net.shrine.adapter.AdapterDbTest
 import net.shrine.adapter.AdapterTestHelpers
 import org.scalatest.junit.ShouldMatchersForJUnit
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
@@ -11,12 +10,13 @@ import net.shrine.protocol.query.Term
 import net.shrine.protocol.ReadQueryDefinitionResponse
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.adapter.service.CanLoadTestData
+import net.shrine.adapter.dao.squeryl.AbstractSquerylAdapterTest
 
 /**
  * @author clint
  * @date Apr 23, 2013
  */
-final class QueryDefinitionSourceComponentTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit with CanLoadTestData {
+final class QueryDefinitionSourceComponentTest extends AbstractShrineJUnitSpringTest with AbstractSquerylAdapterTest with AdapterTestHelpers with ShouldMatchersForJUnit with CanLoadTestData {
   private object TestQueryDefinitionSourceComponent extends QueryDefinitionSourceComponent {
     override def dao = QueryDefinitionSourceComponentTest.this.dao
   }

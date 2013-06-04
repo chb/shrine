@@ -6,8 +6,6 @@ import org.junit.Test
 import net.shrine.util.Util
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.QueryResult
-import net.shrine.adapter.dao.slick.rows.CountRow
-import net.shrine.adapter.dao.slick.rows.QueryResultRow
 import net.shrine.util.XmlGcEnrichments
 
 /**
@@ -32,7 +30,6 @@ final class CountTest extends TestCase with ShouldMatchersForJUnit {
     }
     
     val queryResult = {
-      
       
       Count(1, resultId, localResultId, QueryResult.StatusType.Processing, orig, obfsc, now, startDate, endDate).toQueryResult
     }

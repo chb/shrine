@@ -255,7 +255,7 @@ class HappyShrineService @Autowired() (
         {
           recentEntries map { entry =>
             <entry>
-              <id>{ entry.auditEntryId }</id>
+              <id>{ entry.id }</id>
               <time>{ entry.time }</time>
               <username>{ entry.username }</username>
             </entry>

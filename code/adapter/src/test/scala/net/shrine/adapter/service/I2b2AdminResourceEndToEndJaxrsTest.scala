@@ -2,7 +2,6 @@ package net.shrine.adapter.service
 
 import com.sun.jersey.test.framework.JerseyTest
 import org.scalatest.junit.ShouldMatchersForJUnit
-import net.shrine.adapter.AdapterDbTest
 import junit.framework.TestCase
 import com.sun.jersey.test.framework.AppDescriptor
 import net.shrine.util.JerseyAppDescriptor
@@ -27,7 +26,6 @@ import scala.xml.XML
 import net.shrine.protocol.ReadPreviousQueriesResponse
 import net.shrine.adapter.AdapterTestHelpers
 import net.shrine.adapter.dao.I2b2AdminPreviousQueriesDao
-import net.shrine.adapter.dao.slick.SlickI2b2AdminPreviousQueriesDao
 import net.shrine.adapter.HasI2b2AdminPreviousQueriesDao
 
 /**

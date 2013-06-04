@@ -10,12 +10,13 @@ import net.shrine.protocol.ErrorResponse
 import net.shrine.protocol.query.Term
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
+import net.shrine.adapter.dao.squeryl.AbstractSquerylAdapterTest
 
 /**
  * @author clint
  * @date Nov 28, 2012
  */
-final class ReadQueryDefinitionAdapterTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit {
+final class ReadQueryDefinitionAdapterTest extends AbstractShrineJUnitSpringTest with AbstractSquerylAdapterTest with AdapterTestHelpers with ShouldMatchersForJUnit {
   @Test
   def testProcessRequest = afterCreatingTables {
     val name = "blarg"

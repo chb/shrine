@@ -9,13 +9,6 @@
         <artifactId>shrine-base</artifactId>
         <version>1.14-SNAPSHOT</version>
     </parent>
-    <repositories>
-        <repository>
-            <id>typesafe</id>
-            <name>Typesafe Repository</name>
-            <url>http://repo.typesafe.com/typesafe/releases/</url>
-        </repository>
-    </repositories>
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
@@ -32,11 +25,6 @@
         </plugins>
     </build>
     <dependencies>
-        <dependency>
-            <groupId>com.typesafe.slick</groupId>
-            <artifactId>slick_${scala-major-version}</artifactId>
-            <version>${slick-version}</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http</artifactId>

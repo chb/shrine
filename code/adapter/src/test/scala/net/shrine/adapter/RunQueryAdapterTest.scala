@@ -39,6 +39,7 @@ import net.shrine.util.Loggable
 import net.shrine.util.Util
 import net.shrine.protocol.CrcRequest
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
+import net.shrine.adapter.dao.squeryl.AbstractSquerylAdapterTest
 
 /**
  * @author Bill Simons
@@ -46,7 +47,7 @@ import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
  * @date 4/19/11
  * @link http://cbmi.med.harvard.edu
  */
-final class RunQueryAdapterTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with ShouldMatchersForJUnit with Loggable {
+final class RunQueryAdapterTest extends AbstractShrineJUnitSpringTest with AbstractSquerylAdapterTest with ShouldMatchersForJUnit with Loggable {
   private val queryDef = QueryDefinition("foo", Term("foo"))
 
   private val broadcastMessageId = 1234563789L

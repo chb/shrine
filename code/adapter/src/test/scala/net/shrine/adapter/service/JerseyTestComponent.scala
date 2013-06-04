@@ -1,6 +1,5 @@
 package net.shrine.adapter.service
 
-import net.shrine.adapter.AdapterDbTest
 import junit.framework.TestCase
 import com.sun.jersey.test.framework.AppDescriptor
 import net.shrine.util.JerseyAppDescriptor
@@ -9,12 +8,13 @@ import com.sun.jersey.test.framework.JerseyTest
 import org.junit.Before
 import org.junit.After
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
+import net.shrine.adapter.dao.squeryl.AbstractSquerylAdapterTest
 
 /**
  * @author clint
  * @date Apr 12, 2013
  */
-trait JerseyTestComponent[H <: AnyRef] { self: AdapterDbTest with AbstractShrineJUnitSpringTest =>
+trait JerseyTestComponent[H <: AnyRef] { self: AbstractSquerylAdapterTest with AbstractShrineJUnitSpringTest =>
   def makeHandler: H
   
   trait MixableJerseyTest[H] extends JerseyTest {

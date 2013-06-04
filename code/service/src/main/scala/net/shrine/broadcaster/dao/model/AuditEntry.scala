@@ -1,17 +1,18 @@
 package net.shrine.broadcaster.dao.model
 
 import java.sql.Timestamp
+import org.squeryl.KeyedEntity //TODO: Don't depend on Squeryl-specific stuff here
 
 /**
  * @author ???
  * @author clint
  * @date Jan 25, 2013
  */
-final case class AuditEntry(
-    auditEntryId: Long, 
+case class AuditEntry(
+    id: Long,
     project: String, 
     domain: String,
     username: String,
     time: Timestamp, 
-    queryText: String, 
-    queryTopic: String)
+    queryText: Option[String], 
+    queryTopic: Option[String])

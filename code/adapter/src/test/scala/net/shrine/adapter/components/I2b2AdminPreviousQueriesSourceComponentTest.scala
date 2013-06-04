@@ -1,21 +1,20 @@
 package net.shrine.adapter.components
 
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
-import net.shrine.adapter.AdapterDbTest
 import net.shrine.adapter.AdapterTestHelpers
 import org.junit.Test
 import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
 import net.shrine.protocol.ReadPreviousQueriesResponse
 import org.scalatest.junit.ShouldMatchersForJUnit
 import net.shrine.adapter.service.CanLoadTestData
-import net.shrine.adapter.dao.slick.SlickI2b2AdminPreviousQueriesDao
 import net.shrine.adapter.HasI2b2AdminPreviousQueriesDao
+import net.shrine.adapter.dao.squeryl.AbstractSquerylAdapterTest
 
 /**
  * @author clint
  * @date Apr 23, 2013
  */
-final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit with CanLoadTestData with HasI2b2AdminPreviousQueriesDao {
+final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJUnitSpringTest with AbstractSquerylAdapterTest with AdapterTestHelpers with ShouldMatchersForJUnit with CanLoadTestData with HasI2b2AdminPreviousQueriesDao {
 
   object TestI2b2AdminPreviousQueriesSourceComponent extends I2b2AdminPreviousQueriesSourceComponent {
     override def i2b2AdminDao = I2b2AdminPreviousQueriesSourceComponentTest.this.i2b2AdminDao

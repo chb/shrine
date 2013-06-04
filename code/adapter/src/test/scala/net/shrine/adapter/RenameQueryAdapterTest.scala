@@ -11,12 +11,13 @@ import net.shrine.protocol.RenameQueryRequest
 import net.shrine.protocol.RenameQueryResponse
 import net.shrine.protocol.query.Term
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
+import net.shrine.adapter.dao.squeryl.AbstractSquerylAdapterTest
 
 /**
  * @author clint
  * @date Nov 27, 2012
  */
-final class RenameQueryAdapterTest extends AbstractShrineJUnitSpringTest with AdapterDbTest with AdapterTestHelpers with ShouldMatchersForJUnit {
+final class RenameQueryAdapterTest extends AbstractShrineJUnitSpringTest with AbstractSquerylAdapterTest with AdapterTestHelpers with ShouldMatchersForJUnit {
   @Test
   def testProcessRequest = afterCreatingTables {
     val name = "blarg"

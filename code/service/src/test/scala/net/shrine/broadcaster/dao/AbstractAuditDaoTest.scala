@@ -3,9 +3,8 @@ package net.shrine.broadcaster.dao
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.springframework.beans.factory.annotation.Autowired
-import scala.slick.session.Database
-import net.shrine.broadcaster.dao.slick.tables.Tables
-import scala.slick.session.Session
+import net.shrine.broadcaster.dao.squeryl.tables.Tables
+import net.shrine.broadcaster.dao.squeryl.SquerylEntryPoint
 
 /**
  * @author clint
@@ -18,23 +17,18 @@ abstract class AbstractAuditDaoTest extends AbstractDependencyInjectionSpringCon
   @Autowired
   var tables: Tables = _
 
-  @Autowired
-  var database: Database = _
-
   override protected def getConfigLocations: Array[String] = Array("classpath:testApplicationContext.xml")
-  
-  //NB: Ugh, there must be a better way
-  protected def afterMakingTables(f: => Any) {
-    val t = tables
-    import t.driver.Implicit._
 
-    database.withTransaction { implicit session: Session =>
+  protected def afterMakingTables(f: => Any) {
+    import SquerylEntryPoint._
+
+    inTransaction {
       try {
-        tables.AuditEntries.ddl.create
+        tables.auditEntries.schema.create
 
         f
       } finally {
-        tables.AuditEntries.ddl.drop
+        tables.auditEntries.schema.drop
       }
     }
   }

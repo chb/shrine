@@ -20,13 +20,13 @@ final class I2b2BroadcastResourceTest extends TestCase with ShouldMatchersForJUn
     def doTestHandleBadInput(resourceMethod: I2b2BroadcastResource => String => Response) {
       val resource = new I2b2BroadcastResource(mock[ShrineRequestHandler])
 
-      val fourHundredResponse = Response.status(400).build()
+      val fiveHundredResponse = Response.status(500).build()
 
       //Just junk data
       {
         val resp = resourceMethod(resource)("sadlkhjksafhjksafhjkasgfgjskdfhsjkdfhgjsdfg")
 
-        resp.getStatus should equal(fourHundredResponse.getStatus)
+        resp.getStatus should equal(400)
         resp.getEntity should be(null)
       }
       
@@ -36,7 +36,7 @@ final class I2b2BroadcastResourceTest extends TestCase with ShouldMatchersForJUn
         
         val resp = resourceMethod(resource)(ReadI2b2AdminPreviousQueriesRequest("p", 123L, authn, "foo", 20).toI2b2String)
 
-        resp.getStatus should equal(fourHundredResponse.getStatus)
+        resp.getStatus should equal(500)
         resp.getEntity should be(null)
       }
     }

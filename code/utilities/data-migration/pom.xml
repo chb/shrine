@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.squeryl</groupId>
+            <artifactId>squeryl_${scala-major-version}</artifactId>
+            <version>${squeryl-version}</version>
+        </dependency>
+        <dependency>
             <groupId>net.shrine</groupId>
             <artifactId>shrine-data-commons</artifactId>
             <version>${project.version}</version>

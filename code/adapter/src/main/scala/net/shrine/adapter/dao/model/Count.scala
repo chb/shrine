@@ -3,8 +3,6 @@ package net.shrine.adapter.dao.model
 import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.ResultOutputType
-import net.shrine.adapter.dao.slick.rows.CountRow
-import net.shrine.adapter.dao.slick.rows.QueryResultRow
 import net.shrine.protocol.QueryResult.StatusType
 import org.spin.tools.NetworkTime
 import net.shrine.util.XmlGcEnrichments

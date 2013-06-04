@@ -29,8 +29,6 @@
                      default-value="http://localhost:8080/shrine/soap/aggregate?wsdl"/>
     <jee:jndi-lookup id="aggregatorEndpointType" jndi-name="java:comp/env/shrine/aggregatorEndpointType"
                      default-value="SOAP"/>
-    <jee:jndi-lookup id="shrineEndpoint" jndi-name="java:comp/env/shrine/shrineEndpoint"
-                     default-value="http://localhost:8080/shrine/soap/"/>
     <jee:jndi-lookup id="sheriffEndpoint" jndi-name="java:comp/env/shrine/sheriffEndpoint"
                      default-value="http://localhost:8080/shrine-hms-authorization/queryAuthorization"/>
     <jee:jndi-lookup id="sheriffUsername" jndi-name="java:comp/env/shrine/sheriffUsername" default-value="service"/>
@@ -194,39 +192,30 @@
         <property name="jndiName" value="java:comp/env/jdbc/shrineDB"/>
     </bean>
 
-    <bean id="slickDatabase" class="scala.slick.session.Database" factory-method="forDataSource">
+    <bean id="squerylAdapter" class="org.squeryl.adapters.MySQLAdapter"/>
+    
+    <bean id="squerylInitializer" class="net.shrine.dao.squeryl.DataSourceSquerylInitializer">
         <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="squerylAdapter"/>
     </bean>
     
-    <bean id="slickSpringWorkarounds" class="net.shrine.dao.slick.workarounds.SpringWorkarounds">
-        <constructor-arg ref="shrineDatabaseType"/>
-    </bean>
+    <bean id="squerylAuditTables" class="net.shrine.broadcaster.dao.squeryl.tables.Tables"/>
     
-    <bean id="slickDriver" factory-bean="slickSpringWorkarounds" factory-method="driver"/>
-    
-    <bean id="slickTables" class="net.shrine.adapter.dao.slick.tables.Tables">
-    	<constructor-arg ref="slickDriver"/>
+    <bean id="auditDao" class="net.shrine.broadcaster.dao.squeryl.SquerylAuditDao">
+        <constructor-arg ref="squerylInitializer"/>
+        <constructor-arg ref="squerylAuditTables"/>
     </bean>
 
-    <bean id="slickBroadcasterAuditTables" class="net.shrine.broadcaster.dao.slick.tables.Tables">
-    	<constructor-arg ref="slickDriver"/>
-    </bean>
-
-    <bean id="auditDao" class="net.shrine.broadcaster.dao.slick.SlickAuditDao">
-        <constructor-arg ref="slickDatabase"/>
-        <constructor-arg ref="slickBroadcasterAuditTables"/>
-    </bean>
-
-    <bean id="nonTransactionalAdapterDao" class="net.shrine.adapter.dao.slick.SlickAdapterDao">
-        <constructor-arg ref="slickDatabase"/>
-        <constructor-arg ref="slickTables"/>
+    <bean id="squerylAdapterTables" class="net.shrine.adapter.dao.squeryl.tables.Tables"/>
+    
+    <bean id="adapterDao" class="net.shrine.adapter.dao.squeryl.SquerylAdapterDao">
+        <constructor-arg ref="squerylInitializer"/>
+        <constructor-arg ref="squerylAdapterTables"/>
     </bean>
     
-    <bean id="adapterDao" class="net.shrine.adapter.dao.AdapterDao" factory-bean="nonTransactionalAdapterDao" factory-method="transactional"/>
-    
-    <bean id="i2b2AdminDao" class="net.shrine.adapter.dao.slick.SlickI2b2AdminPreviousQueriesDao">
-    	<constructor-arg ref="slickDatabase"/>
-        <constructor-arg ref="slickTables"/>
+    <bean id="i2b2AdminDao" class="net.shrine.adapter.dao.squeryl.SquerylI2b2AdminPreviousQueriesDao">
+    	<constructor-arg ref="squerylInitializer"/>
+        <constructor-arg ref="squerylAdapterTables"/>
     </bean>
 
 	<bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">

@@ -1,6 +1,5 @@
 package net.shrine.adapter.dao.model
 
-import net.shrine.adapter.dao.slick.rows.BreakdownResultRow
 import net.shrine.protocol.ResultOutputType
 
 /**

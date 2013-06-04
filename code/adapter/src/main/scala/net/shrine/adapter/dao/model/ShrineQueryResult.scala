@@ -1,17 +1,16 @@
 package net.shrine.adapter.dao.model
 
-import net.shrine.adapter.dao.slick.rows.BreakdownResultRow
-import net.shrine.adapter.dao.slick.rows.QueryResultRow
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.QueryResult
 import net.shrine.protocol.I2b2ResultEnvelope
-import net.shrine.adapter.dao.slick.rows.CountRow
+
 
 /**
  * @author clint
  * @date Oct 16, 2012
  *
  * NB: Named ShrineQueryResult to avoid clashes with net.shrine.protocol.QueryResult
+ * NB: Can't be final, since Squeryl runs this class through cglib to make a synthetic subclass :(
  */
 final case class ShrineQueryResult(
   networkQueryId: Long,

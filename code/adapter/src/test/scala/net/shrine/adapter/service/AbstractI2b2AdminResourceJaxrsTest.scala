@@ -2,7 +2,6 @@ package net.shrine.adapter.service
 
 import net.shrine.adapter.AdapterTestHelpers
 import org.scalatest.junit.ShouldMatchersForJUnit
-import net.shrine.adapter.AdapterDbTest
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 import org.junit.Before
 import org.junit.After
@@ -17,12 +16,13 @@ import scala.xml.XML
 import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
 import net.shrine.protocol.ReadPreviousQueriesResponse
 import net.shrine.protocol.QueryMaster
+import net.shrine.adapter.dao.squeryl.AbstractSquerylAdapterTest
 
 /**
  * @author clint
  * @date Apr 24, 2013
  */
-abstract class AbstractI2b2AdminResourceJaxrsTest extends AbstractShrineJUnitSpringTest with JerseyTestComponent[I2b2AdminService] with AdapterDbTest with ShouldMatchersForJUnit with CanLoadTestData with AdapterTestHelpers {
+abstract class AbstractI2b2AdminResourceJaxrsTest extends AbstractShrineJUnitSpringTest with JerseyTestComponent[I2b2AdminService] with AbstractSquerylAdapterTest with ShouldMatchersForJUnit with CanLoadTestData with AdapterTestHelpers {
 
   protected def adminClient = I2b2AdminClient(resourceUrl, new JerseyHttpClient)
 

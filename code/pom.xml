@@ -23,9 +23,9 @@
         <log4j-version>1.2.12</log4j-version>
         <jersey-version>1.7</jersey-version>
         <scalatest-version>1.9.1</scalatest-version>
-        <slick-version>1.0.0</slick-version>
         <scala-maven-plugin-version>3.1.3</scala-maven-plugin-version>
         <cxf-version>2.4.0</cxf-version>
+        <squeryl-version>0.9.6-RC1</squeryl-version>
     </properties>
     <build>
         <pluginManagement>

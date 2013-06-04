@@ -51,7 +51,7 @@ class ShrineService(
     queryTimeout: Duration) extends ShrineRequestHandler with Loggable {
 
   import broadcastService.sendAndAggregate
-  
+
   override def runQuery(request: RunQueryRequest, shouldBroadcast: Boolean): ShrineResponse = {
     afterAuditingAndAuthorizing(request) {
       waitFor(sendAndAggregate(request, runQueryAggregatorFor(request), shouldBroadcast))
@@ -87,33 +87,31 @@ class ShrineService(
   override def readApprovedQueryTopics(request: ReadApprovedQueryTopicsRequest, shouldBroadcast: Boolean) = authorizationService.readApprovedEntries(request)
 
   override def readQueryResult(request: ReadQueryResultRequest, shouldBroadcast: Boolean): ShrineResponse = waitFor(sendAndAggregate(request, new ReadQueryResultAggregator(request.queryId, includeAggregateResult), shouldBroadcast))
-  
+
   private def waitFor(futureResponse: Future[ShrineResponse]): ShrineResponse = {
     Util.time("Waiting for aggregated results")(debug(_)) {
       Await.result(futureResponse, queryTimeout)
     }
   }
-  
+
   private[service] val runQueryAggregatorFor: RunQueryRequest => RunQueryAggregator = Aggregators.forRunQueryRequest(includeAggregateResult) _
-  
+
   private[service] def afterAuditingAndAuthorizing[T](request: RunQueryRequest)(body: => T): T = {
     auditTransactionally(request) {
       authorizationService.authorizeRunQueryRequest(request)
-      
+
       body
     }
   }
-  
+
   private[service] def auditTransactionally[T](request: RunQueryRequest)(body: => T): T = {
-    auditDao.inTransaction {
-      try { body } finally {
-        auditDao.addAuditEntry(
-          request.projectId,
-          request.authn.domain,
-          request.authn.username,
-          request.queryDefinition.toI2b2String, //TODO: Use i2b2 format Still?
-          request.topicId)
-      }
+    try { body } finally {
+      auditDao.addAuditEntry(
+        request.projectId,
+        request.authn.domain,
+        request.authn.username,
+        request.queryDefinition.toI2b2String, //TODO: Use i2b2 format Still?
+        request.topicId)
     }
   }
 }

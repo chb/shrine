@@ -50,26 +50,19 @@
         <property name="suppressClose" value="true"/>
     </bean>
 
-    <bean id="slickDatabase" class="scala.slick.session.Database" factory-method="forDataSource">
+    <bean id="squerylTables" class="net.shrine.adapter.dao.squeryl.tables.Tables"/>
+    
+    <bean id="squerylAdapter" class="org.squeryl.adapters.H2Adapter"/>
+    
+    <bean id="squerylInitializer" class="net.shrine.dao.squeryl.DataSourceSquerylInitializer">
         <constructor-arg ref="dataSource"/>
+        <constructor-arg ref="squerylAdapter"/>
     </bean>
     
-    <bean id="slickSpringWorkarounds" class="net.shrine.dao.slick.workarounds.SpringWorkarounds">
-        <constructor-arg value="h2"/>
+    <bean id="squerylAdapterDao" class="net.shrine.adapter.dao.squeryl.SquerylAdapterDao">
+        <constructor-arg ref="squerylInitializer"/>
+        <constructor-arg ref="squerylTables"/>
     </bean>
-    
-    <bean id="slickDriver" factory-bean="slickSpringWorkarounds" factory-method="driver"/>
-    
-    <bean id="slickTables" class="net.shrine.adapter.dao.slick.tables.Tables">
-    	<constructor-arg ref="slickDriver"/>
-    </bean>
-    
-    <bean id="nonTransactionalAdapterDao" class="net.shrine.adapter.dao.slick.SlickAdapterDao">
-        <constructor-arg ref="slickDatabase"/>
-        <constructor-arg ref="slickTables"/>
-    </bean>
-    
-    <bean id="adapterDao" class="net.shrine.adapter.dao.AdapterDao" factory-bean="nonTransactionalAdapterDao" factory-method="transactional"/>
 
     <bean id="adapterMappingsSource" class="net.shrine.config.ClasspathAdapterMappingsSource">
 	  <constructor-arg index="0" value="AdapterMappings.xml"/>

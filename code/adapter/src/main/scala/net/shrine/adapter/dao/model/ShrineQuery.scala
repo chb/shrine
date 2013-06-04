@@ -4,12 +4,17 @@ import javax.xml.datatype.XMLGregorianCalendar
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.QueryMaster
 import net.shrine.protocol.query.Expression
+import net.shrine.protocol.query.Term
+import net.shrine.util.Util
+import org.squeryl.annotations.Column
 
 /**
  * @author clint
  * @date Oct 16, 2012
+ * 
+ * NB: Can't be final, since Squeryl runs this class through cglib to make a synthetic subclass :(
  */
-final case class ShrineQuery(
+case class ShrineQuery(
   id: Int,
   localId: String,
   networkId: Long,

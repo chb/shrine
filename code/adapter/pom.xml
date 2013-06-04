@@ -30,18 +30,11 @@
             </plugin>
         </plugins>
     </build>
-    <repositories>
-        <repository>
-            <id>typesafe</id>
-            <name>Typesafe Repository</name>
-            <url>http://repo.typesafe.com/typesafe/releases/</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
-            <groupId>com.typesafe.slick</groupId>
-            <artifactId>slick_${scala-major-version}</artifactId>
-            <version>${slick-version}</version>
+            <groupId>org.squeryl</groupId>
+            <artifactId>squeryl_${scala-major-version}</artifactId>
+            <version>${squeryl-version}</version>
         </dependency>
         <dependency>
             <groupId>net.shrine</groupId>

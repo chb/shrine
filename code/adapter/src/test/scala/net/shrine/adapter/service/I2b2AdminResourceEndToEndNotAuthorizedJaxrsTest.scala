@@ -2,7 +2,6 @@ package net.shrine.adapter.service
 
 import net.shrine.adapter.AdapterTestHelpers
 import org.scalatest.junit.ShouldMatchersForJUnit
-import net.shrine.adapter.AdapterDbTest
 import net.shrine.adapter.spring.AbstractShrineJUnitSpringTest
 import net.shrine.util.HttpClient
 import net.shrine.protocol.ErrorResponse

@@ -14,6 +14,7 @@ import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
 import net.shrine.protocol.ShrineRequestHandler
 import net.shrine.protocol.ReadQueryDefinitionRequest
 import net.shrine.protocol.HandleableShrineRequest
+import net.shrine.protocol.ShrineRequest
 
 /**
  * @author Bill Simons
@@ -34,7 +35,7 @@ final class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler
   //NB: Always broadcast when receiving requests from the legacy i2b2/Shrine webclient, since we can't retrofit it to 
   //Say whether broadcasting is desired for a praticular query/operation
   val shouldBroadcast = true
-  
+
   @POST
   @Path("request")
   def doRequest(i2b2Request: String): Response = processI2b2Message(i2b2Request)
@@ -44,22 +45,34 @@ final class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler
   def doPDORequest(i2b2Request: String): Response = processI2b2Message(i2b2Request)
 
   def processI2b2Message(i2b2Request: String): Response = {
-    val builder = Try {
-      HandleableShrineRequest.fromI2b2(i2b2Request)
-    }.map {
-      shrineRequest =>
-        info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))
+    def handleRequest(shrineRequest: ShrineRequest with HandleableShrineRequest) = Try {
+      info("Running request from user: %s of type %s".format(shrineRequest.authn.username, shrineRequest.requestType.toString))
 
-        val shrineResponse = shrineRequest.handle(shrineRequestHandler, shouldBroadcast)
+      val shrineResponse = shrineRequest.handle(shrineRequestHandler, shouldBroadcast)
 
-        val responseString = shrineResponse.toI2b2String
+      val responseString = shrineResponse.toI2b2String
 
-        Response.ok.entity(responseString)
-    }.getOrElse { 
-      //TODO: I'm not sure if this is right; need to see what the legacy client expects to be returned in case of an error
+      Response.ok.entity(responseString)
+    }
+
+    def handleParseError(e: Throwable) = Try {
+      debug(s"Failed to unmarshal i2b2 request: $i2b2Request")
+
+      error("Couldn't understand request: ", e)
+
       Response.status(400)
     }
-    
+
+    val builder = Try {
+      HandleableShrineRequest.fromI2b2(i2b2Request)
+    }.transform(handleRequest, handleParseError).recover {
+      case e => {
+        error("Error processing request: ", e)
+
+        Response.status(500)
+      }
+    }.get
+
     builder.build()
   }
 }

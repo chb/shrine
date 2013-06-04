@@ -134,13 +134,13 @@ final class ShrineServiceTest extends AbstractAuditDaoTest with AssertionsForJUn
       entry.domain should be(authn.domain)
       entry.username should be(authn.username)
       entry.project should be(projectId)
-      entry.queryText should be(queryDef.toI2b2String)
-      entry.queryTopic should be(request.topicId)
+      entry.queryText should be(Some(queryDef.toI2b2String))
+      entry.queryTopic should be(Some(request.topicId))
       entry.time should not be (null)
     }
 
-    doTestAuditTransactionally(true)
     doTestAuditTransactionally(false)
+    doTestAuditTransactionally(true)
   }
 
   @Test
@@ -177,8 +177,8 @@ final class ShrineServiceTest extends AbstractAuditDaoTest with AssertionsForJUn
       entry.domain should be(authn.domain)
       entry.username should be(authn.username)
       entry.project should be(projectId)
-      entry.queryText should be(queryDef.toI2b2String)
-      entry.queryTopic should be(request.topicId)
+      entry.queryText should be(Some(queryDef.toI2b2String))
+      entry.queryTopic should be(Some(request.topicId))
       entry.time should not be (null)
     }
 

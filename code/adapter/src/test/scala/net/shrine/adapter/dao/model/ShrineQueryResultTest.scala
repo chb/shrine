@@ -3,15 +3,13 @@ package net.shrine.adapter.dao.model
 import junit.framework.TestCase
 import org.scalatest.junit.ShouldMatchersForJUnit
 import org.junit.Test
-import net.shrine.adapter.dao.slick.rows.QueryResultRow
+
 import net.shrine.protocol.ResultOutputType
 import net.shrine.protocol.QueryResult.StatusType
 import net.shrine.util.Util
 import org.spin.tools.RandomTool
 import net.shrine.protocol.QueryResult
-import net.shrine.adapter.dao.slick.rows.BreakdownResultRow
 import net.shrine.protocol.I2b2ResultEnvelope
-import net.shrine.adapter.dao.slick.rows.CountRow
 import net.shrine.protocol.query.Term
 
 /**

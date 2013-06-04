@@ -11,7 +11,7 @@
     <Environment name="/shrine/realCRCEndpoint" value="http://I2B2_CRC_IP/i2b2/rest/QueryToolService/"  type="java.lang.String"/>
     <Environment name="/shrine/pmEndpoint" value="http://I2B2_PM_IP/i2b2/rest/PMService/getServices"          type="java.lang.String"/>
 
-    <Environment name="/shrine/aggregatorEndpoint" value="https://SHRINE_IP:SHRINE_SSL_PORT/shrine/soap/aggregate?wsdl" type="java.lang.String"/>
+    <Environment name="/shrine/shrineEndpoint" value="https://SHRINE_IP:SHRINE_SSL_PORT/shrine/soap/aggregate?wsdl" type="java.lang.String"/>
 
     <Environment name="/shrine/isAdapter" value="true" type="java.lang.Boolean"/>
     <Environment name="/shrine/isBroadcaster" value="true" type="java.lang.Boolean"/>
@@ -27,7 +27,5 @@
     <Environment name="/shrine/i2b2HiveUsername"    value="SHRINE_ADAPTER_I2B2_USER"         type="java.lang.String"/>
     <Environment name="/shrine/i2b2HivePassword"    value="SHRINE_ADAPTER_I2B2_PASSWORD"     type="java.lang.String"/>
     <Environment name="/shrine/i2b2HiveProject"     value="SHRINE_ADAPTER_I2B2_PROJECT"         type="java.lang.String"/>
-
-    <Environment name="/shrine/hibernateDialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" type="java.lang.String"/>
 
 </Context>
