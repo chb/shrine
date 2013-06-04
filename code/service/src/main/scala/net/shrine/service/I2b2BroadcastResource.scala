@@ -47,7 +47,6 @@ final class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler
   def processI2b2Message(i2b2Request: String): Response = {
     def handleRequest(shrineRequest: ShrineRequest with HandleableShrineRequest) = Try {
       info(s"Running request from user: ${ shrineRequest.authn.username } of type ${ shrineRequest.requestType.toString }")
-      println(s"Running request from user: ${ shrineRequest.authn.username } of type ${ shrineRequest.requestType.toString }")
 
       val shrineResponse = shrineRequest.handle(shrineRequestHandler, shouldBroadcast)
 
@@ -57,7 +56,6 @@ final class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler
     }.recover {
       case e => {
         error("Error processing request: ", e)
-        println("Error processing request: ", e)
 
         Response.status(500)
       }
@@ -65,10 +63,8 @@ final class I2b2BroadcastResource @Autowired() (private val shrineRequestHandler
 
     def handleParseError(e: Throwable) = Try {
       debug(s"Failed to unmarshal i2b2 request: $i2b2Request")
-      println(s"Failed to unmarshal i2b2 request: $i2b2Request")
 
       error("Couldn't understand request: ", e)
-      println("Couldn't understand request: ", e)
 
       Response.status(400)
     }
