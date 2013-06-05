@@ -20,7 +20,7 @@ final case class User(
     val username: String, 
     val domain: String, 
     val credential: Credential, 
-    val paramsByProject: Map[String, Map[String, String]], 
+    val params: Map[String, String], 
     val rolesByProject: Map[String, Set[String]]) {
   
   def toAuthInfo = AuthenticationInfo(domain, username, credential)
@@ -37,12 +37,11 @@ object User extends I2b2Unmarshaller[User] {
     
     val projectsXml = userXml \ "project"
     
-    val paramsByProject = Map.empty ++ projectsXml.map { project => 
-      val params = (project \ "param").map { param =>
-        (param \ "@name").text.trim -> param.text.trim
-      }.toMap
-      
-      (project \ "@id").text.trim -> params
+    //Parse <param>s that are children of the <user> element.
+    //This does not appear to be in line with the i2b2 XSDs, but
+    //it reflects what deployed systems actually return.
+    val params = Map.empty ++ (userXml \ "param").map { param =>
+      (param \ "@name").text -> param.text
     }
 
     val rolesByProject = Map.empty ++ projectsXml.map { project =>
@@ -67,7 +66,7 @@ object User extends I2b2Unmarshaller[User] {
       userNameXml.text,
       domainXml.text,
       Credential.fromI2b2(credentialXml),
-      paramsByProject,
+      params,
       rolesByProject)
   }
 }

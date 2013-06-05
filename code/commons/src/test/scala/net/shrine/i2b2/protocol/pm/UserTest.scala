@@ -23,15 +23,13 @@ final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatcher
   
   private val projectId2 = "bar"
     
-  private val params1 = Map("x" -> "1", "y" -> "2")
-  
-  private val params2 = Map("y" -> "2", "z" -> "3")
+  private val params = Map("x" -> "1", "y" -> "2")
   
   private val roles1 = Set("a", "b", "c")
   
   private val roles2 = Set("MANAGER", "x", "y")
   
-  private lazy val projects = Seq((projectId1, params1, roles1), (projectId2, params2, roles2))
+  private lazy val projects = Seq((projectId1, roles1), (projectId2, roles2))
   
   private val fullName = "Full name"
     
@@ -69,16 +67,16 @@ final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatcher
             <user_name>{ userName }</user_name>
             <password token_ms_timeout="1800000" is_token="true">SessionKey:key</password>
             <domain>{ domain }</domain>
+            {
+              params.map { case (name, value) =>
+                <param name={ name }>{ value }</param>
+              }
+            }
 	  		{
-	  		  projects.map { case (projectId, params, roles) =>
+	  		  projects.map { case (projectId, roles) =>
 	  		    <project id={ projectId } >
                   <name>Demo Group { projectId } </name>
                   <wiki>http://www.i2b2.org</wiki>
-                  {
-                    params.map { case (name, value) =>
-                      <param name={ name }>{ value }</param>
-                    }
-                  }
                   {
                     roles.map(r => <role>{ r }</role>)
                   }
@@ -136,7 +134,7 @@ final class UserTest extends TestCase with AssertionsForJUnit with ShouldMatcher
     
     user.credential.isToken should be(true)
     
-    user.paramsByProject should equal(Map(projectId1 -> params1, projectId2 -> params2))
+    user.params should equal(params)
     
     user.rolesByProject should equal(Map(projectId1 -> roles1, projectId2 -> roles2))
   }
