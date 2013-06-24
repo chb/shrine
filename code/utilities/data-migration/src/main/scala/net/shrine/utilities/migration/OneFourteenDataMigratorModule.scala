@@ -1,7 +1,7 @@
 package net.shrine.utilities.migration
 
 import org.squeryl.Schema
-import org.squeryl.adapters.{MSSQLServer, OracleAdapter, MySQLAdapter}
+import org.squeryl.adapters.{ MSSQLServer, OracleAdapter, MySQLAdapter }
 
 import net.shrine.adapter.dao.squeryl.SquerylEntryPoint
 import net.shrine.adapter.dao.squeryl.tables.BreakdownResultsComponent
@@ -12,7 +12,7 @@ import net.shrine.adapter.dao.squeryl.tables.ShrineQueriesComponent
 import net.shrine.dao.squeryl.JdbcUrlSquerylInitializer
 import net.shrine.dao.squeryl.SquerylInitializer
 import net.shrine.protocol.query.QueryDefinition
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.squeryl.internals.DatabaseAdapter
 
 /**
@@ -20,7 +20,6 @@ import org.squeryl.internals.DatabaseAdapter
  * @date May 3, 2013
  */
 object OneFourteenDataMigratorModule extends App {
-
 
   def loadConfig: Config = {
     //  The convenience method ConfigFactory.load() loads the following (first-listed are higher priority):
@@ -33,14 +32,12 @@ object OneFourteenDataMigratorModule extends App {
     ConfigFactory.load()
   }
 
-  def identifyAdapter(adapterName: String): DatabaseAdapter =
-    adapterName match {
-      case "mysql" => new MySQLAdapter
-      case "oracle" => new OracleAdapter
-      case "sqlserver" => new MSSQLServer
-      case _ => throw new IllegalArgumentException("db-adapter must be one of msyql, oracle, sqlserver")
-    }
-
+  def identifyAdapter(adapterName: String): DatabaseAdapter = adapterName match {
+    case "mysql" => new MySQLAdapter
+    case "oracle" => new OracleAdapter
+    case "sqlserver" => new MSSQLServer
+    case _ => throw new IllegalArgumentException("db-adapter must be one of msyql, oracle, sqlserver")
+  }
 
   val config = loadConfig
 
@@ -62,12 +59,12 @@ import SquerylEntryPoint._
  * @author clint
  * @date May 3, 2013
  */
-final class OneFourteenDataMigratorModule(initializer: SquerylInitializer) extends
-	Schema with
-	CountResultsComponent with
-	BreakdownResultsComponent with
-	ErrorResultsComponent with
-	QueryResultsComponent with
+final class OneFourteenDataMigratorModule(initializer: SquerylInitializer) extends 
+	Schema with 
+	CountResultsComponent with 
+	BreakdownResultsComponent with 
+	ErrorResultsComponent with 
+	QueryResultsComponent with 
 	ShrineQueriesComponent {
 
   //
