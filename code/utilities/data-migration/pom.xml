@@ -27,6 +27,12 @@
             <artifactId>shrine-adapter</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- For config file loading -->
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -72,7 +78,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <finalName>shrine-scanner-${project.version}</finalName>
+                    <finalName>shrine-data-migration-${project.version}</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
             </plugin>

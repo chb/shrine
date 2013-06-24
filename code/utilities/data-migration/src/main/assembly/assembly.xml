@@ -12,7 +12,7 @@
 			<directory>src/main/sh</directory>
 			<outputDirectory>.</outputDirectory>
 			<includes>
-				<include>scanner</include>
+				<include>migrator</include>
 			</includes>
 		</fileSet>
 		<fileSet>

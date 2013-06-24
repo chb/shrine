@@ -19,6 +19,7 @@
     <modules>
         <module>monitor</module>
         <module>scanner</module>
+        <module>data-migration</module>
     </modules>
 
     <dependencies>
