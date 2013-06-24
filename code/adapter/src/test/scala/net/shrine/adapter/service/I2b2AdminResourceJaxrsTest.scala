@@ -80,7 +80,7 @@ final class I2b2AdminResourceJaxrsTest extends JerseyTest with ShouldMatchersFor
     val categoryToSearchWithin = ReadI2b2AdminPreviousQueriesRequest.Category.All
     val searchStrategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Exact
     
-    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, searchStrategy, categoryToSearchWithin)
+    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", searchString, maxResults, sortOrder, searchStrategy, categoryToSearchWithin)
     
     val currentHandler = handler
     

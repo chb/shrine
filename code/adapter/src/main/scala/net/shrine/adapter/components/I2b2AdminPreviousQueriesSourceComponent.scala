@@ -19,7 +19,7 @@ trait I2b2AdminPreviousQueriesSourceComponent {
 
   object I2b2AdminPreviousQueries {
     def get(request: ReadI2b2AdminPreviousQueriesRequest): ShrineResponse = {
-      val queries = i2b2AdminDao.findQueriesByUserDomainAndSearchString(request.authn.domain, request.authn.username, request.searchString, request.maxResults, request.searchStrategy, request.sortOrder)
+      val queries = i2b2AdminDao.findQueriesByUserDomainAndSearchString(request.username, request.searchString, request.maxResults, request.searchStrategy, request.sortOrder)
       
       //TODO: Category BS
       

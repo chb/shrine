@@ -17,6 +17,7 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
   override val projectId: String,
   override val waitTimeMs: Long,
   override val authn: AuthenticationInfo,
+  username: String,
   searchString: String,
   maxResults: Int,
   sortOrder: ReadI2b2AdminPreviousQueriesRequest.SortOrder = ReadI2b2AdminPreviousQueriesRequest.SortOrder.Descending,
@@ -33,6 +34,7 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
       { i2b2PsmHeader }
       <ns4:get_name_info category={ categoryToSearchWithin.toString } max={ maxResults.toString }>
         <match_str strategy={ searchStrategy.toString }>{ searchString }</match_str>
+        <user_id>{ username }</user_id>
         <ascending>{ sortOrder.isAscending }</ascending>
       </ns4:get_name_info>
     </message_body>
@@ -41,6 +43,7 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
   override def toXml = XmlUtil.stripWhitespace {
     <readAdminPreviousQueries>
       { headerFragment }
+      <username>{ username }</username>
       <searchString>{ searchString }</searchString>
       <maxResults>{ maxResults }</maxResults>
       <sortOrder>{ sortOrder }</sortOrder>
@@ -51,6 +54,8 @@ final case class ReadI2b2AdminPreviousQueriesRequest(
 }
 
 object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[ReadI2b2AdminPreviousQueriesRequest] with I2b2Unmarshaller[ReadI2b2AdminPreviousQueriesRequest] {
+  val allUsers = "@"
+  
   def enumValue[T](enumCompanion: SEnum[T])(name: String): T = {
     //TODO: Remove unsafe get call
     enumCompanion.valueOf(name).get
@@ -63,6 +68,7 @@ object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[Rea
       shrineProjectId(xml),
       shrineWaitTimeMs(xml),
       shrineAuthenticationInfo(xml),
+      textIn("username"),
       textIn("searchString"),
       textIn("maxResults").toInt,
       enumValue(SortOrder)(textIn("sortOrder")),
@@ -83,6 +89,7 @@ object ReadI2b2AdminPreviousQueriesRequest extends ShrineRequestUnmarshaller[Rea
       i2b2ProjectId(xml),
       i2b2WaitTimeMs(xml),
       i2b2AuthenticationInfo(xml),
+      (getNameInfo \ "user_id").text.trim,
       (getNameInfo \ "match_str").text.trim,
       (getNameInfo \ "@max").text.toInt,
       if((getNameInfo \ "ascending").text.toBoolean) SortOrder.Ascending else SortOrder.Descending,

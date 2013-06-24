@@ -10,5 +10,5 @@ import net.shrine.protocol.ReadI2b2AdminPreviousQueriesRequest
 trait I2b2AdminPreviousQueriesDao {
   import ReadI2b2AdminPreviousQueriesRequest.{ SortOrder, Strategy }
 
-  def findQueriesByUserDomainAndSearchString(domain: String, username: String, searchString: String, howMany: Int, strategy: Strategy, sortOrder: SortOrder): Seq[ShrineQuery]
+  def findQueriesByUserDomainAndSearchString(username: String, searchString: String, howMany: Int, strategy: Strategy, sortOrder: SortOrder): Seq[ShrineQuery]
 }

@@ -34,7 +34,7 @@ final class I2b2AdminResourceEndToEndNotAuthorizedJaxrsTest extends AbstractI2b2
   @Test
   def testReadI2b2AdminPreviousQueriesNotAuthorized = afterLoadingTestData {
     //Query for a queries we know are present
-    val req = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, queryName1, 10)
+    val req = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", queryName1, 10)
     
     val resp = adminClient.readI2b2AdminPreviousQueries(req)
     

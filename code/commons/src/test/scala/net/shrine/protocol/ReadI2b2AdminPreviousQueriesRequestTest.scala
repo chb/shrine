@@ -17,6 +17,7 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
   val authn = AuthenticationInfo("d", "u", Credential("p", false))
   val searchString = "aksdhjksadhjksadhksadh"
   val maxResults = 654321
+  val user = "a-user-whose-queries-we-want"
 
   import ReadI2b2AdminPreviousQueriesRequest._
 
@@ -60,7 +61,7 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
   private def request(tuple: (SortOrder, Category, Strategy)) = {
     val (sortOrder, category, strategy) = tuple
 
-    ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, strategy, category)
+    ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, user, searchString, maxResults, sortOrder, strategy, category)
   }
   
   private def doTestToXml(makeExpectedXml: (SortOrder, Category, Strategy) => NodeSeq, serialize: ReadI2b2AdminPreviousQueriesRequest => NodeSeq) {
@@ -115,6 +116,7 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
     <readAdminPreviousQueries>
       <projectId>{ projectId }</projectId><waitTimeMs>{ waitTimeMs }</waitTimeMs>
       { authn.toXml }
+      <username>{ user }</username>
       <searchString>{ searchString }</searchString>
       <maxResults>{ maxResults }</maxResults>
       <sortOrder>{ sortOrder }</sortOrder>
@@ -171,6 +173,7 @@ final class ReadI2b2AdminPreviousQueriesRequestTest extends TestCase with Should
         </ns4:psmheader>
         <ns4:get_name_info category={ category.toString } max={ maxResults.toString }>
           <match_str strategy={ strategy.toString }>{ searchString }</match_str>
+          <user_id>{ user }</user_id>
           <ascending>{ sortOrder.isAscending }</ascending>
         </ns4:get_name_info>
       </message_body>

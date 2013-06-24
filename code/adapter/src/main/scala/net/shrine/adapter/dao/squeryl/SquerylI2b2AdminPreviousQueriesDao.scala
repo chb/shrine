@@ -22,9 +22,9 @@ final class SquerylI2b2AdminPreviousQueriesDao(initializer: SquerylInitializer, 
   
   import SquerylEntryPoint._
   
-  override def findQueriesByUserDomainAndSearchString(domain: String, username: String, searchString: String, howMany: Int, strategy: ReadI2b2AdminPreviousQueriesRequest.Strategy, sortOrder: ReadI2b2AdminPreviousQueriesRequest.SortOrder): Seq[ShrineQuery] = {
+  override def findQueriesByUserDomainAndSearchString(username: String, searchString: String, howMany: Int, strategy: ReadI2b2AdminPreviousQueriesRequest.Strategy, sortOrder: ReadI2b2AdminPreviousQueriesRequest.SortOrder): Seq[ShrineQuery] = {
     inTransaction {
-      Queries.queriesForUserAndSearchString(domain, username, searchString, matchFunctionFor(strategy), sortFunctionFor(sortOrder)).take(howMany).toSeq
+      Queries.queriesForUserAndSearchString(username, searchString, matchFunctionFor(strategy), sortFunctionFor(sortOrder)).take(howMany).toSeq
     }
   }
   
@@ -51,9 +51,15 @@ final class SquerylI2b2AdminPreviousQueriesDao(initializer: SquerylInitializer, 
   private object Queries {
     import ReadI2b2AdminPreviousQueriesRequest.SortOrder
     
-    def queriesForUserAndSearchString(domain: String, username: String, searchString: String, nameMatches: (String, String) => BinaryOperatorNodeLogicalBoolean, ordering: SquerylShrineQuery => OrderByArg): Query[ShrineQuery] = {
+    def queriesForUserAndSearchString(username: String, searchString: String, nameMatches: (String, String) => BinaryOperatorNodeLogicalBoolean, ordering: SquerylShrineQuery => OrderByArg): Query[ShrineQuery] = {
       from(tables.shrineQueries) { query =>
-        where(query.domain === domain and nameMatches(query.name, searchString)).
+        where({
+          val nameMatchPredicate = nameMatches(query.name, searchString)
+          
+          if(username != ReadI2b2AdminPreviousQueriesRequest.allUsers) { 
+            query.username === username and nameMatchPredicate 
+          } else { nameMatchPredicate }
+        }).
         select(query.toShrineQuery).
         orderBy(ordering(query))
       }

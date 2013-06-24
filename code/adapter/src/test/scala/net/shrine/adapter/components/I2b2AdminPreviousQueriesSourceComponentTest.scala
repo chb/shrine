@@ -24,7 +24,7 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
 
   @Test
   def testReadPreviousQueriesNoMatch = afterCreatingTables {
-    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "some-query-name-that-doesn't-exist", 10)
+    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", "some-query-name-that-doesn't-exist", 10)
 
     val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 
@@ -34,13 +34,13 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
   }
 
   @Test
-  def testReadPreviousQueriesAscending = doTestReadPreviousQueries(ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, Seq(queryName1, queryName2, queryName2))
+  def testReadPreviousQueriesAscending = doTestReadPreviousQueries(ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, Seq(queryName1, queryName2))
 
   @Test
-  def testReadPreviousQueriesDescending = doTestReadPreviousQueries(ReadI2b2AdminPreviousQueriesRequest.SortOrder.Descending, Seq(queryName2, queryName2, queryName1))
+  def testReadPreviousQueriesDescending = doTestReadPreviousQueries(ReadI2b2AdminPreviousQueriesRequest.SortOrder.Descending, Seq(queryName2, queryName1))
 
   private def doTestReadPreviousQueries(order: ReadI2b2AdminPreviousQueriesRequest.SortOrder, expectedNames: Seq[String], modify: ReadI2b2AdminPreviousQueriesRequest => ReadI2b2AdminPreviousQueriesRequest = r => r) = afterLoadingTestData {
-    val baseRequest = modify(ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "query-name", 10, order))
+    val baseRequest = modify(ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, authn.username, "query-name", 10, order))
 
     {
       val req = baseRequest
@@ -65,10 +65,10 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
 
   @Test
   def testReadPreviousQueriesStartsWith {
-    doTestReadPreviousQueries(ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, Seq(queryName1, queryName2, queryName2), r => r.copy(searchStrategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Left))
+    doTestReadPreviousQueries(ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, Seq(queryName1, queryName2), r => r.copy(searchStrategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Left))
 
     afterLoadingTestData {
-      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Left)
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Left)
 
       val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 
@@ -81,17 +81,17 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
   @Test
   def testReadPreviousQueriesEndsWith {
     {
-      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "2", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Right)
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, authn.username, "1", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Right)
 
       val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 
       validateUserAndGroupId(resp)
 
-      resp.queryMasters.map(_.name) should equal(Seq(queryName2, queryName2))
+      resp.queryMasters.map(_.name) should equal(Seq(queryName1))
     }
     
     afterLoadingTestData {
-      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Right)
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Right)
 
       val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 
@@ -104,7 +104,7 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
   @Test
   def testReadPreviousQueriesExact = afterLoadingTestData {
     {
-      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, queryName1, 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Exact)
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn,"@", queryName1, 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Exact)
 
       val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 
@@ -114,7 +114,28 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
     }
 
     {
-      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Right)
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Right)
+
+      val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
+
+      validateUserAndGroupId(resp)
+
+      resp.queryMasters should equal(Nil)
+    }
+    
+    //Test with specific usernames
+    {
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, authn2.username, queryName2, 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Exact)
+
+      val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
+
+      validateUserAndGroupId(resp)
+
+      resp.queryMasters.map(_.name) should equal(Seq(queryName2, queryName2))
+    }
+
+    {
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, authn2.username, queryName1, 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Right)
 
       val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 
@@ -127,17 +148,17 @@ final class I2b2AdminPreviousQueriesSourceComponentTest extends AbstractShrineJU
   @Test
   def testReadPreviousQueriesContains = afterLoadingTestData {
     {
-      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "-name", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains)
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", "-name", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains)
 
       val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 
       validateUserAndGroupId(resp)
 
-      resp.queryMasters.map(_.name) should equal(Seq(queryName1, queryName2, queryName2))
+      resp.queryMasters.map(_.name) should equal(Seq(queryName1, queryName2, queryName2, queryName2))
     }
 
     {
-      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains)
+      val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", "foo", 10, ReadI2b2AdminPreviousQueriesRequest.SortOrder.Ascending, ReadI2b2AdminPreviousQueriesRequest.Strategy.Contains)
 
       val resp = get(request).asInstanceOf[ReadPreviousQueriesResponse]
 

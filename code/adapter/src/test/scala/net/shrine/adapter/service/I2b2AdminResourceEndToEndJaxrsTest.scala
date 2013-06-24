@@ -60,7 +60,7 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractI2b2AdminResource
     val categoryToSearchWithin = ReadI2b2AdminPreviousQueriesRequest.Category.All
     val searchStrategy = ReadI2b2AdminPreviousQueriesRequest.Strategy.Exact
 
-    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, searchString, maxResults, sortOrder, searchStrategy, categoryToSearchWithin)
+    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", searchString, maxResults, sortOrder, searchStrategy, categoryToSearchWithin)
 
     doTestReadI2b2AdminPreviousQueries(request, Some(queryMaster1))
   }
@@ -68,7 +68,7 @@ final class I2b2AdminResourceEndToEndJaxrsTest extends AbstractI2b2AdminResource
   @Test
   def testReadI2b2AdminPreviousQueriesNoResultsExpected = afterLoadingTestData {
     //A request that won't return anything
-    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "askjdhakfgkafgkasf", 123)
+    val request = ReadI2b2AdminPreviousQueriesRequest(projectId, waitTimeMs, authn, "@", "askjdhakfgkafgkasf", 123)
     
     doTestReadI2b2AdminPreviousQueries(request, None)
   }

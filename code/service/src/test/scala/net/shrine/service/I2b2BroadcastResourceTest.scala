@@ -32,7 +32,7 @@ final class I2b2BroadcastResourceTest extends TestCase with ShouldMatchersForJUn
       {
         val authn = AuthenticationInfo("d", "u", Credential("p", false))
         
-        val resp = resourceMethod(resource)(ReadI2b2AdminPreviousQueriesRequest("p", 123L, authn, "foo", 20).toI2b2String)
+        val resp = resourceMethod(resource)(ReadI2b2AdminPreviousQueriesRequest("p", 123L, authn, "@", "foo", 20).toI2b2String)
 
         resp.getStatus should equal(400)
         resp.getEntity should be(null)
