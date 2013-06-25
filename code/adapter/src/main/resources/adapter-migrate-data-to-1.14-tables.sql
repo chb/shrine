@@ -3,9 +3,9 @@ alter table SHRINE_QUERY add index `IDX_SHRINE_QUERY_NETWORK_ID`(network_id);
 alter table RESULT_IDS add index `IDX_RESULT_IDS_BROADCAST_RESULT_INSTANCE_ID`(BROADCAST_RESULT_INSTANCE_ID);
 
 insert into 
-    SHRINE_QUERY (local_id, network_id, username, domain, query_name, query_expression) 
+    SHRINE_QUERY (local_id, network_id, username, domain, query_name, query_expression, date_created) 
 (select 
-    mq.LOCAL_QUERY_MASTER_ID, mq.BROADCAST_QUERY_MASTER_ID, USERNAME, DOMAIN_NAME, MASTER_NAME, QUERY_DEFINITION 
+    mq.LOCAL_QUERY_MASTER_ID, mq.BROADCAST_QUERY_MASTER_ID, USERNAME, DOMAIN_NAME, MASTER_NAME, QUERY_DEFINITION, TIMESTAMP(utmq.MASTER_CREATE_DATE)
  from 
     USERS_TO_MASTER_QUERY utmq inner join 
     MASTER_QUERY mq on utmq.BROADCAST_QUERY_MASTER_ID = mq.BROADCAST_QUERY_MASTER_ID);
