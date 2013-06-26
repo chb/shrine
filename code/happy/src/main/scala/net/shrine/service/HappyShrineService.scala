@@ -1,7 +1,6 @@
 package net.shrine.service
 
 import java.io.StringWriter
-
 import scala.collection.JavaConverters.asScalaBufferConverter
 import scala.collection.JavaConverters.asScalaSetConverter
 import scala.collection.JavaConverters.collectionAsScalaIterableConverter
@@ -9,7 +8,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 import scala.xml.NodeSeq
 import scala.xml.XML
-
 import org.spin.client.SpinClient
 import org.spin.message.Failure
 import org.spin.message.QueryInfo
@@ -30,7 +28,6 @@ import org.spin.tools.crypto.signature.CertID
 import org.spin.tools.crypto.signature.Identity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-
 import javax.xml.bind.JAXBContext
 import net.shrine.adapter.dao.AdapterDao
 import net.shrine.broadcaster.dao.AuditDao
@@ -50,6 +47,7 @@ import net.shrine.protocol.query.Term
 import net.shrine.util.HttpClient
 import net.shrine.util.Versions
 import net.shrine.util.XmlUtil
+import org.spin.tools.crypto.Envelope
 
 /**
  * @author Bill Simons
@@ -130,6 +128,13 @@ class HappyShrineService @Autowired() (
 
     (results, failures)
   }
+  
+  private lazy val cryptor = new PKCryptor
+  
+  private def decryptSpinResult(spinResultPayload: Envelope): String = {
+    if(spinResultPayload.isEncrypted) { cryptor.decrypt(spinResultPayload) }
+    else { spinResultPayload.getData }
+  }
 
   private[service] def generateSpinReport(routingTable: RoutingTableConfig): String = {
     val peerGroupOption = routingTable.getPeerGroups.asScala.find(_.getGroupName == config.broadcasterPeerGroupToQuery)
@@ -155,11 +160,13 @@ class HappyShrineService @Autowired() (
           <actualNodeCount>{ resultSet.getResults.size }</actualNodeCount>
           <failureCount>{ resultSet.getFailures.size }</failureCount>
           {
-            val cryptor = new PKCryptor
+            
 
             results.map { spinResult =>
-              val xmlString = cryptor.decrypt(spinResult.getPayload)
+              val xmlString = decryptSpinResult(spinResult.getPayload)
+              
               val discoveryResult = unmarshal[DiscoveryResult](xmlString)
+              
               <node>
                 <name>{ discoveryResult.getNodeConfig.getNodeName }</name>
                 <url>{ discoveryResult.getNodeURL }</url>
@@ -226,7 +233,8 @@ class HappyShrineService @Autowired() (
                 <description>{ result.getDescription }</description>
                 <payload>
                   {
-                    val decryptedPayload = (new PKCryptor).decrypt(result.getPayload)
+                    val decryptedPayload = decryptSpinResult(result.getPayload)
+                    
                     XML.loadString(decryptedPayload)
                   }
                 </payload>
