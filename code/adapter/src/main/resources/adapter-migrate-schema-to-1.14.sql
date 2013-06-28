@@ -9,7 +9,8 @@ create table SHRINE_QUERY(
   query_name varchar(255) not null,
   query_expression text not null,
   date_created timestamp default current_timestamp,
-  constraint query_id_pk primary key(id)
+  constraint query_id_pk primary key(id),
+  index ix_SHRINE_QUERY_username_domain using (username, domain)
 ) engine=innodb default charset=latin1;
 
 create table QUERY_RESULT(
