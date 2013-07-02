@@ -308,7 +308,9 @@ final class SquerylAdapterDao(initializer: SquerylInitializer, tables: Tables) e
     //TODO: limit
     def queriesForUser(username: String, domain: String): Query[ShrineQuery] = {
       from(tables.shrineQueries) { queryRow =>
-        where(queryRow.domain === domain and queryRow.username === username).select(queryRow.toShrineQuery)
+        where(queryRow.domain === domain and queryRow.username === username).
+        select(queryRow.toShrineQuery).
+        orderBy(queryRow.dateCreated.desc)
       }
     }
 

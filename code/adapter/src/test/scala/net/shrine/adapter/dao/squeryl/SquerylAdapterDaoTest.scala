@@ -191,6 +191,11 @@ final class SquerylAdapterDaoTest extends AbstractShrineJUnitSpringTest with Abs
     dao.findQueriesByUserAndDomain("", "", 50) should equal(Nil)
 
     dao.insertQuery(masterId1, networkQueryId1, queryDef.name, authn, queryDef.expr)
+    
+    //Make next query happen 10 milliseconds later, so we can distinguish it from the one we just inserted 
+    //(java.sql.Timestamps have 1ms resolution, it appears?)
+    Thread.sleep(10)
+    
     dao.insertQuery(masterId2, networkQueryId2, queryDef.name, authn, queryDef.expr)
 
     dao.findQueriesByUserAndDomain("", "", 50) should equal(Nil)
@@ -199,14 +204,14 @@ final class SquerylAdapterDaoTest extends AbstractShrineJUnitSpringTest with Abs
 
     foundQuery1.domain should equal(authn.domain)
     foundQuery1.username should equal(authn.username)
-    foundQuery1.localId should equal(masterId1)
-    foundQuery1.networkId should equal(networkQueryId1)
+    foundQuery1.localId should equal(masterId2)
+    foundQuery1.networkId should equal(networkQueryId2)
     foundQuery1.queryExpr should equal(queryDef.expr)
 
     foundQuery2.domain should equal(authn.domain)
     foundQuery2.username should equal(authn.username)
-    foundQuery2.localId should equal(masterId2)
-    foundQuery2.networkId should equal(networkQueryId2)
+    foundQuery2.localId should equal(masterId1)
+    foundQuery2.networkId should equal(networkQueryId1)
     foundQuery2.queryExpr should equal(queryDef.expr)
     
     val Seq(foundQuery) = dao.findQueriesByUserAndDomain(authn.domain, authn.username, 1)

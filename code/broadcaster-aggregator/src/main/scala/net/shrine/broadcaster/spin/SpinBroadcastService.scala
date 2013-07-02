@@ -32,7 +32,7 @@ final class SpinBroadcastService(val spinClient: SpinClient, val executionContex
     def toShrineResponse(resultSet: ResultSet): ShrineResponse = Util.time("Aggregating")(debug(_)) {
       val result = aggregate(resultSet, aggregator)
 
-      debug("Aggregated into a " + result.getClass.getName)
+      debug(s"Aggregated into a ${ result.getClass.getName }")
 
       result
     }

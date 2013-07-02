@@ -32,7 +32,17 @@ final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest
     
     //2 queries for authn1, 1 for authn2
     dao.insertQuery(masterId1, queryId1, name1, authn1, expr1)
+    
+    //Make next query happen 10 milliseconds later, so we can distinguish it from the one we just inserted 
+    //(java.sql.Timestamps have 1ms resolution, it appears?)
+    Thread.sleep(10)
+    
     dao.insertQuery(masterId2, queryId2, name2, authn2, expr2)
+    
+    //Make next query happen 10 milliseconds later, so we can distinguish it from the one we just inserted 
+    //(java.sql.Timestamps have 1ms resolution, it appears?)
+    Thread.sleep(10)
+    
     dao.insertQuery(masterId3, queryId3, name1, authn1, expr1)
     
     val adapter = new ReadPreviousQueriesAdapter(dao)
@@ -107,7 +117,7 @@ final class ReadPreviousQueriesAdapterTest extends AbstractShrineJUnitSpringTest
       
       val Seq(queryMaster1) = result.queryMasters.sortBy(_.queryMasterId)
       
-      queryMaster1.queryMasterId should equal(queryId1.toString)
+      queryMaster1.queryMasterId should equal(queryId3.toString)
       queryMaster1.name should equal(name1)
       queryMaster1.userId should equal(authn1.username)
       queryMaster1.groupId should equal(authn1.domain)

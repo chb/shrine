@@ -22,6 +22,7 @@ import net.shrine.adapter.dao.AdapterDao
 import net.shrine.protocol.query.QueryDefinition
 import net.shrine.protocol.AuthenticationInfo
 import net.shrine.adapter.Obfuscator.obfuscateResults
+import net.shrine.protocol.Credential
 
 /**
  * @author Bill Simons
@@ -85,7 +86,12 @@ class RunQueryAdapter(
     {
       val failedBreakdownTypes = failures.flatMap { case (queryResult, _) => queryResult.resultType }
       
-      dao.transactional.storeResults(runQueryReq.authn, rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition, rawRunQueryResponse.results, obfuscatedQueryResults, failedBreakdownTypes, mergedBreakdowns, obfuscatedBreakdowns)
+      //We need to use the Identity passed into this method, since that will have the network username (ie, ecommons) of the querying user.
+      //Using the AuthenticationInfo from the incoming request breaks the fetching of previous queries on deployed systems where the credentials
+      //in the identity param to this method and the authn field of the incoming request are different, like the HMS Shrine deployment.
+      val authnToUse = AuthenticationInfo(identity.getDomain, identity.getUsername, Credential("", false))
+      
+      dao.transactional.storeResults(authnToUse, rawRunQueryResponse.queryId.toString, runQueryReq.networkQueryId, runQueryReq.queryDefinition, rawRunQueryResponse.results, obfuscatedQueryResults, failedBreakdownTypes, mergedBreakdowns, obfuscatedBreakdowns)
     }
 
     //TODO: Will fail in the case of NO non-breakdown QueryResults.  Can this ever happen, and is it worth protecting against here?
