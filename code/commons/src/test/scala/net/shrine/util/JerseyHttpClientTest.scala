@@ -43,18 +43,30 @@ final class JerseyHttpClientTest extends TestCase with ShouldMatchersForJUnit {
     type HasProperties = {
       def getProperties(): java.util.Map[String, AnyRef]
     }
+    
+    import HTTPSProperties.{ PROPERTY_HTTPS_PROPERTIES => httpsPropsKey }
 
     def doChecksCertsClientTest(client: HasProperties) {
       client should not be (null)
-      //check that we only have default properties
+      
+      val clientProps = client.getProperties.asScala
+      val propertiesWithoutHttpsProperties = clientProps - httpsPropsKey
+      val httpsProperties = clientProps(httpsPropsKey).asInstanceOf[HTTPSProperties]
+      
+      //check that we only have default properties plus https_properties
       //turn property maps to Scala maps to get workable equals()
-      client.getProperties.asScala should equal(defaultClientConfig.getProperties.asScala)
+      propertiesWithoutHttpsProperties should equal(defaultClientConfig.getProperties.asScala)
+      
+      httpsProperties should not be (null)
+      httpsProperties.getHostnameVerifier should be(null)
+      httpsProperties.getSSLContext should not be (null)
+      httpsProperties.getSSLContext.getProtocol should equal("TLS")
+      //TODO: Verify we're using the Spin keystore somehow. 
+      //Unfortunately, the contents of the SSLContext are a bit opaque 
     }
 
     def doTrustsAllCertsClientTest(client: HasProperties) {
       client should not be (null)
-
-      import HTTPSProperties.{ PROPERTY_HTTPS_PROPERTIES => httpsPropsKey }
 
       val clientProps = client.getProperties.asScala
       val propertiesWithoutHttpsProperties = clientProps - httpsPropsKey
