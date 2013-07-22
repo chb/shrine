@@ -4,12 +4,12 @@
     <groupId>net.shrine</groupId>
     <artifactId>shrine-base</artifactId>
     <packaging>pom</packaging>
-    <version>1.13</version>
+    <version>1.13.1</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>3.0.1.RELEASE</spring.version>
-        <spin-base-version>1.18</spin-base-version>
-        <spin-node-version>1.18</spin-node-version>
+        <spin-base-version>1.18.1</spin-base-version>
+        <spin-node-version>1.18.1</spin-node-version>
         <jaxb.api.version>2.1</jaxb.api.version>
         <jaxb.impl.version>2.1.7</jaxb.impl.version>
         <jaxws.api.version>2.1-1</jaxws.api.version>

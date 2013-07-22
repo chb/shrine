@@ -3,7 +3,7 @@
     <parent>
         <artifactId>shrine-base</artifactId>
         <groupId>net.shrine</groupId>
-        <version>1.13</version>
+        <version>1.13.1</version>
     </parent>
     <name>SHRINE Happy</name>
     <modelVersion>4.0.0</modelVersion>

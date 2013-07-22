@@ -4,10 +4,10 @@
     <groupId>net.shrine.i2b2.schema.crc</groupId>
     <artifactId>shrine-i2b2-jaxb</artifactId>
     <packaging>jar</packaging>
-    <version>1.13</version>
+    <version>1.13.1</version>
     <parent>
         <groupId>net.shrine</groupId>
         <artifactId>shrine-base</artifactId>
-        <version>1.13</version>
+        <version>1.13.1</version>
     </parent>
 </project>

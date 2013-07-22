@@ -4,7 +4,7 @@
     <groupId>net.shrine</groupId>
     <artifactId>shrine-build</artifactId>
     <packaging>pom</packaging>
-    <version>1.13</version>
+    <version>1.13.1</version>
     <build>
         <pluginManagement>
             <plugins>
@@ -22,9 +22,9 @@
         <module>code</module>
     </modules>
     <scm>
-        <connection>scm:svn:https://open.med.harvard.edu/svn/shrine/releases/1.13</connection>
-        <developerConnection>scm:svn:https://open.med.harvard.edu/svn/shrine/releases/1.13</developerConnection>
-        <url>https://open.med.harvard.edu/svn/shrine/releases/1.13</url>
+        <connection>scm:svn:https://open.med.harvard.edu/svn/shrine/releases/1.13.1</connection>
+        <developerConnection>scm:svn:https://open.med.harvard.edu/svn/shrine/releases/1.13.1</developerConnection>
+        <url>https://open.med.harvard.edu/svn/shrine/releases/1.13.1</url>
     </scm>
     <distributionManagement>
         <snapshotRepository>
