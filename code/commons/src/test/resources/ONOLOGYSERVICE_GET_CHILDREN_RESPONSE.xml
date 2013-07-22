@@ -1,0 +1,207 @@
+<ns2:response xmlns:tns="http://ws.ontology.i2b2.harvard.edu" xmlns:ns3="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns2="http://www.i2b2.org/xsd/hive/msg/1.1/">
+    <message_header>
+        <i2b2_version_compatible>1.1</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>Ontology Cell</application_name>
+            <application_version>1.0</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>i2b2 Ontology</application_name>
+            <application_version>1.3</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </receiving_facility>
+        <datetime_of_message>2010-02-23T09:52:05.050-05:00</datetime_of_message>
+        <security>
+            <domain>HarvardDemo</domain>
+            <username>demo</username>
+            <password>demouser</password>
+        </security>
+        <message_control_id>
+            <message_num>AUyLpKKKxiDaPuKwL45h</message_num>
+            <instance_num>1</instance_num>
+        </message_control_id>
+        <processing_id>
+            <processing_id>P</processing_id>
+            <processing_mode>I</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type>AL</accept_acknowledgement_type>
+        <application_acknowledgement_type>AL</application_acknowledgement_type>
+        <country_code>US</country_code>
+        <project_id>Demo2</project_id>
+    </message_header>
+    <response_header>
+        <result_status>
+            <status type="DONE">Ontology processing completed</status>
+        </result_status>
+    </response_header>
+    <message_body>
+        <ns3:concepts>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\0\</key>
+                <name>  0 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:0</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\0\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 0 years old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\1\</key>
+                <name>  1 year old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:1</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\1\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 1 year old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\2\</key>
+                <name>  2 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:2</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\2\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 2 years old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\3\</key>
+                <name>  3 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:3</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\3\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 3 years old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\4\</key>
+                <name>  4 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:4</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\4\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 4 years old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\5\</key>
+                <name>  5 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:5</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\5\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 5 years old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\6\</key>
+                <name>  6 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:6</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\6\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 6 years old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\7\</key>
+                <name>  7 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:7</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\7\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 7 years old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\8\</key>
+                <name>  8 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:8</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\8\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 8 years old</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Demographics\Age\0-9 years old\9\</key>
+                <name>  9 years old</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>DEM|AGE:9</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Demographics\Age\0-9 years old\9\</dimcode>
+                <tooltip>Demographic \ Age \ 0-9 years old \ 9 years old</tooltip>
+            </concept>
+        </ns3:concepts>
+    </message_body>
+</ns2:response>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:RoutingTableConfig xmlns:ns2="http://spin.org/xml/res">
+    <peerGroup>
+        <groupName>SHRINE</groupName>
+        <!-- ADD MORE PEERS TO YOUR SHRINE NETWORK BY UNCOMMENTING THESE LINES AND SPECIFYING THE URLS OF THE REMOTE SHRINE NODES -->
+        <!--
+        <child>
+            <endpointType>SOAP</endpointType>
+            <address>https://PEER2:6443/shrine/soap/aggregate?wsdl</address>
+        </child>                                                       ¡
+    	<child>
+            <endpointType>SOAP</endpointType>
+            <address>https://PEER3:6443/shrine/soap/aggregate?wsdl</address>
+        </child>
+        <child>
+            <endpointType>SOAP</endpointType>
+            <address>https://PEER4:6443/shrine/soap/aggregate?wsdl</address>
+        </child>
+    	-->
+    </peerGroup>
+
+    <!-- Each peer group is a directed acyclic graph (DAG) -->
+    <!-- In a p2p model, this means each peer has to list membership to ever other peer -->
+    <!-- In a hub-spoke model, configuration is much more straight forward -->
+    <peerGroup><groupName>PEER2</groupName></peerGroup>
+    <peerGroup><groupName>PEER3</groupName></peerGroup>
+    <peerGroup><groupName>PEER4</groupName></peerGroup>
+</ns2:RoutingTableConfig>
+
+

@@ -1,0 +1,178 @@
+<ns5:response xmlns:tns="http://axis2.crc.i2b2.harvard.edu" xmlns:ns9="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/ont/1.1/">
+    <message_header>
+        <i2b2_version_compatible>1.1</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>edu.harvard.i2b2.crc</application_name>
+            <application_version>1.3</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>i2b2 Previous Query</application_name>
+            <application_version>1.3</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </receiving_facility>
+        <message_control_id>
+            <instance_num>1</instance_num>
+        </message_control_id>
+        <project_id>Demo2</project_id>
+    </message_header>
+    <response_header>
+        <info>Log information</info>
+        <result_status>
+            <status type="DONE">DONE</status>
+            <polling_url interval_ms="100" />
+        </result_status>
+    </response_header>
+    <message_body>
+        <ns4:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns4:master_responseType">
+            <status>
+                <condition type="DONE">DONE</condition>
+            </status>
+            <query_master>
+                <query_master_id>3825</query_master_id>
+                <name>UREA NITROGEN (@18:04:33</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T13:04:36.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3824</query_master_id>
+                <name>UREA NITROGEN (@18:04:23</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T13:04:25.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3823</query_master_id>
+                <name>UREA NITROGEN (@18:04:07</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T13:04:10.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3822</query_master_id>
+                <name>UREA NITROGEN (@18:02:44</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T13:02:47.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3821</query_master_id>
+                <name>UREA NITROGEN (@18:02:24</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T13:02:26.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3820</query_master_id>
+                <name>UREA NITROGEN (@18:02:17</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T13:02:20.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3819</query_master_id>
+                <name>UREA NITROGEN (@18:01:35</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T13:01:37.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3818</query_master_id>
+                <name>UREA NITROGEN (@18:00:50</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T13:00:52.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3817</query_master_id>
+                <name>ANION GAP (LOIN@17:50:22</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T12:50:25.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3816</query_master_id>
+                <name>Married</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-19T10:13:57.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3815</query_master_id>
+                <name>18-34 y-Events @20:36:21</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-18T15:36:25.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3814</query_master_id>
+                <name>18-34-Event-Inhib@20:36:10</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-18T15:36:14.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3813</query_master_id>
+                <name>18-34 y-Events @20:35:24</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-18T15:35:29.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3812</query_master_id>
+                <name>moderat-27@20:22:03</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-18T15:22:06.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3811</query_master_id>
+                <name>Female@01:30:39</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-18T12:43:52.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3810</query_master_id>
+                <name>mild de-35-44 y@10:25:31</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-18T05:25:35.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3806</query_master_id>
+                <name>Female@01:30:39</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-17T16:46:27.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3805</query_master_id>
+                <name>Oasis@18:24:59</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-17T13:25:04.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3804</query_master_id>
+                <name>Male-High sc@22:30:57</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-16T17:32:45.000-05:00</create_date>
+            </query_master>
+            <query_master>
+                <query_master_id>3803</query_master_id>
+                <name>Male@21:36:16</name>
+                <user_id>demo</user_id>
+                <group_id>Demo2</group_id>
+                <create_date>2010-02-16T16:38:09.000-05:00</create_date>
+            </query_master>
+        </ns4:response>
+    </message_body>
+</ns5:response>

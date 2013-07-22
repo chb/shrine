@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings>
+  <fragment_id>60</fragment_id>
+  <fragment_name>chb vital</fragment_name>
+  <concepts>
+    <concept>
+      <local_key>DEM|VITAL:A</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>45</fragment_id>
+          <local_key>L</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>DEM|VITAL:D</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>45</fragment_id>
+          <local_key>D</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>DEM|VITAL:U</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>45</fragment_id>
+          <local_key>UN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+  </concepts>
+</mappings>

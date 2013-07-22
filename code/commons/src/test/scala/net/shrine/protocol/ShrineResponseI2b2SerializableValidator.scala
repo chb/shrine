@@ -1,0 +1,3 @@
+package net.shrine.protocol
+
+trait ShrineResponseI2b2SerializableValidator extends ShrineResponseValidator with I2b2SerializableValidator

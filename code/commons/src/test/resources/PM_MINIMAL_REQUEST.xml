@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns5:request xmlns:tns="http://axis2.crc.i2b2.harvard.edu"
+    xmlns:ns9="http://www.i2b2.org/xsd/hive/msg/result/1.1/"
+    xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/"
+    xmlns:pm="http://www.i2b2.org/xsd/cell/pm/1.1/"
+    xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/"
+    xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/"
+    xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/"
+    xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/"
+    xmlns:ns8="http://www.i2b2.org/xsd/cell/ont/1.1/">
+    <message_header>   
+
+        <security>
+            <domain>i2b2demo</domain>
+            <username>demo</username>
+            <password>demouser</password>
+        </security>
+            
+    </message_header>
+    <request_header>
+    </request_header>
+    <message_body>
+        <pm:get_user_configuration>
+            <project>undefined</project>
+        </pm:get_user_configuration>
+    </message_body>
+</ns5:request>

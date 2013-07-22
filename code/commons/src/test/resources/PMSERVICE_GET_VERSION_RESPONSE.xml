@@ -1,0 +1,5 @@
+<ns3:response xmlns:tns="http://ws.pm.i2b2.harvard.edu" xmlns:ns3="http://www.i2b2.org/xsd/hive/msg/version/" xmlns:ns4="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns2="http://www.i2b2.org/xsd/hive/msg/1.1/">
+    <message_body>
+        <i2b2_message_version>1.1</i2b2_message_version>
+    </message_body>
+</ns3:response>

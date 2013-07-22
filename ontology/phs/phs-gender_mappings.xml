@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings>
+  <fragment_id>16</fragment_id>
+  <fragment_name>phs gender</fragment_name>
+  <concepts>
+    <concept>
+      <local_key>\RPDR\Demographics\Gender\Female</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>13</fragment_id>
+          <local_key>F</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Gender\Male</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>13</fragment_id>
+          <local_key>M</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Gender\Unknown</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>13</fragment_id>
+          <local_key>Z</local_key>
+        </concept>
+      </mappings>
+    </concept>
+  </concepts>
+</mappings>

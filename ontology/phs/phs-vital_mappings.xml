@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings>
+  <fragment_id>62</fragment_id>
+  <fragment_name>phs vital</fragment_name>
+  <concepts>
+    <concept>
+      <local_key>\RPDR\Demographics\Vital Status\Deceased</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>45</fragment_id>
+          <local_key>D</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Vital Status\Deferred</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>45</fragment_id>
+          <local_key>UN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Vital Status\Living</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>45</fragment_id>
+          <local_key>L</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Demographics\Vital Status\Not Recorded</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>45</fragment_id>
+          <local_key>UN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+  </concepts>
+</mappings>

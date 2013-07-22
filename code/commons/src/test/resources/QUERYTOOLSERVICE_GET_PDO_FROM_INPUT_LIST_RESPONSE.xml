@@ -1,0 +1,1640 @@
+<ns5:response xmlns:tns="http://axis2.crc.i2b2.harvard.edu" xmlns:ns9="http://www.i2b2.org/xsd/hive/msg/result/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/crc/psm/1.1/" xmlns:ns7="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns3="http://www.i2b2.org/xsd/cell/crc/pdo/1.1/" xmlns:ns5="http://www.i2b2.org/xsd/hive/msg/1.1/" xmlns:ns2="http://www.i2b2.org/xsd/hive/pdo/1.1/" xmlns:ns6="http://www.i2b2.org/xsd/cell/crc/psm/querydefinition/1.1/" xmlns:ns8="http://www.i2b2.org/xsd/cell/ont/1.1/">
+    <message_header>
+        <i2b2_version_compatible>1.1</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>edu.harvard.i2b2.crc</application_name>
+            <application_version>1.3</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>i2b2 Previous Query</application_name>
+            <application_version>1.3</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </receiving_facility>
+        <message_control_id>
+            <instance_num>1</instance_num>
+        </message_control_id>
+        <project_id>Demo2</project_id>
+    </message_header>
+    <response_header>
+        <info>Log information</info>
+        <result_status>
+            <status type="DONE">DONE</status>
+            <polling_url interval_ms="100" />
+        </result_status>
+    </response_header>
+    <message_body>
+        <ns3:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:patient_data_responseType">
+            <ns2:patient_data>
+                <ns2:patient_set>
+                    <patient>
+                        <patient_id>1000000001</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1985-11-17T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">21</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000002</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1966-08-29T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">40</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000003</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1969-03-07T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">38</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000004</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1976-08-13T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">30</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000005</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1973-06-25T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">33</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000007</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1981-07-10T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">25</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000008</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1986-12-16T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">20</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000009</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1989-01-11T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">18</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000010</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1976-11-23T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">30</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000011</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2049-10-19T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">57</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000012</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1991-03-29T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">16</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000013</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2027-02-27T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">80</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000014</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1956-05-22T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">50</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000015</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1978-09-11T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">28</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000016</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1983-11-19T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">23</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000017</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1961-09-12T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">45</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000018</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2039-06-30T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">67</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000019</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1999-02-05T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">8</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000020</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1958-09-15T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">48</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000021</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1976-01-29T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">31</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000022</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1966-10-26T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">40</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000023</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1976-11-04T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">30</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000024</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1979-10-31T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000025</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2033-10-06T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">73</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000026</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2045-04-17T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">62</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000027</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1972-12-17T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">34</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000028</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1969-02-12T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">38</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000029</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1985-09-12T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">21</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000030</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1993-09-18T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">13</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000031</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1960-08-06T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">46</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000032</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1997-03-19T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">10</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000033</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1981-11-19T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">25</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000034</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1970-06-13T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">36</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000035</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1988-01-20T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">19</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000036</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1968-04-28T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">39</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000037</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1991-07-06T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">15</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000038</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1979-08-31T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000039</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1983-05-15T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">23</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000040</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1992-03-10T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">15</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000041</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1994-05-07T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">12</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000042</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1979-09-14T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000043</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2049-03-11T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">58</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000044</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1994-05-21T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">12</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000045</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2021-04-06T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">86</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000046</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1991-11-24T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">15</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000047</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1971-03-07T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">36</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000048</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1996-04-28T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">10</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000049</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1966-06-21T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">40</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000050</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1989-06-15T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">17</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000051</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1968-03-27T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">39</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000052</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1972-07-07T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">34</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000053</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1997-02-19T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">10</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000054</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2044-01-05T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">63</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000055</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1991-07-18T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">15</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000056</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1998-05-23T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">8</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000057</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1980-06-07T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">26</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000059</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1975-02-21T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">32</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000060</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1972-03-29T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">35</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000061</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1969-09-30T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">37</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000062</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1973-09-10T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">33</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000063</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1962-05-23T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">44</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000064</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1984-12-08T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">22</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000065</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2000-06-07T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">6</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000066</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1988-05-12T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">18</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000067</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1982-06-30T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">24</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000068</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1980-03-13T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000069</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1969-10-19T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">37</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000070</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1972-03-07T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">35</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000071</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">Y</param>
+                        <param name="birth_date" column="birth_date">2023-06-30T00:00:00.000-04:00</param>
+                        <param name="death_date" column="death_date">2005-06-09T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">83</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000072</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1997-03-24T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">10</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000073</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1968-08-25T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">38</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000074</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1964-10-20T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">42</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000075</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1958-09-27T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">48</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000076</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2048-03-17T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">59</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000077</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1996-12-20T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">10</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000078</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1980-02-28T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000079</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1978-09-26T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">28</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000080</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1976-10-12T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">30</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000082</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1956-05-25T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">50</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000083</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2044-12-02T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">62</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000084</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1985-05-08T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">21</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000085</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2047-01-28T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">60</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000086</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1968-10-04T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">38</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000087</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1955-01-26T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">52</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000088</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1995-07-31T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">11</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000089</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1965-12-23T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">41</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000090</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1968-08-15T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">38</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000092</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1970-06-29T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">36</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000093</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1979-09-05T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000095</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1957-05-05T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">50</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000096</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2034-05-09T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">73</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000097</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1981-06-27T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">25</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000098</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1986-02-10T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">21</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000099</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1974-06-07T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">32</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000100</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1992-03-08T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">15</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000101</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">Y</param>
+                        <param name="birth_date" column="birth_date">1951-11-27T00:00:00.000-05:00</param>
+                        <param name="death_date" column="death_date">2003-05-10T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">55</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000102</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1975-11-03T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">31</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000103</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1977-03-22T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">30</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000104</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1979-12-21T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000105</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2044-07-21T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">62</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000106</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1981-12-05T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">25</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000107</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1980-05-05T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">26</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000108</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2044-01-02T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">63</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000109</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2047-03-19T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">60</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000110</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1972-02-06T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">35</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000111</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1961-06-18T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">45</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000112</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1993-05-17T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">13</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000113</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1998-01-04T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">9</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000114</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1979-12-18T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000118</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1975-08-04T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">31</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000119</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">2037-12-25T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">69</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">white</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000120</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1974-04-10T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">33</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000121</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1962-08-31T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">44</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000123</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1983-09-30T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">23</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000124</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1978-07-05T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">28</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">agnostic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000125</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1977-08-29T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">29</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000126</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1992-10-05T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">14</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000127</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1989-07-06T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">17</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">indian</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000128</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1967-11-02T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">39</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">christian</param>
+                        <param name="marital_status_cd" column="marital_status_cd">divorced</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000129</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1971-12-25T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">35</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">muslim</param>
+                        <param name="marital_status_cd" column="marital_status_cd">married</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000130</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1980-04-07T00:00:00.000-05:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">27</param>
+                        <param name="language_cd" column="language_cd">english</param>
+                        <param name="race_cd" column="race_cd">black</param>
+                        <param name="religion_cd" column="religion_cd">jewish</param>
+                        <param name="marital_status_cd" column="marital_status_cd">widow</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000132</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1998-08-30T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">M</param>
+                        <param name="age_in_years_num" column="age_in_years_num">8</param>
+                        <param name="language_cd" column="language_cd">german</param>
+                        <param name="race_cd" column="race_cd">hispanic</param>
+                        <param name="religion_cd" column="religion_cd">atheist</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                    <patient>
+                        <patient_id>1000000133</patient_id>
+                        <param name="vital_status_cd" column="vital_status_cd">N</param>
+                        <param name="birth_date" column="birth_date">1993-09-06T00:00:00.000-04:00</param>
+                        <param name="sex_cd" column="sex_cd">F</param>
+                        <param name="age_in_years_num" column="age_in_years_num">13</param>
+                        <param name="language_cd" column="language_cd">spanish</param>
+                        <param name="race_cd" column="race_cd">asian</param>
+                        <param name="religion_cd" column="religion_cd">roman catholic</param>
+                        <param name="marital_status_cd" column="marital_status_cd">single</param>
+                        <param name="zipcode_char" column="zipcode_char" />
+                        <param name="statecityzip_path_char" column="statecityzip_path_char" />
+                    </patient>
+                </ns2:patient_set>
+            </ns2:patient_data>
+        </ns3:response>
+    </message_body>
+</ns5:response>

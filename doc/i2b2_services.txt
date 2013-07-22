@@ -1,0 +1,212 @@
+******************************************************************
+*                                                                *
+* This document contains a list of the i2b2 core services used   *
+* in the demonstration workbench posted to the i2b2.org website. *
+*                                                                *
+* For each service, a description, the URL, the service name,    * 
+* and a summary of the input and output variables are listed.    *
+*                                                                *
+* For the specific message format for each of these services,    *
+* follow the cell documentation links provided.                  *
+*                                                                *
+******************************************************************
+
+
+
+*** CELL DOCUMENTATION ***
+
+http://services.i2b2.org/i2b2/services/listServices
+
+https://www.i2b2.org/software/projects/common/i2b2_Common_Header_11.pdf
+
+Project Management
+http://webservices.i2b2.org/PM/rest/PMService
+https://www.i2b2.org/software/projects/projectmgmt/Project_Management_Messaging_11.pdf
+
+Ontology Management
+http://webservices.i2b2.org/i2b2/rest/OntologyService
+https://www.i2b2.org/software/projects/ontologymgmt/Ontology_Messaging_11.pdf
+
+Data Repository (CRC)
+http://webservices.i2b2.org/i2b2/rest/QueryToolService
+https://www.i2b2.org/software/projects/datarepo/CRC_Messaging_11.pdf
+
+
+
+*** PROJECT MANAGEMENT ***
+
+OPERATIONS
+
+	Get information about the current user	
+		http://webservices.i2b2.org/PM/rest/PMService/getServices
+		get_user_configuration
+			input: username, password, [project]
+			output: User, [CellData]
+
+NOTES
+
+	username+password --> list of projects
+	username+password+project --> celldata
+	
+
+
+*** ONTOLOGY MANAGEMENT ***
+
+OBJECT MODEL
+
+	Categories - root nodes (based on user permissions)
+		Children - child nodes
+	Schemes - different vocabularies (based on user permissions)
+	
+
+OPERATIONS
+
+	Get a list of categories for a user
+		http://webservices.i2b2.org/i2b2/rest/OntologyService/getCategories
+		get_categories
+			output: list of Concepts
+			
+	Get a list of child nodes
+		http://webservices.i2b2.org/i2b2/rest/OntologyService/getChildren
+		get_children
+			input: Parent (\\table_key\path)
+			output: list of Concepts
+			
+	Get a list of nodes that match a search string
+		http://webservices.i2b2.org/i2b2/rest/OntologyService/getNameInfo
+		get_name_info
+			input: match_str
+			output: list of Concepts
+			
+	Get details about a particular node
+		http://webservices.i2b2.org/i2b2/rest/OntologyService/getTermInfo
+		get_term_info
+			input: self (a Parent)
+			output: list of Concepts
+			
+	Get information about the vocabularies
+		http://webservices.i2b2.org/i2b2/rest/OntologyService/getSchemes
+		get_schemas
+			output: list of Concepts
+			
+	Get information about a scheme:code pair
+		http://webservices.i2b2.org/i2b2/rest/OntologyService/getCodeInfo
+		get_code_info
+			input: match_str (scheme:code)
+			output: list of Concepts
+			
+NOTES
+
+	Query steps:
+	1) get user's role
+	2) parse path to get table_key
+	3) check that table_access.c_table_cd = table_key 
+		where c_role=role and c_project=project
+	4) query table named table_access.c_table_name 
+			
+			
+
+*** DATA REPOSITORY - PATIENT SET QUERY SERVICE (PSM) ***
+
+URL
+	http://webservices.i2b2.org/i2b2/rest/QueryToolService/request	
+
+OBJECT MODEL
+
+	QueryMaster - query_master_id (query definition)
+		QueryInstance - query_instance_id (a run of the query)
+			QueryResultInstance - result_instance_id (a patient set)
+				[result_instance_id == patient_set_coll_id]
+
+OPERATIONS
+
+	Run a new query and create objects
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/request	
+		CRC_QRY_runQueryInstance_fromQueryDefinition
+			input: QueryDefinition, result_waittime_ms
+			output: new QueryMaster, new QueryInstance, new ResultInstance
+
+	Run a prior query again to create a new QueryInstance
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/request	
+		CRC_QRY_runQueryInstance_fromQueryMasterId
+			input: query_master_id
+			output: new QueryInstance, new ResultInstance
+
+	Manage the list of QueryMasters
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/request	
+		CRC_QRY_getQueryMasterList_fromUserId
+			input: user_id
+			output: list of QueryMasters (query_master_id)
+		CRC_QRY_getQueryMasterList_fromGroupId
+			input: group_id
+			output: list of QueryMasters (query_master_id)
+		CRC_QRY_deleteQueryMaster
+			input: query_master_id
+		CRC_QRY_renameQueryMaster
+			input: query_master_id, query_name
+
+	Retrieve the query definition from a QueryMaster 
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/request	
+		CRC_QRY_getRequestXml_fromQueryMasterId
+			input: query_master_id
+			output: QueryDefinition
+
+	Get the QueryInstances from a QueryMaster
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/request	
+		CRC_QRY_getQueryInstanceList_fromQueryMasterId
+			input: query_master_id
+			output: list of QueryInstances (query_instance_id)
+
+	Get the QueryResultInstances from a QueryInstance
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/request	
+		CRC_QRY_getQueryResultInstanceList_fromQueryInstanceId
+			input: query_instance_id
+			output: list of ResultInstances 
+				(result_instance_id, query_status_type)
+
+NOTES
+
+	Operations that run async against the observation_fact table:
+		1) CRC_QRY_runQueryInstance_fromQueryDefinition
+		2) CRC_QRY_runQueryInstance_fromQueryMasterId
+
+
+
+*** DATA REPOSITORY - PATIENT DATA OBJECT QUERY SERVICE (PDO) ***
+
+URL
+	http://webservices.i2b2.org/i2b2/rest/QueryToolService/pdorequest
+
+OPERATIONS
+
+	Get patient data from a PatientSet
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/pdorequest
+		getPDO_fromInputList
+			input: patient_set_coll_id, FilterList, OutputOptions
+			output: PatientData (based on list of output options)
+
+	Get patient data from a list of patients
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/pdorequest
+		getPDO_fromInputList
+			input: list of patient_num, FilterList, OutputOptions
+			output: PatientData (based on list of output options)
+
+	Get details about a specific fact
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/pdorequest
+		get_observationfact_by_primary_key
+			input: FactPrimaryKey 
+				(event_id, patient_id, concept_cd, observer_id, start_date)
+			output: observation_blob
+		
+	Lookup records based on table key
+		http://webservices.i2b2.org/i2b2/rest/QueryToolService/pdorequest
+		get_patient_by_primary_key
+		get_event_by_primary_key
+		get_concept_by_primary_key
+		get_observer_by_primary_key
+
+NOTES
+
+	Specs for last four operations listed TBD.
+
+

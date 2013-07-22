@@ -1,0 +1,570 @@
+***********************************************
+*                                             *
+* OVERVIEW OF THE i2b2 HIVE AND CELL MESSAGES *
+*                                             *
+***********************************************
+
+
+****************************
+*** Introduction to i2b2 ***
+****************************
+
+The i2b2 application is divided into completely independent "cells".
+A cell can be written in any language, different cells can be
+written by different people, and cells can be hosted on servers
+in different locations or domains. Cells can be entirely back-end
+processes, or they can have a user interface. The user interface
+of a cell can take many forms. To date, cell UIs have been
+developed as both web pages and as plugins for the Java Eclipse
+platform.
+
+The inner-workings of a cell, including its database if it has one, 
+are typically hidden from all other cells. Cells communicate with 
+each other only through i2b2 formatted XML messages. This document
+describes the message format.
+
+A collection of i2b2 cells that are communicating with each other
+is known as an i2b2 Hive.
+
+
+******************************************************
+*** List of existing, future, and unofficial cells ***
+******************************************************
+
+--- EXISTING CORE CELLS ---
+
+Project Management (PM): This cell is used to authenticate a 
+username and password and to provide details on the cells the user
+is authorized to view, the projects the user is working on, and
+the preferences the user has previously set.
+
+Ontology Management (ONT): This cell defines the vocabularies used
+in queries. Medical concepts are organized in a tree hierarchy.
+This cell allows users to search for concepts and get information 
+about the concept, such as what its list of child concepts are. Not
+all users have access to every concept. This cell communicates with
+the PM cell to verify a user's identity before returning any result.
+
+Data Repository (CRC): This cell is also known as the Clinical
+Research Chart. It contains all the patient data. It provides
+services to perform aggregate queries to get the total number of
+patients matching certain criteria, and it has services to obtain
+data on individual patients. Any cell that needs access to patient
+data must call the CRC cell to obtain that data. [NOTE: This is
+the "official" description. In practice, future cells might need
+direct access to the database to run efficiently.]
+
+--- FUTURE CORE CELLS ---
+
+File Repository (FILE): This cell manages data not stored in the
+CRC database. This could include images, notes, or data files and
+reports created by other cells. This cell controls user
+permissions to the files.
+
+Identity Management (ID): This cell is used to map the surrogate
+IDs stored in the CRC cell to actual medical record numbers and
+other identified patient data. [NOTE: This cell will not be
+officially added posted to the i2b2 website for a long time since
+it opens up many potential security and privacy issues. However,
+many hospitals using i2b2 are building their own versions of this
+cell since the utility of the Hive can be limited without it.]
+
+--- EXISTING NON-CORE CELLS ---
+
+PFT Processing (PFT): A tool to parse pulmonary function test
+reports.
+
+Natural Language Processing (NLP): A tool to extract concepts
+from physician notes. [A work in progress by many...]
+
+--- FUTURE CORE CELLS ---
+
+De-Identification (DEID): A tool to remove patient identifiers
+from physician notes so the data can be stored in the CRC
+database. [A work in progress by many...]
+
+Correlation Analysis (CORR): A tool to perform pairwise
+correlation of concepts in the HIVE.
+
+Computational Cluster (CC): A tool that provides an API to other
+cells that want to take advantage of a computational cluster.
+The correlation analysis cell is the first cell to use this tool.
+
+Workflow Framework (WORK): Allows a series of complex steps to
+be defined so that it can be easily repeated.
+
+--- UNOFFICIAL CELLS ---
+
+[NOTE: These are cells that have been built at HMS for the web
+based version of the workbench, and are not yet recognized by
+the i2b2 development team as official cells. Future support for
+these cells cannot be guaranteed.]
+
+Web UI (WEB): This is a platform independent website, written
+in HTML, CSS, and Javascript that allows users to communicate
+with i2b2 cells through a web browser.
+
+Web Proxy (PROXY): Web browsers prevent cross-server scripting.
+As a result, the Web UI cannot directly access remote i2b2
+cells. The PROXY cell sits on the same server that hosts the
+Web UI. The Web UI can pass messages through the PROXY cell
+and specify where the message should be redirected.
+
+High Performance Data Repository (HPCRC): The CRC cell is
+designed to be easy to load with new data. However, it is not
+optimized for performance. The HPCRC cell maps the data in the
+CRC cell to a new data schema, and it provides its own query
+engine that returns results much faster, especially on large
+data sets and complex queries. The HPCRC cell also has options
+to perform queries using statistical sampling algorithms that
+examine only a subset of the data. This allows queries to
+run in sub-second time, even on database with a billion or
+more data facts.
+
+Mathematical Functions (MATH): This cell contains statistical
+lookup tables and other mathematical functions needed for
+data analysis performed by other cells.
+
+Data Analysis Plugins (DA): This cell contains a collection
+of basic data analysis plugins that perform tasks such as
+generating demographic and diagnosis summaries for patient
+lists, creating random patient lists that meet certain criteria,
+comparing two or more patient lists, and obtaining information
+on visits and the amount of data collected on patients.
+
+--- FUTURE UNOFFICIAL CELLS ---
+
+[NOTE: These are cells being developed at HMS and do not
+represent future cells that will be part of the official i2b2
+hive.]
+
+Shared Health Research Information Network (SHRINE): This cell
+links together multiple i2b2 instances to perform multi-
+institution queries. Three types of queries are possible.
+1) An anonymous "ping", based on a technology called SPIN,
+which automatically discovers i2b2 databases that are online
+and contain the types of data the user is interested in.
+2) A "sip" query, which returns only aggregate totals.
+3) Deep "drink" queries, which return data on individual
+patients.
+
+Temporal Analysis (TIME): Tools to perform temporal operations
+on patient lists to determine cause-and-effect relationships
+between concepts.
+
+Electronic Data Capture (EDC): Customizable data entry forms to
+allow investigators to enter new information about their
+patients into the CRC.
+
+
+
+*******************************************
+*** Common format for all i2b2 messages ***
+*******************************************
+
+Request and response messages each have three required components.
+
+REQUEST:
+message_header
+request_header
+message_body
+
+RESPONSE:
+message_header
+response_header
+message_body
+
+### For more general information about cell messages, view:
+
+https://www.i2b2.org/resrcs/pdf/MessageWrapper.pdf
+
+
+
+********************************
+*** Request message template ***
+********************************
+
+All i2b2 request messages use this XML template:
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request>
+	<message_header>
+		<security>
+			<domain>Demo</domain>
+			<username>demo</username>
+			<password>demouser</password>
+		</security>
+		<project_id>Demo</project_id>
+		[optional tags]
+	</message_header>
+	<request_header>
+		<result_waittime_ms>120000</result_waittime_ms>
+	</request_header>
+	<message_body>
+		[service-specific request message]
+	</message_body>
+</request>
+
+NOTES:
+
+The security tag contains the authentication information for the user. 
+This data must be sent with EVERY message. Future versions of i2b2 will
+replace the password with a token.
+
+The project_id refers to a specific project the user is working on.
+Different projects have access to different data and i2b2 cells. If the
+project_id is left blank, then the user will get a default view of the
+workbench.
+
+The result_waittime_ms indicates the amount of time in milliseconds to
+wait for that service to provide a synchronous result. Once the
+waittime is reached, a pending result is immediately returned, and the
+service may continue to process the result asychronously.
+
+There are a number of optional tags in the message_header that
+indicate the version of the Hive, the date/time of the message, and
+other metadata.
+
+The specific input variables needed by the service are listed in the
+message_body.
+
+
+
+*********************************
+*** Response message template ***
+*********************************
+
+All i2b2 response messages use this XML template:
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+	<message_header>
+		<security>
+			<domain>Demo</domain>
+			<username>demo</username>
+			<password>demouser</password>
+		</security>
+		<project_id>Demo</project_id>
+		[optional tags]
+	</message_header>
+	<response_header>
+		<result_status>
+			<status type="PENDING">Processing your request</status>
+			<polling_url interval_ms="100">http://i2b2/polling</polling_url>
+			<condition type="INFO">Estimated time 2 minutes</condition>
+		</result_status>
+	</response_header>
+	<message_body>
+		[service-specific result message]
+	</message_body>
+</response>
+
+NOTES:
+
+The security tag and the project is returned with EVERY message. Future 
+versions of i2b2 will replace the password with a token.
+
+The response_header returns information about response. This includes
+the result_status, which can contain 3 tags:
+1) status: DONE, PENDING, or ERROR. A pending result is one that
+exceeded the result_waittime_ms time.
+2) polling_url: For pending results, this tag indicates where to
+check to find out if the service is completed. The interval_ms
+gives the amount of time the user should wait before rechecking the
+status.
+3) condition: type = WARNING, ERROR, FATAL_ERROR, INFO. Provides
+additional information to the user.
+
+The specific output variables returned by the service are listed in the
+message body.
+
+
+
+*********************************************
+*** EXAMPLE: Project Management (PM) Cell ***
+*********************************************
+
+Nearly all cells will have to call the PM cell to verify that the
+user has authorization to use that cell.
+
+The PM cell performs both authentication and authorization. As with 
+any other cell, the username and password are passed to this cell
+within the message_header's security tag. The project_id is optional.
+The message_body for this cell has the following format:
+
+<message_body>
+	<get_user_configuration>
+		<project>demo</project>
+	</get_user_configuration>
+</message_body>
+
+The result of the PM is one of three cases: 1) an error message if
+the user cannot be authenticated, 2) a list of projects the user
+has access to if the project_id was left blank in the request,
+3) a list of data about a project if a project_id was specified.
+
+In case #1 (failed authentication), no message_body is returned.
+The response_header is:
+
+<response_header>
+	<result_status>
+		<status type="ERROR">Supplied password does not match user password!</status>
+	</result_status>
+</response_header>
+    
+[NOTE: I am not sure what the response looks like for case #2.]
+
+In case #3, the user is authenticated, and information about the
+project is returned. The message_header is:
+
+<response_header>
+	<result_status>
+		<status type="DONE">PM processing completed</status>
+	</result_status>
+</response_header>
+
+The message_body in case #3 is:
+
+<message_body>
+	<configure>
+		<environment>PRODUCTION</environment>
+		<user>
+			<full_name>demo</full_name>
+			<user_name>demo</user_name>
+			<password>demouser</password>
+			<project id="Demo">
+				<name>Demo</name>
+				<key />
+				<role>USER</role>
+			</project>
+		</user>
+		<cell_datas>
+			<cell_data id="CRC">
+				<name>Data Repository Cell</name>
+				<url>http://webservices.i2b2.org/i2b2/rest/QueryToolService/</url>
+				<method>REST</method>
+			</cell_data>
+			<cell_data id="ONT">
+				<name>Ontology Cell</name>
+				<url>http://webservices.i2b2.org/i2b2/rest/OntologyService/</url>
+				<method>REST</method>
+				<param name="OntSynonyms">false</param>
+				<param name="OntHiddens">false</param>
+				<param name="OntMax">200</param>
+			</cell_data>
+		</cell_datas>
+	</configure>
+</message_body>
+
+NOTES:
+
+The environment is PRODUCTION, DEVELOPMENT, etc.
+
+The user tag contains information about the user and the project.
+
+The project has an id and a project name. The optional key is
+a value that can be used to decrypt data that has been
+encrypted for this project. The role is the user's role in the
+study. It can have values such as USER or ADMINISTRATOR.
+
+The cell_datas tag contains a list of all the cells the user
+has authorization to view in this project. Each cell_data
+tag contains the id of the cell, the name of the cell, the URL
+of the cell, the webservice method (e.g., REST, SOAP), and
+a list of parameter values specific to that cell.
+
+After a particular cell calls the PM cell, it should check that
+its id is listed in the returned list of cell_datas.
+
+### For more information about the PM cell messages, view:
+
+https://www.i2b2.org/software/projects/projectmgmt/Project_Management_Messaging_11.pdf
+
+
+
+***************************
+*** Ontology (ONT) Cell ***
+***************************
+
+A complete description of the ontology cell is not listed here.
+However, the basic message structure of the ONT cell is as
+follows.
+
+The message_body of the request has the following format:
+
+<message_body>
+	<[operation] param1="val1" param2="val2" >
+		<[variable] />
+	</[operation]
+</message_body>
+
+NOTES:
+
+The [operation] is one of several types, including 
+"get_categories" to return the list of root nodes in the
+ontology tree and "get_children" to get a list of child
+nodes. Different operations have different parameters.
+
+Different operations require different [variables]. 
+For example, the get_children operation requires a
+variable named "parent", which specifies the parent node.
+
+An example of a complete ONT request message_body is:
+
+<message_body>
+	<get_children max="200">
+		<parent>\\i2b2\i2b2\Diagnoses\Circulatory system</parent>
+	</get_children>
+</message_body>
+
+The message_body of an ONT response generally has the following
+format:
+
+<message_body>
+	<concepts>
+		<concept>
+			[data for concept 1]
+		</concept>
+		<concept>
+			[data for concept 2]
+		</concept>
+	</concepts>
+</message_body>
+
+NOTES:
+
+A concept is a node in the ontology tree. The concepts
+tag contains a list of concept objects. Each concept
+tag contains data about that node, such as its unique
+identifier, name, and other metadata.
+
+### For more information about the ONT cell messages, view:
+
+https://www.i2b2.org/software/projects/ontologymgmt/Ontology_Messaging_11.pdf
+
+
+
+**********************************
+*** Data Repository (CRC) Cell ***
+**********************************
+
+A complete description of the CRC cell is not listed here.
+However, the basic message structure of the cell is as
+follows.
+
+The CRC cell actually contains two services:
+
+1) Patient Sets (PSM): This service is used to send a
+query to the database and find a list of matching patients.
+
+2) Patient Data Object (PDO): This service is used to
+get information about individual patients.
+
+--- PSM Service ---
+
+PSM requests use the following message_body template:
+
+<message_body>
+	<psmheader>
+		<request_type>[operation]</request_type> 
+		[optional tags]
+	</psmheader>
+	<request>
+		[variables]
+	</request>
+</message_body>
+  
+NOTES:
+
+There are several different operations. Each have different
+variables that are required.
+
+PSM results use the following message_body template:
+
+<message_body>
+	<response>
+		<status>
+			<condition type="DONE">DONE</condition>
+		</status>
+		[operation specific result tags]
+	</response>
+</message_body>
+
+NOTES:
+
+The response contains a status and other data that depends
+on the type of operation that was requested.
+
+--- PDO Service ---
+
+PDO requests use the same format as the PSM service. However,
+instead of a psmheader tag, the tag is named psoheader. So,
+the request message_body looks like this:
+
+<message_body>
+	<pdoheader>
+		<request_type>[operation]</request_type> 
+		[optional tags]
+	</pdoheader>
+	<request>
+		[variables]
+	</request>
+</message_body>
+  
+The response format is exactly the same as the PSM service.
+
+### For more information about the CRC cell messages, view:
+
+https://www.i2b2.org/software/projects/datarepo/CRC_Messaging_11.pdf
+
+
+
+******************************
+*** Web Proxy (PROXY) Cell ***
+******************************
+
+To use the web proxy cell, simply add the following tag to
+the message_header of any i2b2 request:
+
+<proxy>
+	<redirect_url>[URL of the intended cell]</redirect_url>
+</proxy>
+        
+NOTES:
+
+The redirect_url tag contains the URL of the cell to which the
+proxy cell should send the message.
+
+An example of a PM request using the PROXY cell is as follows:
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request>
+	<message_header>
+		<proxy>
+			<redirect_url>http://webservices.i2b2.org/PM/rest/PMService/getServices</redirect_url>
+		</proxy>
+		<security>
+			<domain>Demo</domain>
+			<username>demo</username>
+			<password>demouser</password>
+		</security>
+		<project_id>Demo</project_id>
+	</message_header>
+	<request_header>
+		<result_waittime_ms>120000</result_waittime_ms>
+	</request_header>
+	<message_body>
+		<get_user_configuration>
+			<project>demo</project>
+		</get_user_configuration>
+	</message_body>
+</request>
+
+NOTES:
+
+This message is a properly formatted PM request. Once the
+PROXY cell receives this message, it will send it to
+the specified redirect_url. The PROXY cell will return
+whatever the response is from the PM cell.
+
+

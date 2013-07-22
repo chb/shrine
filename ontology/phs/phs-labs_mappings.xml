@@ -1,0 +1,4237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings>
+  <fragment_id>82</fragment_id>
+  <fragment_name>phs labs-poc</fragment_name>
+  <concepts>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\FC10.0212</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NHAUH</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\FC10.0205</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\FC60.163</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MC/BUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\NCBUNC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCSQ-XBUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCXBUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\LC1280</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\LC128019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCPOL105</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCSQ-BUN4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\NCBUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\NHBUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\SC400.1000</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\WC331.0700</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\FC50.0669</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\FC50.8111</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\FC50.0437</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\BC1-41</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\FC10.0235</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\FC60.16</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\LC1300</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\LC130019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\LC13003</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MC.CA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MC/CA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MC00263</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MC17575</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCCA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCPOL118</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCSQ-CA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCSQ-CA1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCSQ-CA4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\NCCA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\NCCA1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\SC400.2100</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\WC331.0900</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\WC603.3600</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\SC600.2720</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\LC6128</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\FC10.0120</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\FC60.187</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\LC1480</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\LC148019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MC.CO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCCO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCCO26</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCSQ-CO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCSQ-CO21</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCSQ-CO26</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\NCCO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\NHCO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\SC400.1700</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\WC331.0400</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MH110HCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MH110HGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MH110WBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCSQ-XCL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCXCL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\BC1-10</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\FC10.0115</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\FC60.186</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\LC1380</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MC.CL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MC/CL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MC00253</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MC17253</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MC17572</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCCL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCCL6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCPOL102</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCSQ-CL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCSQ-CL1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCSQ-CL4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCSQ-CL6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\NCCL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\NHCL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\SC400.1600</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\WC331.0300</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\NCRTCL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\LC138019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\BC1-352</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCSQ-XCO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCXCO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MC00254</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MC17573</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCPOL103</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCSQ-CO24</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCPOL106</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCSQ-CREA4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCSQ-XCRE</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCXCRE</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\BC1-7</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\FC10.0218</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\LC1570</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\LC1570049</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\LC157019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MC.CRE</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MC/CREAT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MC00313</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MC17313</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MC17609</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCCRE</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCCRE6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCSQ-CRE</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCSQ-CRE1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCSQ-CRE6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\NCCREAT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\SC400.1100</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\WC331.0800</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\WC650.7999</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\WC851.4010</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-1382</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\FC10.0515</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\SC400.6700</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\SC400.8500</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHFB-HCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB63) DBNull\(LLB64) DBNull\DBNull\MHFB-HCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHSQ-FHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB63) DBNull\(LLB64) DBNull\DBNull\MHSQ-FHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCPOL104</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-GLU4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLUCH</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLUIS</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLUISP</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLUPED</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-XGLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCXGLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\FC10.0210</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\FC60.162</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\LC1760</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\LC176019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MC.BS</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MC/GL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MC00315</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MC17577</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCBS</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCGL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCGLU5</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCGLU6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-GLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-GLU1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-GLU5</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-GLU6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-GLUCA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NHGLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\SC310.0030</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLUCC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.5497</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.5500</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLU0S</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLUF</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.0500</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.0502</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-86</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MC00316</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NC4NRSYG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NC6NRSYG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NC7EG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCANESG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCCATHG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCCSUG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCD6G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCD7G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCD8G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCD9G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCESG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCICUG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCLABG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCM4G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCNS3G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCNSCCG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCNSESG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCORHG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCPACUG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCSGCHG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCSK2G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCSK3G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCSK4G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCSK5G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUE3G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUENDOG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUESG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUICG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUICUG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCULABG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUORG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCURECG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUS1TG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUSGCG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUW1G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUW2G</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCUWGRG</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCGLUPOC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\NCRTGLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\LC1810</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.5405</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.5400</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\LC1610</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.0602</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\LC1880</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.0600</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\WC331.5495</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\SC400.0800</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\SC400.0700</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\SC400.0600</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-1007</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-1129</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-278</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NCHCTIS</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NHHCTIS</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NHPHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\BC1-332</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\BH1-4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MH'HCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MH.HCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MH;HCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHPOL403</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHSQ-HCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHSQ-HCT1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHSQ-HCT2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHSQ-HCT3</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHSQ-HCT4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHSQ-HCT5</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NCHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NHHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NHOHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\WH101.0400</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NCHCT1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NHHCT1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\FC50.1006</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\FH20.0040</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\FH900.0200</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\LC5204</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\LH5204</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\LH520419</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\SH100.0500</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\WC602.2266</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\WC648.8559</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NCHCTC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\NHHCTC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\FC50.1004</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\FH20.0035</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\FH900.0150</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\LH5203</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\LH520319</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MC17581</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MCHG5</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MCHGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MCSQ-HG5</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MCSQ-HGBCHM</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NCHGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NHHGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\SH100.0400</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NCHGBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NHHGBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MC00142</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\FC50.0485</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NCHGBIS</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NHHGBIS</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\BC1-143</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\BH1-3</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MC/HGBB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MCSQ-HGBB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MH'HGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MH.HGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MH;HGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MHHGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MHPOL402</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MHSQ-HGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MHSQ-HGB1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MHSQ-HGB2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MHSQ-HGB3</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MHSQ-HGB4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\MHSQ-HGB5</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NHOHGB</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\WH101.0300</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\NHHGBPOC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCPOL101</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCSQ-K4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\NCNAPED</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCPOL100</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCSQ-NA4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCNI/CA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCSQ-NICA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-1315</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\BC1-1308</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-298</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCPCA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\MCSQ-PCA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCPL CO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCSQ-PL CO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\MCSQ-PLCO2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCPCL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\MCSQ-PCL</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCPCRE</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\MCSQ-PCRE</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MC.P GLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCP GLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-P GLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-PGLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-PGLU1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCPK</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCSQ-PK</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCPNA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCSQ-PNA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCPBUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCSQ-PBUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\NCPLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\NHPLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\FC50.2642</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\FC50.4515</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\LH5460</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\LH546019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHBBPLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHSQ-BBPLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\NCPLTCA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\NHPLTCA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\SH100.1000</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\WC603.8060</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\WH101.0900</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\WH101.0910</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\WH101.0905</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\FC50.0061</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MH112</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\BH1-9</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\FH20.0070</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\FH900.0255</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MH'PLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MH.PLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MH;PLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHPLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHPOL407</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHSQ-PLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHSQ-PLT1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHSQ-PLT2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHSQ-PLT3</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHSQ-PLT4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\MHSQ-PLT5</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\NHOPLT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\NHPLAT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\SH100.3600</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\BC1-295</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCSQ-XK</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCXK</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\BC1-9</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\FC10.0110</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\FC60.185</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\LC1670</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\LC167019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MC.K</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MC/K</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MC00252</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MC17252</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MC17571</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCK</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCK6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCSQ-K</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCSQ-K1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCSQ-K6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\MCSQ-POTA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\NCK</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\NCKR</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\NHK</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\SC400.1500</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\WC331.0200</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\NCRTK</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHPHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\MHSQ-PHCT</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\FC10.0220</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\FC10.0223</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSEBS</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\BH1-360</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\BH1-359</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\PLT\BH1-365</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>PLT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\BH1-357</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\BC1-1161</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\BH1-433</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCSQ-XNA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCXNA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\BC1-8</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\FC10.0105</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\FC60.183</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\LC1690</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\LC169019</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MC.NA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MC/NA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MC00251</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MC17251</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MC17570</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCNA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCNA6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCSQ-NA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCSQ-NA1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCSQ-NA6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\MCSQ-SODA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\NCNA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\NHNA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\SC400.1400</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\WC331.0100</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\NCNACA</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\BC1-141</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\BC1-11</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\FC50.2640</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\FC50.4510</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\FC50.4104</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\NCTWBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\BC1-6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MC.BUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MC00310</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MC17310</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MC17576</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCBUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCBUN6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCSQ-BUN</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCSQ-BUN1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\MCSQ-BUN6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\BC1-340</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\NCPWBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\NHPWBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\BH1-1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MH'WBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MH.WBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MH;WBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MHPOL400</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MHSQ-WBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MHSQ-WBC1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MHSQ-WBC2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MHSQ-WBC3</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MHSQ-WBC4</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MHSQ-WBC5</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\MHWBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\NCWBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\NCWBC1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\NHOWBC1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\NHWBC</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\NHWBC1</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\SH100.0100</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\WC603.8050</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\WH101.0100</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\WH101.0101</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\WH101.0102</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\LH5201</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\LH520119</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\LI5201</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\FH20.0029</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\FH20.0015</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\WBC\FH900.005</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>WBC</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MC'WBGLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MC;WBGLU</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-WBGLU2</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-WBGLU3</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCSQ-WBGLU6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\MCWBGLU6</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\BH1-309</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HGB\BH1-439</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB63) DBNull\(LLB64) DBNull\DBNull\BH1-439</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HGB</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB53) Hematology\(LLB57) Complete Blood Count\HCT\BH1-406</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>HCT</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\BUN\FC10.00005</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>BUN</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB21) General Chemistries\CA\FC10.00011</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CO2\FC10.00004</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CO2</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CL\FC10.00003</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CL</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\GLU\FC10.00006</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>GLU</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\K\FC10.00002</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>K</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\CRE\FC10.00008</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>CRE</local_key>
+        </concept>
+      </mappings>
+    </concept>
+    <concept>
+      <local_key>\RPDR\Labtests\LAB\(LLB16) Chemistry\(LLB22) Lytes/Renal/Glucose\NA\FC10.00001</local_key>
+      <mappings>
+        <concept>
+          <fragment_id>79</fragment_id>
+          <local_key>NA</local_key>
+        </concept>
+      </mappings>
+    </concept>
+  </concepts>
+</mappings>

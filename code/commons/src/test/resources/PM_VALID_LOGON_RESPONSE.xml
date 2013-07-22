@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:response xmlns:ns2="http://www.i2b2.org/xsd/hive/msg/1.1/">
+    <message_header>
+        <i2b2_version_compatible>1.1</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>PM Cell</application_name>
+            <application_version>1.1</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>PM Cell</application_name>
+            <application_version>1.1</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </receiving_facility>
+        <datetime_of_message>2009-08-26T12:35:05.540-04:00</datetime_of_message>
+        <message_control_id>
+            <instance_num>1</instance_num>
+        </message_control_id>
+        <processing_id>
+            <processing_id>P</processing_id>
+            <processing_mode>I</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type>AL</accept_acknowledgement_type>
+        <application_acknowledgement_type>AL</application_acknowledgement_type>
+        <country_code>US</country_code>
+        <project_id xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+    </message_header>
+    <response_header>
+        <result_status>
+            <status type="DONE">PM processing completed</status>
+        </result_status>
+    </response_header>
+    <message_body>
+        <ns4:configure xmlns:ns4="http://www.i2b2.org/xsd/cell/pm/1.1/">
+            <environment>DEVELOPMENT</environment>
+            <helpURL>http://www.i2b2.org</helpURL>
+            <user>
+                <full_name>Demo User</full_name>
+                <user_name>demo</user_name>
+                <password>demouser</password>
+                <domain>demo</domain>
+                <project id="Demo">
+                    <name>Demo Group</name>
+                    <wiki>http://www.i2b2.org</wiki>
+                    <role>USER</role>
+                    <role>MANAGER</role>
+                    <param name="ecommons_username">demo</param>                </project>
+                <project id="Demo2">
+                    <name>Demo2 Group</name>
+                    <wiki>http://www.i2b2.org</wiki>
+                    <role>USER</role>
+                    <role>MANAGER</role>                </project>            </user>
+            <cell_datas>
+                <cell_data id="CRC">
+                    <name>Data Repository</name>
+                    <url>http://cbmi-lab.med.harvard.edu:8443/shrine-cell/QueryToolService/</url>
+                    <method>REST</method>                </cell_data>
+                <cell_data id="FRC">
+                    <name>File Repository</name>
+                    <url>http://cbmi-i2b2-dev:9090/i2b2/services/FRService/</url>
+                    <method>REST</method>
+                    <param name="PathSeperator">/</param>
+                    <param name="DestDir">/opt/FRC</param>                </cell_data>
+                <cell_data id="ONT">
+                    <name>Ontology Cell</name>
+                    <url>http://cbmi-i2b2-dev:9090/i2b2/rest/OntologyService/</url>
+                    <method>REST</method>
+                    <param name="OntSynonyms">false</param>
+                    <param name="OntHidden">false</param>
+                    <param name="OntMax">200</param>                </cell_data>
+                <cell_data id="PFT">
+                    <name>Pulmonary Function Test</name>
+                    <url>http://cbmi-i2b2-dev:7070/axis2/rest/PFTService/</url>
+                    <method>REST</method>                </cell_data>
+                <cell_data id="SHERIFF_BROADCASTER">
+                    <name>Sheriff Broadcaster Endpoint</name>
+                    <url>http://cbmi-lab.med.harvard.edu:8443/sheriff/webservice</url>
+                    <method>SOAP</method>                </cell_data>
+                <cell_data id="WORK">
+                    <name>Workplace Cell</name>
+                    <url>http://cbmi-i2b2-dev:9090/i2b2/rest/WorkplaceService/</url>
+                    <method>REST</method>                </cell_data>            </cell_datas>        </ns4:configure>
+    </message_body>
+</ns2:response>

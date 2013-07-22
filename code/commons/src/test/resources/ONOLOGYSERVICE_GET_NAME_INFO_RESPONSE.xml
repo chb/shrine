@@ -1,0 +1,1055 @@
+<ns2:response xmlns:tns="http://ws.ontology.i2b2.harvard.edu" xmlns:ns3="http://www.i2b2.org/xsd/cell/ont/1.1/" xmlns:ns4="http://www.i2b2.org/xsd/cell/pm/1.1/" xmlns:ns2="http://www.i2b2.org/xsd/hive/msg/1.1/">
+    <message_header>
+        <i2b2_version_compatible>1.1</i2b2_version_compatible>
+        <hl7_version_compatible>2.4</hl7_version_compatible>
+        <sending_application>
+            <application_name>Ontology Cell</application_name>
+            <application_version>1.0</application_version>
+        </sending_application>
+        <sending_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </sending_facility>
+        <receiving_application>
+            <application_name>i2b2 Ontology</application_name>
+            <application_version>1.3</application_version>
+        </receiving_application>
+        <receiving_facility>
+            <facility_name>i2b2 Hive</facility_name>
+        </receiving_facility>
+        <datetime_of_message>2010-02-23T09:52:28.208-05:00</datetime_of_message>
+        <security>
+            <domain>HarvardDemo</domain>
+            <username>demo</username>
+            <password>demouser</password>
+        </security>
+        <message_control_id>
+            <message_num>AZE4JPOQa7djIp3bTUBv</message_num>
+            <instance_num>1</instance_num>
+        </message_control_id>
+        <processing_id>
+            <processing_id>P</processing_id>
+            <processing_mode>I</processing_mode>
+        </processing_id>
+        <accept_acknowledgement_type>AL</accept_acknowledgement_type>
+        <application_acknowledgement_type>AL</application_acknowledgement_type>
+        <country_code>US</country_code>
+        <project_id>Demo2</project_id>
+    </message_header>
+    <response_header>
+        <result_status>
+            <status type="DONE">Ontology processing completed</status>
+        </result_status>
+    </response_header>
+    <message_body>
+        <ns3:concepts>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(253) Disorders of the pituitary ~\(253-5) Diabetes insipidus\</key>
+                <name>Diabetes insipidus</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:253.5</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(253) Disorders of the pituitary ~\(253-5) Diabetes insipidus\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Disorders of the pituitary gland and its hypothalamic control \ Diabetes insipidus</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\</key>
+                <name>Diabetes mellitus</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\</key>
+                <name>Diabetes mellitus complicating pregnancy, childbirth, or the puerperium</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:648.0</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Other current conditions in the mother classifiable elsewhere, but complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus complicating pregnancy, childbirth, or the puerperium</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-00) Diabetes mellitus of mot~\</key>
+                <name>Diabetes mellitus of mother, complicating pregnancy, childbirth, or the puerperium, unspecified as to episode of care</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:648.00</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-00) Diabetes mellitus of mot~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus of mother, complicating pregnancy, childbirth, or the puerperium, unspecified as to episode of care</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-01) Diabetes mellitus of mot~\</key>
+                <name>Diabetes mellitus of mother, with delivery</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:648.01</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-01) Diabetes mellitus of mot~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Other current conditions in the mother classifiable elsewhere, but complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus of mother, with delivery</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-02) Diabetes mellitus of mot~\</key>
+                <name>Diabetes mellitus of mother, with delivery, with mention of postpartum complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:648.02</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-02) Diabetes mellitus of mot~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus of mother, with delivery, with mention of postpartum complication</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\(250-61) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, with neurological manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.61</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\(250-61) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type I [insulin dependent type] {..}le type], not stated as uncontrolled, with neurological manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\(250-51) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, with ophthalmic manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.51</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\(250-51) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type I [insulin dependent type] {..}nile type], not stated as uncontrolled, with ophthalmic manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\(250-81) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, with other specified manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.81</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\(250-81) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type I [insulin dependent type] {..}type], not stated as uncontrolled, with other specified manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\(250-71) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, with peripheral circulatory disorders</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.71</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\(250-71) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type I [insulin dependent type] {..}pe], not stated as uncontrolled, with peripheral circulatory disorders</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\(250-41) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, with renal manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.41</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\(250-41) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type I [insulin dependent type] {..}[juvenile type], not stated as uncontrolled, with renal manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\(250-91) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, with unspecified complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.91</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+               <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\(250-91) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type I [insulin dependent type] {..}enile type], not stated as uncontrolled, with unspecified complication</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\(250-63) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with neurological manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.63</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\(250-63) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes with neurological manifestations \ Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with neurological manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\(250-53) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with ophthalmic manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.53</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\(250-53) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes with ophthalmic manifestations \ Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with ophthalmic manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\(250-83) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with other specified manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.83</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\(250-83) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with other specified manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\(250-73) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with peripheral circulatory disorders</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.73</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\(250-73) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with peripheral circulatory disorders</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\(250-43) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with renal manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.43</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\(250-43) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes with renal manifestations \ Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with renal manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\(250-93) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with unspecified complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.93</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\(250-93) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes with unspecified complication \ Diabetes mellitus type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with unspecified complication</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\(250-60) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled, with neurological manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.60</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\(250-60) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}ied type, not stated as uncontrolled, with neurological manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\(250-50) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled, with ophthalmic manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.50</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\(250-50) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}ified type, not stated as uncontrolled, with ophthalmic manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\(250-80) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled, with other specified manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.80</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\(250-80) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..} type, not stated as uncontrolled, with other specified manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\(250-70) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled, with peripheral circulatory disorders</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.70</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\(250-70) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}ype, not stated as uncontrolled, with peripheral circulatory disorders</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\(250-40) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled, with renal manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.40</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\(250-40) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}nspecified type, not stated as uncontrolled, with renal manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\(250-90) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled, with unspecified complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.90</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\(250-90) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}cified type, not stated as uncontrolled, with unspecified complication</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\(250-62) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled, with neurological manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.62</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\(250-62) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}e] or unspecified type, uncontrolled, with neurological manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\(250-52) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled, with ophthalmic manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.52</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\(250-52) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}ype] or unspecified type, uncontrolled, with ophthalmic manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\(250-82) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled, with other specified manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.82</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\(250-82) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}or unspecified type, uncontrolled, with other specified manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\(250-72) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled, with peripheral circulatory disorders</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.72</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\(250-72) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..} unspecified type, uncontrolled, with peripheral circulatory disorders</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\(250-42) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled, with renal manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.42</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\(250-42) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}set type] or unspecified type, uncontrolled, with renal manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\(250-92) Diabetes mellitus type I~\</key>
+                <name>Diabetes mellitus type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled, with unspecified complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.92</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\(250-92) Diabetes mellitus type I~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus type II [non-insulin dependent t{..}type] or unspecified type, uncontrolled, with unspecified complication</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\</key>
+                <name>Diabetes mellitus with hyperosmolarity</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.2</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes mellitus with hyperosmolarity</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\(250-33) Diabetes mellitus with o~\</key>
+                <name>Diabetes mellitus with other coma, type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.33</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\(250-33) Diabetes mellitus with o~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes with other coma \ Diabetes mellitus with other coma, type I [insulin dependent type] [IDDM] [juvenile type], uncontrolled</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\(250-32) Diabetes mellitus with o~\</key>
+                <name>Diabetes mellitus with other coma, type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.32</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\(250-32) Diabetes mellitus with o~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus with other coma, type II [non-in{..}ype] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\</key>
+                <name>Diabetes mellitus without mention of complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.0</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes mellitus without mention of complication</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-03) Diabetes mellitus, antep~\</key>
+                <name>Diabetes mellitus, antepartum</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:648.03</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-03) Diabetes mellitus, antep~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Other current conditions in the mother classifiable elsewhere, but complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus, antepartum</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-04) Diabetes mellitus, postp~\</key>
+                <name>Diabetes mellitus, postpartum</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:648.04</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Events of pregnancy (630-677)\(648) Other current conditions in~\(648-0) Diabetes mellitus complic~\(648-04) Diabetes mellitus, postp~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Other current conditions in the mother classifiable elsewhere, but complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus complicating pregnancy, childbirth, or the puerperium \ Diabetes mellitus, postpartum</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\(250-21) Diabetes mellitus, type ~\</key>
+                <name>Diabetes mellitus, type I [insulin dependent type] [IDDM] [juvenile type] with hyperosmolarity, not stated as uncontrolled</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.21</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\(250-21) Diabetes mellitus, type ~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus with hyperosmolarity \ Diabetes mellitus, type I [insulin dependent type] [IDDM] [juvenile type] with hyperosmolarity, not stated as uncontrolled</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\(250-23) Diabetes mellitus, type ~\</key>
+                <name>Diabetes mellitus, type I [insulin dependent type] [IDDM] [juvenile type] with hyperosmolarity, uncontrolled</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.23</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\(250-23) Diabetes mellitus, type ~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus with hyperosmolarity \ Diabetes mellitus, type I [insulin dependent type] [IDDM] [juvenile type] with hyperosmolarity, uncontrolled</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\(250-31) Diabetes mellitus, type ~\</key>
+                <name>Diabetes mellitus, type I [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.31</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\(250-31) Diabetes mellitus, type ~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes with other coma \ Diabetes mellitus, type I [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\(250-20) Diabetes mellitus, type ~\</key>
+                <name>Diabetes mellitus, type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type with hyperosmolarity, not stated as uncontrolled</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.20</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\(250-20) Diabetes mellitus, type ~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus, type II [non-insulin dependent {..}] or unspecified type with hyperosmolarity, not stated as uncontrolled</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\(250-30) Diabetes mellitus, type ~\</key>
+                <name>Diabetes mellitus, type II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.30</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\(250-30) Diabetes mellitus, type ~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus, type II [non-insulin dependent {..}pe] [adult-onset type] or unspecified type, not stated as uncontrolled</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\(250-22) Diabetes mellitustype II~\</key>
+                <name>Diabetes mellitustype II [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type with hyperosmolarity, uncontrolled</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.22</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-2) Diabetes mellitus with hy~\(250-22) Diabetes mellitustype II~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitustype II [non-insulin dependent ty{..}ult-onset type] or unspecified type with hyperosmolarity, uncontrolled</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\</key>
+                <name>Diabetes with ketoacidosis</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.1</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes with ketoacidosis</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\</key>
+                <name>Diabetes with neurological manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.6</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-6) Diabetes with neurologica~\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes with neurological manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\</key>
+                <name>Diabetes with ophthalmic manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.5</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-5) Diabetes with ophthalmic ~\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes with ophthalmic manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\</key>
+                <name>Diabetes with other coma</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.3</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-3) Diabetes with other coma\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes with other coma</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\</key>
+                <name>Diabetes with other specified manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.8</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-8) Diabetes with other speci~\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes with other specified manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\</key>
+                <name>Diabetes with peripheral circulatory disorders</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.7</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-7) Diabetes with peripheral ~\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes with peripheral circulatory disorders</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\</key>
+                <name>Diabetes with renal manifestations</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.4</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-4) Diabetes with renal manif~\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes with renal manifestations</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\</key>
+                <name>Diabetes with unspecified complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>FA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.9</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-9) Diabetes with unspecified~\</dimcode>
+                <tooltip>Diagnoses \ Endocrine disorders \ Other endocrine gland diseases \ Diabetes mellitus \ Diabetes with unspecified complication</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\zz V-codes\Family history (V16-V19)\(V18) Family history of certain o~\(V18-0) Family history of diabete~\</key>
+                <name>Family history of diabetes mellitus</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:V18.0</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+            <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\zz V-codes\Family history (V16-V19)\(V18) Family history of certain o~\(V18-0) Family history of diabete~\</dimcode>
+                <tooltip>Diagnoses \ V-codes \ Family history \ Family history of certain other specific conditions \ Family history of diabetes mellitus</tooltip>
+            </concept>
+            <concept>
+                <level>4</level>
+                <key>\\i2b2\i2b2\Diagnoses\Conditions in the perinatal period (760-779)\(775) Endocrine and metabolic dis~\(775-1) Neonatal diabetes mellitus\</key>
+                <name>Neonatal diabetes mellitus</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:775.1</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Conditions in the perinatal period (760-779)\(775) Endocrine and metabolic dis~\(775-1) Neonatal diabetes mellitus\</dimcode>
+                <tooltip>Diagnoses \ Conditions in the perinatal period \ Endocrine and metabolic disturbances specific to the fetus and newborn \ Neonatal diabetes mellitus</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Genitourinary system (580-629)\Nephritis, nephrotic syndrome, and nephrosis (580-589)\(588) Disorders resulting from im~\(588-1) Nephrogenic diabetes insi~\</key>
+                <name>Nephrogenic diabetes insipidus</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:588.1</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Genitourinary system (580-629)\Nephritis, nephrotic syndrome, and nephrosis (580-589)\(588) Disorders resulting from im~\(588-1) Nephrogenic diabetes insi~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Nephritis, nephrotic syndrome, and nephrosis \ Disorders resulting from impaired renal function \ Nephrogenic diabetes insipidus</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\Neurologic Disorders (320-389)\Peripheral nerve disorders (350-359)\(357) Inflammatory and toxic neur~\(357-2) Polyneuropathy in diabetes\</key>
+                <name>Polyneuropathy in diabetes</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:357.2</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Neurologic Disorders (320-389)\Peripheral nerve disorders (350-359)\(357) Inflammatory and toxic neur~\(357-2) Polyneuropathy in diabetes\</dimcode>
+                <tooltip>Diagnoses \ Neurologic Disorders \ Peripheral nerve disorders \ Inflammatory and toxic neuropathy \ Polyneuropathy in diabetes</tooltip>
+            </concept>
+            <concept>
+                <level>5</level>
+                <key>\\i2b2\i2b2\Diagnoses\zz V-codes\Examinations without diagnosis (V70-V82)\(V77) Special screening for endoc~\(V77-1) Screening for diabetes me~\</key>
+                <name>Screening for diabetes mellitus</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:V77.1</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\zz V-codes\Examinations without diagnosis (V70-V82)\(V77) Special screening for endoc~\(V77-1) Screening for diabetes me~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Examinations without diagnosis \ Special screening for endocrine, nutritional, metabolic, and immunity disorders \ Screening for diabetes mellitus</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\(250-11) type I diabetes mellitus~\</key>
+                <name>type I diabetes mellitus [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, with ketoacidosis</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.11</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\(250-11) type I diabetes mellitus~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes with ketoacidosis \ type I diabetes mellitus [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, with ketoacidosis</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\(250-01) type I diabetes mellitus~\</key>
+                <name>type I diabetes mellitus [insulin dependent type] [IDDM] [juvenile type], not stated as uncontrolled, without mention of complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.01</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\(250-01) type I diabetes mellitus~\</dimcode>
+                <tooltip>Diagnoses \ ... \ type I diabetes mellitus [insulin dependent type] {..}ile type], not stated as uncontrolled, without mention of complication</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\(250-13) type I diabetes mellitus~\</key>
+                <name>type I diabetes mellitus [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with ketoacidosis</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.13</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\(250-13) type I diabetes mellitus~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes with ketoacidosis \ type I diabetes mellitus [insulin dependent type] [IDDM] [juvenile type], uncontrolled, with ketoacidosis</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\(250-03) type I diabetes mellitus~\</key>
+                <name>type I diabetes mellitus [insulin dependent type] [IDDM] [juvenile type], uncontrolled, without mention of complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.03</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\(250-03) type I diabetes mellitus~\</dimcode>
+                <tooltip>Diagnoses \ ... \ Diabetes mellitus without mention of complication \ type I diabetes mellitus [insulin dependent type] [IDDM] [juvenile type], uncontrolled, without mention of complication</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\(250-10) type II diabetes mellitu~\</key>
+                <name>type II diabetes mellitus [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled, with ketoacidosis</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.10</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\(250-10) type II diabetes mellitu~\</dimcode>
+                <tooltip>Diagnoses \ ... \ type II diabetes mellitus [non-insulin dependent t{..}pe] or unspecified type, not stated as uncontrolled, with ketoacidosis</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\(250-00) type II diabetes mellitu~\</key>
+                <name>type II diabetes mellitus [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, not stated as uncontrolled, without mention of complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.00</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\(250-00) type II diabetes mellitu~\</dimcode>
+                <tooltip>Diagnoses \ ... \ type II diabetes mellitus [non-insulin dependent t{..}fied type, not stated as uncontrolled, without mention of complication</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\(250-12) type II diabetes mellitu~\</key>
+                <name>type II diabetes mellitus [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled, with ketoacidosis</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.12</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-1) Diabetes with ketoacidosis\(250-12) type II diabetes mellitu~\</dimcode>
+                <tooltip>Diagnoses \ ... \ type II diabetes mellitus [non-insulin dependent t{..}adult-onset type] or unspecified type, uncontrolled, with ketoacidosis</tooltip>
+            </concept>
+            <concept>
+                <level>6</level>
+                <key>\\i2b2\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\(250-02) type II diabetes mellitu~\</key>
+                <name>type II diabetes mellitus [non-insulin dependent type] [NIDDM type] [adult-onset type] or unspecified type, uncontrolled, without mention of complication</name>
+                <synonym_cd>N</synonym_cd>
+                <visualattributes>LA </visualattributes>
+                <totalnum>0</totalnum>
+                <basecode>ICD9:250.02</basecode>
+                <facttablecolumn>concept_cd</facttablecolumn>
+                <tablename>concept_dimension</tablename>
+                <columnname>concept_path</columnname>
+                <columndatatype>T</columndatatype>
+                <operator>LIKE</operator>
+                <dimcode>\i2b2\Diagnoses\Endocrine disorders (240-259)\Other endocrine gland diseases (250-259)\(250) Diabetes mellitus\(250-0) Diabetes mellitus without~\(250-02) type II diabetes mellitu~\</dimcode>
+                <tooltip>Diagnoses \ ... \ type II diabetes mellitus [non-insulin dependent t{..}pe] or unspecified type, uncontrolled, without mention of complication</tooltip>
+            </concept>
+        </ns3:concepts>
+    </message_body>
+</ns2:response>

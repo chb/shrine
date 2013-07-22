@@ -1,0 +1,21 @@
+#TODO: Parameterize later
+
+#REQUIRED
+
+source=AdapterMappings
+file=SPIN_CONF/AdapterMappings.xml
+crc=https://SHRINE_IP:SHRINE_SSL_PORT/shrine/rest/i2b2/request
+
+username=SHRINE_USER
+password=SHRINE_PASSWORD
+domain=I2B2_DOMAIN_ID
+#TODO
+project=SHRINE
+
+## Optional
+queryTopicID=0
+translate=false
+random=false
+threads=1
+sleep=1000
+repeat=true
