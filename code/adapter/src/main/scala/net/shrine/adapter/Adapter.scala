@@ -3,7 +3,7 @@ package net.shrine.adapter
 import org.spin.node.QueryContext
 import java.lang.String
 import org.spin.tools.crypto.signature.Identity
-import net.shrine.protocol.{ErrorResponse, ShrineResponse, BroadcastMessage}
+import net.shrine.protocol.{ReadPdoResponse, ErrorResponse, ShrineResponse, BroadcastMessage}
 import net.shrine.util.Loggable
 import net.shrine.config.HiveCredentials
 import org.spin.node.AbstractQueryAction
@@ -38,7 +38,12 @@ abstract class Adapter extends AbstractQueryAction[BroadcastMessage] with Loggab
       }
     }
 
-    shrineResponse.toXmlString
+    shrineResponse match {
+      case s : ReadPdoResponse => s.serializeToBase64Binary()
+      case _ => shrineResponse.toXmlString
+    }
+
+
   }
 
   protected[adapter] def processRequest(identity: Identity, message: BroadcastMessage): XmlMarshaller

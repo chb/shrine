@@ -8,19 +8,27 @@ import org.spin.message.Result
  * @author ???
  * @date ???
  */
-class ReadPdoResponseAggregator extends Aggregator {
+class ReadPdoResponseAggregator(val useBinary: Boolean) extends Aggregator {
 
   override def aggregate(spinCacheResults: Seq[SpinResultEntry], errors: Seq[ErrorResponse]) = {
     val eventBuffer = new ArrayBuffer[EventResponse]
     val patientBuffer = new ArrayBuffer[PatientResponse]
     val observationBuffer = new ArrayBuffer[ObservationResponse]
 
-    spinCacheResults.foreach { result =>
-      val response = transform(ReadPdoResponse.fromXml(result.spinResultXml), result.spinResultMetadata) //TODO handle errors
+    spinCacheResults.foreach {
+      result =>
 
-      eventBuffer ++= response.events
-      patientBuffer ++= response.patients
-      observationBuffer ++= response.observations
+        val responseObj = useBinary match {
+          case true => ReadPdoResponse.fromBinary(result.spinResultXml)
+          case _ => ReadPdoResponse.fromXml(result.spinResultXml)
+        }
+
+
+        val response = transform(responseObj, result.spinResultMetadata) //TODO handle errors
+
+        eventBuffer ++= response.events
+        patientBuffer ++= response.patients
+        observationBuffer ++= response.observations
     }
 
     //TODO: What to do with passed-in errors?

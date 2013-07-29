@@ -3,6 +3,7 @@ package net.shrine.protocol
 import xml.NodeSeq
 import net.shrine.util.XmlUtil
 import net.shrine.serialization.{ I2b2Unmarshaller, XmlUnmarshaller }
+import net.shrine.protocol
 
 /**
  * @author Bill Simons (??)
@@ -19,7 +20,7 @@ import net.shrine.serialization.{ I2b2Unmarshaller, XmlUnmarshaller }
 final case class ReadPdoResponse(
   val events: Seq[EventResponse],
   val patients: Seq[PatientResponse],
-  val observations: Seq[ObservationResponse]) extends ShrineResponse {
+  val observations: Seq[ObservationResponse]) extends ShrineResponse with BinarySerializable[ReadPdoResponse] {
 
   override def i2b2MessageBody = XmlUtil.stripWhitespace(
     <ns3:response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:patient_data_responseType">
@@ -50,7 +51,7 @@ final case class ReadPdoResponse(
     </PdoResponse>)
 }
 
-object ReadPdoResponse extends I2b2Unmarshaller[ReadPdoResponse] with XmlUnmarshaller[ReadPdoResponse] {
+object ReadPdoResponse extends I2b2Unmarshaller[ReadPdoResponse] with XmlUnmarshaller[ReadPdoResponse] with BinaryDeserializable[ReadPdoResponse] {
   override def fromI2b2(nodeSeq: NodeSeq) = {
     val events = (nodeSeq \ "message_body" \ "response" \ "patient_data" \ "event_set" \ "event").map(EventResponse.fromI2b2)
     
@@ -70,4 +71,10 @@ object ReadPdoResponse extends I2b2Unmarshaller[ReadPdoResponse] with XmlUnmarsh
     
     ReadPdoResponse(events, patients, observations)
   }
+
+  def fromBinary(base64encodedString: String): ReadPdoResponse =  {
+
+    ReadPdoResponse.fromBinaryBase64string(base64encodedString)
+  }
+
 }
