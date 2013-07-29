@@ -8,7 +8,7 @@ import collection.mutable.ListBuffer
 import org.spin.tools.NetworkTime._
 
 class ReadPdoResponseAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
-  val aggregator = new ReadPdoResponseAggregator()
+  val aggregator = new ReadPdoResponseAggregator(true)
 
   def createPdoResponse: ReadPdoResponse = {
     val patientId1 = "1000000001";
