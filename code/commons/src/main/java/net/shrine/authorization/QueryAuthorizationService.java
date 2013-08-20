@@ -1,12 +1,7 @@
 package net.shrine.authorization;
 
-import edu.harvard.i2b2.crc.datavo.i2b2message.RequestMessageType;
-import edu.harvard.i2b2.crc.datavo.i2b2message.ResponseMessageType;
-import net.shrine.protocol.ReadApprovedQueryTopicsRequest;
-import net.shrine.protocol.ReadApprovedQueryTopicsResponse;
-import net.shrine.protocol.RunQueryRequest;
-import net.shrine.protocol.ShrineRequest;
-import net.shrine.protocol.ShrineResponse;
+
+import net.shrine.protocol.*;
 import net.shrine.serializers.pm.PMInvalidLogonException;
 import org.spin.query.message.serializer.SerializationException;
 import org.spin.tools.config.ConfigException;

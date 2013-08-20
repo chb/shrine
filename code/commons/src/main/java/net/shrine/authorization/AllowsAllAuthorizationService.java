@@ -1,10 +1,9 @@
 package net.shrine.authorization;
 
+
 import net.shrine.protocol.ReadApprovedQueryTopicsRequest;
 import net.shrine.protocol.ReadApprovedQueryTopicsResponse;
 import net.shrine.protocol.RunQueryRequest;
-import net.shrine.protocol.ShrineRequest;
-import net.shrine.protocol.ShrineResponse;
 import net.shrine.serializers.pm.PMInvalidLogonException;
 import org.spin.query.message.serializer.SerializationException;
 import org.spin.tools.config.ConfigException;

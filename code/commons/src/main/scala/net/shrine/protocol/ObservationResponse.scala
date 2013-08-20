@@ -47,6 +47,7 @@ final case class ObservationResponse(
       {modifierCode.map(x => <modifier_cd>{x}</modifier_cd>).getOrElse(<modifier_cd/>)}
       <valuetype_cd>{valueTypeCode}</valuetype_cd>
       {nvalNum.map(x => <nval_num>{x}</nval_num>).getOrElse(<nval_num/>)}
+      {tvalChar.map(x => <tval_char>{x}</tval_char>).getOrElse(<tval_char/>)}
       {valueFlagCode.map(x => <valueflag_cd>{x}</valueflag_cd>).getOrElse(<valueflag_cd/>)}
       {endDate.map(x => <end_date>{x}</end_date>).getOrElse(<end_date/>)}
       {locationCode.map(x => <location_cd name={locationCodeName.getOrElse("")}>{x}</location_cd>).getOrElse(<location_cd/>)}

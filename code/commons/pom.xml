@@ -79,6 +79,13 @@
         </dependency>
 
         <dependency>
+        	<groupId>com.twitter</groupId>
+        	<artifactId>chill_2.9.3</artifactId>
+        	<version>0.3.1</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.spin</groupId>
             <artifactId>identity-service</artifactId>
             <version>${spin-base-version}</version>

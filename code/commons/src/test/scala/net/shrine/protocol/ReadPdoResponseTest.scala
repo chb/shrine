@@ -86,7 +86,7 @@ class ReadPdoResponseTest extends ShrineResponseI2b2SerializableValidator {
           <event>
             <event_id>789012</event_id>
             <patient_id>1000000001</patient_id>
-            <param name="vital_status_cd" column="vital_status_cd" >N</param>
+            <param name="vital_status_cd" column="vital_status_cd">N</param>
             <param name="birth_date" column="birth_date">1985-11-17T00:00:00.000-05:00</param>
             <start_date>2011-01-29T00:00:00.000-05:00</start_date>
             <end_date>2011-01-29T00:00:00.000-05:00</end_date>
@@ -106,76 +106,12 @@ class ReadPdoResponseTest extends ShrineResponseI2b2SerializableValidator {
           </patient>
           <patient>
             <patient_id>1000000002</patient_id>
-            <param name="vital_status_cd" column="vital_status_cd" >N</param>
+            <param name="vital_status_cd" column="vital_status_cd">N</param>
             <param name="birth_date" column="birth_date">1966-08-29T00:00:00.000-04:00</param>
           </patient>
         </ns2:patient_set>
         <ns2:observation_set>
           <observation>
-           <event_id source="eventIdSource">eventId</event_id>
-                        <patient_id source="patientIdSource">patientId</patient_id>
-                        <concept_cd name="conceptCodeName">conceptCode</concept_cd>
-                        <observer_cd source="observerCodeSource">observerCode</observer_cd>
-                        <start_date>startDate</start_date>
-                        <modifier_cd>modifierCode</modifier_cd>
-                        <valuetype_cd>valueTypeCode</valuetype_cd>
-                        <nval_num>nvalNum</nval_num>
-                        <valueflag_cd>valueFlagCode</valueflag_cd>
-                        <end_date>endDate</end_date>
-                        <location_cd name="locationCodeName">locationCode</location_cd>
-                        <param column="someColumn1" name="someParam1">someValue1</param>
-          </observation>
-          <observation>
-            <event_id source="eventIdSource">eventId</event_id>
-                        <patient_id source="patientIdSource">patientId</patient_id>
-                        <concept_cd name="conceptCodeName">conceptCode</concept_cd>
-                        <observer_cd source="observerCodeSource">observerCode</observer_cd>
-                        <start_date>startDate</start_date>
-                        <modifier_cd>modifierCode</modifier_cd>
-                        <valuetype_cd>valueTypeCode</valuetype_cd>
-                        <nval_num>nvalNum</nval_num>
-                        <valueflag_cd>valueFlagCode</valueflag_cd>
-                        <end_date>endDate</end_date>
-                        <location_cd name="locationCodeName">locationCode</location_cd>
-                        <param column="someColumn1" name="someParam1">someValue1</param>
-          </observation>
-        </ns2:observation_set>
-      </ns2:patient_data>
-    </ns3:response>
-  </message_body>)
-
-  def xml = XmlUtil.stripWhitespace(
-<PdoResponse>
-    <events>
-        <event>
-            <event_id>789012</event_id>
-            <patient_id>1000000001</patient_id>
-            <param name="vital_status_cd" column="vital_status_cd">N</param>
-            <param name="birth_date" column="birth_date" >1985-11-17T00:00:00.000-05:00</param>
-            <start_date>2011-01-29T00:00:00.000-05:00</start_date>
-            <end_date>2011-01-29T00:00:00.000-05:00</end_date>
-        </event>
-        <event>
-            <event_id>123456</event_id>
-            <patient_id>1000000001</patient_id>
-            <param name="vital_status_cd" column="vital_status_cd">N</param>
-            <param name="birth_date" column="birth_date">1985-11-17T00:00:00.000-05:00</param>
-        </event>
-    </events>
-    <patients>
-        <patient>
-            <patient_id>1000000001</patient_id>
-            <param name="vital_status_cd" column="vital_status_cd" >N</param>
-            <param name="birth_date" column="birth_date" >1985-11-17T00:00:00.000-05:00</param>
-        </patient>
-        <patient>
-            <patient_id>1000000002</patient_id>
-            <param name="vital_status_cd" column="vital_status_cd">N</param>
-            <param name="birth_date" column="birth_date">1966-08-29T00:00:00.000-04:00</param>
-        </patient>
-    </patients>
-    <observations>
-        <observation>
             <event_id source="eventIdSource">eventId</event_id>
             <patient_id source="patientIdSource">patientId</patient_id>
             <concept_cd name="conceptCodeName">conceptCode</concept_cd>
@@ -188,8 +124,8 @@ class ReadPdoResponseTest extends ShrineResponseI2b2SerializableValidator {
             <end_date>endDate</end_date>
             <location_cd name="locationCodeName">locationCode</location_cd>
             <param column="someColumn1" name="someParam1">someValue1</param>
-        </observation>
-        <observation>
+          </observation>
+          <observation>
             <event_id source="eventIdSource">eventId</event_id>
             <patient_id source="patientIdSource">patientId</patient_id>
             <concept_cd name="conceptCodeName">conceptCode</concept_cd>
@@ -201,10 +137,98 @@ class ReadPdoResponseTest extends ShrineResponseI2b2SerializableValidator {
             <valueflag_cd>valueFlagCode</valueflag_cd>
             <end_date>endDate</end_date>
             <location_cd name="locationCodeName">locationCode</location_cd>
-            <param column="someColumn2" name="someParam2">someValue2</param>
+            <param column="someColumn1" name="someParam1">someValue1</param>
+          </observation>
+        </ns2:observation_set>
+      </ns2:patient_data>
+    </ns3:response>
+  </message_body>)
+
+  def xml = XmlUtil.stripWhitespace(
+    <PdoResponse>
+      <events>
+        <event>
+          <event_id>789012</event_id>
+          <patient_id>1000000001</patient_id>
+          <param name="vital_status_cd" column="vital_status_cd">N</param>
+          <param name="birth_date" column="birth_date">1985-11-17T00:00:00.000-05:00</param>
+          <start_date>2011-01-29T00:00:00.000-05:00</start_date>
+          <end_date>2011-01-29T00:00:00.000-05:00</end_date>
+        </event>
+        <event>
+          <event_id>123456</event_id>
+          <patient_id>1000000001</patient_id>
+          <param name="vital_status_cd" column="vital_status_cd">N</param>
+          <param name="birth_date" column="birth_date">1985-11-17T00:00:00.000-05:00</param>
+        </event>
+      </events>
+      <patients>
+        <patient>
+          <patient_id>1000000001</patient_id>
+          <param name="vital_status_cd" column="vital_status_cd">N</param>
+          <param name="birth_date" column="birth_date">1985-11-17T00:00:00.000-05:00</param>
+        </patient>
+        <patient>
+          <patient_id>1000000002</patient_id>
+          <param name="vital_status_cd" column="vital_status_cd">N</param>
+          <param name="birth_date" column="birth_date">1966-08-29T00:00:00.000-04:00</param>
+        </patient>
+      </patients>
+      <observations>
+        <observation>
+          <event_id source="eventIdSource">eventId</event_id>
+          <patient_id source="patientIdSource">patientId</patient_id>
+          <concept_cd name="conceptCodeName">conceptCode</concept_cd>
+          <observer_cd source="observerCodeSource">observerCode</observer_cd>
+          <start_date>startDate</start_date>
+          <modifier_cd>modifierCode</modifier_cd>
+          <valuetype_cd>valueTypeCode</valuetype_cd>
+          <nval_num>nvalNum</nval_num>
+          <valueflag_cd>valueFlagCode</valueflag_cd>
+          <end_date>endDate</end_date>
+          <location_cd name="locationCodeName">locationCode</location_cd>
+          <param column="someColumn1" name="someParam1">someValue1</param>
         </observation>
-    </observations>
-</PdoResponse>)
+        <observation>
+          <event_id source="eventIdSource">eventId</event_id>
+          <patient_id source="patientIdSource">patientId</patient_id>
+          <concept_cd name="conceptCodeName">conceptCode</concept_cd>
+          <observer_cd source="observerCodeSource">observerCode</observer_cd>
+          <start_date>startDate</start_date>
+          <modifier_cd>modifierCode</modifier_cd>
+          <valuetype_cd>valueTypeCode</valuetype_cd>
+          <nval_num>nvalNum</nval_num>
+          <valueflag_cd>valueFlagCode</valueflag_cd>
+          <end_date>endDate</end_date>
+          <location_cd name="locationCodeName">locationCode</location_cd>
+          <param column="someColumn2" name="someParam2">someValue2</param>
+        </observation>
+      </observations>
+    </PdoResponse>)
+
+
+  def makePdoResponse(numberOfObservations: Int): ReadPdoResponse = {
+    val fromXml = ReadPdoResponse.fromXml(xml)
+
+    val newObs = for (i <- 1 to numberOfObservations)
+    yield (ObservationResponse.fromXml(XmlUtil.stripWhitespace(<observation>
+        <event_id source="eventIdSource">eventId</event_id>
+        <patient_id source="patientIdSource">patientId</patient_id>
+        <concept_cd name="conceptCodeName">conceptCode</concept_cd>
+        <observer_cd source="observerCodeSource">observerCode</observer_cd>
+        <start_date>startDate</start_date>
+        <modifier_cd>modifierCode</modifier_cd>
+        <valuetype_cd>valueTypeCode</valuetype_cd>
+        <nval_num>nvalNum</nval_num>
+        <valueflag_cd>valueFlagCode</valueflag_cd>
+        <end_date>endDate</end_date>
+        <location_cd name="locationCodeName">locationCode</location_cd>
+        <param column="someColumn1" name="someParam1">someValue1</param>
+      </observation>)))
+
+    return new ReadPdoResponse(fromXml.events, fromXml.patients, newObs)
+
+  }
 
 
   @Test
@@ -222,6 +246,67 @@ class ReadPdoResponseTest extends ShrineResponseI2b2SerializableValidator {
       }
     }
   }
+
+  def testXMLSerializationSpeed(observationSize: Int) {
+    var xmlAvg: Long = 0
+
+    var fromXml: ReadPdoResponse = null
+
+    val newXML = makePdoResponse(observationSize).toXml
+
+    println("Bytes " + newXML.toString().getBytes.length)
+    for (a <- 1 to 10) {
+      System.gc()
+      val xmlStart: Long = System.currentTimeMillis()
+      fromXml = ReadPdoResponse.fromXml(newXML)
+
+      val xmlEnd: Long = System.currentTimeMillis()
+      xmlAvg = xmlAvg + (xmlEnd - xmlStart)
+    }
+
+    println("Bytes " + newXML.toString().getBytes().length)
+    println("Total time to deserialize " + observationSize + " observations, 50 times:" + xmlAvg)
+
+  }
+
+
+
+  def testBinarySerializeSpeed(observationSize: Int): Unit = {
+
+
+    var reconstituted: ReadPdoResponse = null
+    val string = makePdoResponse(observationSize).serializeToBase64Binary()
+
+
+    var avg: Long = 0
+    for (a <- 1 to 10) {
+      System.gc()
+      val start = System.currentTimeMillis()
+
+      reconstituted = ReadPdoResponse.fromBinaryBase64string(string)
+      val end = System.currentTimeMillis()
+      avg = avg + (end - start)
+    }
+
+    println("Bytes " + string.getBytes.length)
+    println("Total time to deserialize " + observationSize + " observations, 50 times:" + avg)
+
+
+
+    reconstituted.toXml
+
+  }
+
+
+  def compareSpeeds(): Unit = {
+    testBinarySerializeSpeed(500000)
+    testXMLSerializationSpeed(500000)
+
+  }
+
+
+
+
 }
 
 

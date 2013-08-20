@@ -1,14 +1,14 @@
 package net.shrine.adapter
 
-import dao.AdapterDAO
-import org.spin.node.actions.AbstractQueryAction
 import org.spin.node.QueryContext
 import java.lang.String
-import org.springframework.transaction.annotation.Transactional
 import org.spin.tools.crypto.signature.Identity
-import net.shrine.config.I2B2HiveCredentials
-import net.shrine.protocol.{ErrorResponse, ShrineResponse, BroadcastMessage}
+import net.shrine.protocol.{ReadPdoResponse, ErrorResponse, ShrineResponse, BroadcastMessage}
 import net.shrine.util.Loggable
+import net.shrine.config.{I2B2HiveCredentials}
+import net.shrine.adapter.dao.AdapterDAO
+import org.spin.node.actions.AbstractQueryAction
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * @author Bill Simons
@@ -40,7 +40,14 @@ abstract class Adapter(
       }
     }
 
-    shrineResponse.toXml.toString
+    val response =  shrineResponse match {
+      case s : ReadPdoResponse => s.serializeToBase64Binary()
+      case _ => shrineResponse.toXmlString
+    }
+
+    response
+
+
 
   }
 

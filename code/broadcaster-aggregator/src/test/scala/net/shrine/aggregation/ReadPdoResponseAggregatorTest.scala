@@ -8,7 +8,7 @@ import collection.mutable.ListBuffer
 import org.spin.tools.NetworkTime._
 
 class ReadPdoResponseAggregatorTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
-  val aggregator = new ReadPdoResponseAggregator(true)
+  val aggregator = new ReadPdoResponseAggregator()
 
   def createPdoResponse(): ReadPdoResponse = {
     val patientId1 = "1000000001";
@@ -34,9 +34,9 @@ class ReadPdoResponseAggregatorTest extends AssertionsForJUnit with ShouldMatche
 
   @Test
   def testAggregate() {
-    val result1 = new SpinResultEntry(createPdoResponse().toXml.toString, null)
-    val result2 = new SpinResultEntry(createPdoResponse().toXml.toString, null)
-    val result3 = new SpinResultEntry(createPdoResponse().toXml.toString, null)
+    val result1 = new SpinResultEntry(createPdoResponse().serializeToBase64Binary(), null)
+    val result2 = new SpinResultEntry(createPdoResponse().serializeToBase64Binary(), null)
+    val result3 = new SpinResultEntry(createPdoResponse().serializeToBase64Binary(), null)
     val userId = "userId"
     val authn = new AuthenticationInfo("domain", userId, new Credential("value", false))
     var actual = aggregator.aggregate(Vector(result1, result2, result3))
